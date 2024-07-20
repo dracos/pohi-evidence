@@ -3,7 +3,7 @@ import json
 import os
 import subprocess
 
-os.chdir('evidence/process')
+os.chdir('process')
 
 def process_evidence():
     for file in sorted(glob.glob('*.pdf')):
@@ -51,5 +51,5 @@ def process_evidence():
         else:
             print("PDF has neither")
 
-META = json.load(open('../../data/evidence-pdf-metadata.json'))
+META = json.load(open('../data/evidence-pdf-metadata.json'))
 process_evidence()

@@ -30,7 +30,7 @@ def fetch_evidence_page(item):
         if 'excel' in typ and 'xls' not in note:
             note += '.xls'
         note = note.replace("/", "_")
-        filename_out = f'evidence/process/{note}'
+        filename_out = f'process/{note}'
 
         META[note] = [url, title]
 
