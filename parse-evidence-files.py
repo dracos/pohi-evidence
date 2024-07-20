@@ -23,9 +23,13 @@ def process_evidence():
         file_base = file.replace(".pdf", "")
         file_txt = '../' + file_base + ".txt"
         if not os.path.exists(file_txt) and (os.path.exists(file_base + '-1.txt') or os.path.exists(file_base + '-01.txt') or os.path.exists(file_base + '-001.txt')):
-            l = sorted(glob.glob(file_base + '-*.txt'))
+            text_files = sorted(glob.glob(file_base + '-*.txt'))
             with open(file_txt, "w") as outfile:
-                subprocess.run(['cat'] + l, stdout=outfile)
+                for text_file in text_files:
+                    with open(text_file, 'r') as input_file:
+                        for line in input_file:
+                            line = line.replace('|', 'I')
+                            outfile.write(line)
 
     for file in sorted(glob.glob('*.pdf')):
         file_base = file.replace(".pdf", "")
