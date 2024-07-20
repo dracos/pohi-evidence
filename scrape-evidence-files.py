@@ -1,6 +1,7 @@
 import bs4
 import json
 import os
+import re
 import requests_cache
 import urllib.parse
 from fns import fetch_list
@@ -39,7 +40,7 @@ def fetch_evidence_page(item):
 
         print('Noting evidence', url, note, href, link.a['type'])
         content = session.get(href).content
-        if len(content):
+        if len(content) and not re.match('File public://.*? not found$', content):
             with open(filename_out, 'wb') as fp:
                 fp.write(content)
 
