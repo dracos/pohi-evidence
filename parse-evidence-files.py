@@ -35,7 +35,7 @@ def process_evidence():
         file_base = file.replace(".pdf", "")
         file_rst = '../' + file_base + ".rst"
         file_txt = '../' + file_base + ".txt"
-        if os.path.exists(file_txt):
+        if os.path.exists(file_txt) and file in META:
             with open(file_rst, 'w') as out:
                 url, title = META[file]
                 out.write(title + '\n' + '=' * len(title) + '\n\n')
