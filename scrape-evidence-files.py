@@ -2,14 +2,17 @@ import bs4
 import json
 import os
 import re
+import requests
 import requests_cache
+import sqlite3
 import urllib.parse
 from fns import fetch_list
 
+uncached = requests.Session()
 session = requests_cache.CachedSession(expire_after=86400*7)
-session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
-})
+ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36'
+uncached.headers.update({'User-Agent': ua})
+session.headers.update({'User-Agent': ua})
 
 BASE_EVI = 'https://www.postofficehorizoninquiry.org.uk/evidence/all-evidence'
 
@@ -39,7 +42,10 @@ def fetch_evidence_page(item):
             continue
 
         print('Noting evidence', url, note, href, link.a['type'])
-        content = session.get(href).content
+        try:
+            content = session.get(href).content
+        except sqlite3.DataError:  # Too big to cache
+            content = uncached.get(href).content
         if len(content) and not re.match(b'File public://.*? not found$', content):
             with open(filename_out, 'wb') as fp:
                 fp.write(content)
