@@ -1,0 +1,211 @@
+POL00241081
+POL00241081
+
+Correcting Accounts for “lost” Discrepancies
+
+Ref: _ g:\gij documents\notes\lost discrepancies.doc
+Author: Gareth I Jenkins
+Date: 29/09/2010 10:50:00
+
+1. Introduction
+
+This note relates to Peaks PC0204765 and PC0204263 (and also PC0203864 which is
+a duplicate of PC0204263).
+
+Are these really duplicates? I’m a bit confused as to which one to refer to. Can one be closed
+as a duplicate of the other?
+
+PC0204263 describes a problem with SU Balancing that will result in a Receipts
+payments mismatch. A fix is available for this peak which needs to be scheduled via
+
+“RMF. However any branch encountering the problem will have corrupted accounts
+and Peak PC0204765 is a Master Peak to record al affected branches and also to
+define the process for correcting the accounts.
+
+The purpose of this note is to:
+
+= Summarise the problem in terms that are meaningful to Post Office Ltd
+= Define a process for identifying all affected branches
+
+= Explain what analysis is needed on each affected branch
+
+«Define what ongoing monitoring is required to pick up further occurrences of the
+issue until the root cause of the problem is fixed
+
+= Provide a basis for agreeing the necessary data fixes with Post Office Ltd and how
+they are to be applied
+
+= Explain how each problem branch can be fixed
+
+Vd Change Control
+
+Initial version 28/09/2010 12:49:00: This version of the note is an initial draft for
+discussion within development.
+
+Updated version 29/09/2010 10:50:00: Updated following feedback from Dev to be
+distributed to SSC
+
+2. Overview
+
+The problem occurs as part of the process of moving discrepancies into Local
+Suspense.
+
+When Discrepancies are found when rolling a SU over into a new TP, then the User is
+asked if they should be moved to Local Suspense (MSG31316). Should they Cancel
+at this point the Discrepancy is zeroised in the Local Cache (but nothing is written to
+the BRDB). Note that there is no corresponding Balancing Transaction generated in
+the Local Cache and so the Local Cache is in an Unbalanced state.
+
+c:\documents and settings\jarnail.a.singh\local settings\temporary internet files\olk18\lost discrepancies
+290910.doce Printed at 16:38:24 on 8/10/2010 Page 1 of 4
+POL00241081
+POL00241081
+
+If at the next screen (where the options are to: print or preview the trial balance again;
+to re-attempt the rollover; or to cancel the rollover) the rollover is Cancelled, then no
+harm is done. However if the Rollover is re-attempted at this point, the rollover will
+continue with the corrupted Local Cache. This has the following consequences:
+
+u There will be a Receipts and Payment mismatch corresponding to the value of
+Discrepancies that were “lost”
+
+Note that if the User doesn’t check their Final Balance Report carefully they may
+be unaware of the issue since there is no explicit message when a Receipts and
+Payment mismatch is found on the Final balance (the User is only prompted when.
+one is detected during a Trial balance)
+
+= The Local Suspense will have no knowledge of this specific Discrepancy
+
+= The Opening Figures for Discrepancies in the new Period will be zero rather than
+the actual value of the Discrepancy
+
+= The data used for the BTS will also have a zero value for Discrepancies at the end
+~~of the period: When the BTS is produced this will result in a’similar Receipts and —
+Payment mismatch
+
+Note that if the bug was not present, then the Discrepancy would have been
+transferred to Local Suspense and that would have been cleared, so there are a
+number of things wrong with the BTS. However the impact of the bug is that the
+discrepancy is lost and so the simplest way to correct it is to re-introduce the lost
+discrepancy in a subsequent period and allow the normal rollover process to
+correct it.
+
+Note that if more than one SU has the issue then the value will be the total value of all errors.
+
+m The level of Discrepancies when viewed at the Branch will no longer match the
+level as seen in POL SAP or POL MIS
+
+3. Identifying Affected Branches
+
+These use Event id of 902 when detected during SU balancing and 903 when detected
+during BTS production.
+
+Processes should be in place such that SMC pick up these events and raise a peak for
+each occurrence of these events.
+
+I don’t believe that this has happened and this needs to be investigated further.
+
+Therefore a check of the Event archives is required to produce all occurrences of these
+events from HNG-X.
+
+Mark Wright has produced a list of 16 occurrences of event 903 in the last 30 days. This
+needs to be extended
+
+Also application event 116 or 117. should be written to the
+BRDB_RX_REP_EVENT DATA.
+
+c:\documents and settings\jarnail.a.singh\local settings\temporary internet files\olk18\lost discrepancies
+290910.doc Printed at 16:38:24 on 8/10/2010 Page 2 of 4
+POL00241081
+POL00241081
+
+Looking at the BRDB when Dev reproduced the problem only 117 events were found. I need
+
+to check what the difference is between 116 and 117.
+
+Therefore an extract from BRSS of all instance of Events 116 and 117 will provide a
+further check.
+
+Please can SSC arrange to get extracts of the relevant NT and Application events asap
+(before things get archived) so that we can get the scope of the problem.
+
+4. Analysis Required for each Affected Branch
+
+For each Branch need to ascertain the following:
+
+When the Receipts Payments mismatch occurred
+What is the value of the Lost discrepancy
+
+Is it a gain or a loss?
+
+Is there a Corresponding Application Event?
+Affected SU, TP and BP
+
+Has a call been raised by the Branch?
+
+Has a call been raised by SMC?
+
+Has the Branch rolled over to a new TP?
+
+5. Ongoing Monitoring
+
+We need to ensure that SMC processes are changed such that Peaks are generated for
+each occurrence of events 902 or 903.
+
+As a backstop we should also ensure that a monthly check as described in Section 3 is
+carried out to ensure that nothing has been forgotten. Note that this check shouldn’t
+come up with any new branches if the processes have been put in place correctly.
+
+6. Communication with Post Office Ltd
+
+Once we have the information from Section 4 which will enable us to identify the full
+scope of the issue we need to communicate this to Post Office Ltd through the
+problem management mechanisms. We will then need to get Post Office Ltd to agree
+if / how we should be correcting the data.
+
+Post Office Ltd should also be able to check up on POL SAP to confirm that these
+discrepancies are still visible even though they have been lost in the Branch.
+
+It should be noted that as Discrepancies are normally Losses, then a Lost Discrepancy
+would normally work in the Branches favour and so there is no incentive for the
+Branch to report the problem. Also if we do amend the data to re-introduce the
+Discrepancy, this will need to be carefully communicated to the Branches to avoid
+questions about the system integrity.
+
+c:\documents and settings\jarnail.a.singh\local settings\temporary internet files\olk18\lost discrepancies
+
+290910.doc
+
+Printed at 16:38:24 on 8/10/2010
+
+Page 3 of 4
+7.
+
+POL00241081
+POL00241081
+
+Of the cases so far identified there is one for £30,611.16, one for £4,826.00 and the
+rest are all less than £350.
+
+I’ve been unable to work out yet if these are losses or gains!
+
+Fixing the Data for each Affected Branch
+
+The data can be corrected by adjusting the appropriate Opening Figures and BTS Data
+that relates to the current TP. This will result in the Discrepancy needing to be
+processed when rolling over into the next TP.
+
+I propose that if we are to do this then we take a copy of the data for one branch and
+check out the proposed changes on a test system and then rollover the branch on the
+test system to ensure that the discrepancy is handled correctly before we attempt to
+correct Live data. Having done one example in this way, we then need to agree a
+timetable with Post Office Ltd to~-correct the other -branches~and-ensure that this is
+communicated with the Branches to ensure that everyone involved is happy.
+
+Note that if it is decided not to correct the data in the branches (ie POL would prefer
+to write off the “lost” discrepancy), then adjustments will be required to the
+Discrepancy account in POL SAP to align this with the actual level of discrepancy
+seen at the Branches.
+
+c:\documents and settings\jarnail.a.singh\local settings\temporary internet files\olk18\lost discrepancies
+290910.doc Printed at 16:38:24 on 8/10/2010 Page 4 of 4

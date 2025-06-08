@@ -1,0 +1,406 @@
+POL00132736
+POL00132736
+
+Privileged
+
+WOMBLE
+BOND
+DICKINSON
+
+Alan Bates & others v Post Office Limited
+Bug 28
+Drop and Go Bug
+
+Summary
+
+e The Peak PC0260269' identified by the experts relates to an issue in branch involving a Drop
+and Go transaction that was timing out in branch and, despite timing out and not appearing to
+complete, being recorded as a successful transaction in the branch accounts.
+
+e This particular instance of the issue involved the branch re-attempting the same Drop and Go
+transaction, being a £100 mobile phone Top Up.
+
+« The root cause was identified by ATOS as being a problem in with one of their Drop and Go
+scripts.
+
+e This was therefore a proper bug in Horizon, arising as a result of an issue with an ATOS script.
+
+Background: 'APADC'
+
+« AP-ADC = Automated Payment - Additional Data Capture ("APADC")
+
+e APADC are a series of modular functions that are provided with the Horizon codeset.
+Specifically, these functions allow control of the user interface with Horizon and enable
+transaction designers to build the 'APADC' script, which contains a series of APADC functions to
+capture the transaction data.
+
+e For example: a 'NameLong' function displays a graphical user interface on Horizon to capture all
+elements of a Name on a single screen, i.e. Title, Forename, Middle Initial, Surname. As such,
+adding NameLong, along with other various functions, to a transaction script allows ATOS to
+build complex transactions without requiring counter code changes by FJ.
+
+Part 1: PC0260269 [F/1660.1]
+
+« Dates:
+
+o 05-Jul-2017: PC0260269" and KEL cardc235Q° opened as a result of the SPM
+complaint relating to a duplicate Drop and Go transaction appearing in the branch
+account.
+
+o 05-Jul-2017: Analysis in the Peak (F/1660.1/2) confirms that:
+
+1. only one £100 transaction made it to CDP system*
+
+2. the nightly transaction file from Horizon contains two records, which suggests the
+£100 may be charged/ deducted from the branch twice
+
+3. the second transaction from the Horizon file matches the transaction in the CDP
+system
+
+‘F/1660.1
+
+? F/1660.1
+
+3 F/1660
+
+4 CDP = Common Digital Platform and is hosted by Accenture. See F/1638/68 which confirms the
+acronym, ATOS have confirmed this was intended to be a single point of integration between Horizon
+and any third party client systems. The diagram at F/1718/11 shows Post Office's IT System context
+and the key data flows, including where the CDP sits.
+
+AC_155044487_1 1
+POL00132736
+POL00132736
+
+4. confirmation that the first transaction from the Horizon file has no corresponding
+transaction in the CDP system and that this generated an exception
+
+o 05-Jul-2017: Counter log and message log extracts obtained by FJ (F/1660.1/4).
+
+o 05-Jul-2017: FJ identify 2 potential causes:
+
+1. the 'ADCScript-CDBalanceTopUP' script
+2. auser error.
+
+o 05-Jul-2017: Call passed to ATOS (as the Drop and Go scripts are supplied and
+maintained by ATOS).
+
+o 05-Jul-2017: Defect cause updated as being '42: Gen — Outside Program Control’. Fu
+have confirmed that this means a fault outside of Fujitsu control, including external
+websites, extemal networks etc, which aligns with the situation here as ATOS appear to
+be responsible for the issue.>
+
+o 05-Jul-2017: KEL updated to summarise the above and confirmation in the KEL that
+any future calls should be routed to ATOS.
+
+« What happened?
+
+o The clerk initiated a Drop and Go transaction for £100 which failed due to timeouts, but
+then a success message was displayed
+o The clerk settled the transaction and handed the customer £100
+The customer checked their balance and stated that the top up had not been processed
+o The clerk performed another Drop and Go transaction that was successful
+All of the above documented in KEL cardc235Q', extract below:
+
+°
+
+The clerk initiated a Drop and Go transaction for £100 which failed due to timeouts, but then a success message was
+displayed. The clerk settled the transaction and the customer handed over £100. The customer checked the balance and
+stated that the top up had not gone through, so the clerk then performed another Drop&Go transaction which was successful.
+‘The customer has paid in £100 but the branch account has been debited by £200. Accenture verified that only the second
+Drop&Go top up was successful
+
+o Reconciliation between the Horizon feed and the Accenture CDP system identified that
+only one Top Up had been received by Accenture CDP but two were being shown in the
+Horizon Batch Feed. The second Horizon transaction matched the CDP transaction,
+confirming the problem was with the first transaction.
+
+« How was it spotted?
+
+o The SPM reported the issue with the NBSC and in response Peak PC0260269” and KEL
+cardc235Q° were raised.
+
+« How was it fixed?
+Branch 499323 TC:
+
+o TC issued on 29 June 2017 by Post Office for £100.
+o Extract below from spreadsheet of branch TCs run by Post Office's Core Finance team:
+
+TC TO CORRECT DROP AND GO ERROR.REGARDS- DROP AND GO 01246 542001
+
+ATOS script fix:
+
+o ATOS Test Report confirms there are 2 issues to fix:
+
+° As Counsel may recall, FJ do not believe that these ‘defect causes' are defined in any design
+document but have provided the current contemporary narrative for '42: Gen — Outside Program
+Control’.
+
+° F/1660
+
+7 F/1660.1
+
+® F/1660
+
+‘AC_155044487_1 2
+POL00132736
+POL00132736
+
+Issue I APADC script What the script does Issue and how it was fixed
+involved
+
+1 Balance&TopUp I An APADC transaction script that The issue was the primary issue summarised
+captures and transmits data when a I in PC0260269° and KEL cardc235Q” in that:
+Customer wants to Top Up the
+
+balance of a Drop and Go Account.
+
+the customer was charged for the Top
+Up
+
+e despite being charged for the Top Up,
+the Top UP was not being added to the
+customer's account.
+
+As per the Test Report, ATOS identified a
+bug in the Balance&TopUp script that
+incorrectly allowed the transaction to
+progress after an unrecoverable timeout had
+been identified — i.e. the transaction should
+not have been completed.
+
+As per the Test Report, this was resolved in
+an updated version (6.12) of the
+Balance&TopUp script.
+
+2 OpenAccount An ADADC transaction script that The Test Report confirms ATOS identified
+captures and transmits data when a I that the same issue as above in terms of the
+Customer wants to open a Drop and I transaction being able to progress was
+
+Go Account. As part of the Account I present in the OpenAccount script.
+
+Opening
+As per the Test Report, this issue was
+resolved in an updated version (6.11) of the
+OpenAccount script.
+
+¢ Possible conclusions:
+
+o There was no long-term financial impact on branch 499323 as a corrective TC was
+issued by Post Office.
+
+co Any repeat instances of the issue would involve a duplicate transaction, which would be
+easy for the SPM to identify in the branch accounts.
+
+e Impact on Subpostmasters?
+o The customer paid £100, but the branch account was debited £200, resulting in a £100
+shortfall to the branch.
+o Branch received a TC on 29 June in the sum of £100 which corrected the shortfall.
+o There was therefore no long-term financial impact on the affected branch.
+« Notes for Counsel
+
+o Coyne in JS2 [D1/2/25-26] correctly summarises that the customer was credited with
+£100 but the branch was debited with £200.
+
+° F/1660.1
+‘© F/1660
+
+‘AC_155044487_1 3
+POL00132736
+POL00132736
+
+This is easily responded to as the branch received a TC credit for the £100 shortfall and
+as such there was no lasting financial impact to the branch account.
+
+Dr Worden in JS2 [D1/2/25-26] notes that (1) this would have been very visible on the
+counter and (2) that the script issue would have been easily fixed.
+
+Dr Worden's summary appears accurate as it is clear the SPM identified the issue and
+reported it and ATOS were able to fix the issue.
+
+Note, however, that FJ have identified a further instance of the issue (dealt with
+separately below). This further instance relates to a different ADADC script, which was
+not fixed as part of the above process. ATOS have confirmed that the original author of
+the Drop and Go transaction scripts, including the ADADC scripts, was a Post Office
+business analyst who has subsequently left the business. ATOS have also confirmed
+that there is no documentation that describes the different ADADC scripts full
+functionality. This indicates that, while this was a simple script issue, there is an
+argument to suggest that there is a lack of knowledge within ATOS concerning the
+ADADC scripts, as one script that should have been fixed was not.
+
+Part 2: Single further instance of the Drop and Go Bug
+
+°
+
+FJ identified a further similar instance of KEL cardc235Q in PC0273234" from August
+2018, which implied that there was some sort of issue with the April 2018 fix described
+above.
+
+ATOS have undertaken review and confirm that this Peak relates to a different Drop
+and Go Function and script entirely, namely: the APADC CountMails script.
+
+This was investigated by ATOS and a fix to the CountMails script issues in September
+2018.
+
+« Dates
+o 31-Aug-2018: Issue in branch 117844 arising from £30 Drop and Go Top Up
+o 01-Aug-2018: Post Office internally investigate the call
+o 13-Aug-2018: Post Office pass issue to ATOS to investigate why the Drop and Go Top
+Up failed
+o 21-Aug-2018: Peak opened as a result of SPM reporting a failed Drop and Go Top Up
+o 21-Aug-2018: Peak identified as an instance of KEL cardc235Q and the relevant
+keystrokes added to the Peak
+o 21-Aug-2018: Peak closed by FJ and request for Peak to be passed to ATOS
+o 12-Sep-2018: Root cause identified by ATOS (explained in fix below) as being an issue
+with the CountMails script and an updated CountMails script produced to fix the issue
+o 18-Sep-2018: The fix — i.e. the updated script was deployed to the test environment
+o 25-Sep-2018: The fix — again the updated script — was deployed to live.
+Issue I APADC script What the script does Issue and how it was fixed
+involved
+3 CountMails An APADC transaction script that: The issue was the same as the above and
+
+involved the secondary functionality of the
+
+e Captures the number of items CountMails script that enables the customer
+that a Customer wants to leave to top up as part of the transaction, meaning:
+with the branch to process later
+€ note that this is the primary e the customer was charged for the Top Up
+function of the CountMails script despite being charged for the Top Up, the
+
+« Offers the Customer the Top UP was not being added to the
+opportunity to Top Up their customer's account.
+account as part of the Count
+
+"In the process of being disclosed as raised after the Peak extract was run.
+2
+
+‘AC_155044487_1
+POL00132736
+POL00132736
+
+e Mails transaction
+€ ATOS have confirmed that
+they were unaware that the
+CountMails script also offered
+the ability to Top Up. For
+completeness, ATOS have
+confirmed that the original
+author of the Drop and Go
+transaction scripts, including the
+CountMails script, was a Post
+Office business analyst who has
+subsequently left the business.
+ATOS have also confirmed that
+there is no documentation that
+would have identified that the
+CountMails script also had the
+ability to Top Up.
+
+In terms of the functionality of the
+CountMails script, ATOS have
+confirmed that the ‘Count Mails’
+transaction was intended to be a
+quick transaction for the clerks to
+perform in branch and take receipt
+of a number of Drop and Go items at
+the same time, registering the
+number of items received and
+issuing a receipt to the customer for
+the number of items. The clerk
+would then use a separate
+transaction (called 'Start Mails') to
+process the items individually after
+the Customer had left the office —
+i.e. at a quiet moment when there
+were no other customers are present
+in the branch. It is only at the point
+of processing the individual mails
+items that a clerk would identify
+whether there was sufficient balance
+on the account to process the items.
+It would therefore be unusual for a
+customer to request a Top Up (the
+second functionality described
+above) as part of the Count Mails
+process as they would need to have
+prior knowledge of their account
+balance before performing the Count
+Mails process to know that a Top Up
+would be needed in order to process
+all of the items.
+
+As per the embedded email chain below, the
+incident was received by ATOS on 13 August
+and a script fix deployed to live one month
+later on 13 September 2018. The email chain
+confirms that the updated script was produced
+on 12 September 2018. ATOS have
+subsequently confirmed that the fix was
+processed under RADC/1809/005, the
+Business Change Reference that ATOS
+Information Services Team and Fujitsu use
+when sharing reference data between them.
+In this case, we understand the reference
+data tool the form of an excel spreadsheet:
+38779 CDCountMailV6.13, which has a
+Worksheet for each step within the
+CountMails APADC script.
+
+ad
+
+FW Failed Drop & Go
+Top Up - 22145833.
+
+¢ Relevant Documents
+
+o Peaks: PC0260269 [F/1660.1]
+o KEL: cardc235Q [F/1660]
+
+« New Documents to disclose:
+
+‘AC_155044487_1 5
+POL00132736
+POL00132736
+
+o Spreadsheet of branch TCs run by Post Office's Core Finance team
+
+(In process of being disclosed. Once disclosed, we propose to add this to the Trial
+Bundle as it is helpful in terms of confirming the TC was issued, provided the Counsel
+team agrees.)
+
+499323 Transaction
+Corrections_220517_
+
+o NBSC Call Logs confirming SPM reported the issue on 20 June 2017
+
+a)
+
+Fitered_499323_Leg
+acy NBSC Case S_Ad
+
+co Test report issued by ATOS during resolution of Drop and Go issue
+
+(In process of being disclosed — on Charlie and Amy's disclosure tracker. Once
+disclosed, we propose to add this to the trial bundle as it is helpful in terms of confirming
+the steps taken by ATOS, provided the Counsel team agrees)
+
+o Peak PC0273234 (further instance)
+
+(In process of being disclosed — on Charlie and Amy's disclosure tracker. Once
+disclosed, we do not propose to add this to the trial bundle but let us know if the Counsel
+team disagrees)
+
+PCO273234. pdf
+
+o Email chain between ATOS and POL (further instance) (excluding email to WBD)
+
+ml
+
+FW Failed Drop & Go
+Top Up - 22145833.
+
+(In process of being disclosed. Once disclosed, we do not propose to add this to the
+trial bundle unless the Counsel team decides to include the above Peak in the trial
+bundle but please let us know if the Counsel team has a different view)
+
+‘AC_155044487_1 6
