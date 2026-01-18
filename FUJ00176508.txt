@@ -1,0 +1,60 @@
+FUJ00176508
+FUJ00176508
+
+FUJITSU CONFIDENTIAL — COMMERCIAL IN CONFIDENCE
+02 December 2021 — Steve Browell
+
+Inconsistent data in IRE11 and IRE19 Audit Archives
+
+Problem Statement:
+Copies of Post Office counter transactions gathered prior to HNG-X, which are now stored in the Audit Archives in both
+IRE11 and IRE19, are not consistent across both data centre Audit Archive servers.
+
+Impact Summary:
+
+Holistically no data is missing. Both data centres held full copies of all live transactions performed at the time as per the
+solution design. A Harvester process would copy the live transaction data to the Audit Archive. There was a Harvester in
+each data centre, each operating independently against its local database containing all transactions. There were
+therefore 2 Audit Archives — one in each data centre. There were occasional faults in the Harvester process at a specific
+data centre which resulted, in some instances, in transaction data not being copied to the Audit Archive server at the
+specific data centre. There is no recorded instance of both Harvesters failing at the same time. Therefore, although data
+may be missing from one Audit Archive server, it will be present on the other Audit Archive in the other data centre
+(and the ARQ process checks for this when retrieval requests are processed).
+
+HNG-X transaction files are written to the Audit Archive in a different way and are not affected by this historical
+process.
+
+Supporting Background Information:
+Audit Gathering Method in Horizon prior to HNG-X
+* Prior to HNG-X, the Horizon solution used Riposte to gather transactions from all the Post Office counters
+©  Riposte was a distributed database deployed in the Bootle & Wigan data centres and on the Post Office counters
+« By design, some FADs used Bootle as their primary data centre, and others used Wigan. Some used both
+* By design, the data centres would replicate their data so that an exact copy of counter transactions was held in
+both locations
+* Each evening the Riposte databases in each data centre were copied to the local Audit Archive - this was done by
+the local Harvester
+«The Harvesters at each data centre operated independently
+There were occasions when the Harvester in one data centre would exhibit faults which would interrupt the
+process of copying the transaction data to the Audit Archive resulting in some data not being copied to the Audit
+Archive
+* There is no recorded instance of both Harvesters failing at the same time
+« Although data may be missing from one Audit Archive server, it will be present on the other Audit Archive in the
+other data centre (and the ARQ process checks for this when retrieval requests are processed)
+Audit Gathering Method for HNG-X from 2010 onwards
+© _HNG-X was deployed in 2010 using a different solution for transaction logging and archiving
+© The data centres were moved to IRE11 and IRE19 too
+* In HNG-X, all transaction and non-transaction files are gathered in IRE11 and harvested to the IRE11 Audit Archive
+only
+e Live data is automatically mirrored to IRE19 — including to the IRE19 Audit Archive
+e Under HNG-X, all audit files (transaction and non-transaction) are consistent across both Audit Archive servers
+Impact on ARQ requests
+* — Each Horizon or HNGx transaction has a unique number associated with it. The retrieval process checks that the
+transactions have not been tampered with and that there are no duplicates or gaps in the sequence of
+transactions
+ARQ queries are run against one of the Audit Archives. In the unlikely event that the results show any gaps, the
+query is run against the other Audit Archive to add the missing data and provide a holistic response to the
+requestor
+There have been no reported instances of gaps in ARQ retrievals once a query has been executed against both
+Audit Archives
+
+Page 1of2

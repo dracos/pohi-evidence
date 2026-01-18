@@ -1,0 +1,643 @@
+FUJ00232864
+
+FUJ00232864
+eo STANDARDISE DATABASE LOGGING CONFIGURATIONS
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+Document Title: STANDARDISE DATABASE LOGGING CONFIGURATIONS
+Document Reference: ARC/SOL/PSD/4703
+CP/CWO Reference: CP2876
+Abstract: High level design for auditing users in BRDB and tying sysdba
+
+activities back to AD users
+
+Document Status: APPROVED
+Author & Dept: GARETH SEEMUNGAL
+External Distribution: (Specify those individuals outside of the Post Office Account who
+
+require approved version only. For POA Document Management
+to distribute following approval)
+
+Information See section 0.9
+Classification:
+
+Simon Wilson Chief Technical Officer See Dimensions for record
+
+See Dimensions for record
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 1 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+0 Document Control
+0.1 Table of Contents
+
+0 DOCUMENT CONTROL.
+
+0.1 Table of Contents...
+0.2 Document History.
+0.3 Review Details.
+0.4 Associated Documents (Internal & External,
+0.5 Abbreviations.
+0.6  Glossary..
+0.7 Changes Exp
+0.8 Accuracy...
+0.9 Information Classification
+
+Purpose of Document...
+Target Audience for this Document.
+Background......
+
+asa a
+wea
+
+2 SECURITY AND DATA PRIVACY...
+2.
+
+Security Profile.
+2.1.1 Risks...
+
+3. OVERVIEW OF CHANGES.
+
+3.1 Active Directory Update.
+3.2 Configure Users' Profile:
+3.3. SUDO'ing to Oracle for Sqiplus Access.
+3.4 BRDB Auditing Alignment...
+
+3.4.1 Ensure SYS Auditing is Enable
+
+3.4.2 Existing DBA, Unix & SSC Support Users. .8
+3.4.3 Existing APPSUP Escalation Process... 8
+3.4.4 BRDB Audit Tablespace Sizing Considerations... 9
+4 SOLUTION DESIGN 10
+
+4.1 Active Directory Update.
+4.2 DAT & Linux /etc/profile Updat
+4.3 SecOps Policy Update...
+4.4 BRDB Specific Change:
+44.1 Enable Database Audit & Extended Audi
+44.2 Existing DBA, Unix & SSC Support Users.................
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 2 of 10
+Re)
+FUJITSU
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+FUJ00232864
+FUJ00232864
+
+0.2 Document
+
+Version No.
+
+History
+
+Only integer versions are authorised for development.
+
+Summary of Changes and Reason for Issue
+
+Associated Change
+CWO, CP, CCN or
+
+PEAK Reference
+
+01 14/10/2022 Initial version R40.50
+02 20/10/2022 Updates after comments, ready for review.
+1.0 16/11/2022 Approved
+
+0.3 Review Details
+
+Review Comments by:
+
+Review Comments to:
+
+Mandatory Review
+
+16" November 2022
+
+Gareth.seemunad }
+
+* POA Document Management
+
+Role Name
+Host Architecture Pete Jobson
+Service Architecture Manager Alex Kemp
+
+Security Architect
+
+Dave Haywood*
+
+Service Architect Phil Boardman
+Network Architect Ravi Saini
+POA CISO Steve Browell*
+
+SSC Manager
+
+‘Adam Woodley; ssodni _
+
+UK PODG Bridge Team Lead
+
+Susan Brindley
+
+Network Operations Manager
+
+Chris Harrison
+
+Role
+
+Optional Review
+
+Name
+
+cTo
+
+Simon Wilson
+
+Host Bridge Team Lead
+
+Gyan Patel
+
+Data Centre Development Manager
+
+Pavan Vejendla
+
+Project Management Abi Loveday
+
+Project Management Peter Bowen
+
+Host Team Akshyakumar Nahak
+Host Team Mandakini Nayak
+Host Team Praveen Kumar M
+
+Chief Architect
+
+Torstein Godeseth
+
+Unix Team Andrew Gibson
+DBA Team Stuart Johnston
+DBA Team Niall McKeefry
+
+Information Security Management
+
+Farzin Denbali; Chris Stevens
+
+© Copyright Fujitsu 2022
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE) Ref
+Version:
+UNCONTROLLED WHEN PRINTEDOR _ Date:
+
+STORED OUTSIDE DIMENSIONS Page No:
+
+ARC/SOL/PSD/4703
+
+1.0
+08-Nov-2022
+3 of 10
+Re)
+FUJITSU
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+FUJ00232864
+FUJ00232864
+
+Test Delivery Manager Joan Duhaney
+Test Managers Mark Ascott; Trevor Leahy
+Release Management and Operational Change Manager Matt Swain
+(*) = Reviewers that returned comments
+Information — Please restrict this
+Name
+
+0.4 Associated Documents (Internal & External)
+
+References should normally refer to the latest approved version in Dimensions; only refer to a
+specific version if necessary.
+
+Reference Vet n Date Title Source
+PGM/DCM/TEM/0001 I See note I See note above POA Generic Document Template Dimensions
+(DO NOT REMOVE) I above
+PGM/DCM/ION/0001 POA Document Reviewers/Approvers I Dimensions
+(DO NOT REMOVE) Role Matrix
+SVM/SEC/POL/0003 POA Information Security Policy Dimensions
+Community Information Security Dimensions
+SVM/SEC/POL/0005 Policy (CISP) for Horizon
+ARC/SEC/ARC/0003 Technical Security Architecture Dimensions
+Information Security Management Dimensions
+SVM/SEC/MAN/0003 System (ISMS) Manual
+Information Technology Health Dimensions
+DESIGEN/TEM/2227 Check (ITHC) Template
+DES/APP/HLD/0020 Branch Database High Level Design I Dimensions
+DES/APP/HLD/0023 Branch Support Database High Level I Dimensions
+Design
+ARC/SOL/PSD/4429 Refinement of Access Rights to Dimensions
+
+Oracle Databases
+
+0.5 Abbreviations
+
+Abbreviation Definition
+
+AD Active Directory
+BDB 3 character platform code for BRDB
+
+BDS. 3 character platform code for BRDB Standby
+BRDB Branch Database
+
+DBA Database Administrator
+
+ssc Software Support Centre, 3” line support group
+
+0.6 Glossary
+
+Term Definition
+
+DAT Solaris platform code
+Copyright Fujitsu 20: FUSITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTEDOR _Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS
+
+PageNo: 4 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+I
+0.7 Changes Expected
+
+en
+
+0.8 Accuracy
+
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, while every
+effort is made to ensure the accuracy of such information, it accepts no liability for any loss (however caused)
+sustained as a result of any error or omission in the same.
+
+0.9 Information Classification
+
+The author has assessed the information in this document for risk of disclosure and has assigned an information
+classification of FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE).
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 5 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+1 Scope
+This document is produced under CP2876.
+
+This document provides a view of the changes necessary to satisfy the auditability and traceability
+requirements around DBA & Unix user access and activities when connected to HNG-X Oracle
+databases.
+
+In addition this document includes the changes necessary to align BRDB with the other HNG-X Oracle
+databases in terms of auditability of SQL queries submitted by all support users.
+
+Support users include the SSC as well as Unix and DBA users.
+
+1.1. Purpose of Document
+
+This document intends to specify the changes necessary to both the HNG-X Oracle databases, their
+platforms and potentially processes involved with operational support access.
+
+1.2 Target Audience for this Document
+This document is intended to be read by
+
+e Host Development
+
+¢ Host Architecture
+
+* 3% Line Support (SSC)
+
+*  14®Line Support (Unix & DBAs)
+
+° Test
+
+° Service
+
+1.3 Background
+
+The method for sysdba privileged access by Support staff (e.g. DBAs) to Oracle databases currently
+relies on sudo to unix user ‘oracle’ first. Unfortunately this use of sudo to ‘oracle’ removes the direct
+audit trail back to the user who originally initiated the sudo action. Note this activity can be inferred
+
+today based on the sudo and sysdba audit logs.
+
+Sections 2.1, 2.2 & 2.3 seek to address this break in traceability for sysdba logins.
+BRDB will also be updated to include auditing of all DML SQL statements for support users. This
+
+change will bring BRDB in line with the other databases which were updated at R36.50 (CP2831) to
+enable this feature.
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 6 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+2 Security and Data Privacy
+2.1 Security Profile
+2.1.1 Risks
+
+Numbe  picy Owne Impac
+
+Action
+r r y t
+
+Prove solution within each environment,
+ensuring LST signoff remains as a gate
+prior to Live implementation.
+
+Ensure DBAs, Unix and SSC are involved
+oF at least consulted during testing of the
+solution.
+
+Provide breakglass option for DBAs to
+sudo directly as oracle if the solution does
+not provide privileges necessary to support
+the estate.
+
+Support staff lose abilty to carry out
+R001 authorised data changes due to Fujitsu I Low High
+flawed implementation
+
+The Operational DBAs must ensure the
+audit tablespaces are never below an
+agreed freespace level (currently alerts are
+configured to appear at <= 10% free
+
+Support staff activities produce large space)
+amounts of audit, resulting in the If space becomes an issue then the DBAS
+R002 I audit tablespace filing up. This Fujitsu I Low High ia
+
+will need to increase the tablespace by
+10% to 20% and then raise a TFS call for
+4° line support to analyse the growth
+profile
+
+The DBAs can add additional data files if
+the tablespace is 100% full
+
+‘would stop support staff from logging
+in
+
+Table 4 Security — Risks
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 7 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3 Overview of Changes
+
+This section provides a high level summary of
+
+e the changes that will be common across all impacted databases
+
+o APOP
+o BRDB
+o BRSS
+o DRS
+o NPS
+o TES
+o RDMC
+o RDDS
+
+e the changes specific to each database where relevant
+
+3.1 Active Directory Update
+
+The DBA support users in Belfast will have their AD profiles altered to include the 'DBA' unix group. This
+update will allow DBA users escalate their sqlplus login to sysdba using their own login (i.e. without the
+use of sudo to oracle).
+
+3.2 Configure Users' Profiles
+
+The Host team to deliver a benign file to /etc/ (e.g. via UNIX_SUPPORT_UTILS_V2 for Linux and
+Solaris) that will contain the Oracle related environment variables for user profiles. Each DBA can then
+update their profiles to reference this /etc/ hosted file to allow sqiplus logins.
+
+3.3. SUDO'ing to Oracle for Sqiplus Access
+
+The DBA and Unix users shall not switch to the oracle unix user for sqlplus / as sysdba access. Instead
+support shall use their own AD profiles for sqlplus access by default.
+
+If there is an exceptional requirement to invoke sqlplus as sysdba via ‘oracle’ then the breakglass
+process (to be agreed via a new SecOps Policy document — reference TBA) must be used.
+
+3.4 BRDB Auditing Alignment
+3.4.1. Ensure SYS Auditing is Enabled
+
+Ensure database parameter audit_sys_operations is set to TRUE if not already enabled.
+
+3.4.2 Existing DBA, Unix & SSC Support Users
+
+Existing database support users will have their select/update/insert/delete SQL statements, executed
+procedures and their logins audited by default.
+
+SecOps will ensure that the User Access Database and JML forms are updated to reflect these new role
+clarifications.
+
+3.4.3. Existing APPSUP Escalation Process
+The existing SSC APPSUP escalation process will be maintained for BRDB.
+
+3.4.4 BRDB Audit Tablespace Sizing Considerations
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+pyrig! i CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+STORED OUTSIDE DIMENSIONS
+
+Page No: 8 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+The current live BRDB currently has ample space for additional audit logging information. The sizing
+information here is from 2022-10-14.
+
+DB Tablespace Used MB Free MB Total MB
+BRDB I BRDB_AUDIT 1.56 5,907 6000
+
+Design Note for Test: testing within LST should confirm whether the additional audit logging overhead
+might result in a much larger impact on storage requirements than currently anticipated.
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 9 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+4 Solution Design
+4.1 Active Directory Update
+
+AD profiles with the following group membership should also be assigned the ‘dba’ group
+« is-dba
+
+e is-unix
+
+4.2 DAT & Linux /etc/profile Update
+
+Create a new file /etc/oracle_profile to set the following environmental variables (note paths will be
+different depending on the platform type e.g. Linux versus Solaris)
+
+e@ = ORACLE_BASE
+
+@ = ORACLE_TERM
+
+e  GRID_HOME
+
+e@ — ORACLE_HOME
+
+e LD_LIBRARY_PATH
+
+Ensure the file permissions allow all users to invoke "source /etc/oracle_profile".
+
+4.3 SecOps Policy Update
+
+Anew SecOps Policy document will be generated to provide guidance around the use of the ‘oracle’ unix
+user.
+
+In particular, it will be expected that the DBAs will typically NOT sudo to oracle in order to access
+sqlplus. The change to their AD groups will allow DBAs to escalate their sqlplus access to sysdba level
+using their unix profile.
+
+The SecOps policy may allow the direct use of the oracle user via the use of TfS (but this is beyond the
+scope of this technical design document).
+
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 10 of 10
+FUJ00232864
+FUJ00232864
+
+STANDARDISE DATABASE LOGGING CONFIGURATIONS
+
+Fe)
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+4.4 BRDB Specific Changes
+4.4.1 Enable Database Audit & Extended Audit
+
+Enable Extended Audit via the following command and then schedule in a database restart to activate.
+alter system set audit_trail='DB’,'EXTENDED' scope=spfile;
+
+4.4.2 Existing DBA, Unix & SSC Support Users
+
+Users identified as being part of the following groups
+
+« SSC
+© Unix
+« DBA
+
+in BRDB (at the time of this solution's deployment) shall have the following actions applied
+
+Enable User Audit AUDIT ALL BY <user> BY ACCESS;
+AUDIT SELECT TABLE, UPDATE TABLE, INSERT TABLE, DELETE TABLE BY <user> BY ACCESS;
+AUDIT EXECUTE PROCEDURE BY <user> BY ACCESS;
+GRANT RESOURCE TO <user>;
+GRANT CONNECT TO <user>;
+
+4.4.2.1 Identifying Support Users
+
+The following SQL is one possible way of identifying existing support usernames on BRDB (including
+those accounts that have been disabled as part of the JML process).
+
+select distinct grantee
+
+from dba_role_privs
+
+where grantee not in ("SYS','SYSTEM')
+
+and granted_role in (‘DB_MONITOR', ‘SSC’, ‘UNXADM')
+and grantee not in ('OPS$SUPPORTTOOLUSER' )
+
+order by 1
+© Copyright Fujitsu 2022 FUJITSU RESTRICTED (COMMERCIAL IN.
+CONFIDENCE) Ref: ARC/SOL/PSD/4703
+Version: 1.0
+UNCONTROLLED WHEN PRINTED OR Date: 08-Nov-2022
+
+STORED OUTSIDE DIMENSIONS Page No: 11 of 10

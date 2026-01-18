@@ -1,0 +1,1678 @@
+Fe)
+FUJITSU
+
+FUJ00235004
+FUJ00235004
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Author & Dept:
+
+External Distribution:
+
+End to End Reconciliation Reporting
+
+Service Description
+
+Release Independent
+
+This document specifies the reconciliation report output to satisfy
+the end to end reconciliation of the Banking and related services
+and the Automated Payment Service (APS).
+
+APPROVED
+
+Pete Jobson /Torstein Godeseth
+
+As Approver list
+
+Information Classification: See section 0.9.
+
+Approval Authorities:
+
+Name Role ignature I Date
+Steve Bansal Fujitsu Senior Service Delivery Manager See Dimensions for record
+Ryan Stanbrook Post Office Ltd Horizon Commercial Manager See Dimensions for record
+
+Note: See Post Office Account HNG-X Reviewers/Approvers Role Matrix (PGM/DCM/ON/0001) for guidance.
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No 4 of 29
+FUJ00235004
+FUJ00235004
+
+ee) End to End Reconci
+
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+tion Reporting
+
+0 Document Control
+0.1 Table of Contents
+0.1 Table of Contents
+0.2 Document History
+0.3 Review Details .
+0.4 Associated Documents (Internal & External)
+0.5 Abbreviations
+0.6 Glossary.
+0.7 Changes Expected.
+0.8 Copyright
+0.9 — Informatio
+4 INTRODUCTION...
+3 NETWORK BANKING RECONCILIATION (INCLUDING PAYMENTS AND ETU)
+8
+34
+3.2
+3.2.1, Normal path
+3.2.2 Zero value C1
+3.2.3 C12 followed by a C12 reversal
+3.2.4 C4 followed by a C4 refund
+3.2.5 ‘D' record...
+
+ee
+joo
+
+State Tables
+4 Non exception states
+2 Exception states...
+3.3.3 State Transition Diagram
+
+3.4 DRSv2 Reporting Framework
+3.4.1 Reapportionment Reporting
+
+3.4.2 Settlement Reports (NB101).. 14
+
+3.43 Exception Reports (NB102) 16
+
+3.44 — Re-Apportionment Exception Report Layout 21
+4 APS RECONCILIATION +23
+41 APS Reconciliation Report
+4.2 APS Quarantined/Exceptioned Transaction Report 27
+4.3 APS Report Delivery . 28
+44 External Transactions 28
+ANNEX A TRANSACTION TYPES 29
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref: SVM/SDMISDI0020
+2022 (COMMERCIAL IN CONFIDENCE) ween 60
+
+ate: 14-Deo-2022
+
+Page No 20f 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+0.2 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CP/PEAK/PPRR
+Reference
+0.4 22/11/06 First draft for review. NIA
+1.0 02/02/07 Issued for approval. NIA
+14 27/10/08 Change of owner and Reviewers for CCN
+1.2 07/05/11 Post HNG-X Migration and change of owner NA
+13 22-Jun-2011 I Revisions following internal review
+2.0 22 Jun 11 Document Approved
+24 23 Nov 11 Release 5.5 Review
+3.0 4 May 12 Annual Review
+34 18 March 2013. I Annual Review
+3.2 14” Oct 2016 I Clarifications added
+40 04-Sep-2017 I Approval version [replaces CS/SPE/011]
+44 4th Oct 2019 I Changes due to HNG-X/POLSAP Application Separation T2561
+Changes due to Banking Changes to accommodate Non-Link I CT1436
+Transactions
+42 27" Jan 2020 I Remove the TPS interface to DRS (Feed of C112 messages) I CWO189a (Release
+20.35)
+43 04-Feb-2020 I Amended reviewers, labelled changes for review purposes.
+44 27-Feb-2020 _I Remove DRS State E25 in response to comments cwo78ga
+45 24-Mar-2020 I Added Steve Page as Post Office reviewer
+46 22-Apr-2020 Updated in response to comments
+AT 7-Apr-2020 Replace section 4 (APS Reconciliation) with new reconciliation I CWO0189a (Release
+reports generated from the Branch Database. 20.45)
+Remove Section 5 (TPS Reconciliation) since TPS no longer
+exists
+48 22-Apr-2020 _I Updated following comments from Steve Page, Bob Booth,
+Phil Boardman and SSC Team
+5.0 23-Apr-2020 I Document Approved
+54 20-Apr-2021 I Changes for PBS. CCN1676
+Annex B introduced - this will replace the whole of Section 3
+once PBS has been fully rolled out and DRS2 is responsible
+for all reconciliation
+52 13-May-2021 I Changes as a result of Fujitsu review of revisions in v5.1 CCN1676
+53 12-Aug-2022 _I Updated to reflect the completion of PBS roll out. CCN1676
+Annex B removed and section 3 replaced as described at v5.1
+above
+Include states 5 and 108.
+6.0 14-Dec-2022 _I Approval version. POL approver changed from Dionne Harvey
+to Ryan Stanbrook.
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No 3 0f 29
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+FUJ00235004
+FUJ00235004
+
+0.3 Review Details
+
+Review Comments by
+
+Review Comments to
+
+torstein.o.godese!
+
+Mandatory Review
+
+Role Name
+
+POL Horizon Commercial Manager Ryan Stanbrook <
+POL Solution Architect Steve Page ¢ _
+POL Horizon Chief Architect Sally Rush
+Senior Commercial Manager Helen Venters
+SSC (for Configuration Management) ‘Adam Woodley!
+Reconciliation Team Sandie Bothick
+Service Architect Phil Boardman
+
+Optional Review
+
+Role Name
+
+Commercial Manager Post Office Account Commercial Mailbox
+POA CTO Simon Wilson
+
+Security Architect Dave Haywood
+
+Application Development Manager Graham Allen
+
+Business Continuity Sidharth Singh
+
+Network Operations Manager Chris Harrison
+
+Systems Management, Integration and SCM Jerry Acton
+
+Operational Change/Release Management Matt Swain
+
+infrastructure Operations Manager ‘Andrew Hemingway
+
+Service Architecture Manager ‘Alex Kemp
+
+Information Security Management Farzin Denbali; Chris Stevens
+Document Manager Matthew Lenton
+
+Senior Service Delivery Manager Steve Bansal
+
+POL Solution Architect Dmitry Barsukov {
+
+POL Solution Architect Krishna Kumar Paramasivam 4
+POL Business Analyst Phil Eliott I
+
+POL IT Document Specialist Steven Vouthas I
+
+ied for Information — PI restrit
+distribution list to a minimum
+
+Position/Role
+
+Post Office Ltd Architect mailbox
+
+(* ) = Reviewers that returned comments
+
+0.4 Associated Documents (Internal & External)
+
+Referenci Vers Date Title Sou
+PGM/DCM/TEM/0001 Fujitsu Services Post Office Account HNG- I Dimensions
+(D0 NOT REMOVE) X Document Template
+SVM/SDM/PRO/0012 Reconciliation and Incident Management - I Dimensions
+
+Joint Working Document
+SVM/SDM/SD/0015 Reconciliation Service Description Dimensions
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version 60
+(COMMERCIAL IN CONFIDENCE) bore tt pe0-2022
+
+Page No’ 4 0f 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+Reference Version Date Source
+NB/SPE/002 Network Banking DRS On-line Workstation I Dimensions
+Specification (Pwy)
+
+Unless a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+0.5 Abbreviations
+
+Abbreviation Definition
+
+APS Automated Payment Service
+
+BIN Bank identification number - the initial set of six numbers that appear on a bank card; the first
+six digits of the PAN.
+
+ci2 A transaction record from the Horizon Counter or Self-Serve Kiosk
+
+Ct2rev A transaction record from the Horizon Counter or Self-Serve Kiosk with the reversal flag set
+indicating that it is a reversal of a previous transaction.
+
+C12Zero A transaction record from the Horizon Counter or Self-Serve Kiosk with zero value, usually
+indicating that the transaction failed
+
+C112 A transaction record from the Horizon Counter or Self-Serve Kiosk that has been delivered to
+POLSAP. This transaction no longer exists
+
+c4 A record of confirmation from a Financial Institution
+
+C4undo A.C4 received which is equal and opposite to a C4 received previously. This is expected to
+cour, albeit rarely, with the introduction of PBS.
+
+C4zero A C4 with zero value
+
+cts Client Transmission Summary
+
+D A transaction record received from a Financial Institution that advises of a discrepancy
+
+Dep Debit/Credit Card Payment
+
+Des DebitiCredit Card System
+
+DRSv2 The label for the new DRS system introduced in parallel (initially) with PBS.
+
+DRSv2 is responsible for reconciling Banking, Payments and ETU transactions only,
+
+It replaces the DRS(v1) system which will run in parallel with DRSv2 whilst payment and
+banking is supported by PBS and pre-PBS solutions.
+
+DRS Data Reconciliation Service
+ETS Electronic Top-Up Service
+F99 A transaction state that indicates that a reconciliation error has been reported but POL has
+
+advised that the issue has subsequently been resolved. This state is set using the DRS.
+Workstation application that is used by Fujitsu Security Operations team
+
+FI Financial Institutions
+
+icc Integrated Circuit Card
+
+MA Merchant Acquirer
+
+PBS Payment and Banking Service.
+
+This system was introduced in 2021 to handle payments (Debit Card and Credit card
+transactions) and Banking transactions at the Horizon counter
+
+In this system all transactions are authorised via messages sent from the PIN pad at the
+counter to the Ingenico data centre.
+
+Ingenico interface with the Merchant Acquirer for payments and Vocalink for banking
+transactions.
+
+PAN Primary account numbers are also called payment card numbers as they are found on payment
+cards like credit and debit cards. This account number is either embossed or laser-printed and
+is found on the front of the card,
+
+PIN Personal Identification Number
+
+PODG Post Office Data Gateway
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref: SVMISDMISDI0020
+2022 (COMMERCIAL IN CONFIDENCE) Version 60
+
+Date’ 14-Dec-2022
+Page No 5 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+Abbreviation Definition
+POLDG Post Office Limited Data Gateway ~ This is a platform that sits outside the Horizon system that
+
+is accessible by POL back office staff. PODG has a number of routes that deliver data files to
+and from this platform
+
+POLSAP Post Office Lid. Consolidated SAP System
+
+s A transaction record that is generated by the Debit Card Management server that advises DRS
+when the expected Settlement date is
+
+TIP An identifier that is printed on some of the reconciliation reports. The meaning of this identifier
+is described in the descriptive text that immediately follows the report layout definition later in
+this document
+
+TMS Transaction Management Service
+
+Note that with the introduction of PBS there is an Ingenico solution component also labelled
+TMS. However, neither TMS is referenced in this document so this entry will be deleted in the
+next update to this document.
+
+TPS Transaction Processing Service. This system has been retired,
+
+0.6 Glossary
+
+Term Definition
+
+Bank_Transaction_Id Message sequence number assigned by the message originator, to assist in
+identifying a transaction uniquely. Stays unchanged through the life of the
+transaction.
+
+C4 Settlement Date The Settlement Date provided on the C4 transaction.
+
+Credence Post Office Ltd. Management Information Service
+
+Exception Types Within all reports the ‘Exceptions’ category will include:
+
+* ‘Incomplete States’, i.e. those transactions where one or more transaction
+component is missing - a C4 without a C12 etc
+* Genuine exceptions where transaction components belonging to the same
+high level transaction are of different value, e.g. C12 (amount) not = to C4
+(amount).
+Transaction corruptions
+
+HNG-X_Txn_Num Unique transaction number to be used in all messages between HNG-X and the Fis
+relating to the transaction. Generated by HNG-X and provided in the request
+message initiating the transaction.
+
+LREC The acronym for the reconciliation file received from Vocalink.
+
+‘New Transactions Transactions that have had a change of state since they were last reported, or have
+never been reported except in NB102 section 6. Note that if a transaction appears in
+NB102 section 6 it is future dated as is reported in that section for information only.
+Once future dated transactions become current dated, they must be reported as
+though they have not appeared on the reports before.
+
+‘Old’ Transactions Transactions that have NOT had a change of state since they were last reported.
+POLSAP Transactions POLSAP was retired in 2019 and POLSAP transactions do not exist
+
+POLSAP: Post Office Ltd Consolidated SAP System. This system no longer exists
+Receipt Date Receipt Date is the Date as printed on the transaction Receipt at the Counter. It
+
+forms part of all transactions.
+
+Receipt Time Receipt Time is the Time as printed on the transaction Receipt at the Counter. It
+forms part of all transactions.
+
+Reconciliation Date The Reconciliation Date is the date attributed to a transaction to allow Post Office
+Ltd. to reconcile. It will be set the first available Bank Settlement date from the
+transaction elements (C12, C4, S & D) that make up a Network Banking transaction.
+If no Bank Settlement date is available, the Reconciliation Date will be set to the
+processing date that the Data Reconciliation Service first recorded any element of
+the transaction being received. If a Settlement date subsequently becomes available,
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No 6 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+Definition
+
+the first available Bank Settlement date will replace the processing date. However,
+once a transaction has been accounted for on the reconciliation reports, the
+Reconciliation Date will never change.
+
+Routing Gateway Historically (pre PBS) the Routing Gateway identified a system, where the
+authorisation for a specific transaction should be sought.
+
+It is now used to group NB101 and NB102 reports together. It is set up in Post Office
+reference data.
+
+Run Date This is the System Processing Date for which the report refers, i.e. all transaction
+components processed by the DRS on System Processing Date dd/mnvyyyy are
+accounted for on this report.
+
+Settlement Date Settlement Date is often the same as Run Date but some Financial Institutions may
+assign a Settlement Date in the future: e.g. the following Monday may be set on
+transactions processed on the preceding Friday, Saturday and Sunday.
+
+Txn_Type See Transaction Types
+
+Vocalink An organisation that connects to many banks routing authorisation requests to them
+and relaying the responses from the banks back. With the introduction of PBS all
+banking transactions are authorised via Ingenico and Vocalink.
+
+Vocalink confirm banking transactions in LREC files which are converted into C4
+files.
+
+0.7 Changes Expected
+
+en
+
+0.8 Copyright
+
+© Copyright Fujitsu Services Limited 2006-2022. All rights reserved. No part of this document may be reproduced,
+stored or transmitted in any form without the prior written permission of Fujitsu Services.
+
+0.9 Information Classification
+
+The author has assessed the information in this document for risk of disclosure and has assigned an information
+classification of FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE).
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref: SVMISDMISDIO0Z0
+2022 Version 60
+(COMMERCIAL IN CONFIDENCE) bore ) pec-2002
+
+Page No’ 7 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+1. Introduction
+
+This document has been compiled to specify Fujitsu Services outputs from the Data Reconciliation
+Service (DRS) and the Automated Payment Service (APS) so as to enable a generic end to end
+reconciliation of
+
+1. Banking and Related Services transactions, which includes DCS and ETS
+2. Automated Payment System (APS)
+
+2 Scope
+
+This document defines the format and content of all reconciliation reports for HNG-X, which satisfies the
+DRS and APS reconciliation requirement. It does not attempt to define within the operating systems how
+the transactions are processed.
+
+This document does not attempt to define the business processes undertaken within Fujitsu Services and
+Post Office Ltd. with respect to the resolution of any exceptions which may arise, nor does it scope the
+requirement for any systems that may be required to assist in this process. This information can be
+found in the associated documents, reference:
+
+e SVM/SDM/PRO/0012: Reconciliation and Incident Management - Joint Working Document
+
+3 Network Banking Reconciliation (including
+Payments and ETU)
+
+3.1 Overview
+The purpose of Network Banking Reconciliation is twofold
+e To provide information to Post Office Limited to allow them to settle with clients, and,
+
+e Toconfirm that the Post Office view of transactions that have taken place matches the Fl's view
+of transactions that have taken place. Where differences in these views occur then appropriate
+action is taken.
+
+Settlement is based on the client's data. Post Office receive files from the clients (or their representative,
+Vocalink, in the case of Banking) providing their view of transactions that have been carried out and their
+financial values (described as C4 files). Post Office then settles with the clients using the total values
+within the C4 files. The DRS converts the C4 files into NB101 reports, ignoring any ‘D’ records.
+
+The NB101 report for Banking is adjusted to reapportion transactions to the appropriate Post Office client
+using an input file received each day from Vocalink. This is needed as some Post Office clients share
+BINs so the total figure for a BIN as derived from the LREC file received from Vocalink must be split
+between the clients sharing the BIN.
+
+Reconciliation hinges on a unique identifier, hereafter referred to as ‘OTR’, assigned to each transaction
+as it is carried out at the counter (or other device) within the Post Office estate. The DRS relies on this
+OTR being quoted within the C4 files to be able to match the transactions reported by the clients with the
+transaction records created with the Post Office estate known, as the C12 records.
+
+Whenever the DRS receives the first transaction part for an OTR then a status record is created for that
+OTR.
+
+When a further transaction part is received using that OTR then the status record is updated and a
+history record created showing the previous state,
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No 8 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+When, as does happen from time to time, DRS receives a further C4 with that OTR a child record is
+written to the status table. This ensures that there will be a record in the status table for every C4 record
+received in the files from the clients.
+
+3.2 Reconciliation Paths
+
+This section describes the expected paths through the state table which is shown in section 3.3 below.
+
+3.2.1. Normal path
+
+The ‘normal path’ for a transaction is that it is carried out at the counter, generating a C12, anda
+matching C4 record is received in a subsequent file from the FI shortly afterwards. Whilst the real
+sequence must always be that the C12 is generated before the C4 is received it is quite normal for the C4
+to be loaded into the DRS before the C12 as DRS receives its data in batches rather than real time.
+
+The happy path therefore covers both options, with DRS receiving the C12 before or after the C4, and the
+values on the C12 and the C4 match.
+
+For these transactions the status recorded in the DRS is 100,
+
+3.2.2 Zero value C12
+
+Where a transaction at the counter or equivalent device does not proceed the technique of writing a zero
+value C12 may be used as a means of recording the fact. Depending on circumstances this may result in
+
+* NoC4 from the client (status 102)
+e A zero value C4 from the client (status 103)
+
+« Anon zero value C4 from the client followed by an equal and opposite C4 cancelling out the first.
+This is explained further in section 3.2.4 below.
+
+3.2.3. C12 followed by a C12 reversal
+
+In some instances an initial C12 will be reversed by a C12 reversal (status 101).
+
+Following this a zero value C4 may be generated (status 105).
+
+3.2.4 C4 followed by a C4 refund
+
+Following receipt of a zero value C12 from a PBS counter it is possible to receive a non zero value C4
+from the Fl followed by an equal and opposite C4, cancelling out the first, in the same or a subsequent
+C4 file.
+
+The possibility of this path was introduced with PBS payments. When a payment is initiated by the
+counter but then fails to complete, a zero value C12 is written and a request to undo the transaction that
+was initiated is sent to the Ingenico data centre.
+
+The state changes for the sequence where the zero value C12 arrives before the C4 and the C4 refund
+are:
+
+0 -> 102 => 4 => 106/107
+
+When the C4 and the C4 refund arrive before the C12 has been harvested then the state changes are:-
+0->2->5-> 108
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No 9 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+3.2.5 ’ record
+
+An FI may include a failed transaction in the C4 file sent to DRS. This indicates a failed transaction and
+is converted into a D record in DRS. This is expected to match to a zero value C12 from the BRDB.
+
+The normal path covers the options of DRS receiving the D before or after C12.
+
+For these transactions the status recorded in the DRS is 99. These are monitored and manually cleared.
+
+3.3 State Tables
+
+This section lists the possible states that can be recorded against a transaction identifier.
+
+3.3.1 Non exception states
+
+This section identifies the states which are generated in DRS which are not Exception States.
+States with values of 100 or greater are expected and/or benign and do not require monitoring.
+States 1 — 5 do not indicate a problem unless an individual transaction stays in the state for too long.
+
+This table identifies the NB102 series report section where incomplete and discrepancy States are
+reported in detail.
+
+State Description Appears in I Appears in
+NB102 NB102
+section section
+(Uncleared) (Cleared)
+
+0 Start condition
+
+1 Exactly one C12 has been received 1&5 7811
+
+Expect a matching C4 to complete (state 100)
+2 Exactly one C4 has been received 1&5 7&11
+Expect a matching C12 to complete (state 100)
+
+3 Exactly one D has been received 2 8
+
+Expect a C12 to complete (state 99)
+
+4 This state is expected, albeit rarely, for PBS payment I 1&5 7811
+transactions as explained in section 3.2.4, above.
+
+This state is generated when, following a zero value C12 a
+non-zero value C4.
+
+Expect an equal and opposite C4 to complete (state 106)
+plus generate a 107.
+
+5 This state is expected when a C4 reversal is received I 1&5 7&11
+following a C4 (but no zero value C12 has been
+harvested).
+
+Expect a zero value C12 to complete (state 108)
+
+99 Any transaction where a D record has been received I 2 8
+should end in this state; D records may also lead to an
+Exception state. A D record will have no impact on any
+settlement figures.
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No: 10 of 29
+Fe)
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+FUJ00235004
+FUJ00235004
+
+100
+
+Matching C12 and C4 received.
+This is the normal reconciled state
+
+101
+
+A C12 has been received followed by an equal and
+opposite C12 indicating that the transaction has been
+reversed at the counter.
+
+This is an acceptable end state which does not require
+investigation.
+
+A zero value C4 may be received in this state (resulting in
+state 103).
+
+102
+
+A zero value C12 has been received indicating a
+transaction cancelled at the counter.
+
+This does not require investigation
+
+A zero value C4 may be received in this state (resulting in
+state 105)
+
+In the case of PBS payments a non zero value C4 may be
+received resulting in state 4.
+
+103
+
+A zero value C4 has been received following a cancelled
+C12
+
+104
+
+This indicates a duplicate zero value C4 following a zero
+value C12. This indicates a technical problem in that
+duplicate C4s are being generated but as the value is zero
+there is no financial impact and so this does not require
+investigation.
+
+This state occurs reasonably regularly for ETU
+transactions.
+
+105
+
+This indicates that a zero value C4 has arrived after a
+reversed C12.
+
+This does not require investigation
+
+106
+
+This state arises for a PBS payment transaction which was
+cancelled at the counter where the ‘undo’ message did not
+get to the Ingenico data centre in time and a payment
+request was sent to the FI resulting in a C4. The payment
+was subsequently refunded resulting in a second C4 for an
+equal and opposite amount — and this state.
+
+This does not require investigation
+
+107
+
+An entry in this state is created at the same time as a state
+106 is registered for technical reasons.
+
+Its purpose is to ensure that the OTR Status table is
+consistent with the C4 tables in terms of volumes.
+
+108
+
+This is the final state when a C4, a C4 reversal and then a
+C12 arrive in that order.
+
+It will occur when a payment is made and then reversed at
+the counter, resulting in a zero value C12 being sent to the
+data centre, but the C12 is not harvested before the C4
+and C4 reversal are received.
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED
+2022
+
+(COMMERCIAL IN CONFIDENCE)
+
+Ref:
+Version:
+Date’
+Page No
+
+SVM/SDM/SD/0020
+6.0
+
+14-Dec-2022
+11 of 29
+Fe)
+FUJITSU
+
+End to End Reconciliation Reporting
+
+CONFIDENCE)
+
+FUJ00235004
+FUJ00235004
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+3.3.2 Exception states
+
+This section identifies all the Exception States that can be generated by DRS.
+
+This table identifies the NB102 series report section where an exception is reported in detail.
+
+Any transaction resulting in one of these states must be investigated and cleared through F99.
+
+Exception Description Exception report NB102
+State Section
+Uncleared Cleared
+E01 A duplicate C12 with non-zero value received. 185 7&11
+E02 A duplicate C4 with non-zero value and not a reversing C4 1&5 7&11
+(see state 04) received
+E03 A duplicate D received 2 8
+E04 A C4 received after a D and not a C12 2 8
+E05 AD received after a C4 2 8
+E06 An unexpected C12 received 185 7811
+E07 An unexpected C4 received 1&5 7&11
+E08 An unexpected D received 2 8
+E09 The amount on a C12 reversal did not match the amount on 185 7&11
+the C12
+E10 An unexpected C12 reversal received 185 7811
+E23 The amount on a C4 did not match the amount on a C12 185 7&11
+when the C12 has a non-zero value.
+@Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref, SVMISDM/SDI0020
+2022 (COMMERCIAL IN CONFIDENCE) ween oe ee-2022
+
+Page No: 12 of 29
+FUJ00235004
+
+FUJ00235004
+(ee) End to End Reconciliation Reporting *
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3.3.3 State Transition Diagram
+
+The diagram below shows the states expected to be encountered when following the reconciliation paths.
+Exception states are not shown as by definition they indicate that an inconsistency has arisen which
+requires investigation.
+
+4
+
+C12
+
+Zero'Value
+
+“CaRexersal
+
+Key:
+
+‘Whilst this indicatesan error it is benign
+
+{no financial implication}— does not need
+monitoring,
+
+_ An intern state with high volume,
+
+hems @aying it the state fr
+
+3.4 DRSv2 Reporting Framework
+
+With the introduction of DRSv2 reports are designed to reflect the three applications/lines of business
+reconciled by the system. These are
+
+e Banking
+« Payments
+e ETU
+All reports produced by DRSv2 are comma separated (.csv) files delivered to Post Office via PODG.
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref: SVMISDMISDI0020
+2022 (COMMERCIAL IN CONFIDENCE) ween 60
+ate’ 14-Dec-2022
+
+Page No: 13 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3.4.1. Reapportionment Reporting
+
+PCI rules dictate that only the first 6 digits of a PAN (known as the BIN) can be stored and processed
+within the Horizon system.
+
+Some of the BINs supported by PBS are shared between different Post Office banking clients
+necessitating a mechanism to reapportion transactions to the correct client(s).
+
+Therefore, for Banking transactions, a reapportionment report (RAR) is received each day from Vocalink
+covering banking transactions for the period of the corresponding LREC file which have a BIN which is
+shared between Post Office clients. This file indicates which client the specific transaction is attributable
+to.
+
+It is expected that for every transaction in the RAR there must be a corresponding LREC file where the
+record is a payment or a receipt. The RAR file will also include non-financial transactions (Balance
+Enquiries and PIN changes) which are not in the LREC.
+
+It is expected that for every record in the LREC file which has one of the shared BINs there must be a
+record in the RAR.
+
+DRSv2 processes the RAR file and records the following exceptions in its internal tables:
+
+Exception Type Meaning
+
+4 Record found in the RAR with no matching record in the corresponding LREC
+file.
+
+2 Record in the RAR for which the corresponding record was in an earlier LREC
+file.
+
+3 Record in the LREC file with no matching record in the RAR.
+
+4 Record found in the LREC file for which the corresponding RAR record was in
+an earlier RAR.
+
+3.4.2 Settlement Reports (NB101)
+
+DRSv2 produces a Settlement report (NB101) for each application each day to include all C4 files which
+have been received since the last NB101 report was produced.
+
+The report is broken down into sections according to Routing Gateway which is maintained in Post Office
+reference data. Many Post Office clients can map to a Routing Gateway, with a row in the report for each
+client.
+
+Where the NB101 covers multiple Settlement dates each Settlement date is listed separately within
+Routing Gateway.
+
+3.4.2.1 NB101: Rules
+e NB101 is run daily
+e NB101 is broken down by Routing Gateway
+e NB101 is broken down by Client within Routing Gateway
+
+e NB101 will show ‘C4’ transactions received for ONE day only — breaking these down into
+individual ‘C4 Settlement Dates’. There will be one line for each ‘C4 Settlement Date’
+
+« NB101 will show Deposit and Withdrawal transactions in separate columns, (headed ‘Receipts’
+and ‘Payments’ respectively) derived from ‘Txn_Type’
+
+e NB101 will show a final settlement column derived in the following way:
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No: 14 of 29
+Fe)
+FUJITSU
+
+FUJ00235004
+FUJ00235004
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+Volume: Volume of Deposits plus Volume of Withdrawals
+Value: Value of Deposits minus Value of Withdrawals
+
+Where the net total is negative i.e. the Value of Withdrawals exceeds the Value of
+Deposits, the total will be shown as negative
+
+e Where the volume for a given ‘C4 Settlement Date’ is nil, the date will not be reported.
+
+3.4.2.2 NB101: Reapportionment
+
+The position with regard to the RAR is reported on the Banking NB101 report in a column headed
+RAR_Status. The following values may be reported:
+
+Value Meaning
+
+<blank> No RAR is needed for this LREC client, or the RAR was received for the LREC
+client and there were no errors.
+
+Waiting RAR The RAR file has not been received for this LREC client.
+
+Missing RAR The RAR file was received for the LREC client, the RAR had some exceptions of
+type 3.
+
+@Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref, SVMISDM/SDI0020
+
+2022 (COMMERCIAL IN CONFIDENCE) Version 60
+
+Date: 14-Dec-2022
+
+Page No: 15 of 29
+oO
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3.4.2.3 NB101: Report Layout
+
+NBI01: Settlement Statement for XXX Produced on DDIMMMIYYYY AT HH:MIMESS
+
+Run Daler DDNNIMIYYYY
+
+nn
+
+‘an
+
+nan
+
+nn
+
+nan
+
+‘GATEWAY _NANE I G4_SETTLEWENT_DATE I RECEIPTS_VOLUME I RECEIPTS_VALUE I PAYMENTS_VOLUME I PAYMENTS_VALUE I NET_VOLUWE NET_VALUE ‘CLIENT_NAWE RAR STATUS
+Routing Gateway: I Dd/MMMivwrY nn nn nn nn nn nn YOOHOHRIXIIOIORK I TE
+DESC (annnn)
+‘BoM nn nn nn nn nn nn IORI ITHE
+DOr nn nn nn nn nn nn 70000000000000000 [FTE
+Sub-Total nn an nn nn an an
+Raging _Saeway I Sonn nn nn nn nn an nn XAPHOTHIIRITORIK I TE
+O/T nn an mn na nn nn yoa00@o0HO000000K I FFT
+DO/MIMMTYY nn an nn an nn nn 38000000000000000 I TE
+SubTotal nn nn nn nn nn nn
+‘verai-TotT
+
+Note that the column RAR_STATUS will only appear on the Banking NB101 report.
+
+3.4.3. Exception Reports (NB102)
+
+NB102 reports are produced to detail exceptions which may require investigation and resolution. Historically NB102 reports were produced with 12 sections, but with
+the introduction of DRSv2 this has been rationalised to eight.
+
+Original section numbers are used to maintain continuity.
+
+e Section 1:
+¢ Section 2:
+¢ Section 5:
+e Section 6:
+
+¢ Section 7:
+
+All Uncleared Confirmed & Unconfirmed exceptions
+
+Uncleared Exceptioned Client Transactions
+
+Uncleared Future Dated Transactions by Client
+
+All Cleared Confirmed & Unconfirmed exceptions
+
+Uncleared Confirmed & Unconfirmed exceptions >24 hours
+
+©Copyright Fujitsu Services Ltd 2006-
+2022
+
+FUJITSU RESTRICTED Ref:
+(COMMERCIAL IN CONFIDENCE) version
+
+Page No:
+
+SVM/SDM/SD/0020
+
+6.0
+14-Dec-2022
+16 of 29
+
+FUJ00235004
+FUJ00235004
+oO
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+e Section 8: Cleared Exceptioned Client Transactions
+
+e Section 11: Cleared Confirmed &Unconfirmed exceptions >24 hours
+
+e Section 12: Cleared Future Dated Transactions by Client
+
+Many exceptions reported in Sections 1 to 6 will be resolved automatically when further C12 and C4 files arrive. Those that don't will be investigated and then
+‘Cleared’ manually and given a state of F99. Where an exception has been manually cleared it will be reported in Sections 7 to 12
+
+With the introduction of DRSv2 sections will be produced as follows:
+
+Sections 1,2,5 and 7,8,11
+
+One report for each application broken down by Routing Gateway (as for NB101) will be produced daily for each section, giving a total of 18 reports.
+
+Sections 6 and 12
+
+One report covering all applications will be produced daily for each section - i.e. 2 reports. These reports will normally be empty.
+
+3.4.3.1 NB102 Sections 1 & 7 : Report Layout
+
+NBTOZ Seclion 177: Al GearedlUncieared Confirmed Unconfirmed & POLFS exception. AppicalonXXx Produced on ODIMMIM/YYYY
+
+Run Daler DDMNIMIYYYY
+
+‘GATEWAY_NAME
+
+RECONCILIATION DATE
+
+EXCEPTION. TYPE
+
+VOLUME
+
+CiZ_CONFIRMED
+
+Ca_CONFIRMED
+
+D_CONFIRMED
+
+Routing Gateway DESC I Dojmananarwwy Slaten (Description nn ‘an nn nn
+(annnn)
+OVNI ‘Brat (Description) 7 7 Tn mn
+BOM Siatexx (Description) nn an nn nn
+BO/MIMMIYYYY ‘Staten (Description nn ‘an nn nn
+Sub-Total nn ‘an nn nn
+Routing “Gateway: DESC] oom Slaten Gescriptiony an an nn an
+(annnn)
+Bor Slaten (Description nn ‘on nn nn
+
+Sub-Total
+
+nn
+
+‘an
+
+nn
+
+nn
+
+‘Overall-Total
+
+nn
+
+‘an
+
+nn
+
+nn
+
+©Copyright Fujitsu Services Ltd 2006-
+2022
+
+FUJITSU RESTRICTED
+
+(COMMERCIAL IN CONFIDENCE)
+
+Ref.
+Version
+Date:
+Page No:
+
+SVM/SDM/SD/0020
+
+6.0
+14-Dec-2022
+17 of 29
+
+FUJ00235004
+FUJ00235004
+oO
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3.4.3.2 NB102 Sections 2 & 8 : Report Layout
+
+NBIO2 Section 2/8: Cleared/Uncleared Exceptioned Client Transactions Application XXX Produced on: DD/MMM/YYYY AT HH:MIMSS,
+
+Run Daler DDNNIMYYYY
+
+<GATEWAY_NAME I EXCEPTION.TYPE I RECONCILIATION DATE] TRANSACTION IO] TRANGACTION-TYPE I TEN-TYPE_DESCRIPTION I RECEIPT_DATE ] CY2CONFIRNED I CA GONFIRVED I D_CONFIRWED
+Rowing — Gateway: I Stateax DONT an DORAN Doman I on an aa
+Bese tannna) {Description}
+SoM aR, I a DONT SonmNT ——Tan an a
+
+(Description)
+Boreal an nn nn
+Saag GHEE Son POORER I a DONNA comma Tn 7 7m
+Bese tana) {Description
+
+Sata DOTTY aaa I a DoT DomNTR an a aa
+
+{Description
+
+Stator Dar a a DONT oa ry 7 a
+
+(Description)
+eres) nn nn nn
+Over Tota an nn nn
+©Copyright Fujitsu Services Lid 2006- FUJITSU RESTRICTED Ref. SVMISDM/SD/0020
+2022 (COMMERCIAL IN CONFIDENCE Version 80
+
+( ) Date: 14-Dec-2022
+
+Page No: 18 of 29
+
+FUJ00235004
+FUJ00235004
+oO
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+3.4.3.3 NB102 Sections 5 & 11 : Report Layout
+
+NBIOR Section 5/11: Cleared/Uncleared Confirmed Unconfirmed & POL FS Exceptions > 24 hours Appliestion:0%x Produced on DD/MMM/NWW
+
+Run Date! DONNIMIYYYY
+
+‘GATEWAY NAME I EXCEPTION.TYBE I RECONCILIATION-DATE I TRANSACTION.IO I TXNLTYPE_DESGRIPTION I REGEIPTDATE CIELCONFIRNED I C4 CONFIRNED O_CONFIRNES
+Rong Gateways I States (Waser) I DoRTMTTT a RECEIPTSPAYMENTS I DOTA a an a
+Bese annnn)
+
+Stateax (Dessipion) I BORAT Eero RECEIPTSIPAYMENTS I DOTTY aa aa a
+
+Staten (Desaipien) I CONN RO RECEIPTSPAYMENTS I BOTW an an a
+‘Sub-Total on on on
+Routing Gateway: I Staten (Description) I DD/MIMMTYIYY ROTO RECEIPTSIPAYMENTS DO/MIMMNY an an rn
+Bese fannnn)
+
+‘Staten (Description) I DD/MMMIYRY ORTHO RECEIPTSPAYMENTS DONNY an an an
+
+Siatenn (Dessipton) —] OOAAMTTNT Eero RECEIPTSIPAYENTS I DOTTY aa an an
+‘Sub-Total an an an
+‘Overall-Total La nn on
+
+©Copyright Fujitsu Services Lid 2006- FUJITSU RESTRICTED Ref. SVMISDM/SD/0020
+2022 COMMERCIAL IN CONFIDENCE) Version 80
+( ) Date: 14-Dec-2022
+
+Page No: 19 of 29
+
+FUJ00235004
+FUJ00235004
+oO
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+3.4.3.4 NB102 Sections 6 & 12 : Report Layout
+
+NBIO2 Section 6/42; Cleared/Uncleared Future Dated Transactions by Clent. ApplcationsAlL Produced on OD/MMM/YYY AT RH:MIMSS,
+
+Run Date: DDNNIMIYYYY
+
+“GRTEWAY_NANE REGONGIUATION DATE VOUNE THECONFIRNED TARONFIRNED T_CONFIRNED
+Routing Gateway: DESC (nnnnn) ‘DD/MMM/YYYY nn nn nn nn
+BORITTT ma mn mn nn
+DORMANT na nn a nn
+cubtonl nn nn na nn
+Routing Gateway: DESC Tannen) I BOTY mn mn aa nn
+BORAT na nn na nn
+Tha na mn na nn
+cabot na nn na nn
+write nn nn a nn
+©Copyright Fujitsu Services Lid 2006- FUJITSU RESTRICTED Ref. SVMISDM/SD/0020
+2022 (COMMERCIAL IN CONFIDENCE) version 8 yec-2022
+
+Page No: 20 of 29
+
+FUJ00235004
+FUJ00235004
+oe
+
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+3.4.4
+
+Re-Apportionment Exception Report Layout
+
+pio emer I ctivan I came ces I ame
+sy I saportng I mtn. ce recom I rset I rvenae I vamacto I rater I stem rac sectom I Apron vase sasesy I secon, I econ I ctsettem I am I oh
+we fan fe msn I om I 4 sonst I mye setome I Acteat I vot omane I ens etsecdpndace I me I cme I timed I amtne I out I emit
+> I sooner sarozen I ermnaaosan I wwnoronioos I cx w I tooo I amsnon I 0 I aan
+> I sonar sonar I ewouaosien I aomanonioz I we I 200 I asosaon I 0 I mene
++ I sacar I aomarmasoos I enon I veo I wows I want 7 7 I wan I eoancossn I symazon I emacs I annonioos I ex w I tooo I amvaon I 0 I oan
+©Copyright Fujitsu Services Lid 2006- FUJITSU RESTRICTED Ref. SVMISDM/SD/0020
+2022 (COMMERCIAL IN CONFIDENCE) Version 6.0
+Date 14-Deo-2022
+Page No: 21 of 29
+
+FUJ00235004
+FUJ00235004
+FUJ00235004
+FUJ00235004
+oO End to End Reconciliation Reporting
+
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+Note that where a column heading starts with ‘rar’ this indicates that the data comes from the Vocalink RAR file; where a column heading starts with ‘c4' this indicates
+that the data comes from the LREC file.
+
+except I reporti I rar_mile I rar I rar_a I rar_ter I rar_tran I rar_trans I rar_issu I rar_ba rar_sett! I c4_horizon_ I c4_rec I c4_mes I c4_trans I c4_amoun I c4_settle I c4_d_ I c4_bank
+ion_ty I ngdat I stoned I st I mou I minal_ I saction_ I actionty I ersche I nk clie I rar I ement_d I transaction I eipt_d I sage.ty I action ty I tconfirm I ment.da I amou I _client_
+pe e ate an I nt I id id pe me nt otr I ate _id ate pe pe ed te nt id
+ncn
+1 I nwicine I samvnte I se I 2000 I aetseoe see a ws I ane I 2 scene
+we 2155
+2 I emeane I axenaeon I so I 2000 I zansoeor ase Py ws I ann I 2 seccwver I eprvazoisson I nanan I cs 2 2000 I entunns ° ren
+3 I eeewane evans I erencorsser I ovemmen I cx = 1000 I eeewene ° mast
+> I eeteane wevnwnes I opnvazoisson I awavonan I ce @ 200 I asoeee ° aes
+ren
+Eo) 2155
+4 I eemaone I anmsanwe I so I 000 I zensoeod ssn 1 a] ann I ot werwoer I sprvazoisser I ananan I co 8 1000 I eeueens ° ron
+2 2155
+4 I eevee I arsuseen I se I 200 I asnsocoa san a 2] ame I on seccweee I spevazorsser I nance I cs 2 2000 I eatases ° as
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref: SVMISDMISDI0020
+2022 Version: 6.0
+(COMMERCIAL IN CONFIDENCE) bee © Dec-2022
+
+Page No: 22 of 29
+FUJ00235004
+
+FUJ00235004
+oe End to End Reconciliation Reporting .
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+4 APS Reconciliation
+
+On-line Counter, SSK and HiH Automated Payment transactions are committed to the Branch Database
+during the customer session settlement process at the same time that the Auditable Journal records are
+written. The Journal Records contain a dense set of Journal Sequence Numbers that prove no
+transaction is missing or duplicated.
+
+Offline/External Automated Payment transactions (such as Paystation transactions) are delivered in
+file(s) via PODG on a daily basis. These files contain a sub-file for each Branch that contain value and
+volume totals that ensure the integrity of the data contained therein. These are validated during the
+transaction posting process to ensure no data loss or duplication.
+
+The AP transactions from all data-sources are copied to a dedicated APS data store where they are held
+pending their delivery to the AP Client via AP Client Files.
+
+Note 1: AP Transactions that are mapped to Client Account No “9999” do not get delivered to
+any Client.
+
+Note 2: AP transaction performed on certain devices (Such as Payzone) do not get delivered to
+any Client.
+
+At the end of each Trading Day, all transactions for the day are validated and any transactions failing
+validation will be moved to a Quarantine area. Validation failures include the following scenarios:
+
+Invalid Negative Value
+
+Negative values are only allowed for reversal records or if the Delivery Agreement
+indicates that the transaction is an Out-payment transaction.
+
+Unmatched Reversal
+
+This is a reversal record where the corresponding original transaction is not present on
+the current Trading Day. This may occur in certain counter recovery scenarios.
+
+Missing Delivery Agreement
+
+Delivery Agreement reference data controls the creation of AP Client Files. If the data is
+missing for any client then the transactions cannot be delivered and will be quarantined.
+
+Duplicate Transaction
+Duplicate transactions are not expected and can only occur in the case of system bugs.
+
+Quarantined transactions can be viewed and processed using a Graphical User Interface available to
+Fujitsu's third-line support team. Where transactions were quarantined due to missing or invalid
+reference data then the transactions can be moved back into the main processing stream once that
+reference data has been corrected. These transactions will then be delivered to the AP Client. In the
+case of an unmatched reversal, since the original transaction will almost certainly have been sent to the
+AP Client then a manual activity must be in place to inform the AP Client that the payment has been
+reversed. The transaction will then be archived as “manually processed”
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No: 23 of 29
+FUJ00235004
+
+FUJ00235004
+oe End to End Reconciliation Reporting .
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+A
+Branch Database
+
+(3)
+
+Manual
+
+Norma!
+Transactions
+
+Branch, Kiosk and (4
+
+Paystation AP Transactions
+
+Automated Payment Transaction Data Flows
+
+Reconciliation is performed by ensuring that all transactions received at (1) are eventually delivered to
+either (4) or (5) in the diagram above.
+
+4.1. APS Reconciliation Report
+
+This can be represented in a single report as follows:
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No: 24 of 29
+FUJ00235004
+
+FUJ00235004
+
+oO End to End Reconciliation Reporting “
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+Transaction Totals for Trading Date Outstanding Balances
+BRDB Delivered to APS Delivered
+
+Trading Date_Brought Fwd] Transacted ("Normal (2) Quarantine 3)" Discrepancy Client Files 4)’ Manual (5)]__CarryFwd] _Normai’ Quarantine’ Discrepancy]
+01/06/2019 0.00} 25,000.00 23,000.00 2,000.00 0.00 20,000.00 0.00} 5,000.00) 3,000.00 2,000.00 0.00}
+02/06/2019 5,000.00) 30,000.00 29,000.00 1,000.00 0.00 25,000.00 1,000.00] 9,000.00] 7,000.00 —_2,000.00 0.00
+03/06/2019 9,000.00] 20,000.00 20,000.00 0.00 0.00 25,000.00 1,000.00] 3,000.00] 2,000.00 +—_1,000.00 0.00
+04/06/2019 3,000.00]
+05/06/2019
+06/06/2019
+07/06/2019
+08/06/2019
+09/06/2019
+
+Report aps_reconciliationyyyymmadd.txt
+
+Where
+
+the first discrepancy is () minus (2) minus @)
+
+the second discrepancy is Carry Fwd minus Normal Balance minus Quarantine Balance
+Transaction Totals for Current Trading Date
+
+Column Type Description
+Trading Date Date The Trading Date for which these totals apply
+Brought Fwd Number(12,2) I Taken from the Carry Fwd recorded from yesterday's
+
+reconciliation
+
+BRDB Transacted Number(12,2) I The total value of APS transactions performed on the
+current Trading Date. le: the total value at (0) today.
+(see Note 1)
+
+Normal Number(12,2) I The total value of valid AP Transactions for the current
+Trading Date. le: the total value at (2) today
+
+©Copyright Fujitsu Services Lid 2006- FUJITSU RESTRICTED Ref. SVMISDM/SD/0020
+2022 (COMMERCIAL IN CONFIDENCE) Version 6.0
+Date: 14-Dec-2022
+
+Page No: 25 of 29
+FUJ00235004
+
+FUJ00235004
+oO End to End Reconciliation Reporting “
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+Quarantine Number(12,2) I The total value of transactions in Quarantine for the
+current Trading Date. le: the total value at @) today
+Client Files Number(12,2) I The total value of transactions delivered in Client Files
+‘on the current Trading Date. le: the total value at (4)
+today
+Manual Number(12,2) I The total value of transactions manually processed on
+
+the current Trading Date. le: the total value at ©) today
+
+Outstanding Balances
+
+Column Type Description
+
+Carry Fwd Number(12,2) I Equals Brought Fwd + BRDB Transacted — Client Files -
+Manual
+
+Normal Number(12,2) I The sum of all non-delivered validated APS transactions.
+
+le: the total amount outstanding in 3)
+
+Quarantine Number(12,2) I The sum of all outstanding APS transactions in
+Quarantine. le: the total amount outstanding in @
+
+Note 1: The BRDB Transacted value will not include transactions for Client Account = “9999" or those transactions where the Device Type signifies that the
+transactions are not to be delivered.
+
+Note 2: The Value delivered in Client Files is summed-up during the client file creation as each record is written to the file. The total for each file is recorded in the file
+audit trail. Some client files include the reversals and reversed transactions and some do not. Either way, these transactions balance-out in the calculated
+totals. This is not the case for File-type “BT” that includes the reversed transaction only and these have to be taken into account during the calculation of the
+Client Files value.
+
+The discrepancy columns should always be zero and an automated alert will be raised if ever this is not the case. The alert will cause an incident to be raised for
+investigation.
+
+In addition to reporting transaction values, the Branch Database also records transaction counts and raises an alert if the transaction counts do not tally. The counts
+can be reported using HORIce.
+
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref ‘SVMISDMISDI0020
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) pee 6° e0-2029
+
+Page No: 26 of 29
+oe
+
+FUJITSU
+
+End to End Reconciliation Reporting
+
+FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+
+FUJ00235004
+
+FUJ00235004
+
+When adding up transaction counts, the transacted reversals are added as positive values. However, in many cases, reversals and their reversed counterparts are
+not delivered to the AP Client. This is a recognised scenario during the production of a Client File and Reversed/Reversing transactions that are withheld from the
+Client Files are updated to status “Reversed (Not delivered)”. During the reconciliation of transaction counts, these transactions are counted as being dealt with
+appropriately (ie: seen, understood and marked as processed).
+
+4.2 APS Quarantined/Exceptioned Transaction Report
+
+Transactions that failed validation and were placed in Quarantine are reported daily in the following form.
+
+[Client Ace Receipt [Receipt [Reversing [Reversing
+
+No Client Account Name ItemId  IFAD Code ITxn Timestamp —_ {Customer Reference Ref ISerial No _IReceipt Ref ISerial No ValueIReason
+
+3094 United Utilities Water 36398, 4025113 01/11/2018 21:09 63314030041988800000 68001 5470 1500.00 No Delivery Agreement
+3094 United Utilities Water 36398 4025113 01/11/2018 21:17 63314030041988900000 67001 8767 1500.00 No Delivery Agreement
+3094 United Utilities Water 36398 4025113 01/11/2018 21:33 63314030041988600000 67001 8772 1500.00 No Delivery Agreement
+3131 Parcelforce Contract Accept 39192 548324 07/11/2018 14:45 9826935101260 7016 1978 -1.00 Invalid Negative Value
+3131 Parcelforce Contract Accept 39192 548324 07/11/2018 14:45 ED808529215GB 7019 1978 -1.00 Invalid Negative Value
+3131 Parcelforce Contract Accept 39192 548324 07/11/2018 14:45 9826935101260 7020 1978 -1.00 Invalid Negative Value
+3147 Royal Mail 45342 2307049 30/10/2018 10:23 O1Label=1~QRC 2001 6671 2001 6673 0.00 No Delivery Agreement
+3147 Royal Mail 41637 548324 07/11/2018 14:43 XC422747100GB 7004 1978 0.00 No Delivery Agreement
+3147 Royal Mail 41637 548324 07/11/2018 14:44 LU422747100GB 7008 1978 0.00 No Delivery Agreement
+3240 Welsh Water 43747 4025113 02/11/2018 10:11 6331428366843200000 78001 4316 -102.00 Unmatched Reversal
+
+Report aps_exceptionsyyyymmndd.txt
+
+©Copyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref ‘SVMISDMISDI0020
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) pee 6° e0-2029
+PageNo: 27 of 29
+FUJ00235004
+
+FUJ00235004
+ee) End to End Reconciliation Reporting
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+CONFIDENCE)
+
+4.3 APS Report Delivery
+
+Reports for Post Office Ltd are delivered in accordance with security and audit requirements.
+
+Both APS Reports are delivered to Fujitsu Services MAC Team and Post Office Ltd via e-mail.
+
+4.4 External Transactions
+
+Transactions that are performed on non-Horizon terminals are delivered to AP Clients via the Branch
+Database and the APS Service. These transactions are loaded into the Branch Database and are
+validated at this point to ensure that subsidiary Horizon systems can complete all necessary processing.
+Transactions that fail validation are prevented from being loaded and are automatically returned to the
+transaction supplier.
+
+Due to this validation, there should be no further transaction processing failures within the Horizon
+service.
+
+However, there is a possibility that an external transaction is queried by an AP Client. This may occur if
+the customer who performed an AP transaction queries or disputes the amount of the transaction. In
+these instances, Fujitsu would receive the initial query but can only trace the transaction back to the file in
+which the transaction was supplied. It is almost inevitable that this type of query will need to be routed
+back to the transaction supplier for resolution.
+
+This re-routing will be performed by raising a call with the Post Office Limited Service Desk.
+
+Areport is supplied to Post Office Limited called the Rejected Sub-Files Report. Report Description:
+Ordering of the report is Load Date followed by Trading Date.
+
+The Times Rejected column will indicate how many times that the sub-file has been rejected and will
+indicate whether there is an ongoing problem with poor quality data in corrected files.
+
+If the quality of the data in the external transaction file is good then we would not expect any output from
+the report.
+
+Branch
+BRDBI Data I Accounting] TradingI Times IReasan For
+Load Date] Source, Code DateIStatus_IRejected IHoid Last ProgressedI
+
+Reconciliation for external transactions is the responsibility of P&BA not the Post Office Account
+Reconciliation Service. However, in the event that entries persist on the report the Post Office Account
+Reconciliation Service will contact P&BA to ask for these files to be cleared.
+
+SCopyright Fujitsu Services Ltd 2006- FUJITSU RESTRICTED Ref. SVMISDMISDIO0Z0
+2022 Version: 60
+(COMMERCIAL IN CONFIDENCE) ne ) pec-2002
+
+Page No: 28 of 29
+FUJ00235004
+
+FUJ00235004
+
+ee) End to End Reconciliation Reporting
+
+FUJITSU FUJITSU RESTRICTED (COMMERCIAL IN
+
+CONFIDENCE)
+Annex A Transaction Types
+The following banking and payment card transaction types are supported:
+Txn Accounting Accounting
+Type I Description Description Sign Application
+51 I ETU Purchase DEPOSITS 1 ETS
+52 I ETU Refund WITHDRAWALS -1 ETS
+71 I Purchase DEPOSITS 4 DCS
+72 I Refund WITHDRAWALS -1 DCS
+73 I Cash Purchase(with EMV) DEPOSITS 1 DCS
+82 I Deposit DEPOSITS 1 PBS
+83 I Withdrawal WITHDRAWALS -1 PBS
+91 I Purchase DEPOSITS 1 PBS/DCS
+92 I Refund WITHDRAWALS -1 PBS/DCS
+93 I Cash Purchase DEPOSITS 1 PBS/DCS
+94 I Cash Refund WITHDRAWALS -1 PBS/DCS
+FUJITSU RESTRICTED Ref.
+
+SCopyright Fujitsu Services Ltd 2006-
+2022
+
+(COMMERCIAL IN CONFIDENCE)
+
+Version:
+Date’
+Page No
+
+SVM/SDM/SD/0020
+6.0
+
+14-Dec-2022
+29 of 29

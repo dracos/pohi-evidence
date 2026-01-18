@@ -1,0 +1,316 @@
+FUJ00176487
+FUJ00176487
+
+From: steven.browe!
+Sent: Thur 17/03/2022
+
+To: Breen, Chris Morris, Chri
+Subject: FW: Horizon Audit San
+Attachment: Attachment
+
+FYI. Response sent.
+
+From: Browell, Steven
+Sent: Thursday, March 17, 2022 2:20 PM
+To: Simon Oldnall <
+
+>; Warham, Wendy <.
+
+Walton, Daniel
+jionne Harvey
+
+Dear Simon,
+
+Thank you for your message.
+Please see our responses below to the clarifications you have raised on the audit archive harvesting process.
+
+General
+The Horizon Audit Facilities provide the mechanisms to record and maintain an audit trail of Transactions and events
+according to the CCD entitled “Audit Trail Functional Specification” (CR/FSP/006). The Audit Archive is where this
+audit trail is stored. The Audit Archive is not used in the day-to-day operation of the Horizon or HNG-X/A solutions.
+The ARQ process is used by POL to request information retrieval from the Audit Archive. The ARQ process has been
+intentionally designed and deployed to check for gaps in transaction information extracted from the Audit Archive
+and to alert the operator (so they check alternative Audit Archive stores) or POL (if a true gap is identified).
+In the unlikely event that there are gaps in the Audit Archive, the ARQ process would spot it and if this could not be
+reconciled by using the second Audit Archive store, POL would be notified of the true gap found. POL would be aware
+of the gap.
+1. The harvesting process
+The harvesting process archives the data from BRDB to flat files which are then stored in the Audit Archive. The
+method of doing this has changed over the years as data storage changed from tape to EMC Centera to Fujitsu Eternus
+media, and with the use of Riposte pre-HNG-x and the new HNG-X architecture. The current harvesting process for
+HNG-X has been shared with the Strategic SAN project so there will be a good understanding in POL of how this
+currently works.
+2. The Audit Retrieval Query
+We use a Fujitsu developed application known as the AEClient which searches the audit archive in IRE11 (by default)
+using the provided FAD code and data range requested for the type of content requested (typically branch transaction
+and event data).
+3. The extent of records retained in the Audit Archive
+Contractually, the retention periods for data held in the operational audit trail have changed over time. Currently,
+Schedule B3.2 of the HNG-X Agreement sets out Fujitsu’s contractual obligations with respect to the retention of such
+data. Paragraph 3.9.2 of Schedule B3.2 provides:
+“Data within the operational audit trail shall be retained for 18 months, although the set of records
+associated with a transaction voucher transacted by an APOP Service and Transaction data relating to
+Transactions originated from the Banking Business Capability and data relating to Transactions that are
+
+FUJ00176487
+FUJ00176487
+
+settled using the Debit Card or Credit Card Method of Payment shall be retained for seven years.”
+Data held in the operational audit trail has been retained for much longer than this contractual obligation by mutual
+agreement. Since 2014, each year POL and Fujitsu have signed a CWO (or a CT as it was originally known) to retain for
+a further year the data held in the operational audit trail. By way of example, please see CWO0395b (RTQSRO003106)
+from last year, and CWO0560 (RTQSRO003638) for this year. Dionne Harvey will be able to add further clarity.
+4. How are gaps identified and notified to POL
+The AEClient initiates a process for the data in the IRE11 audit archive to be made available for query and extract. This
+process validates the seals on the content and then checks the transaction sequence numbers which are the unique
+and sequential identifiers of transactions made at a branch. If any gaps in the sequence numbers are identified, this
+signals that there is a gap in the IRE11 audit archive data.
+The presence of a gap is presented to the operator (see Figure 1). If this happens for pre HNG-X then the audit archive
+in IRE19 is checked. If that also shows a gap for the matching search criteria, then a true gap will have been found. If a
+true gap had been found, then the ARQ response spreadsheet would highlight this to POL (see Figure 2).
+
+Figure 1 above — example screenshot from AEClient reporting on GAPS
+
+Figure 2 above — example from ARQ response file showing how POL is notified of Gaps in what it receives
+
+5. Date the current harvesting solution was implemented
+
+The current harvesting solution was introduced with the implementation of HNG-X.
+
+ARC/APP/ARC/0008 (section 2.8) describes harvesting and was part of the solution baseline document set that was
+issued to POL at HNG-X R11 (v3.0 is within the attached email sent to POL in November 2009). This document also
+mentions other design matters relating to the Audit Archive.
+
+6. Issues experienced with the current harvesting solution
+
+System monitoring has been used to identify events that require investigation. As explained in our previous message,
+we are not aware that the IRE11 harvesting process has manifested true gaps in the data held in the operational audit
+trail.
+
+Kind regards.
+
+Steve Browell
+
+From: Simon Oldnall
+Sent: Monday, Febru:
+To: Browell, Steven <_.
+Cc: Tony Jowett <2
+
+“>
+Walton, Daniel
+
+Warham, Wendy
+Dean Bessell <7
+FUJ00176487
+FUJ00176487
+
+GRO ~ “b; Dionne Harvey
+
+<
+Subject: RE: Horizon Audit San
+
+Post Office Limited - Document Classification: INTERNAL
+
+Dear Steve
+
+Many thanks for providing this response; As a broad point we request that Fujitsu provide us the records & material
+used to form the assement below in order that POL can carry out its own analysis.
+
+On the specific responses I have added some supplementary questions/clarifications required (though accepting that
+the request above may provide the answers to this)
+
+Request:
+Copies of Post Office counter transactions gathered prior to HNG-X, which are now stored in the audit archives in both
+IRE11 and IRE19, are understood to contain gaps and an explanation is required.
+Overview:
+1. The audit archive is a copy of the live data retained in a highly controlled way for future reference and query.
+It does not affect the live operation of the solution.
+2. It is populated by a harvesting process.
+* Please provide a detailed overview of the harvesting process
+3. It is queried using an Audit Retrieval Query (ARQ) when historical information is required.
+
+* Please provide details of the query used (parameters defined etc)
+
+4. The audit archive only contains data from October 2007 to the present day. Prior to this date, the data has
+been purged.
+
+*¢ When was this data purged? Can you provide records of POL approval for this purge?
+
+5. It is the ARQ process that will identify if any gaps are present in the audit archives. This is done when ARQ
+requests are received by Fujitsu and responses are sent to POL.
+
+* How do these gaps manifest and how are these brought to POL’s attention? Please provide example
+records of when this has occurred
+
+Harvesting:
+1. For legacy Horizon, there were 2 independent harvesting processes in Horizon: one in Wigan; and one
+Bootle. These were migrated to IRE19 and IRE11 respectively.
+
+* What dates were these processes in place for (ie what date was the current solution implemented
+
+2. There is a single harvesting process in HNG-X in IRE11 (the audit archive is replicated to IRE19). The IRE11
+harvesting process has not experienced any issues that would lead to gaps.
+
+* What issues have been experienced with the harvesting process?
+
+3. There have been various issues with the harvesting processes over the years — identified by system
+monitoring, logged as incidents, with action taken at the time.
+FUJ00176487
+FUJ00176487
+
+* As above
+
+Many thanks
+Simon
+
+Simon Oldnall
+Horizon IT Director
+
+Horizon IT
+
+From: steven.browell:
+Sent: 11 January 2022 1
+To: Simon Oldnall <
+Cc: Tony Jowett <
+dani
+
+Dionne Harvey
+
+Subject: RE: Horizon Audit San
+
+Post Office Limited - Document Classification: INTERNAL
+
+Simon,
+
+Please find below the Fujitsu response stating the request and a breakdown of response points. We hope this
+provides the explanation you require.
+
+Request:
+Copies of Post Office counter transactions gathered prior to HNG-X, which are now stored in the audit archives in both
+IRE11 and IRE19, are understood to contain gaps and an explanation is required.
+Overview:
+1. The audit archive is a copy of the live data retained in a highly controlled way for future reference and query.
+It does not affect the live operation of the solution.
+2. It is populated by a harvesting process.
+3. It is queried using an Audit Retrieval Query (ARQ) when historical information is required.
+4. The audit archive only contains data from October 2007 to the present day. Prior to this date, the data has
+been purged.
+5. It is the ARQ process that will identify if any gaps are present in the audit archives. This is done when ARQ
+requests are received by Fujitsu and responses are sent to POL.
+
+Harvesting:
+1. For legacy Horizon, there were 2 independent harvesting processes in Horizon: one in Wigan; and one
+Bootle. These were migrated to IRE19 and IRE11 respectively.
+2. There is a single harvesting process in HNG-X in IRE11 (the audit archive is replicated to IRE19). The IRE11
+harvesting process has not experienced any issues that would lead to gaps.
+3. There have been various issues with the harvesting processes over the years — identified by system
+monitoring, logged as incidents, with action taken at the time.
+FUJ00176487
+FUJ00176487
+
+ARQ:
+1. The ARQ process checks for gaps when retrievals are run. Any suspected gaps identified are logged and
+investigated.
+2. There have been a small number of suspected gap issues investigated. It is understood that all investigations
+were resolved, including by re-running the ARQ against the second data store (Horizon) or by extending the
+date ranges (HNG-X) resulting in no gaps in any ARQ responses.
+3. The ARQ process includes the adding of warnings for gaps in the resulting files sent to POL. If there had been
+any gaps, POL would have been made aware within the ARQ responses supplied.
+4. One known gap (for a specific FAD and date) was identified as part of ARQ extracts performed against the
+Bootle audit archive. That gap is not in the Wigan audit archive though. Therefore, Fujitsu is not aware of any
+gaps in the audit archive data for Horizon when both archives are used.
+5. There have been no gaps identified as part of any ARQ extracts performed against the HNG-X audit archive.
+
+General:
+1. POL would have been made aware if there had been any gaps in any ARQ responses supplied.
+2. Fujitsu has not historically retained copies of ARQ responses and has deleted them once POL confirmed
+receipt — either by delivery of the CD or by receipt of a file on the Quatrix system. POL may have copies of all
+ARQ responses received.
+3. During an audit commissioned by POL and performed by Deloitte between May 2016 and November 2016
+the audit process and the checking for gaps was validated. Fujitsu did not see the final report but can confirm
+that the tests were all successful.
+
+Steve Browell
+
+>
+
+Walton, Daniel
+> Dionne Harvey
+
+Subject: RE: Horizon Audit San
+
+Post Office Limited - Document Classification: INTERNAL
+Steve/Wendy
+
+Belated happy new year, apologies if I have missed this whilst I was off, but have FJ now provided the position
+requested below?
+
+Many thanks
+Simon
+
+Simon Oldnall
+Horizon IT Director
+
+Horizon IT
+FUJ00176487
+FUJ00176487
+
+-----Original Message-----
+From: Simon Oldnall
+
+Sent: 01 December 20;
+To: Steven Browell
+Cc: Tony Jowett
+
+daniel.walton
+Subject: Horizon Audit San
+
+Dean Bessell ¢. GRO
+
+Hi Steve
+The PCI project team have flagged an issue to me and around potential issues with the data integrity of the audit San.
+The initial feedback I’m hearing is that this is a historical issue, however this does raise a number of concerns.
+
+I understand that you are catching up with Dean tomorrow morning, I would be grateful if you could provide him a
+more detailed brief on what the issues were, the history of these issues and any ongoing concerns that may exist.
+
+Jeff is aware of the issue and I would like to give him a high level briefing ahead of our session with Dan and Wendy
+tomorrow
+
+Many thanks
+
+Simon
+
+Simon Oldnall
+Horizon IT Director
+20 Finsbury Street
+London
+
+EC2Y 9AQ
+
+JESSE OS ISOS OB IESE OSES HOSES COS OSES CSE OCOn IE ESbEorSnor orca Kor
+This email and any attachments are confidential and intended for the addressee only. If you are not the named
+recipient, you must not use, disclose, reproduce, copy or distribute the contents of this communication. If you have
+received this in error, please contact the sender by reply email and then delete this email from your system. Any
+views or opinions expressed within this email are solely those of the sender, unless otherwise specifically stated.
+
+POST OFFICE LIMITED is registered in England and Wales no 2154540. Registered Office: Finsbury Dials, 20 Finsbury
+Street, London EC2Y 9AQ.
+
+FEES SEE SES SEES EES SE Eo a nao ao ccc ikaciidcaciciccok
+
+“Post Office Limited is committed to protecting your privacy. Information about how we do this can be found on our
+
+website at www.postoffice.co.uk/privacy”
+
+Unless otherwise stated, this email has been sent from Fujitsu Services Limited (registered in England No 96056);
+Fujitsu EMEA PLC (registered in England No 2216100) both with registered offices at: 22 Baker Street, London W1U
+3BW; PFU (EMEA) Limited, (registered in England No 1578652) registered offices at: Belmont, Belmont Road,
+FUJ00176487
+FUJ00176487
+
+Uxbridge, England, UB8 1HE and Fujitsu Research of Europe Ltd (registered in England No. 4153469) 4th Floor,
+Building 3, Hyde Park Hayes, 11 Millington Road, Hayes, UB3 4AZ.
+
+This email is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be
+privileged. Fujitsu does not guarantee that this email has not been intercepted and amended or that it is virus-free.
