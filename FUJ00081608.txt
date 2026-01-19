@@ -1,0 +1,119 @@
+FUJ00081608
+FUJ00081608
+
+SSC Offline KELs and KBs
+
+Fault_Fixed
+Deactivated
+
+Office has Non-Zero Trading Position (Receipts/Payments mismatch)
+
+Office receipts do not match payments. Office has a non-zero trading position. MSG31318 (non-zero trading position) displayed on office rollover
+by Mark Wright on 23/09/2010
+
+Last updated: by Cheryl Card on 01/04/2016
+
+Release: HNGX
+
+‘System product: CounterBusinessapplications
+
+902 903, Trading, Position, Receipts, Payments,
+
+Deactivated
+
+Medium
+
+Pco203864
+
+772812409
+
+Symptoms
+
+NOTE: This KEL documents an issue where cancelling a rollover causes a Receipts and Payments mismatch.
+This issue was fixed in November 2010. For new occurrences see KEL ArnoldA2153P_
+
+When a clerk balances a stock unit the rollover screen is eventually displayed, and the clerk then presses the Preview or Print button to produce the
+Trial Balance Report. The counter then returns to the rollover screen.
+
+Having checked the report, the clerk then presses the Rollover button, and in normal circumstances is given the choice of rolling to a new Balance
+Period (BP) or a new Trading Period (TP).
+
+If the clerk chooses to roll to a new TP, and net discrepancies are present, then the system asks whether the clerk wishes to transfer the net
+discrepancy to local suspense, or else cancel the rollover (MSG31316).
+
+If the clerk presses Cancel, the system returns to the rollover screen and he/she can press Print, or Preview or Rollover, or Cancel back to the Stock
+Balancing menu.
+
+Also see KEL cardc536L (non-zero trading position, but NO receipts and payments mismatch).
+Problem
+
+If the clerk presses Cancel on MSG31316, and on the rollover screen then presses Rollover again, then the Final Balance report will have a
+Receipt/Payments mismatch (Total Receipts not equal to Total Payments) which will ultimately lead to a Non-zero Trading Position on the Branch
+Trading Statement.
+
+If the clerk does not check the Final Balance report, he/she may not be aware that the report has a Receipts/Payments mismatch. For a Trial
+Balance report the counter does warn the clerk if a Receipt/Payments mismatch occurs, for a Final Balance report it does not. This is as stated in
+use case BAC-11 Balance Stock Unit. The counter however does always raise error 0902 in the log file and NT event log (documented in KEL
+ballantj1759Q):
+
+0902: totalReceipts=900.00, totalPayments=0.00. -
+com. fujitsu.poa.ctrc.businesslogic.print.velocity.VelocityHelperFunctions ERROR.
+The resulting Non-zero Trading position raises error 0903 in the log file and NT event log when the Branch Trading Statement is produced:
+
+0903: Trading position is 900.00. -
+
+com. fujitsu.poa.ctrc.businesslogic.print.velocity.VelocityHelperFunctions ERROR.
+and the clerk will see MSG31318:
+
+Office Balancing Error. There is a non zero trading position on rollover of Branch by User username to Trading Period nn
+
+The Receipts / Payments mismatch is due to a bug in the code that occurs when Cancel is pressed on MSG31316. The bug incorrectly causes the
+discrepancy to be cleared, and because there is no balancing transaction (such as a transfer to local suspense) it gives rise to the accounting error.
+
+Solution - Helpdesk
+Ref Data (pdl) fix released in November 2010 under peak PCPC0204263.
+Now that the fix has been deployed, if Cancel is pressed on MSG31316 then the discrepancy is not cleared.
+
+A Workaround (prior to fix):
+If the Clerk presses Cancel on MSG31316, then to avoid the bug they must press Cancel again to return to the Stock Balancing menu
+
+Unfortunately the workaround cannot be done after the problem has occurred at the office! In this case the branch accounts will need to be
+corrected.
+
+Please advise branches to continue rolling over stock units and the office as normal. It is not necessary to wait for the correction to be applied
+before rolling into a new TP.
+FUJ00081608
+
+FUJ00081608
+
+OOOOHOoO6iOo806u8u8ux3nNomN
+
+g
+
+y
+y,
+y
+y
+y
+y
+Z
+y
+q
+y
+q
+
+ET
+
+PEAK.
+
+via
+
+call to SSC
+
+event logs if required and assign
+
+log
+
+B Priority call, download PO counter
+
+Rai

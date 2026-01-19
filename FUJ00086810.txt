@@ -1,0 +1,333 @@
+FUJ00086810
+
+FUJ00086810
+
+Reconciliation Controls
+
+Ref: — Reconciliation Controls
+Author: Gareth I Jenkins
+
+Version: 2
+
+Date: 09/08/2016 08:53:00
+
+1. Introduction
+
+This paper was prepared by Gareth Jenkins to document for Post Office Ltd aspects of
+reporting and settlement where reports could be improved.
+
+It has been updated following a discussion with Pete Newsome and Torstein Godeseth
+in Fujitsu as to how these proposed changes should be progressed.
+
+2. Overview of Processes Investigated
+
+The following processes were investigated:
+
+1.
+2.
+3.
+4
+
+5.
+
+Cash Reconciliation between Horizon and POL SAP
+CTS Reports and Settlement
+
+NB101 / NB102 Reports for Banking Settlement
+MoneyGram Reconciliation and Settlement
+
+Camelot Reconciliation and Settlement
+
+These are explored in more detail below.
+
+241 Cash Reconciliation between Horizon and POL SAP
+
+This is what was looked at last week.
+
+The requirement is for a new report to be delivered by HORIce that is similar to the
+current “Estate Cash and Bureau Balance” Report. The changes required are as
+follows:
+
+1.
+
+Initially, only Cash is required.
+
+The current report provides levels for all currency and also Currency in
+Pouches. Although initially these are not required, it is likely that a
+reconciliation of Currency holdings would also be beneficial, so it is proposed
+that the calculation of Currency Balances is retained. It is straightforward to
+filter them out if not required.
+
+Cash (and currency) levels should be calculated at the end of the Trading Date
+rather than the end of the Journal Date
+
+The current report is constructed by joining the Opening Balances to the
+Cumulative Summary data which is calculated at midnight GMT. POL SAP
+data is based on data calculated at the end of the Trading Day (ie 19:00 Local
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\newsomep \appdata\local\microsoft\windows\temporary internet files\content.outlook\nvddoaaj\old
+
+horizon.docx
+
+Page I of 5
+
+FI1539/1
+FUJ00086810
+
+FUJ00086810
+
+time). This means that there is a mismatch for those Branches that trade in the
+evening.
+
+It is proposed that the report is calculated by joining the Opening Balances and
+the Daily Summaries which are separated out by Trading date as well as
+Journal date.
+
+Care is needed to ensure that the correct TP / BP is used in the case that a SU
+is rolled over after 7pm.
+
+3. Pending Transfers need to be taken into account
+
+A separate report was produced “GIJ - Outstanding Transfers 2” which
+calculated the value of Pending Transfers per Branch at End of Day. Post
+Office Ltd would still like this report, but would also like the value of the
+Pending Transfers to be included in the Horizon Cash Levels.
+
+Also if calculating currency levels, then Pending Transfers should also be
+included.
+
+Should the Outstanding Transfers Report be extended to also include Currencies?
+
+Th
+
+e expectation is that the Cash Levels in Horizon and POL SAP would match up and
+Post Office Ltd would expect to check this periodically (eg once per month).
+
+If the values don’t match then this will require investigation by POL.
+
+I'm concerned about introducing a further level of reconciliation and any implications that
+may but on Fujitsu to investigate them. I suspect that there are differences in some branches
+going back to operational issues in the very early days of POL SAP and its predecessors.
+There has been not attempt at full reconciliation since the initial levels were loaded back in
+2004.
+
+We need to be able to define how far back such a report can be produced.
+
+Opening Balances are held for 3 TPs and a min of 62 days and Daily Summaries are held for
+84 days so I would guess that we could guarantee data for 60 days (ie 2 months)
+
+David Jordan of Post Office Ltd has indicated that he would like to extend the amount
+of data held in Horizon. However Horizon was never designed to retain data for any
+
+lon;
+
+ger than is required to pass it through to Post Office Ltd back end systems and to
+
+enable Fujitsu to support operational issues. The auditing of transactions is a separate
+function and is done outside the online Horizon database and is not designed for
+producing such queries.
+
+If Horizon is really required to support more historical reporting, then a significant re-
+
+des
+
+ign is required.
+
+2.2 CTS Reports and Settlement
+
+I now understand what Post Office Ltd do with the CTS Report that we send them
+
+eacl
+
+h day. The process is as follows:
+
+1. The report is pulled down from PODG as a text file and loaded into an Excel
+Spreadsheet
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\newsomep \appdata\local\microsoft\windows\temporary internet files\content.outlook\nvddoaaj\old
+
+horizon.docx
+
+Page 2 of 5
+
+FI1539/2
+2.3
+
+FU,
+
+2. A new copy is made of a Master Spreadsheet (which has been set up based on
+Reference Data and maps all the products that might appear in the CTS file to
+tabs aligned to the clients that Post Office Ltd need to settle with). The Data
+from Horizon is pasted into the first tab
+
+3. The control total from the bottom of the CTS Report is pasted into a control
+total field
+
+4. This results in a spreadsheet with a detailed tab for each Client with which
+settlement is required and the data from the CTS file is reflected in the
+appropriate tab. There is also a control tab which shows totals from each
+Client tab and adds them up and compares the totals with the total from the
+original CTS file. Should these control totals not match, then this is
+highlighted.
+
+5. Different members of the team then use the data from the individual client tabs
+on the appropriate day (settlement may be 2 or 3 days later — dependent on the
+client) and use that to set up the settlement payments.
+
+6. One Member of the team maintains a paper list of all the clients and ensures
+that all the client settlements have been made at the appropriate time.
+
+David Jordan is concerned about the need to paste the data between spreadsheets, but
+it seems hard to come up with anything much simpler.
+
+I propose that nothing is changed here.
+
+NB101 / NB102 Reports for Banking Settlement
+
+Horizon’s DRS system generates NBS 101 / 102 reports for reconciliation with
+Banking clients. There are a number of such reports:
+
+1. Link
+
+2. Santander
+
+3. Card Account
+4. E-Pay
+
+5. Global Pay
+
+6. Global Pay - AMEX
+
+The settlement team seem to only be concerned with the first 3.
+
+It would appear that e-pay is ignored and settlement is done purely on e-pay data received.
+This seems unlikely and perhaps this needs further investigation with other teams that are
+perhaps out of scope.
+
+Plastic settlement is handled by a different team and appears to be out of scope.
+
+The main complaint is about the NB102 reports. The issue is that these reports do not
+break the information down by Client. As the Settlement figure on the NB101 is
+aligned to the LREC files, which are calculated according to the LINK cut-off
+(approx. 20:00 rather than 19:00 which is when data is posted to POL SAP), exact
+matching in POL SAP is not possible. POL SAP has separate accounts for each
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\newsomep \appdata\local\microsoft\windows\temporary internet files\content.outlook\nvddoaaj\old
+horizon.docx Page 3 of 5
+
+FUJ00086810
+}J00086810
+
+FI1539/3
+FUJ00086810
+FUJ00086810
+
+Client bank and so since the exceptions don’t indicate which client they relate to it is
+difficult to account for the exceptions.
+
+The reason that separate accounts are needed for each client relate to the fees that the
+clients pay Post Office Ltd for providing banking services. These are client specific.
+However Settlement of money paid out is all done through Link.
+
+This issue is also relevant to Santander.
+
+2.4 MoneyGram Reconciliation and Settlement
+
+The process here is complicated! In summary:
+
+1. MoneyGram send a daily settlement file to Torstein Godeseth in Fujitsu. This
+is a password encrypted .zip file
+
+2. He then decrypts the file and emails it to Chesterfield
+
+Apparently there is a problem in decrypting the file that can’t be resolved! In the past, then
+POL had a password and could do it, but for some reason they don’t fully understand this is
+no longer possible.
+
+After discussions with Torstein, this appears to be a consequence of the standard Laptop Build
+used by Post Office staff which doesn’t support Password encrypted zip files
+
+3. In Chesterfield, they then run a macro (provided by Torstein) which generates
+2 output files
+
+There were complaints that this macro now takes 10 to 15 mins to run each day when in the
+past it used to just take a few seconds. It isn’t clear why Torstein ended up writing a macro to
+assist in this process!
+
+4. The first of these is a .csv file which is then renamed and loaded up into
+PODG where it is sent to POL SAP for overnight processing
+
+On a Monday, there will be 3 files generated, so the POL SAP support team have to manually
+load 2 of them. Similarly after Bank Holidays!
+
+5. The other is an .xlsx file which is used by the reconciliation team to compare
+with a daily file received from Fujitsu of MoneyGram transactions.
+
+A simple solution to the issue is for a PODG transformation to be commissioned
+whereby PODG delivers the two files that are required directly to Chesterfield.
+
+Apparently, that was what was originally requested, but there was an issue with the timescales
+and costs thus resulting in the present mess.
+
+Should we be looking at pushing MoneyGram transactions through DRS so as to get
+NBIOI and NB102 reports? Post Office appear to be attempting to duplicate the
+reconciliation in POL SAP.
+
+This needs some further investigation.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\newsomep \appdata\local\microsoft\windows\temporary internet files\content.outlook\nvddoaaj\old
+horizon.docx Page 4 of 5
+
+FI1539/4
+FUJ00086810
+FUJ00086810
+
+2.5 Camelot Reconciliation and Settlement
+
+It would appear that PING has gone live for Camelot (at last). However it would
+appear that the Horizon postings for Camelot don’t come through until 2 or 3 days
+late. This seems to imply that the TA is used to handle the Camelot posting not just
+the cash associated with it.
+
+I need to find out more about exactly how PING for Camelot works.
+
+Perhaps we could process the Camelot file in BRDB (as we do for PayStation) rather than it
+being processed in Credence. That would probably also remove the TA feed from Credence to
+Horizon.
+
+This needs further investigation.
+
+3. Further areas of Investigation
+
+More work is required to investigate the process with MoneyGram and Camelot
+before any firm proposals can be made. It is proposed that CRs are raised with
+Fujitsu so that these investigations can be carried out.
+
+4. Suggested Horizon Changes
+
+As outlined above, there are two areas where firm changes can be described and be
+introduced to the formal Change systems:
+
+1. Enhance the “Estate Cash and Bureau Balance” Report in HORIce as
+described in section 2.2.
+
+2. Enhance the NB102 reports to break them down by Client as outlined in
+section 2.3. Detailed report layouts will need to be agreed between Post
+Office Ltd and Fujitsu as part of the design of this change.
+
+It is proposed that CRs are raised with Fujitsu requesting that these changes are made.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\newsomep \appdata\local\microsoft\windows\temporary internet files\content.outlook\nvddoaaj\old
+horizon.docx Page 5 of 5
+
+FI1539/5

@@ -1,0 +1,2364 @@
+FUJ00234943
+
+FUJ00234943
+
+CONFIDENTIAL
+Schedule 16
+Payment and Banking Service: Service Description
+1. BACKGROUND
+inl Payment and Banking Service is a set of management services and infrastructure components
+
+that have been deployed by Fujitsu Services in conjunction with its Sub-contractor Ingenico.
+The Payment and Banking Service is developed to interact with the HNG-X System to provide
+the following Business Capabilities and Support Facilities:
+
+(a) the Banking Business Capability, as described in paragraph 2.5 of
+Schedule B3.2 of the Agreement;
+
+(b) the management of payments using the Debit Card and Credit Card
+methods of payment within the Payment Management Business
+Capability, as described in paragraphs 2.10.4 - 2.10.8 of Schedule B3.2 of
+the Agreement; and
+
+(c) the Transaction Management Support Facility, as described within
+paragraph 3.4 of Schedule B3.2 of the Agreement.
+
+Payment and Banking Service was implemented to reduce the scope of the Card Data
+Environment (CDE) within the HNG-X System, it communicates all Cardholder Data point-
+to-point encrypted within the Payment and Banking Solution. As the encryption keys are
+unavailable to Fujitsu Services and Post Office, all data in scope of PCI DSS (Cardholder
+Data and Account Data (P2PE)) for PBS Transactions are not accessible by Fujitsu Services
+or Post Office as part of the transaction process. Access to encrypted PANs within the HNG-
+X System does remain in relation to reconciliation however, this shall continue until
+GlobalPayments, Vocalink and American Express implement changes to mask the PANs
+communicated in reconciliation data. Unless explicitly stated otherwise in this Service
+Description, no other Schedule B Schedule, Service Descriptions or CCDs shall apply to this
+Payment and Banking Service.
+
+DEFINITIONS
+In this Schedule 16, the following terms shall have the following meanings:
+“AXIS Software” means the software hosted on the Ingenico Central Platform;
+
+“C3 BTA Software” means the components of the C3 Software that support PBS Banking
+Transactions;
+
+“C3 CPA Software” means the components of the C3 Software that supports EMV Payment
+Transactions;
+
+“C3 Software” means the firmware deployed onto the PIN Pad, including the C3 CPA
+Software and the C3 BTA Software;
+
+“Ingenico” means Fujitsu Services Sub-contractor, Ingenico Retail Enterprise (UK) Limited,
+and (as the context requires) its subcontractors;
+
+Schedule I6 V15.0
+Page 1 of 35
+FUJ00234943
+
+FUJ00234943
+
+CONFIDENTIAL
+
+3.2
+
+“PBS Core Availability” means Monday to Friday (excluding Bank Holidays) — 8am to
+5.30pm and Saturday — 8am to Ipm. These are the core hours used in the definitions of the
+Service Level Targets for the Payment and Banking Service over which availability of the
+Ingenico Central Platform shall be assured; and
+
+“PCI P2PE” or “Payment Card Industry Point to Point Encryption” means the standard
+applicable to card data encryption solutions between a payment terminal and a payment
+server, which shall protect the PBS Data on the merchant's network, as published by the PCI
+ssc.
+
+DESCRIPTION OF THE SERVICE
+
+Service Summary
+
+The Payment and Banking Service provides the following elements of service, integrating the
+services provided by Fujitsu Services with the HNG-X Operational Services:
+
+3.1.1 The PBS Transaction Service
+
+The PBS Transaction service provides the functional transaction processing elements of the
+services and is made up of the following component parts:
+
+* Thecentral payment processing platform - the Ingenico Central Platform ~ and related
+services to support the overall PCI DSS conformant solution.
+
+¢ Transaction processing applications, interacting with the HNG-A Software at the
+Counter Position, running on each PIN Pad supporting the processing of EMV
+Payment Transactions (the C3 CPA Software), PBS Banking Transactions (the C3
+BTA Software).
+
+e Merchant Web Interface (i.e. Web Portal).
+3.1.2. Payment and Banking Support Services
+
+To support the continued delivery and availability of the PBS Transaction service the Payment
+and Banking Service also provides:
+
+¢ Pro-active monitoring of the Ingenico Central Platform and AXIS Software
+e Incident Management, including Major Incident Management
+e Problem Management
+© Configuration and Operational Change Proposal management, for both:
+o The Payment and Banking Solution, and
+
+o. The PIN Pad configuration management aspects of the Operational Business
+Change (Branch Change) Service
+
+© Change and Release Management
+© Architectural oversight for the Payment and Banking Solution
+
+¢ Support for fraud investigations and/or prosecutions (cither via access to the CRM
+De-Tokenisation API or under paragraph 3.2.9).
+
+Service Definition
+
+Schedule I6 V15.0
+Page 2 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+3.2.1 The PBS Transaction Service Components
+3.2.1.1 Ingenico Central Platform and Related Services
+
+The Ingenico Central Platform is a network, hardware and software infrastructure,
+including the AXIS Software, and transactional databases, centrally hosted and
+operated in a fully redundant environment by Ingenico, ensuring the concentration
+of PBS Transaction flows from Counter Positions, their processing links with the
+Acquirers’ centres and the archiving of PBS Transaction history. This includes:
+
+a) The configuration of acceptance contracts;
+
+b) The routing of electronic PBS Transaction flows from Branch Hardware on
+IP links;
+
+c) Aggregation of PBS Transactions' data on central servers;
+
+d) Delivery of PBS Transaction and authorisation data to (as applicable)
+Acquirer centres and/or Vocalink;
+
+e) The creation and transmission of settlement data to the Acquirer; and
+
+f) Protection of card data exchanged and stored on the Ingenico Central
+Platform according to the PCI DSS security rules.
+
+3.2.1.1.1 Card types accepted
+
+The types of cards accepted by the solution are detailed in the CCD entitled “Axis
+Managed Payment Service Solution - Solution Design” (DES/APP/MAN/3760).
+
+3.2.1.1.2 Multi-Acquirer Architecture
+
+The PBS Transaction service is based on a multi-Acquirer architecture allowing the
+configuration of multiple Acquirer contracts. Routing to different acquiring hosts
+can be established via provisioning configuration. However, for the avoidance of
+doubt, any change to Post Office Acquirer(s) or Vocalink must be made via the
+Change Control Procedure, to ensure the change is adequately configured and tested
+prior to release to the production environment.
+
+3.2.1.1.3 Connectivity
+
+The connectivity between the C3 Software and the Ingenico Central Platform is
+based on TCP/IP protocol. The dialogues are always initiated by the C3 Software
+towards the AXIS Sofiware server of the Ingenico Central Platform. The link
+between the Ingenico Central Platform and the Acquirer may use the X25, XoT or
+IP protocols via Ingenico's dedicated access points, depending on the connectivity
+requirement of the Acquirer. The detailed connectivity infrastructure deployed is
+detailed in the CCD entitled “Axis Managed Payment Service Solution - Solution
+Design” (DES/APP/MAN/3760).
+
+3.2.1.1.4  P2PE
+The point to point encryption (P2PE) service enables card data encryption between
+the PIN Pad and the Ingenico Central Platform. To enable this, PIN Pads must first
+
+be activated in Ingenico's PCI-P2PE certified customisation centre and deployed
+according to PCI P2PE rules.
+
+Schedule I6 V15.0
+Page 3 of 35
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+The PIN Pad is activated by means of a P2PE encryption key injected according to
+a PCI P2PE certified process, transported and deployed at Post Office sites
+according to the rules defined by the PCI P2PE standard. The P2PE functionality
+reduces the Post Office PCI DSS certification perimeter provided that Post Office
+has implemented the P2PE Implementation Manual (PIM) issued by Fujitsu
+Services and set out in the CRD entitled “P2PE Implementation Manual” ([@]), and
+that Ingenico is referenced by the PCI-SSC as the P2PE compliant solution supplier.
+Fujitsu Services shall maintain the certification on PIN Pads and a defined
+application scope.
+
+3.2.1.1.5 Asset Tracking via Web Portal
+
+The P2PE Asset Management Service, as described in the CCD entitled “P2Pe Asset
+Management Service: Service Description” (SVM/SDM/SD/3756) is accessed via
+the Web Portal. It enables Post Office to manage the deployment of its PIN Pads
+over their entire life cycle, from delivery to Post Office to being scrapped. This
+service allows Post Office to manage the status specified in the P2PE
+Implementation Manual (PIM), and to generate inventory discrepancies as required
+by the PIM.
+
+3.2.1.1.6 I Content Remote Download
+
+The remote download feature allows the download, to all or part of the Post Office
+estate of PIN Pads, of content specific to Post Office, such as logo, image, video,
+ete. Post Office shall provide content for download to PIN Pads to Fujitsu Services
+and define how the download campaign should progress, as part of service requests
+for campaigns to be setup and initiated. Fujitsu Services will then ensure that the
+content is downloaded to PIN Pads by Ingenico accordingly.
+
+For information purposes only, Ingenico will initiate a campaign to coordinate any
+specific downloads required to the PIN Pad estate. Each campaign will be designed
+to the specific nature of the downloads being pushed to the PIN Pad estate, as this
+could differ from a simple screensaver update, to a new version of a component
+application on the PIN Pad.
+
+Ingenico manages campaigns so that there are no more than approximately 200
+concurrent PIN Pad downloads at any single point in time; however, there can be
+multiple downloads over a single night to address more than 200 actual PIN Pads.
+Any PIN Pad campaigns initiated will be subject to an agreed schedule with Post
+Office.
+
+3.2.1.1.7 CRM Tokenisation
+
+3.2.1.1.8 — For every card seen by the Payment and Banking Solution, a CRM Token is
+
+generated and returned on the first occasion, and looked up and returned
+thereafter. The original PAN can only be discovered by looking the CRM
+Token up using the CRM DeTokenisation API, as described in paragraph
+3.2.1.5 of this Schedule 16, there is no key or algorithm to derive it.
+
+3.2.1.2 The PBS Transaction Service for EMV Payment Transactions
+
+3.2.1.2.1 C3 CPA Software
+
+Schedule I6 V15.0
+
+Page 4 of 35
+CONFIDENTIAL
+
+3.2.1
+
+3.2.1
+
+3.2.1
+
+Schedule I6 V15.0
+Page 5 of 35
+
+FUJ00234943
+
+FUJ00234943
+
+The C3 CPA Software provides the interface between the in-Branch components
+(Counter Position and PIN Pad application) and the AXIS Software servers of the
+Ingenico Central Platform for EMV Payment Transaction processing. The C3 CPA
+Software connects to the Ingenico Central Platform via TCP/IP.
+
+.2.2 Protocols and supported countries
+
+As part of the PBS Transaction service, the following countries and Acquirers'
+protocols can be supported for EMV Payment Transactions:
+
+Country Protocol
+
+UK APACS
+
+2.3. Payment environments
+
+As part of the PBS Transaction service, the following payment mechanisms are
+supported:
+
+o InBranch payments
+
+© Host to Host Refunds from Fujitsu Services’ HNG-X System, as defined in
+the document entitled Horizon to Ingenico PBS payments Undo AIS
+(REQ/APP/AIS/4044)
+
+The latter allows HNG-X Application initiated refunds and reversals. Via an
+interface between the HNG-X Application and the AXIS Software server of the
+Ingenico Central Platform, automated reversals or refunds of EMV Payment
+Transactions can be made In respect of EMV Payment Transactions which failed
+or were cancelled, either at the Counter Position or otherwise by the HNG-X
+System, after the EMV Payment Transaction.
+
+2.4 Degraded Mode
+
+This paragraph details the functionality provided by the Payment and Banking
+Solution to support a degraded mode of operation. For the avoidance of doubt,
+this functionality, whilst stated here is not configured for live operation for Post
+Office. If required, this could be enabled for future operation using the Change
+Control Procedure.
+
+In the event of a failure of the communication between the C3 CPA Software and
+the AXIS Software server of the Ingenico Central Platform, the Payment and
+Banking Service may, according to an associated parameterization, continue to
+operate in “degraded” mode: the C3 CPA Software, without access to any
+communication with the AXIS Sofiware server of the Ingenico Central Platform,
+must then process the EMV Payment Transaction locally, with a limit of behaviour
+and amount defined between Post Office and the Acquirer. Any payment options
+which can only be processed “online” with the Acquirer will not be supported in
+“degraded” mode.
+
+When operating in “degraded” mode, Post Office must note that the PIN Pad may
+store EMV Payment Transactions locally. In order to be remitted to the bank, said
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+EMV Payment Transactions must therefore be sent to the AXIS server of the
+Ingenico Central Platform, before any replacement, maintenance or withdrawal of
+such PIN Pad(s) is performed.
+
+Post Office must ensure that all EMV Payment Transactions performed in
+“degraded” mode, and therefore stored locally on the PIN Pad, can be sent to the
+AXIS server of the Ingenico Central Platform, either by Post Office or its sub-
+contractors or by Fujitsu Services, as soon as possible.
+
+3.2.1.2.5 I CRM De-Tokenisation API
+
+Provision of and support for a CRM De-Tokenisation API, use of which will allow
+the original PAN associated with a CRM Token, provided by the CRM Tokenisation
+facilities described in paragraph 3.2.1.1.7 of this Schedule 16, to be recovered. The
+system from which this API is invoked should be assumed to be a CAT 1 PCI system
+and subject to PCI DSS compliance. Post Office shall create a clean room facility
+where this API will be housed and used. No provisioning or support of the clean
+room, or any user interface associated with the clean room or API is included within
+the Payment and Banking Service, or the other HNG-X Services.
+
+For Post Office to use this CRM De-Tokenisation API in a live production
+environment, it must evidence to Fujitsu Services an active Attestation of
+Compliance (AoC) for PCIDSS. Post Office agrees to keep this certification up-to-
+date, at its cost, for the Term of the Agreement and provide a copy of its most recent
+Attestation of Compliance on renewal or on request from Fujitsu Services.”
+
+3.2.1.2.6 Offline Mode
+
+This paragraph details the functionality provided by the Payment and Banking
+Solution to support an Offline Mode of operation. For the avoidance of doubt,
+this functionality, whilst stated here is not configured for live operation for Post
+Office. If required, this could be enabled for future operation using the Change
+Control Procedure.
+
+In the case of failure of the communication between the Ingenico Central Platform
+and the computer system of the Acquiring centres, the payment application may,
+according to the payment card processing rules, accept certain Transactions. It is
+said that these EMV Payment Transactions are carried out “offline”.
+
+Cards that require an authorisation request, with a required positive response from
+the Acquirer centre, cannot be accepted in this mode of operation. Cards that do not
+require authorisation may be accepted.
+
+The acceptance of a card in “offline” processing must meet the acceptance rules of
+the Acquirer and the issuer of the card.
+
+3.2.1.3 The PBS Transaction Service for PBS Banking Transactions
+
+3.2.1.3.1 C3 BTA Software
+
+The C3 BTA Software provides the interface between the in-Branch components
+(Counter Position and PIN Pad application) and the AXIS Sofiware servers of the
+
+Schedule I6 V15.0
+
+Page 6 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+Ingenico Central Platform for PBS Banking Transactions. The C3 BTA Sofiware
+connects to the Ingenico Central Platform via TCP/IP.
+
+3.2.1.3.2 Protocols and supported countries
+
+As part of the PBS Transaction service, the following countries and Acquirers'
+protocols are supported for PBS Banking Transactions:
+
+Country Protocol
+
+UK VOCALINK LISS
+
+3.2.1.3.3. Banking Environments
+
+As part of the PBS Transaction service, the following transaction environments are
+supported:
+
+co Local in branch banking transactions
+
+o Host to Host Reversals from Fujitsu Services back office systems via
+software managed by Post Office in Post Office Cloud (in accordance with
+the document entitled “AWS NRT and Agent Lambda Solutions”
+(DES/APP/HLD/4410)), to the AXIS Server of the Ingenico Central Platform
+(in accordance with the document entitled “Card Present API Functional
+Specification” (REQ/APP/AIS/4114))
+
+The latter allows HNG-X Application initiated banking reversals. Using an interface
+between the HNG-X Application and the AXIS Server of the Ingenico Central
+Platform, via sofiware managed by Post Office in Post Office Cloud, automated
+reversals of PBS Banking Transactions can be made in respect of Transactions
+which failed or were cancelled, either at the Counter Position or otherwise by the
+HNG-X System, after the PBS Banking Transaction.
+
+3.2.1.3.4  Multi-Acquirer Architecture
+
+The PBS Transaction service is based on a multi-Acquirer architecture allowing the
+configuration of multiple Acquirer contracts. However all PBS Banking
+Transactions will be routed to Vocalink as the processing host.
+
+3.2.1.3.5 Degraded mode
+
+There is no Degraded Mode to support PBS Banking Transactions. In the event of a
+failure of the communication between the C3 BTA Software and the AXIS server
+of the Ingenico Central Platform, PBS Banking Transactions will not be accepted as
+all PBS Banking Transactions must be performed fully online to the Vocalink host.
+
+3.2.1.3.6 Offline mode
+
+There is no Offline Mode to support PBS Banking Transactions. In the case of
+failure of the communication between the Ingenico Central Platform and the
+computer system of the Acquiring centres, PBS Banking Transactions will not be
+accepted as all PBS Banking Transactions must be performed fully online to the
+Vocalink host.
+
+Schedule I6 V15.0
+Page 7 of 35
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+3.2.1.4 Web Portal
+
+Schedule I6 V15.0
+Page 8 of 35
+
+The Web Portal, delivered by the Ingenico Central Platform, is an online reporting
+and monitoring tool. Web Portal provides mechanisms to view and search on PIN
+Pad and EMV Payment Transaction and PBS Banking Transaction data.
+
+3.2.2 Pro-active monitoring of the Ingenico Central
+Platform and AXIS Software
+
+Fujitsu Services shall (acting via Ingenico) actively monitor the operations and
+performance of the Ingenico Central Platform and the AXIS Software twenty-four
+(24) hours per day, every day of the year. Any service impacting Incidents identified
+through monitoring will be managed to resolution using the Incident Management
+processes as described below. Fujitsu Services will report P 1 or P2 priority Incidents
+for the Payment and Banking Service whenever they are identified, P3 priority
+Incidents for the Payment and Banking Service identified outside of the hours of
+availability of the Payment and Banking Service will be reported the next Working
+Day.
+
+Post Office and Fujitsu Services nominated users will also be given access to a
+customised dashboard displaying metrics of performance data for the Ingenico
+Central Platform and AXIS Software.
+
+3.2.3 Incident Management, including Major Incident
+Management
+
+Fujitsu Services will be responsible for informing Post Office of any Payment and
+Banking Service affecting Incidents identified by Fujitsu Services or its Sub-
+contractors.
+
+The Payment and Banking Service will conform to the Fujitsu Services POA
+Incident management process as defined in the Working Document entitled: “POA
+Operations Incident Management Process” (SVM/SDM/PRO/0018).
+
+Major Incidents will be managed in accordance with the Working Document
+entitled: “POA Major Incident Process” (SVM/SDM/PRO/0001).
+
+3.2.4 Problem Management
+
+The Payment and Banking Service will conform to the Fujitsu Services POA
+problem management process as defined in the Working Document entitled:
+“Interface Agreement for the Problem Management Interface” (CS/IFS/008).
+
+Problem records will be created and maintained to review all P1 Incidents,
+regardless of whether or not the Service Levels in respect of such Incident were met,
+or whenever the Parties identify a trend in Service Level performance which
+reasonably indicates that there may be a future P1 Incident. Fujitsu Services and/or
+its Sub-contractors will perform root cause analysis (RCA) investigations for these
+problem records and report their findings within seven (7) Working Days.
+
+For P2 Incidents, an informal update on the cause of the Incident will be provided
+to Post Office, including any additional actions required to prevent such Incidents
+from happening again.
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+If the Parties identify a trend in Service Level performance, which reasonably
+indicates that there will be a future P1 or P2 Incident, a root cause analysis of the
+trend will be performed. The findings will be reported to Post Office and any
+necessary steps to prevent an actual PI or P2 Incident indicated by such root-cause
+analysis will be taken.
+
+3.2.5 Payment and Banking Solution Configuration
+and Operational Change Proposal Management
+
+Fujitsu Services will notify Post Office of all scheduled changes to be made to the
+Payment and Banking Solution and unless otherwise agreed shall carry out
+maintenance work on the Payment and Banking Solution, as follows;
+
+Minimum notice period prior to maintenance:
+
+¢ fifteen (15) Working Days, for any changes which will affect or
+change the experience of Post Office users in Branches; or
+
+¢ ten (10) Working Days, for any changes which Post Office would
+consider “significant” (as defined by Post Office);
+
+¢ four (4) Working Days, for all other non-service impacting
+changes;
+
+¢ except where Fujitsu Services believes (acting reasonably) that a
+failure to perform the maintenance operations may lead to a P1 or
+P2 Incident, in which case such notice must be received no less than
+one (1) Working Day;
+
+a) Fujitsu Services will notify and seck agreement from Post Office for the
+above scheduled changes. Any agreement from Post Office will not be
+unreasonably withheld. In the event that the Parties are not able to gain
+agreement, and where Fujitsu Services can demonstrate that it is required
+scheduled maintenance; then Fujitsu Services will not be liable for failure
+to meet any Service Levels or obligations within this Payment and Banking
+Service which would not have occurred had the change taken place, until
+such times as the scheduled maintenance has been executed.
+
+b) As part of monthly reporting for the Payment and Banking Service (as
+described in paragraph 3.4.8 of this Service Description) Fujitsu Services
+will report on the success of all scheduled maintenance that has taken place
+in the previous month. Any unscheduled maintenance performed as a result
+of Incidents, such as any emergency changes, will also be reported on.
+
+c) For all maintenance outside the above windows, Post Office may notify
+Fujitsu Services of any concerns they may reasonably have. In this scenario,
+the Parties will work together to agree the best conditions to perform the
+maintenance.
+
+Fujitsu Services will raise Operational Change Proposals to notify Post Office of
+scheduled changes to be made by Ingenico. The Payment and Banking Service will
+create and/or impact Operational Change Proposals for operational changes in
+
+Schedule I6 V15.0
+Page 9 of 35
+CONFIDENTIAL
+
+Schedule I6 V15.0
+Page 10 of 35
+
+FUJ00234943
+
+FUJ00234943
+
+accordance with the CCD entitled: “Service Management Service, Service
+Description” (SVM/SDM/SD/0007).
+
+A freeze period is a period of time during which scheduled downtime cannot be
+carried out. Fujitsu Services shall on an annual basis notify Post Office of its freeze
+period(s) for the forthcoming year for the Payment and Banking Service one (1)
+month before any freeze period is set. The parties shall, acting reasonably, discuss
+and to the extent operationally feasible adjust the proposed freeze period(s) to fit
+requirements.
+
+Whilst performing maintenance or repairs during any scheduled downtime or
+unscheduled downtime, Fujitsu Services shall use all reasonable endeavours to
+minimise the impact on the Payment and Banking Service.
+
+Post Office shall notify Fujitsu Services of a freeze period for the Payment and
+Banking Service one (1) month before any freeze period is set. Should this freeze
+period restrict Fujitsu Services from performing required maintenance that would
+be required to maintain the platform and the Service Level Targets of the Payment
+and Banking Services (set out in this Schedule 16), then Fujitsu Services will not be
+subject to any liquidated damages (payable in accordance with clause 18 (Service
+Level Remedies)) accrued during the freeze period that would have been prevented
+had Fujitsu Services been able to undertake the required maintenance.
+
+3.2.6 Configuration Management in Support of the
+Operational Business Change (Branch Change)
+Service
+
+The Payment and Banking Service will manage the configuration of PIN Pads,
+including MID & TID data, in support of the Operational Business Change (Branch
+Change) Service when making changes in the configuration of Branches and
+Counter Positions.
+
+The allocation of identification numbers (MID & TID) to a C3 Software enabled
+PIN Pad and configuration of the AXIS Software to accept transactions from that
+PIN Pad, in respect of an Operational Business Change request, will constitute an
+Activation to the Payment and Banking Service. After the initial roll-out of the
+Payment and Banking Service to the Branch estate the first 2,000 Activations per
+year is included in the Charges for the Payment and Banking Service. All
+Activations over and above this first 2,000 will be charged at the rate as identified
+in paragraph 3.6 of this Service Description
+
+3.2.7 Change and Release Management
+
+The Payment and Banking Service will participate in the Change Control Procedure
+as documented in Schedule A3 of the Agreement. Fujitsu Services will involve
+Ingenico in the evaluation, design and impact assessment of any proposed changes,
+as necessary.
+
+Should such change result in changes to the Payment and Banking Solution then
+release and deployment of the changed system will be managed using a combination
+of the Operational Change procedures documented in paragraph 3.2.5 above and the
+CONFIDENTIAL
+
+Schedule I6 V15.0
+Page 11 of 35
+
+FUJ00234943
+
+FUJ00234943
+
+Release Management Service as documented in Annex A of the CCD entitled
+“Service Management Service: Service Description” (SVM/SDM/SD/0007), as
+appropriate.
+
+3.2.8 Architectural Oversight
+
+The Payment and Banking Service shall provide architectural oversight by way of
+subject matter expertise in the Payment and Banking Service. Technical subject
+matter expertise shall include Ingenico’s resources provided by their UK Solution
+Management and UK Solution Integration Team (SIT) teams. Such subject matter
+expertise will support:
+
+a) Ongoing PCI DSS compliance and regulation compliance;
+b) Solution knowledge over time is retained;
+
+c) Solution roadmap is defined and change requests are produced as necessary,
+to include provision of updates on Solution roadmap to Post Office, twice a
+year;
+
+d) Service analysis and upgrade management is performed; and
+e) Provision of PCI DSS annual accreditation & audit support.
+
+3.2.9 Support for Fraud Investigations and/or
+Prosecutions
+
+For the period up to Payment and Banking Service Trigger Point PBS3
+Commencement of Payment and Banking Pilot and thereafter, only in respect of
+Audit Record Queries relating to the period prior to Payment and Banking Service
+Trigger Point PBS3, the Payment and Banking Service shall support the Litigation
+Support elements of the Security Management Service (as described in the CCD
+entitled Security Management Service: Service Description
+(SVM/SDM/SD/00017)) whenever Audit Record Queries include queries on PBS
+Transactions and specify PCI classified data in the search criteria. The provision of
+the response to those elements of queries relating to PCI classified data shall be
+forwarded by Ingenico who will respond directly to Post Office, or to a government
+authority as directed by Post Office. Such Audit Record Queries must only be
+requested with the direction of a government authority, such as the police or court.
+
+3.2.10 Service Management
+3.2.10.1 Continuous Service Improvement
+
+Fujitsu Services will work with Ingenico and Post Office to identify and implement,
+where agreed, service or cost improvement initiatives within the Payment and
+Banking Service.
+
+3.2.10.2 Supplier Management
+
+Fujitsu Services will be responsible for managing its third party suppliers utilised in
+the support of the Payment and Banking Service, principally Ingenico. These
+activities consist of:
+
+a) monitoring the performance of the Sub-contractor;
+CONFIDENTIAL
+
+Schedule I6 V15.0
+Page 12 of 35
+
+FUJ00234943
+
+FUJ00234943
+
+b) managing incidents and problems related to the Sub-Contractor; and
+c) managing changes related to the Sub-contractor.
+3.2.10.3 Service Reporting
+
+The Payment and Banking Service shall provide service reporting for distribution to
+Post Office in accordance with the Service Management Service described in the
+CCD entitled: “Service Management Service, Service Description”
+(SVM/SDM/SD/0007), including all reporting received from Ingenico as detailed in
+paragraph 3.4.8 of this Service Description.
+
+3.2.11 I Hypercare
+
+This paragraph specifies the manner in which the Payment and Banking Service is
+to be delivered and shall not be construed as imposing any higher standard with
+respect to the provision of the Payment and Banking Service than specified in the
+Service Level Targets.
+
+3.2.11.1 Fujitsu Services shall procure that Ingenico shall maintain an enhanced
+level of account support to Post Office when delivering the Payment
+and Banking Services (the “Hypercare Service”).
+
+3.2.11.2 As part of the Hypercare Service, Fujitsu Services shall procure that
+Ingenico provides an account structure to Post Office consisting of the
+following resources:
+
+a) an ‘Account Manager’ and ‘Client Support Executive’ to provide
+account steerage and representation in Ingenico, respond promptly and
+appropriately to commercial and assets issues raised and act as a
+dedicated and consistent single point of contact for commercial
+relationship management;
+
+b) a dedicated Customer Service Manager which shall:
+
+(i) provide monthly management information on the previous month’s
+performance of the Payment and Banking Services and the
+performance of the ‘Ingenico Central Platform’, which shall contain
+(as a minimum) the following:
+
+¢ service level performance;
+
+«key performance indicators (KPIs) on the ‘Ingenico Central
+Platform’;
+
+¢ trend information on service levels and K Pls;
+
+¢ any applicable change requests;
+
+¢ information on any incidents; and
+
+© updates on any service improvement plans; and
+
+(ii) support prompt resolution and management of all service-related
+
+ues, and resolution of the same in accordance with agreed service
+level timescales;
+CONFIDENTIAL
+
+3.3 Service Availability
+
+Schedule I6 V15.0
+Page 13 of 35
+
+(iii)
+
+c)
+(i)
+(ii)
+(iii)
+(iv)
+
+d)
+
+e)
+
+3.2.11.3
+
+a)
+
+b)
+
+c)
+
+d)
+
+°)
+
+FUJ00234943
+
+FUJ00234943
+
+manage service / account improvement plans and will support, in
+conjunction with the ‘Account Director’, periodic reviews of the
+following:
+
+quarterly or bi-annual product roadmap reviews;
+
+© access to Fujitsu Services’ ‘Innovation Labs’ as may be required
+as part of the Payment and Banking Servic ind
+
+© any specific service improvement initiatives raised during
+monthly service reviews; and
+
+personnel with solution subject matter expertise in respect of the Post
+Office architecture and PCI standards, to ensure:
+
+ongoing PCI and wider regulatory compliance;
+
+retention and knowledge sharing in respect of the Post Office solution;
+roadmap definition and change request writing;
+
+service analysis and upgrade management;
+
+PCI annual accreditation can be carried out and to provide audit
+support;
+
+act as a ‘SIT Resource’ (with the Banking specific knowledge) to
+provide additional Level 1 incident support to the UK ‘IT Service
+Desk’ to support resolution (where possible) of incidents at Level 1
+support; and
+
+to provide support for processing of all new Post Office Branch
+activations.
+
+As part of the Hypercare Service, Fujitsu Services shall procure that
+Ingenico provides the following resources to Post Office:
+
+operational resources to support automated complex daily key
+management exchange between Vocalink and Ingenico in the event of
+any service incidents;
+
+resources to support the annual key exchange between Vocalink and
+Ingenico as part of the LISS operational requirements;
+
+enhanced proactive monitoring to support the bespoke process
+interfaces between Vocalink and Ingenico, with proactive monitoring
+back to Fujitsu Services;
+
+enhanced capacity to support the bespoke and specific LIS5 Vocalink
+interface for the non-standard banking transaction and settlement
+flows between Fujitsu Services, Ingenico, and Vocalink; and
+
+annual compliance and maintenance of the LISS interface
+specification.
+FUJ00234943
+
+FUJ00234943
+
+CONFIDENTIAL
+
+3.4
+
+The PBS Transaction service elements of the Payment and Banking Service shall be available
+twenty-four (24) hours per day, every day of the year to support and enable Post Office
+Branches in making EMV Payment Transactions and PBS Banking Transactions at any time;
+subject to any agreed unavailability due to scheduled changes as described in paragraph 3.2.5
+of this Service Description and within the availability Service Level Targets as documented
+in paragraph 3.4 of this Service Description.
+
+For recording and responding to P3 Incidents and Service Requests the hours of operation are
+Monday - Friday (excluding Bank Holidays) 8am - 8pm, Saturday - 8am - Spm, Sunday - No
+cover, Bank Holidays (excluding Christmas Day) 8am - 2pm. The Payment and Banking
+Service will record and respond to P1 & P2 Incidents at all times.
+
+All other service elements of the Payment and Banking Service will be provided between
+09:00 and 17:30, Monday to Friday excluding Bank Holidays.
+
+Service Level Targets and Remedies
+All Service Levels and Key Performance Indicators will be measured over a calendar month.
+
+The Service Level Targets in the remainder of this paragraph which relate to an Incident shall
+be measured from the point at which that Incident is received by Ingenico. Fujitsu Services
+shall route Incidents or other Payment and Banking Service needs to Ingenico promptly and
+efficiently for Payment and Banking Service (having regard to the severity of the Incident and
+relevant response and resolution times) but in any event no later than fifteen (15) minutes after
+assessing that Ingenico are the appropriate party for resolution), within the usual working
+practices of the other HNG-X Services.
+
+3.4.1 Transaction Performance of the Ingenico
+Central Platform
+
+The performance of the Ingenico Central Platform shall be calculated by measuring the
+transaction processing time for EMV Payment and PBS Banking Transactions. This shall be
+measured as follows:
+
+e¢ For EMV Payment Transactions. This shall be measured as transit time from receipt
+at the perimeter of the network ingress point of the Ingenico Central Platform to
+despatch of authorisation response to the PIN Pad from the network egress point of
+the Ingenico Central Platform, minus any time taken from the Acquirer(s) to provide
+a response back to the Ingenico Central Platform. This shall be measured as the
+average EMV Payment Transaction processing time over a calendar month.
+
+e For PBS Banking Transactions. This shall be measured as transit time from receipt at
+the perimeter of the network ingress point of the Ingenico Central Platform to
+despatch of authorisation response to the PIN Pad from the network egress point of
+the Ingenico Central Platform, minus anytime taken from Vocalink to provide a
+response back to the Ingenico Central Platform. This shall be measured as the average
+PBS Banking Transaction processing time over a calendar month.
+
+Fujitsu Services shall process EMV Payment Transactions and PBS Banking Transactions on
+the Ingenico Central Platform within the following timeframes:
+
+Schedule I6 V15.0
+Page 14 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+Average of all EMV Payment Transactions processed over a =< 2.0 seconds
+calendar month
+Average of all PBS Banking Transactions processed over a =< 2.0 seconds
+calendar month
+
+The transaction processing time Service Level Target for PBS Banking Transactions is an
+SLT that Fujitsu Services are committed to achieving. This could not be finalised until
+development, testing and piloting of the Payment and Banking Solution in a Live Production
+environment was completed. This Service Level Target was reviewed and agreed as part of
+progressing beyond Payment and Banking Service Acceptance.
+
+Table I in paragraph 3.4.10 of this Service Description adds further detail to the above Service
+Level Target, in which:
+
+e SLA-EMV1.1 relates to the processing of EMV Payment Transactions against this
+transaction processing time SLT.
+
+¢ SLA-BANK1.2 relates to the processing of PBS Banking Transactions against this
+transaction processing time SLT.
+
+¢ Both SLA-EMVI.1 and SLA-BANK1.2 will be reported over a calendar month,
+however only SLA-BANK1.2 will be subject to liquidated damages.
+
+3.4.1.1 Exclusions.
+
+The following events are excluded from measuring the performance of the Ingenico
+Central Platform:
+
+a) any failures of applications which are not maintained or provided by Fujitsu
+Services or its Subcontractors that impact the Payment and Banking
+Solution receiving a correctly formatted request to process a PBS Banking
+or EMV Payment Transaction;
+
+b) any failures of integration with third party components resulting from
+changes that are not covered by an approved Operational Change Proposal
+or CWO; and
+
+c) any network connectivity issue resulting from any failure or degradation of
+service, including the inability of PIN Pads to connect to the Ingenico
+Central Platform, other than where such connectivity failure results from an
+act, omission or breach by Fujitsu Services;
+
+3.4.2 Availability of the Ingenico Central Platform
+
+The Ingenico Central Platform will be available, to support and enable Post Office Branches
+in making EMV Payment Transactions and PBS Banking Transactions (subject to any agreed
+unavailability due to scheduled changes as described in paragraph 3.2.5 of this Service
+Description) for at least the availability of the Service Level Target below.
+
+The Service Level Target for availability of the Ingenico Central Platform within the PBS
+Core Availability hours measured over a calendar month is as follows:
+
+Schedule I6 V15.0
+Page 15 of 35
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+cal
+
+Availability of the INGENCIO Central Platform over a I 99.95% Availability
+
+lendar month
+
+The availability will be recorded and monitored using Ingenico's Incident management
+systems (Incident ticket and monitoring tools).
+
+The availability target is applicable to the Ingenico Central Platform that supports both EMV
+Payment and PBS Banking Transactions.
+
+Schedule I6 V15.0
+Page 16 of 35
+
+3.4.2.1 Calculating Availability for EMV Payment Transactions and PBS
+Banking Transactions
+
+An unsuccessful EMV Payment Transaction or PBS Banking Transaction is a PBS
+Transaction for which the Ingenico Central Platform does not, receive the
+authorisation or decline (as applicable) due to an Ingenico system issue.
+
+The current configuration of the Payment and Banking Solution does not enable
+offline mode or degraded mode for EMV Payment Transactions. Hence, the
+availability rate described below is a combined measure for EMV Payment and PBS
+Banking Transactions. Should Post Office request to enable these features in the
+future for EMV Payment Transactions using the Change Control Procedure, then
+these availability rate calculations will be modified to bring this into effect.
+
+The availability rate of the Ingenico Central Platform for successful EMV Payment
+and PBS Banking Transactions, against all PBS Transactions (excluding Exclusions,
+as described in paragraph 3.4.2.2 below), shall be calculated as;
+
+A= TSH — TUDT 100
+TSH
+
+Where;
+A= % of Availability over a calendar month
+
+TSH = Total Service Hours (total time within Core Availability Hours in the
+calendar month - Exclusions)
+
+TUDT = Total unscheduled downtime (i.e. duration of all Incidents in period)
+(hours)
+
+Table 1 in paragraph 3.4.10 of this Service Description adds further detail to the
+above Service Level Target, detailing it as; SLA2.1, SLA2.2, SLA2.3 and SLA2.4
+for availability for EMV Payment Transactions; and SLA2.5, SLA2.6, SLA2.7 and
+SLA2.8 for PBS Banking Transactions.
+
+The following examples are based on a 229h per calendar month period, using June
+2020 as an example reporting period.
+
+Example 1:
+
+A total of 1-hour Incident duration in a calendar month.
+
+Total Service Hours: 229
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+Incident Duration: I Hour
+
+Service Availability: (229 - 1)/229 = 99.56% availability; (SLA2.3
+breached)
+
+Example 2:
+
+A total of 5 minutes Incident duration in a calendar month.
+Total Service Hours: 229
+Incident Duration: 5 minutes (0.083 hours)
+
+Service Availability: (229 - 0.083))/229 = 99.96% availability (no
+applicable SLA breached)
+
+3.4.2.2 Exclusions.
+
+The following events are excluded from measuring the availability of the Ingenico
+Central Platform:
+
+a) scheduled downtime, which shall refer to any unavailability due to
+scheduled changes made in accordance with the process as described in
+paragraph 3.2.5 of this Service Description;
+
+b) any failures of applications (other than the Ingenico Central Platform) used
+by Post Office which are not maintained or provided by Ingenico and which
+cause the unavailability of the Ingenico Central Platform;
+
+c) any failures of integration with third party components resulting from
+changes made by Post Office outside the Change Control Procedure and
+which cause the unavailability of the Ingenico Central Platform; and
+
+d) any network connectivity issue resulting from Vocalink or Post Office
+connectivity supplier failure, including the inability of PIN Pads to connect
+to the Ingenico Central Platform, other than where such connectivity failure
+results from an act, omission or breach by Fujitsu Services.
+
+3.4.3 Settlement File Generation and Transmitting
+
+Fujitsu Services (acting via Ingenico) shall submit all settlement files of EMV Payment
+Transactions to the Acquirer by the Acquirer cut off times specified in the CCD entitled “Axis
+Managed Payment Service Solution - Solution Design” (DES/APP/MAN/3760). The cut-off
+point for processing EMV Payment Transactions for daily settlement data generation will be
+approximately 19:00, and will submit the Settlement file to GlobalPayments by 04:00 the next
+day. Any change to this time or to the Acquirer will be addressed using the Change Control
+Procedure.
+
+Ingenico shall submit the settlement files to each Acquirer by such time which allows them
+to re-attempt the submission if the first attempt fails. If both attempts fail Fujitsu Services will
+notify Post Office of the failure in writing.
+
+Fujitsu Service will notify Post Office on the same Working Day if confirmation of receipt of
+the settlement files by individual Acquirers (where Acquirers commit to return confirmations)
+is not received by 08.00hrs.
+
+Schedule I6 V15.0
+Page 17 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+More detail of this Service Level is set out as SLA3.1 in Table I in paragraph 3.4.10 of this
+Service Description.
+
+3.4.4. Online data access
+
+Fujitsu Services shall provide access for Post Office to the Web Portal, allowing it to be able
+to view and extract data as required, providing access to details of all EMV Payment and PBS
+Banking Transactions over the prior 15 months, on a rolling basis.
+
+More detail of this Service Level is set out as SLA4.1 in Table I in paragraph 3.4.10 of this
+Service Description.
+
+3.4.5 Incident Priority Definitions, Response and
+Resolution Times
+
+Priority levels for Incidents raised against the Payment and Banking Service are defined in
+the table below:
+
+Priority Level definitions Measures
+
+PI Incident means an Incident in which there is:
+
+a) a complete outage of the Payment and Banking Service I Response time —
+impacting > 90% of all Post Office Branches, including I fifteen (15) minutes
+loss of a major payment type of EMV Payment
+Transactions or PBS Banking Transactions; or Update frequency —
+
+Hourly
+
+b) the whole or critical part of the Payment and Banking
+Service is unusable causing major impact, e.g. I Resolution time — two
+processing of EMV Payment Transactions or PBS I (2) hours for EMV
+Banking Transactions; or Payment Transactions
+
+and PBS Banking
+
+c) an Incident within a production environment that will I Transactions
+potentially materially affect Post Office satisfaction
+with the Payment and Banking Service, brand,
+profitability, revenue streams if it continues or persists
+for more than four (4) hours.
+
+P2 Incident means an Incident in which there is:
+
+a) Not a complete outage of the Payment and Banking I Response time — thirty
+Service; or (30) mins
+
+b) Impacting >10% but < 90% of Post Office Branches; or I Update frequency —
+
+Hourly
+c) some impact on the business where a_ limited
+workaround is available; or Resolution time — eight
+(8) hours
+
+d) an Incident within a production environment that could
+impact Post Office satisfaction, brand, profitability,
+
+Schedule I6 V15.0
+Page 18 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+Priority Level definitions Measures
+
+revenue stream or internal processes, but where there is
+a limited workaround: or
+
+e) which has or is likely to have a financial impact of less
+than £25,000 or damage to the reputation of the business
+is likely to be low.
+
+P3 Incident means an Incident in which there is:
+
+Other items which may include: Non-urgent issues, Issues with I Response time — one
+acceptable workaround available, Where Post Office agreesa I (1) Working Day
+low priority.
+Resolution time — five
+a) with little or no impact on the business; or (5) Working Days
+
+b) for which end users (customers or staff) have a
+workaround; or
+
+¢) an Incident within a production environment that has no
+impact on external or internal processes; or
+
+d) which impacts very few or no customers and/or has a
+low level of inconvenience for the affected customers;
+or
+
+e) which affects very few staff, and/or those staff are still
+able to do their job using an acceptable workaround; or
+
+f) which has or is likely to have no financial impact or
+damage to the reputation of the business.
+
+Resolution time shall be measured from the time the Incident is logged with Ingenico, but
+excluding any “Stop The Clock” time when the Incident is passed back to Fujitsu Services,
+Post Office or any associated third-party.
+
+The Service Level Targets associated with the reporting, response and resolution of Incidents
+are detailed in Table 1 in paragraph 3.4.10 of this Service Description, detailing them as
+SLA6.1, SLA6.2, SLA6.3, SLA7.1, SLA7.2 and SLA7.3.
+
+3.4.6 Root Cause Analysis Production
+
+Whenever root cause analyses (RCAs) are produced, in accordance with paragraph 3.2.4 of
+this Service Description, they will be produced and provided to Post Office within 7 Working
+Days.
+
+The Service Level Targets associated with the provision of Root Cause Analysis Reports is
+detailed in Table 1 in paragraph 3.4.10 of this Service Description, as SLAS.1.
+
+3.4.7 Service Requests
+
+Schedule I6 V15.0
+Page 19 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+Fujitsu Services shall process service requests within ten (10) Working Days. For the purposes
+of this Service Description and this Service Level Target the following requests for additional
+services as requested by Post Office, shall be included;
+
+¢ Requests for access management changes (e.g. joiners-movers-leavers and password
+resets) for users of Web Portal;
+
+e Requests for Activations/de-Activations in respect of Operation Business Changes
+raised via the Operational Business Change (Branch Change) Service; and
+
+¢ Requests for content remote download campaigns. Note: Provision of this service
+request is dependent on being given full information for the campaign in the request.
+The SLT provides for fulfilment of campaign setup until campaign commencement,
+only, complete performance/operation of the campaign may then take significantly
+longer than the ten (10) Working Days, according to the design and constraints of the
+campaign.
+
+Further detail regarding this Service Level is set out in Table 1 in paragraph 3.4.10 of this
+Service Description, as SLA8.1.
+
+3.4.8 Reporting
+
+Fujitsu Services shall provide reporting on the Payment and Banking Service to be included
+as part of the Service Review Book to Post Office in accordance with the timescales as
+specified in the CCD entitled “Management Information Service: Service Description”
+(SVM/SDM/SD/0016). For Payment and Banking Service this reporting shall include, as a
+minimum:
+
+a) performance against the Service Level Targets; and
+
+b) a calculation of the liquidated damages and Service Points (if any) which
+are due to Post Office in accordance with the Service Level Targets; and
+
+c) a summary of all Incidents affecting the Payment and Banking Service
+which arose during that month; and
+
+d) asummary on the success of all scheduled maintenance that has taken place
+in the previous month, along with a summary view on all in-flight Change
+Requests; and
+
+e) where applicable, a report on any service rectification and improvement
+plans.
+
+3.4.9 Liquidated damages and Service Points
+
+The liquidated damages payable in respect of a failure to meet the Service Level Targets are
+set out in Table I below.
+
+The total amount of liquidated damages in respect of this Payment and Banking Service
+payable by Fujitsu Services, across all Service Level Targets combined, for any calendar
+month shall not in any event exceed an amount equivalent to 20% of the per PBS Transaction
+element of the Payment and Banking Service Operational Unit Charge in respect of that
+calendar month.
+
+Schedule I6 V15.0
+Page 20 of 35
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+In addition to the liquidated damages, Post Office shall accumulate Service Points for each
+breach of the Service Level Targets by Fujitsu Services in accordance with Table 1 in
+paragraph 3.4.10 of this Service Description.
+
+Fujitsu Services shall initiate and agree with Post Office a reasonable service rectification and
+improvement plan in the following circumstances:
+
+Schedule I6 V15.0
+Page 21 of 35
+
+a)
+
+b)
+
+c)
+
+d)
+
+e)
+
+Post Office accumulates ten (10) or more Service Points in one (1) calendar
+month;
+
+Post Office accumulates fifteen (15) or more Service Points in any three (3)
+consecutive calendar months; or
+
+Post Office accumulates twenty (20) or more Service Points in any six (6)
+consecutive calendar months; or
+
+Availability of the Ingenico Central Platform drops below 99.5% in any one
+(1) calendar month, where a root cause analysis (RCA) does not already
+exist for the availability dropping below this level in the same calendar
+month.
+
+Any of the limits to liquidated damages are met, whether the total limit
+identified in paragraph 3.4.9 of this Service Description or any of the limits
+to liquidated damages identified against the particular Service Level Targets
+set out as SLA3.1, SLA4.1 and SLAS.1 in Table 1 in paragraph 3.4.10 of
+this Service Description.
+CONFIDENTIAL,
+Table 1
+Service Service
+Level
+Ref.
+SLA- Transaction
+EMV1.1 Processing of the
+Ingenico Central
+Platform for EMV
+Payment
+
+Transactions
+
+SLA-
+BANK1.2
+
+Transaction
+Processing of the
+Ingenico Central
+Platform for PBS
+Banking
+Transactions
+
+Schedule 16 V15.0
+Page 22 of 35
+
+3.4.10
+
+Measurement
+methodology
+
+of EMV
+
+Transactions
+
+Average
+Payment
+processed in less than or
+equal to 2.0 seconds over
+a calendar month
+
+Processed having the
+meaning set out in
+paragraph 3.4.1 of this
+Service Description.
+
+Average of PBS Banking
+Transactions processed in
+less than or equal to 2.0
+seconds over a calendar
+month.
+
+Processed having the
+meaning set out in
+paragraph 3.4.1 of this
+Service Description.
+
+Table of Service Level Targets
+
+Service Measurement Liquidated Service Points
+Level Period damages
+Target
+2.0s Monthly £0 3
+2.0s Monthly 10% of the total 5
+
+value of the PBS
+Banking Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+in that particular
+calendar month
+
+Notes
+
+As — stated in
+paragraph 3.4.1
+this is a “target”
+for Fujitsu
+Services to
+commit to, but will
+be confirmed post
+Pilot of — the
+Banking Solution.
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA2.1 INGENCIO Central
+Platform Availability
+Band 1 for EMV
+Payment
+Transactions
+
+SLA2.2 INGENCIO Central
+Platform Availability
+Band 2 for EMV
+Payment
+Transactions
+
+SLA2.3 INGENCIO Central
+Platform Availabili
+Band 3 for EMV
+Payment
+Transactions
+
+Schedule 16 V15.0
+Page 23 of 35
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+99.94%
+2 99.85%
+
+< 99.85%
+2 99.65%
+
+< 99.65%
+299.5%
+
+Monthly
+
+Monthly
+
+Monthly
+
+5% of the total value
+of the EMV
+Payment
+Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+in that particular
+calendar month.
+
+10% of the total
+value of the EMV
+Payment
+Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+in that particular
+calendar month
+
+15% of the total
+value of the EMV
+Payment
+Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA2.4 INGENCIO Central
+Platform Availability
+Band 4 for EMV
+Payment
+Transactions
+
+SLA2.5 INGENCIO Central
+Platform Availability
+Band 1 for PBS
+Banking
+Transactions
+
+SLA2.6 INGENCIO Central
+Platform Availability
+Band 2 for PBS
+Banking
+Transactions
+
+Schedule 16 V15.0
+Page 24 of 35
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+
+Service Description.
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+< 99.5%
+
+< 99.85%
+2 99.65%
+
+Monthly
+
+Monthly
+
+Monthly
+
+in that particular
+calendar month
+
+20% of the total
+value of the EMV
+Payment
+Transaction
+processing
+Operational Unit
+Charge invoiced by
+Fujitsu Services in
+that particular
+calendar month
+
+5% of the total value
+of the PBS Banking
+Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+in that particular
+calendar month.
+
+10% of the total
+value of the PBS
+Banking Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA2.7 INGENCIO Central
+Platform Availability
+Band 3 for PBS
+Banking
+Transactions
+
+SLA2.8 INGENCIO Central
+Platform Availability
+Band 4 for PBS
+Banking
+Transactions
+
+SLA3.1 Generating and
+transmitting
+settlement file
+
+Schedule 16 V15.0
+Page 25 of 35
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+
+Service Description.
+
+Availability as calculated
+in accordance with
+paragraph 3.4.2 of this
+Service Description.
+
+Transactions are to be
+transmitted each day in a
+settlement file to Post
+Office's chosen
+Acquirer(s) and in line
+with the Payment and
+Banking Service defined
+in the CCD entitled “Axis.
+
+< 99.65% Monthly
+
+> 99.5%
+
+< 99.5% Monthly
+100% Daily
+
+in that particular
+calendar month
+
+15% of the total
+value of the PBS
+Banking Transaction
+processing
+Operational Unit
+Charge as invoiced
+by Fujitsu Services
+in that particular
+calendar month
+
+20% of the total
+value of all the PBS
+Banking Transaction
+
+processing
+
+Operational Unit
+Charge invoiced by
+
+Fujitsu Services in
+that particular
+calendar month
+
+For a failure, ina
+calendar month =
+£1000 for the first
+failure and £1000
+for cach failure, up
+to 3 failures
+maximum.
+
+Total liquidated
+damages in respect
+of this Service
+Level Target to be
+limited to £3000 in
+any particular
+calendar month.
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA4.1 Online data access
+
+SLAS.1 Delivery of P1 RCA
+Report within
+TWorking Days of
+notification of
+Incident
+
+SLAG.1 P1 Incident Response
+
+Schedule 16 V15.0
+Page 26 of 35
+
+Managed Payment
+Service Solution -
+Solution Design”
+(DES/APP/MAN/3760).
+
+To provide access for Post
+Office to the Web Portal
+and for Post Office to be
+able to extract data as
+required.
+
+Fujitsu Services is to
+provide a P1_ Incident
+RCA (Root Cause
+Analysis) report to Post
+Office
+
+Priority level 1 Incident
+responded to within 15
+minutes of Fujitsu
+Services notifying the
+Incident to the Ingenico
+help
+identifying the Incident,
+
+sk or Ingenico
+
+No Daily
+instances
+of
+complete
+outage of
+the Web
+Portal
+
+100% Per occurrence
+
+100% Per Occurrence
+
+Each full Working
+Day the Web Portal
+is unavailable, and
+an Incident ticket
+has been raised with
+Fujitsu Services by
+Post Office = £1000
+
+Each time a PL
+report is not
+submitted on time =
+£1000
+
+£0
+
+Total liquidated
+damages in respect
+of this Service
+Level Target to be
+limited in any
+consecutive 3-
+month period to
+£3000
+
+Total liquidated
+damages in respect
+of this Service
+Level Target to be
+limited in any
+consecutive 3-
+month period to
+£3000
+
+Measurement of
+the time between
+identification and
+notification to the
+Fujitsu Services
+teams (or
+identification and
+notification by
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA6.2 P2 Incident Response
+
+SLA6.3 P3 Response
+
+SLA7.1 P1 Incident
+Resolution
+
+Resolution of the
+incident means
+resolving the incident
+in order to allow PBS
+Transactions to be
+
+Schedule 16 V15.0
+Page 27 of 35
+
+and reporting the incident
+to Fujitsu Services,
+
+Priority level 2 Incident
+responded to within 30
+minutes of — Fujitsu
+Services notifying the
+Incident to the Ingenico
+help desk or Ingenico
+identifying the Incident,
+and reporting the incident
+to Fujitsu Services.
+
+Priority level 3 Incident
+notified within 1 Working
+Day of Fujitsu Services
+notifying the Incident to
+the Ingenico help desk or
+Ingenico identifying the
+Incident, and reporting
+the incident to Fujitsu
+Services.
+
+Priority level Incident
+Resolved within 2 hours
+of the Incident being
+logged at the Ingenico
+help desk.
+
+100%
+
+100%
+
+100%
+
+Per Occurrence
+
+Per Occurrence
+
+Per Occurrence
+
+£0
+
+£0
+
+£0
+
+Fujitsu Services to
+Ingenico).
+
+Measurement of
+the time between
+identification and
+notification to the
+Fujitsu Services
+teams.
+
+Measurement of
+the time between
+identification and
+notification to the
+Fujitsu Service
+teams.
+
+Measurement of,
+the time between
+reporting of the
+incident and
+resolution.
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+SLA7.2
+
+SLA7.3
+
+completed and could
+include the
+implementation of a
+temporary work
+around which enables
+PBS Transactions to
+be completed.
+
+P2 Incident
+Resolution
+
+Resolution of the
+Incident means
+resolving the Incident
+in order to allow PBS
+Transactions to be
+completed and could
+include the
+implementation of a
+temporary work
+around which enables
+PBS Transactions to
+be completed.
+
+P3 Incident
+Resolution
+
+Resolution of the
+Incident means
+resolving the Incident
+in order to allow PBS.
+Transactions to be
+
+Schedule 16 V15.0
+Page 28 of 35
+
+Priority level 2 Incident
+resolved within 8 hours of
+the Incident being logged
+at the Ingenico help desk.
+
+Priority level 3 Incident
+resolved within 5
+Working Days, from
+when incident is logged at
+the Ingenico help desk.
+
+100%
+
+100%
+
+Per Occurrence
+
+Per Occurrence
+
+£0
+
+£0
+
+Measurement of
+the time between
+reporting of the
+incident and
+resolution.
+
+Measurement of,
+the time between
+reporting of the
+incident and
+resolution.
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+completed and could
+include the
+implementation of a
+temporary work
+around which enables
+PBS Transactions to
+be completed.
+
+SLA8.1 Service Requests Percentage of service
+requests (as defined in
+paragraph 3.4.7 of this
+Service Description)
+completed against the
+target time of 10 Working
+Days.
+
+Schedule 16 V15.0
+Page 29 of 35
+
+>= 98%
+
+Monthly
+
+£0
+
+Service Requests
+of the types
+identified in
+paragraph 3.4.7 of
+this Service
+Description are to
+be fulfilled to this
+Service Level
+Target.
+
+FUJ00234943
+FUJ00234943
+CONFIDENTIAL
+
+3.5 Service Limits and Volumetrics
+
+FUJ00234943
+
+FUJ00234943
+
+Limits on the maximum amounts of liquidated damages payable and the volumes of
+Activations which are provided in the Charges of the Payment and Banking Service are
+described in the previous paragraphs of this Service Description.
+
+3.6 Reference to Associated Charges within Schedule D1}
+
+3.6.1
+
+Operational Fixed Charge
+
+The Payment and Banking Service Operational Fixed Charge is £115,167.00 per
+
+calendar month.
+
+3.6.2
+
+Operational Unit Charge
+
+‘The Payment and Banking Service Operational Unit Charge is calculated as the sum
+
+of;
+(a)
+
+(v)
+
+£0.00536 per PBS Transaction performed using the Payment and Banking
+Service, to be aggregated each calendar month
+
+£42.11 per Activation into the Payment and Banking Service, to be
+aggregated each calendar month. These Charges to be calculated in
+accordance with the minimum numbers of qualifying Activations and
+
+provisions of free Activations, within the different time periods of the
+Payment and Banking Service, as specified in paragraph 2.19 of Schedule
+
+D1 Charges.
+
+3.7 Dependencies and Interfaces to the Operational Services
+
+(a)
+(b)
+(c)
+(d)
+(©)
+
+Schedule I6 V15.0
+Page 30 of 35
+
+3.7.1
+
+In order to minimise Charges when adding this
+Payment and Banking Service to the
+Operational Services the Payment and Banking
+Service provides operational support, re-using
+many of the resource teams already used to
+provide a number of other Operational Services.
+The Payment and Banking Service Operational
+Charges described in paragraph 3.6 have been
+identified as those that are incremental to the
+Operational Charges made in respect of those
+other Operational Services. Any changes to the
+scope of the following Operational Services
+may therefore result in necessary changes to the
+scope and Operational Charges to the Payment
+and Banking Service;
+
+P2PE Asset Management Service
+
+Service Management Service;
+
+Security Management Service;
+
+Systems Management Service;
+
+Operational Business Change (Branch Change) Service;
+CONFIDENTIAL
+
+FUJ00234943
+
+FUJ00234943
+
+(f) Reference Data Management Service; or
+
+(g)
+3.8
+
+3.8.1
+
+3.9 Business Continuity
+
+Management Information Service.
+
+Post Office Dependencies and Responsibilities
+
+In addition to any responsibilities laid out in this
+Service Description, Post Office responsibilities
+are as set out in Schedule AS of the Agreement.
+
+Post Office shall not unreasonably withhold or
+delay its approval of Operational Change
+Proposals, submitted via the operational change
+control process, necessary for maintenance and
+support. Any delay in such approval could
+impact the provision of the Payment and
+Banking Service.
+
+Ingenico’s IT Service Desk is split across two
+(2) sites (UK/Australia) operating a follow-the-
+sun support model, providing staff cover and
+business continuity twenty-four (24) hours per
+day, every day of the year.
+
+Ingenico’s Multi-channel Support is split across
+two (2) sites (France/Australia), operating a
+follow-the-sun support model, providing staff
+cover and business continuity twenty-four (24)
+hours per day, every day of the year.
+
+Fujitsu Services shall assess its Business
+Continuity Plans for the Payment and Banking
+Service, in accordance with paragraph 1.11 of
+
+Schedule B2 Business Continuity.
+
+The Documentation Set Supporting the Service
+
+Document Ref
+
+Document Title
+
+CS/IFS/008
+
+Interface Agreement for the Problem Management Interface
+
+SVM/SDM/PRO/0001
+
+POA Major Incident Process
+
+SVM/SDM/PRO/0018
+
+POA Operations Incident Management Process
+
+SVM/SDM/SD/0007
+
+Service Management Service, Service Description
+
+SVM/SDM/SD/0014 "
+Description
+
+Operational Business Change (Branch Change) Service: Service
+
+SVM/SDM/SD/0016
+
+Management Information Service: Service Description
+
+SVM/SDM/SD/0017
+
+Security Management Service: Service Description
+
+SVM/SDM/SD/3756
+
+P2Pe Asset Management Service: Service Description
+
+Schedule I6 V15.0
+Page 31 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+Appendix 1 to Schedule 16
+Migration Plan
+Migration Plan
+
+NB: The Migration Plan documented in this Appendix 1 to Schedule I6 is now completed and
+the Payment and Banking Service fully implemented, through to Payment and Banking Service
+
+Acceptance. This Appendix 1 is left as a record, only.
+
+This Appendix details the planning and scoping principles that will form the following phases:
+
+© Payment and Banking Pilot (covering Payment and Banking (as defined in Schedule 16); and
+© Migration schedule for the Payment and Banking Services
+
+For each phase the roles and responsibilities of each of the Parties will be specified in this Appendix. This
+Appendix will not specify the detailed plan for each phase, this will be agreed as part of the project delivery.
+Should there be a change to the scope and/or assumptions and/or roles and responsibilities set out in this
+Appendix, this may be subject to Change Control.
+
+Payment and Banking Pilot
+4.1.1 Scope and Planning Assumptions and Responsibilities
+
+The scope of the Payment and Banking Pilot will involve deploying the Payment and Banking Services (as
+defined in Schedule I6) into the Ingenico production environments ready to support live operation of the
+Payment and Banking Solution to a limited set of Post Office Branches.
+
+© Fujitsu Services will ensure that the payment processing platforms are ready to support the deployment
+of the Payment and Banking Solution up to a two hundred (200) counters in fifty (50) Branches.
+
+* Post Office shall provide a list of the Branches to be used for running the Payment and Banking Pilot no
+less than six (6) weeks prior to the commencement of the Payment and Banking Pilot.
+
+¢ The Payment and Banking Pilot will be limited to a period of two (2) weeks from Payment and Banking
+Pilot go-live.
+
+© Atthe end of the two (2) week period of the Payment and Banking Pilot the Parties shall mutually agree
+based on the Go/ No-go Criteria as detailed below and such other criteria that the Parties agree (such
+agreement not to be unreasonably withheld) to proceed the Commencement of Migration to Payment and
+Banking Service. In the absence of such agreement, the Parties shall refer to the Dispute Resolution
+Procedure for resolution.
+
+For the purpose of this paragraph 4.1.1, the “Go/No-go Criteria” shall consist of the following:
+
+Fujitsu Services confirming that it is able to perform reconciliation
+
+« Post Office confirming that the solution has no significant impact on any other relevant Post Office
+systems
+
+¢ There are not any outstanding P1 or P2 incidents that require route cause analysis and / or rectification
+prior to roll-out commencing
+
+* Confirmation from Ingenico that it is able to deliver to the Service Levels Targets, and specifically the
+Transaction Time Service Level.
+
+4.2 Migration Schedule
+
+4.2.1 Scope and Planning Assumptions and Responsibilities
+
+The scope of the migration will involve deploying the Payment and Banking Services (as defined in Schedule
+16) and signed-off by the Payment and Banking into the Post Office Branch estate. The migration assumes:
+
+Schedule I6 V15.0
+Page 32 of 35
+FUJ00234943
+
+FUJ00234943
+
+CONFIDENTIAL
+
+Ea
+
+The migration will operate for a maximum period of six (6) weeks (unless otherwise agreed between the
+Parties), to commence one (1) week after acceptance of the Payment and Banking Pilot sign-off where
+acceptance has occurred in accordance with paragraph 4.1.1 above. Should issues be found during the
+Payment and Banking Pilot that would require re-provisioning of the full estate, then revised rollout plans
+would need to be agreed between the Parties
+
+No more than the greater of: (a) two thousand five hundred (2,500) Branches; and (b) six thousand
+(6,000) Counter Positions, will be migrated in any one (1) week during the roll-out and limited to five
+hundred (500) Branches / one thousand two hundred (1200) Counters in any one (1) day, subject to there
+being no issues found during the Payment and Banking Pilot that would require the estate to require re-
+provisioning.
+
+Post Office shall provide to Fujitsu Services no less than six (6) weeks prior to commencement of the
+Payment and Banking Pilot the branch details of the full Post Office Counter estate to allow Fujitsu
+Services to setup (provision) the data on the Payment and Banking Service Platform and shall notify
+Fujitsu Services within such six (6) week period of any changes to such branch details. Fujitsu Services
+will notify Post Office to the extent that any such changes cannot be supported in the roll out plan and
+the Parties.
+
+Fujitsu Services shall setup the Post Office branch estate onto the Payment and Banking Service platform
+to support the migration of the Payment and Banking Services
+
+Fujitsu Services will provide support to Post Office (and any third-parties) in the day to day migration
+of the Payment and Banking Services, including triage of any problems incurred during the migration of
+the Payment and Banking Services
+
+Fujitsu Services will resolve any defects in accordance with the Service Level Targets or failure to
+achieve a Service Level Target, related to the setup of the Payment and Banking Services with the
+Payment and Banking platform
+
+Fujitsu Services will not be responsible for any planning, prioritisation or coordination of the migration
+schedule, but Post Office shall ensure that Fujitsu Services is provided and agrees the migration schedule
+or any changes thereto.
+
+Fujitsu Services will deliver the Hypercare Services during the migration period, and thereafter
+
+Early Life Support will be applicable during the migration period.
+
+Life Support
+
+From Early Life Support, the Payment and Banking Services shall include the Hypercare Service to ensure that
+Fujitsu Services can deliver the Payment and Banking Service in line with the Service Level Targets. During
+Early Life Support, Ingenico may increase the support resources over and above the level required for the
+Hypereare Service.
+
+As soon as possible, and in any event within cight (8) weeks of the execution of this CCN, the Parties shall
+agree the criteria for Payment and Banking Service Acceptance.
+
+During Early Life Support, liquidated damages in respect of the Payment and Banking Services shall not accrue
+until cight (8) weeks after the final Branch is migrated to the Payment and Banking Service.
+
+Post Office will acceptance test the Payment and Banking Services against the agreed criteria for Payment and
+Banking Service Acceptance no earlier than four (4) weeks after the final Branch is migrated to the Payment and
+Banking Service. Where the Payment and Banking Services fails to meet the acceptance criteria for Payment
+
+and Banking Service Acceptance, Fujitsu shall provide Post O}
+(“Remediation Plan”) as soon as possible (and in any event within five (5) Bus
+
+a written plan to remedy such failure
+iness Days of having received
+
+notice from Post Office of failing to meet the requirements for Payment and Banking Service Acceptance). The
+Remediation Plan shall include a timetable of remedial work and provide for the remedial work to be undertaken
+as soon as possible. Fujitsu Services shall commit such resources as required to implement the Remediation
+
+Plan.
+
+Schedule I6 V15.0
+Page 33 of 35
+FUJ00234943
+
+FUJ00234943
+
+CONFIDENTIAL
+
+Appendix 2
+
+General Terms and Conditions of Use
+
+These general terms and conditions of use (hereinafter referred to as the "GCU") shall apply to Post Office and,
+in general, to any of its personnel or contractors that use the Payment and Banking Service (cach a “PBS End
+User”). Post Office shall, and shall procure that its PBS End Users shall, comply with the terms of this GCU.
+Post Office shall be responsible for its PBS End User’s compliance with the terms of this GCU.
+
+Ingenico reserves the right to make reasonable and proportionate amendments to this GCU at any time following
+a change to regulations or standards as required for Ingenico to comply with such regulations or standards. Any
+amendment shall be notified on the Web Merchant Interface or sent by email or by post to Post Office. Post
+Office shall, as appropriate, notify its PBS End Users of any such amendments made by Ingenico. Use of the
+Payment and Banking Service by the PBS End Users after notice is sent by Ingenico shall constitute acceptance
+of any amendments to this GCU.
+
+1. General compliance with laws and ethical standards during use of the Payment and Banking
+Service
+
+Post Office shall not, and shall procure that its PBS End Users shall not, use the Payment and Banking Service
+shall in a way that: (a) constitutes an infringement of the Intellectual Property Rights of any third party(other
+than any infringement that is subject to an indemnity given by Fujitsu Services pursuant to Clause 34.1 (Fujitsu
+Services Indemnity)); or (b) breaches any applicable law or statutory provision, order or any regulations in effect,
+including, but not limited to, applicable laws or statutory provisions in relation to spamming, protection of
+privacy, the protection of consumers and minors, general public policy rules and rules on defamation..
+
+Post Office shall, and shall procure that its PBS End Users shall, comply with any internet protocols and standards
+in effect and applicable to its use of the Payment and Banking Service.
+
+2. Compliance with rules on registration and security on the Web Merchant Interface
+
+Post Office and its PBS End Users may use the consultation service for the Web Merchant Interface provided
+that any relevant PBS End Users has registered for such service with Ingenico and chosen a username
+("Username’) and password.
+
+Post Office shall procure that, when obtaining a Username, its PBS End Users provide information that is
+accurate, complete and up-to-date.
+
+Post Office acknowledges that when obtaining a Username, a PBS End User shall not have the ability to: (a)
+select or use another person's username as their Username; or (b) use a name or a protected name, which cannot
+be validly used without obtaining prior permission from the rightful owner, as a Username,
+
+Notwithstanding the above, Post Office shall procure that its PBS End Users do not share Usernames between
+several users or allow Usernames to be used by any person who is not the user to whom that Username shall
+exclusively relate
+
+3. Security rules for accessing the Ingenico Central Platform
+
+Post Office shall, and shall procure that its PBS End Users shall, comply with the security rules notified to it in
+relation to access of the Ingenico Central Platform. This obligation shall mean, without limitation, that they shall
+not:
+
+(a) access data not intended for the PBS End User concerned or connect to a server or account to which the
+PBS End User has no access,
+
+Schedule I6 V15.0
+Page 34 of 35
+FUJ00234943
+FUJ00234943
+
+CONFIDENTIAL
+
+(b) attempt to discover, examine or test the vulnerability of a system or network or ignore the security and
+authentication measures applicable without being duly authorised by Ingenico;
+
+(c) seek to interfere with, disrupt or alter the correct operation of the Ingenico Central Platform, the server
+or the network or render them unusable, including but not limited to, if these events are due to saturation
+of the systems or network, including due to overload or congestion (‘flooding’), the mass sending of
+unwanted emails (‘email bombing’) or failure (‘crash’);
+
+(d) falsify any data of a data transfer protocol or any IP address or all or part of the information contained
+
+in the header of any email;
+(e) take any action to obtain services that they are not authorised to receive;
+(f) prevent the authentication of a user or endanger the security of any server, network or account access
+(according to a process called ‘cracking’ or ‘hacking’, or interfere with the operation of the Ingenico
+Central Platform, the Solution or the network (‘denial of service or service attacks’); or
+send any viruses, worms, Trojan horses or other harmful code or attachment.
+
+g
+
+Schedule I6 V15.0
+Page 35 of 35
