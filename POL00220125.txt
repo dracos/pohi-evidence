@@ -1,0 +1,206 @@
+POL00220125
+
+POL00220125
+
+Label Printing
+
+Ref: _ g:\gij documents\notes\labelprinting.docx
+Author: Gareth I Jenkins
+Date: 27/01/2015 14:52:00
+
+1. Introduction
+
+The purpose of this note is to describe how Horizon behaves when printing labels
+during Postal Services Acceptance (aka PS12). Specifically it describes the behaviour
+when labels fail to print.
+
+Note that it is also possible to print a label from an AP-ADC script. The same
+principles apply, but no specific tests were carried out in that scenario.
+
+2. Overview
+
+Postal Service Acceptance operates in a number of phases. At a high level the stages
+are as follows:
+
+User (ie counter clerk) identifies weight of item, destination (ie UK or which
+foreign country), number of items and specific preferences (eg Guaranteed
+delivery)
+
+System then presents a list of Postal Services that meet those criteria together
+with prices.
+
+User selects the required service
+If appropriate, any add on services are selected
+User identifies whether item is pre-paid, or requires a label or stamps.
+
+Note that the available options are defined in Postal Service Reference Data
+(controlled by Post Office Ltd) and may depend upon the service selected and
+also the value and weight of the item:
+
+If label is selected, a label is then printed for each item (if more than one item)
+
+When all labels are printed, then a single item is added to the customer’s basket
+and any required Certificates of Posting are printed.
+
+Other items can be added to the basket, and the customer is then asked to pay
+for the items in the basket and appropriate tender items are added to the
+basket.
+
+The basket is then settled.
+
+3. Error Handling
+
+Clearly, when labels are being printed, failures may occur during the printing process.
+The following describes the process of printing a label in more detail:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+g:\gij documents\notes\labelprinting.docx Page I of 4
+POL00220125
+
+POL00220125
+
+. User requests that a label is printed
+
+An Event is recorded in the audit trail that a label print has been requested and
+this is immediately secured to the Horizon Data Centre
+
+Once the Event has been successfully recorded, the label information is sent to
+the printer and the User is expected to insert a label into the printer for
+printing.
+
+Failure to insert a label or a failure during printing a label results in a failure
+message being displayed. Also a Rejected label report is sent to the Tally Roll
+on the printer and a Rejected label transaction is included in the customer’s
+basket.
+
+If the system believes that it has successfully printed the label, the User is then
+asked if the label printed OK, to which they need to select Yes or No. If “No”
+is selected, then again a Rejected Label Report is produced and a Rejected
+Label transaction is added to a customer’s basket.
+
+This is to handle the case where the label may be illegible or have become
+unusable in spite of apparently printing OK.
+
+If the user says it was printed OK, then printing is considered to be complete.
+
+If the printing failed (ie at step 4) or the User indicates that no useable label
+was produced (at step 5) and a Rejected Label Report has been generated, then
+the system returns to the screen described in section 2 step 5, when the user
+can choose to have another attempt at printing a label, or select an alternative
+mechanism (such as stamps).
+
+3.1 Posting a Single Item
+
+In the simple case of a single item being posted, then a single Basket Entry appears on
+the Customer Stack visible on the clerk’s screen. However should a Rejected Label
+Receipt have been produced, then this will be visible as a zero value transaction on the
+Customer’s receipt (should one be printed).
+
+If the User subsequently looks at the Transaction Log, then multiple entries will be
+found in each case. For example in the case where a single first class item weighing
+1,000gms is processed for £3.20, and the initial label print failed, but a second attempt
+worked OK, then the following items will appear on the transaction log:
+
+aw WN
+
+1* Class, Qty = 1-, amount £3.20-
+
+Post Label 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+RejPostLabel 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+
+Followed by the customer’s settlement eg cash, Qty 1, amount 3.20
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+g:\gij documents\notes\labelprinting.docx Page 2 of 4
+3.2
+
+POL00220125
+
+POL00220125
+
+Note that should multiple attempts be made printing the label before a successful
+attempt, then there will be multiple Rejected label entries on the customer receipt (if
+any) and pairs of items like steps 4 and 5 above in the Transaction Log.
+
+Should attempting to print a label be abandoned, and another option such as stamps is
+selected, then the item at step 2 above would be replaced by an item for product
+stamps again with a Qty of 1- and value of £3.20-.
+
+Posting Multiple Items
+
+It is possible for some services (generally those that don’t require barcodes or address
+information, but controlled by Reference Data) to indicate that there are a number of
+identical items to be posted as a single basket item. This is achieved by settling Qty to
+a value greater than I at (or before) step 1 in section 2.
+
+In this case, if the option to print a label is selected at stepS in section 2, a separate
+label is printed for each item (ie Qty times). Each such label print goes through the
+process described in section 3. This can result in a number of Rejected label receipts
+and corresponding items on the Customer’s receipt and the Transaction Log.
+
+Taking the case of Qty set to 2 where both labels printed eventually, but with 2
+rejected labels, then the Transaction Log will look as follows:
+
+1* Class, Qty = 2-, amount £6.40-
+
+Post Label 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+Post Label 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+RejPostLabel 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+RejPostLabel 1SP, Qty 1-, amount 3.20-
+RM Label Balance, Qty 1, amount 3.20
+
+eon
+
+Ce rnawes
+
+10. Followed by the customer’s settlement eg cash, Qty 1, amount 6.40
+
+However should label printing be abandoned part the way through, and stamps
+selected for the remaining items, then 2 items will be visible in the customer’s on
+screen basket and on the receipt (as well as an item on the receipt for each Rejected
+label)
+
+Taking an example of Qty being set to 10 and the first 3 labels print OK, the 4" then
+fails twice and the remainder is handled by stamps, then the transaction log will be as
+follows:
+
+1. 1* Class, Qty = 3-, amount £9.60-
+
+2. Post Label ISP, Qty 1-, amount 3.20-
+3. RM Label Balance, Qty 1, amount 3.20
+4. Post Label ISP, Qty 1-, amount 3.20-
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+g:\gij documents\notes\labelprinting.docx Page 3 of 4
+POL00220125
+POL00220125
+
+5. RM Label Balance, Qty 1, amount 3.20
+6. Post Label ISP, Qty 1-, amount 3.20-
+
+7. RM Label Balance, Qty 1, amount 3.20
+8. RejPostLabel 1SP, Qty 1-, amount 3.20-
+9. RM Label Balance, Qty 1, amount 3.20
+10. RejPostLabel ISP, Qty 1-, amount 3.20-
+11. RM Label Balance, Qty 1, amount 3.20
+12. 1* Class, Qty = 7-, amount 22.40-
+
+13. Stamps, Qty 1-, amount 22.40-
+
+14. RM Label Balance, Qty 1, amount 22.40
+15. Followed by the customer’s settlement eg cash, Qty 1, amount 32.00
+
+The customer’s receipt will also show 2 separate items (one with Qty = 3 and the other
+Qty = 7) for the postage and also the 2 rejected labels.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+g:\gij documents\notes\labelprinting.docx Page 4 of 4

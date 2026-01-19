@@ -1,0 +1,90 @@
+FUJ00082302
+FUJ00082302
+
+SSC Offline KELs
+Monday 19 Mar
+
+HNG-X KEL achal717T
+
+KEL type: Information
+Title: Branch reports an unexplained discrepancy
+Summary: Branch had an unexplained discrepancy and thinks it must be a system fault
+Raised: by Anne Chambers on 30/07/2010
+Last updated: — by Anne Chambers on 10/02/2015
+Release: HNGX
+System product: CounterBusinessapplications
+Status: Authorised
+Visibility: Medium
+External: Visible to support teams outside Fujitsu
+Peak: PC0202239
+TES: 12650496
+Version: 5
+
+Symptoms
+
+The branch complained that they had a loss of £240 on one day. NBSC had been unable to find any reason for the
+discrepancy so the call was sent to Horizon to check for system errors.
+
+Problem
+
+A discrepancy is the difference between the cash the system thinks the branch should have, based on previous balanced
+figure and the transactions recorded since, and the cash declared by the branch.
+
+Possible causes:
+
++ PM has made an incorrect declaration
+
++ Transactions as recorded on the system do not match what actually happened at the branch
+* Outstanding recovery
+
++ Withdrawn products
+
++ Known system problem (these should be monitored for, or be easy to spot from events etc)
++ Unknown system problem
+
+Solution - ATOS
+
+ATOS/MAC:
+
++ Make sure NBSC have already investigated and include details of what they investigated and found on the call.
+* Which stock unit is affected?
+
++ Trading period / balance period?
+
+* Which day did the discrepancy occur?
+
++ How much is it?
+
++ If the discrepancy was apparent only when they balanced, when, before this, were the figures correct?
+
+* Do they do a nightly Variance Check after declaring cash?
+
+SSC do not accept discrepancy calls until all information on the invesigation performed by NBSC is detailed and
+they have advised why they believe there is a software fault.
+
+Solution - SSC
+FUJ00082302
+FUJ00082302
+
+SSC: Ideas for investigation:
+
+* Have they Declared Stock by mistake? (see KEL acha3145Q)
++ Use SmileyDesktop Declaration Events, to find Declarations and Variance Check messages (the latter only if the
+PM uses the Variance Check button or an individual stockunit. May be some entries for stamps too). This may
+indicate a day where there is a significant change in discrepancy. On the other hand, many branches frequently have
+big differences between the declared cash and what the system expects them to have, and we have no way of
+knowing if there is a good reason for it or not.
++ Use SmileyDesktop Session Data by Product, for product 1, to get all cash lines for the Balance Period. If you sort this in
+date order with the declaration events in a spreadsheet, you can calculate the system cash position after each transaction
+since the period start, and confirm that the variances / discrepancies reported are correctly calculated.
+* Check with MSU (or check on Peak) whether there have been any reconciliation calls relating to the branch.
+* Check the application event log for any log4j events. Timeouts or IOExceptions may indicate problems contacting the
+data centre, and could have resulted in confusion with incomplete sessions / recovery. Check session data / recovery data /
+rep events / postofficecounter.logs to see what happened.
++ Investigate any other unexpected log4j events
++ See KEL acha522T for a user error that can cause a loss.
+* Check for withdrawn products that have been converted to cash (see dsed2049S)
+
+When responding, if they have given specific examples that you can explain, do so; otherwise make clear it is not a system
+problem (assuming you have checked that everything adds up). See PCP.C0229446 for an example response which may
+help with the wording.
