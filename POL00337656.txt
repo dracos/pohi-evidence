@@ -1,0 +1,7047 @@
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Post Office Ltd
+Post Office Branch Counter Refresh
+
+24 September 2018, V0-21
+HNGA Release and Compliance Baselines
+
+C*)
+
+Document classification: Unrestricted
+@)
+
+POL00337656
+POL00337656
+
+Computacenter
+
+Table of Contents
+1 Introduction 4
+11 Document Purpose 4
+2 Horizon Next Generation Application Introduction 5
+3 How SCCM Configuration Baselines are Used to
+
+Manage HNGA 6
+3.1 Configuration Baselines Introduction 6
+3.2 The Use of Configuration Baselines on Branch Counters 6
+3.3 The Force Compliance Baseline and its use on Branch Counters 8
+4 BuildStage Compliance and its Impact on Branch
+
+Counters 9
+41 Build Introduction 9
+4.2 Why is Build Stage compliance required? 9
+43 Build 27C/28 Hatfield Stock Prep collections and BuildStage AD groups 9
+44 Moving forward with BuildStage compliance 12
+45 Counter Personalisation Process and Compliance 14
+5 Setting up a Baseline for a HNGA Release 18
+5.1 HNGA Deployment Summary Flowchart 18
+5.2 Applications 20
+5.3 HNGA Installation and Pre-Cache Task Sequence preparation 22
+54 Creation of the Configuration Item 28
+5.5 Configuration Baselines 34
+5.6 Create the SCCM base device collection for the HNGA release 36
+6 Configuration Baseline Deployment and Final
+
+Configuration 40
+6.1 Deploy the Baseline to the SCCM Base Collection 40
+6.2 Create the Baseline sub-collections 4
+6.3 Configure the Maintenance Window for the Compliant Sub-Collection 44
+64 Deploy the HNGA Install Task Sequence 46
+6.5 Deploy the Force Baseline Evaluation Script to the Unknown sub-collection 48
+7 Initial Virtual Machine Testing of the HNGA Release 53
+7A Initial testing of the baseline deployment to a Virtual Machine 53
+7.2 Initial BuildStage testing of the baseline deployment to a Virtual Machine 60
+8 “Route to Live” Testing for the new HNGA Release 68
+8.1 Deployment of the new HNGA release to personalised SV&l and LST counters 68
+8.2 Testing Personalisation in SV&l 75
+8.3 Deployment of the new HNGA release to Model Office 83
+8.4 BuildStage LIVE builds in Hatfield 87
+8.5 Testing Personalisation in Model Office 91
+Page 2 of 128 Version: V0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+9 Releasing the New HNGA version into Production 99
+
+10 Glossary of Terms 101
+Appendix A Current HNGA Versions 102
+Appendix B Production Rollout CRQ Templates 103
+Appendix C Adding a New Hardware Model and/or Stock
+Prep Collection 104
+10.1 Adding a new Hardware Model to the build 104
+10.2 Build update to change version of HNGA and Stock Prep Collection 113
+Appendix D Force Compliance Baseline 119
+
+Appendix E Pre-Caching HNGA Content on Counters 120
+
+Appendix F Decommissioning an obsolete Configuration
+Baseline 123
+
+Notice
+
+This document and the information it contains are confidential and remain the property of Computacenter (UK)
+Ltd. The document may not be reproduced or the contents transmitted to any third party without the express
+consent of Computacenter (UK) Ltd.
+
+In the absence of any specific provision, this document has consultative status only. It does not constitute a
+contract between Computacenter and any other party. Furthermore, Computacenter does not accept liability for
+the contents of the document, although it has used reasonable endeavours to ensure accuracy and correct
+understanding.
+
+Unless expressly forbidden, Computacenter may transmit this document via email or other unencrypted electronic
+means.
+
+The security classification of this document is: Unrestricted
+
+Page 3 of 128 Version: V0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - VO-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+1 Introduction
+
+ial Document Purpose
+
+This document aims to describe how to deploy a new version of the Horizon Next Generation Application (HNGA)
+into the Post Office Branch Counter estate using SCCM Compliance Baselines.
+
+The document will describe the end to end process from configuring Applications, Configuration Baselines and
+Installation Task Sequences, all of which are used in the Post Office environment to ensure that the Horizon Next
+Generation Application (HNGA) remains compliant for use in Post Office branches.
+
+It also describes the steps required to fully test the deployment of the HNGA application and also how to deploy
+it into the production environment.
+
+Page 4 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+2 Horizon Next Generation Application
+Introduction
+
+The Horizon Next Generation Application (HNGA) is the application used by Postmasters in every Post Office
+branch when serving customers. Although the Postmaster only ever sees one GUI (Graphical User Interface),
+HNGA is not a single application, it is actually made up of a suite of individual applications. Those applications
+are currently as follows:
+
+1.
+
+Note that it is possible that the number of applications that make up HNGA may increase or decrease over time.
+Always refer to the HNGA Release bundle document (as supplied by the CC packaging team) for an up to date
+list of the component applications and the versions that make up each specific release.
+
+Fujitsu develop the HNGA application for the Post Office and whenever Fujitsu release a new version, one or
+more of the above components may change to a newer version. SCCM Configuration Baselines are configured
+and used to ensure that HNGA is kept at the correct version on every branch counter. Each release of HNGA
+has its own Configuration Baseline which contains a single Configuration Item. The Configuration Item contains
+a check against 12 registry settings, one for each specific version of each of the individual applications that
+make up HNGA.
+
+The following section on Configuration Baselines explains how they have been designed to keep counters
+HNGA compliant and at the required version.
+
+Page 5 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+3 How SCCM Configuration Baselines are
+Used to Manage HNGA
+3.1 Configuration Baselines Introduction
+
+SCCM Configuration Baselines are used to check whether or not a device is compliant to a predetermined set of
+Configuration Items. For example, you can check if a specific software application is installed, if a particular
+registry setting is correctly applied, or even if a particular file is located on a device.
+
+3.2 The Use of Configuration Baselines on Branch Counters
+
+For Post Office there is a customer requirement that a branch counter is always kept compliant for a specific
+version of HNGA. The counter must not be allowed to run unless it is compliant to the correct version of HNGA.
+
+Each release of HNGA must have its own Configuration Baseline configured in SCCM which is then deployed to
+a base device collection. This allows easy targeting of the Baseline by using Include Collection rules to target the
+baseline at collections of devices. Each baseline is made up of a single Configuration Item that contains 12
+registry checks, one for each of the component applications that make up the HNGA suite.
+
+In the example below, one Configuration Items make up the HNGA 17.50v2 baseline. If this baseline is deployed
+to a branch counter, the Configuration Item will be tested and the counter will only be classed as compliant if the
+Configuration Item return a compliant value.
+
+[[GeneralI Evaluation Conditions IDeploymerts I Securty
+
+‘Select the configuration data (configuration items, configuration baselines, and software updates) to be evaluated for
+‘complance by this configuration baseline. This configuration baseline will be assessed as compliant if all the items.
+pected are complant. Optional tems are evaluated ory # the relevant applcaton ie present on the clert devices
+
+HNGA_1750v2_Cl
+
+The most important point to make about Configuration Baselines is that every Post Office Branch Counter can
+only have one Configuration Baseline targeted at it. Also, the only baseline that can be deployed to the
+counter must be for a version of HNGA (although this will change from Build version 28 onwards). This means
+that no other baselines (other than Force Compliance which is discussed later in this chapter) such as the
+BitLocker Protection compliance baseline should be targeted at a Post Office branch counter. This is required
+because of the way that the scripts that are running to check the HNGA compliance are configured.
+
+Page 6 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+A.counter.can.only.be. compliant to.ene HNGA. baseline. IRRELEVANT
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+IRRELEVANT
+
+A priority list of baselines has been created, with the Force Compliance baseline having the highest priority, the
+most recently released version having the next highest priority, and so on.
+
+Compliance to one baseline is achieved by deploying a HNGA baseline to a dedicated SCCM Compliance
+Baseline collection for each version of HNGA and then using Include and Exclude collection rules to control
+membership of the collection. A baseline collection can have any number of devices as members, but it must
+also be excluded from ALL previous HNGA Configuration Baseline base collections. This will prevent a device
+
+from appearing in more than one baseline collection.
+
+The following diagram is a summary of how the baseline collections are configured. Note the following points:
+
+The Force Compliance collection has been excluded from all lower priority baselines
+Each Baseline collection has been added with an Exclude Collection rule to all earlier release HNGA
+
+baseline base collections
+
+The Non-compliant collections have a Task Sequence deployment that installs the correct HNGA version
+
+for the baseline
+
+The Compliant collections set a 3am-7am Maintenance window
+
+Priority Chart for HNGA Releases
+
+Non-compliant
+h-—
+
+collection
+
+HNGA’
+17.70v2
+Install
+
+Non-compliant
++$—$_ ee —
+‘Compliant collection
+
+3am Maintenance } ooo
+Window
+
+HNGA
+16.49.1
+Install
+
+Non-compliant
+collection
+
+‘Compliant collection
+3am Maintenance / eeu
+Window
+
+Non-compliant
+collection _
+‘Compliant collection
+
+3am Maintenance
+Window
+
+HNGA
+16.85
+Install
+
+HNGA
+16.85
+Install
+
+‘Non-compliant
+collection
+
+‘Compliant collection
+
+3am Maintenance
+Window
+
+Force
+Compliance
+
+Collection (is
+
+Exclude
+
+Force Compliance
+Compliance cide!
+
+Baseline LIVE - All Deployed
+
+Collection
+
+HNGA
+16.49.1 HNGA 17.70v2 Bas:
+Compliance
+Baseline
+Collection
+Exclude
+
+Force Compliance
+HNGA 16.85 HNGA 17.70v2 Baseline Collection
+
+Compliance HNGA 16.49.1 Baseline Collection
+Baseline
+Collection
+
+Force Compliance
+HNGA HNGA 17.70v2 Baseline Collection
+45.96r3 HNGA 16.85 Baseline Coll
+Compliance
+Baseline
+Collection
+
+Page 7 of 128
+
+Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+In terms of what is actually deployed in the above diagram:
+
+° The Force Compliance Baseline is the Priority 1 baseline, so any counter added to the Force Compliance
+collection will automatically be excluded from all the lower priority HNGA baselines. This will force the
+counter to evaluate just the Force Compliance baseline
+
+° The HNGA 17.70v2 Compliance Baseline collection has “LIVE — all Deployed” as an Include so will
+include any personalised counters except those in the Excluded collections (i.e. Force Compliance)
+
+. The Baselines for HNGA 15.96r3, 16.49.1 and 16.85 have no inclusions and are therefore not in use.
+The net result of this combination is that all live counters will receive HNGA 17.70v2, except any counters that
+are added to the Force Compliance collection.
+
+The key to success is getting the correct combination of Includes and Excludes configured so that
+devices receive only one baseline which they can then become compliant to.
+
+a3 The Force Compliance Baseline and its use on Branch
+Counters
+
+On occasion Fujitsu require access to a branch counter that they can use to test changes to the HNGA suite of
+applications. For example, Fujitsu may want to test a new version of one of the applications that make up a HNGA
+release.
+
+Due to the way in which the counters operate they must be compliant to a configuration baseline. If a counter is
+non-compliant the screen will be greyed out and the operator will not be able to interact with the counter. However,
+if the counter is targeted at a specific version of HNGA, it will always try to remain compliant to the specific
+applications that make up that version of HNGA. Within 2 hours of making any changes to a counter, it would
+become non-compliant and then reinstall any changed applications.
+
+To prevent this from happening a configuration baseline has been setup and deployed to the collection “Force
+Compliance Baseline”
+
+Force Compliance 5 items
+
+on Name Member Count Members Visible on Site
+Ped Force Compliance Baseline 5 5
+
+Peg Force Compliance_Force Compliance Baseline_Compliant 5
+= Force Compliance_Force Compliance Baseline_Error 0
+Ped Force Compliance_Force Compliance Baseline_Noncompliant 0
+Pew Force Compliance_Force Compliance Baseline_Unknown 0
+
+coon
+
+When you add a counter to this collection using direct membership, an Include Collection rule or a Query Rule it
+is removed from all existing baselines for versions of HNGA and becomes compliant to a baseline named “I
+
+Compliance’) IRRELEVANT
+
+Once compliant, the counter can then be used to test new applications.
+
+When the counter is removed from the collection it will re-evaluate its compliance against its original version of
+HNGA and if required, reinstall HNGA to become compliant again.
+
+Page 8 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+4 BuildStage Compliance and its Impact on
+Branch Counters
+
+The following section will introduce BuildStage compliance, explain why it is required and how it has been
+implemented.
+
+41 Build Introduction
+
+The Branch Counter build has gone through a number of iterations and at the time of writing this document, the
+current build used in Hatfield is “Build 27C” with “Build 28” very close to completion. Both of these builds are
+configured identically in terms of how HNGA is delivered during the build and how compliance is controlled, details
+of which are in the following sections.
+
+4.2 Why is Build Stage compliance required?
+
+Every counter that is built in Hatfield has to be compliant to the correct version of HNGA for a build to be classed
+as successfully completed (this is a customer requirement). During the build, a version of HNGA is installed, and
+then at the end of the build, BuildStage compliance AD groups and Collection memberships are used to set the
+HNGA baseline version that the counter needs to be Compliant to. At the end of the Task Sequence stage of the
+build a set of PowerShell scripts will execute which will test the counters compliance to the designated HNGA
+baseline. If the counter is Non-Compliant, it will go through the standard process to become Compliant, and when
+the counter is confirmed as Compliant the build will complete successfully.
+
+Originally, BuildStage compliance was only used to enforce a baseline during the build, with the counter being a
+member of the required BuildStage AD group (and therefore the BuildStage collection). Then, when the counter
+was being personalised at a branch, it would automatically be removed from the BuildStage AD collection and it
+would either receive the same HNGA baseline via its membership to a live collection, or it would receive a new
+baseline for a different HNGA version if the deployed live HNGA version is different, i.e. the branch has not been
+upgraded.
+
+From Build 27B onwards however, counters being built in Hatfield have had the latest live version of HNGA
+installed and are also added to a “HNGA XX.XX Stock Prep” Collection which is included to the baseline collection
+for the same HNGA version that was installed during the build task sequence.
+
+The impact of using this method is that:
+
+e The amount of time for a build to complete in Hatfield is kept to a minimum as the counter will test its
+compliance against the same version that has been installed
+
+e When deployed to a branch, counters built with an earlier version of HNGA will upgrade at the start of
+personalisation. This can potentially add 90 minutes to the personalisation process
+
+° When deployed to a branch, counters built with a new version of HNGA will keep this version and no
+extra time is required during personalisation. This prevents the counter from going into a long compliance
+loop during personalisation while a different version is installed.
+
+. Counters in the Stock Prep collection are not automatically removed from the collection so they should be
+removed before deploying a new HNGA version
+4.3 Build 27C/28 Hatfield Stock Prep collections and BuildStage AD
+groups
+
+As counters are built in Hatfield they are added to the following:
+
+. An SCCM stock prep collection named “Hatfield HNGA 17.73 Stock Prep” (CollectionID=P0100774)
+e An SCCM BuildStage collection based on hardware type and build type (test or live)
+
+There are currently 8 Active Directory groups that populate BuildStage compliance SCCM collections, they are:
+
+AD Buildstage Group SCCM Buildstage Collection
+gBuild_Cielo_LIVE_ComplianceGroup BuildStage_Compliance_LIVE_PL_Cielo
+Page 9 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+AD Buildstage Group SCCM Buildstage Collection
+I gBuild_Cielo_TEST_ComplianceGroup BuildStage_Compliance_TEST_PT_Cielo
+I gBuild_M79_LIVE_ComplianceGroup BuildStage_Compliance_LIVE_PL_M79
+I gBuild_M79_TEST_ComplianceGroup BuildStage_Compliance_TEST_PT_M79
+I gBuild_PX35_LIVE_ComplianceGroup BuildStage_Compliance_LIVE_PL_PX35
+I gBuild_PX35_TEST_ComplianceGroup BuildStage_Compliance_TEST_PT_PX35
+I gBuild_VM_LIVE_ComplianceGroup BuildStage_Compliance_LIVE_PL_VM
+gBuild_VM_TEST_ComplianceGroup BuildStage_Compliance_TEST_PT_VM
+
+The SCCM BuildStage collections and Stock Prep collections are then linked to the required HNGA baseline
+collection using Include rules to apply a baseline to the counter near the end of the initial build in Hatfield.
+
+After the initial build task sequence has been completed the counter goes into a Compliance at Build stage where
+its HNGA compliance baseline is evaluated until the device is compliant.
+
+Note that the “LIVE — All Deployed collection” which contains all the deployed and personalised counters, is
+excluded from each of the BuildStage collections using an Exclude rule. This helps to prevent a scenario where
+the counter could have 2 Compliance baselines applied to it that are for different versions of HNGA. This might
+happen if the version of HNGA applied at BuildStage if different to the version of HNGA applied to the live counter.
+
+Appendix C — Adding a new hardware model or Stock Prep Collection contains details on what actions are
+required when a new hardware model needs to be introduced into the Post Office environment. Including how to
+configure BuildStage compliance for the new hardware.
+
+The following diagram shows the path a counter being built in Hatfield takes to receive its BuildStage compliance.
+
+Note that this diagram is correct at the time of writing and may have been superseded.
+
+Page 10 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Compliance at build stage
+
+‘Add device to Buildstage AD group
+gBuild_M79_LIVE_ComplianceGroup and
+then collection
+Buildstage_Compliance_LIVE_PL_M79
+
+J
+
+HNGA 17.73
+Compliance
+
+‘Add device to Buildstage AD group
+‘eBuild_PX35_UVE_ComplianceGroup and
+then collection
+Buildstage_Compliance_LIVE_PL_PX35
+
+Baseline Collection
+
+J
+
+‘Add device to Buildstage AD group
+gBuild_Cielo_LIVE_ComplianceGroup and
+then collection
+Buildstage_Compliance_LIVE_PL_Cielo
+
+Device is added to collection
+
+Hatfield HNGA 17.73 Stock Prep
+
+‘Task Sequence
+Completes
+
+Test Compliance
+every 5 minutes
+
+Isthe counter
+compliant?
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Once the counter is compliant a final message is displayed confirming that the build is complete and the counter
+
+can be shut down.
+
+Build complete and compliant, click ok to shutdown
+
+x
+
+Once shutdown, the Hatfield build process is completed and the counter can be shipped to a branch for
+deployment and personalisation.
+
+Page 11 of 128
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Version: VO0-21, Date: 24 September 2018
+
+©9/24/2018 4:08 AM
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+4.4 Moving forward with BuildStage compliance
+
+Inevitably, after the release of this document, a new version of HNGA is going to need to be released. When a
+new version of HNGA is going to be released (after HNGA 17.73) there will be a number of options that will have
+different impacts on build timings and personalisation timings. A decision will need to be made as to which of the
+options will be followed based on the potential impact each of the options will have.
+
+The following table summarises the options available for BuildStage compliance, and the impact of these options
+moving forward when the next version of HNGA is released.
+
+Option 1 Build Impact
+e Make no changes to the build in e No increase in time to build a counter in Hatfield.
+Hatfield Counters would continue to be built with HNGA 17.73
+° Do not include Stock Prep collection
+in new HNGA Baseline Collection Personalisation Impact
+e No additional time required for a counter to personalise
+
+° Counter remains at HNGA 17.73 until removed from
+Stock Prep collection
+
+HNGA Rollout Impact
+
+° ELS team would need to remove any personalised
+counters after deployment so that they could upgrade
+HNGA version to newer version
+
+e Unsustainable in the long run as the verison of HNGA
+being built could be a long way out of date
+
+Comments
+
+Although this is technically possible, POL would probably not
+agree to this approach as they would not want a counter to
+potentially trade with HNGA 17.73 installed if it is not the latest
+live version.
+
+Page 12 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Impact
+
+Option 2 Build Impact
+
+° Make no changes to the build in . Potential 90 minute increase in time to build a counter
+Hatfield in Hatfield as the counter has to upgrade version
+
+e Include Stock Prep collection in new
+HNGA Baseline Collection Personalisation Impact
+
+e No additional time required for a counter to personalise
+
+. Counters built with the new HNGA version remains at
+the new HNGA version until removed from Stock Prep
+collection
+
+e Counters already built and in stock with an earlier
+version of HNGA installed will upgrade at the start of
+personalisation causing a potential 90 minute delay
+
+HNGA Rollout Impact
+
+° Before the rollout of HNGA XX.XX+1 the ELS team
+would need to remove any personalised counters after
+deployment
+
+Comments
+Although this would increase the build time in Hatfield, when
+the main rollout has finished, the volumes should be quite low.
+
+Part of the change to rollout a new version of HNGA would be
+to remove the existing personalised counters from the Stock
+Prep collection, before the rollout starts. This is required to
+allow you to switch the Stock Prep collection to the new
+version when the rollout starts.
+
+Page 13 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Impact
+Option 3 Build Impact
+° Modify the build Task Sequence so . No increase in time to build a counter in Hatfield
+
+that the new version of HNGA is
+
+installed in Hatfield Personalisation Impact
+
+* Create and include Stock Prep . No additional time required for a counter built with the
+collection in new HNGA Baseline new version of HNGA to personalise
+Collection . Counter remains at new HNGA XX.XX until removed
+
+from Stock Prep collection
+
+e Counters already built and in stock with an earlier
+version of HNGA installed will upgrade at the start of
+personalisation causing a potential 90 minute delay
+
+HNGA Rollout Impact
+
+° Before the rollout of HNGA XX.XX+1 the ELS team
+would need to remove any personalised counters after
+deployment
+
+Comments
+
+The additional time required to personalise a counter would
+only affect any stock remaining at the earlier version of HNGA.
+A way to mitigate this would be to rebuild all the existing stock
+with the new build so that it already has the new HNGA version
+installed.
+
+Part of the change to rollout a new version of HNGA would be
+to remove the existing personalised counters from the Stock
+Prep collection, before the rollout starts. This is required to
+allow you to switch the Stock Prep collection to the new
+version when the rollout starts.
+
+4.5 Counter Personalisation Process and Compliance
+
+Counters are shipped out of Hatfield compliant to a release of HNGA as specified by the BuildStage compliance
+baseline that has been applied during the build.
+
+From Build 27B onwards when a counter is being deployed in a branch, although it will be removed from its
+BuildStage AD group (and BuildStage collection) it will remain in its Stock Prep collection. This will keep the
+counter at the version of HNGA that it was built with unless the Stock Prep collection has been included in a
+different HNGA baseline. At the start of a HNGA rollout into Production, the Stock Prep collection should be
+included in the baseline collection for the new HNGA version on the first night. That will ensure that any counters
+deployed from that point will receive the new live HNGA version.
+
+At the start of the personalisation process the counters compliance is tested to confirm that it is still compliant to
+a version of HNGA. If the BuildStage compliance version has changed while the counter was in stock it will first
+upgrade the version of HNGA before continuing. Once it is confirmed as compliant, it is removed from its
+BuildStage AD group. The counter remains in the Stock Prep collection though so keeps its current HNGA
+version.
+
+The counter is then renamed during personalisation and it then re-evaluates into a new LIVE collection with a
+specific HNGA baseline deployment based on its new name (all live counter hostnames begin with H and should
+have a HNGA baseline deployed to them). The counter is then evaluated again to confirm that it is compliant to
+the correct version of HNGA and once compliant is live and available for use at the branch. Note thatif the counter
+is evaluated as Non-compliant it will go through the process of becoming compliant again before it can be used
+or completes personalisation.
+
+Page 14 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+The following diagram shows the path that a counter that is being personalised takes to maintain its compliance
+to a HNGA baseline.
+
+Page 15 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Switching from Buildstage to Live compliance
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter *
+
+U
+
+Added to Stock PrepI
+collection for HNGA\
+17.73
+
+v
+
+Device checks compliance
+
+Upgrade HNGA\
+to correct
+version
+
+I Device checks compliance
+
+state
+
+Yes
+
+state
+
+Upgrade HNGAI
+to correct ‘Compliant?
+version No
+Yes
+Device is automaticaly
+removed from buildstage ADI
+group and BuildStage
+Collection
+Device is renamed and
+personalisation completes
+Page 16 of 128 Version: V0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+When a counter is live and in use at a branch its compliance to the HNGA baseline is tested every 30 minutes. If
+a counter ever becomes Non-compliant (which should theoretically only ever occur during an upgrade or
+downgrade of the HNGA version) the required HNGA installation task sequence will execute that will reinstall any
+missing HNGA component applications and the counter should then be re-evaluated as compliant.
+
+The following sections describe how to configure SCCM for a new HNGA deployment and how to complete the
+rollout for test devices including SV&I, LST and Model Office. A section is also included that will describe how a
+previous HNGA rollout was completed in Production. This will help to guide any future production rollouts.
+
+Page 17 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+5 Setting up a Baseline for a HNGA Release
+
+For any new release of HNGA, the individual components that make up the release will first need to be setup.
+These include:
+
+HNGA Component Applications
+HNGA Install Task Sequence
+
+HNGA Pre-Cache Task Sequence
+Configuration Item
+
+Configuration Baseline
+
+Baseline collection and sub-collections
+HNGA Task Sequence deployment
+Maintenance Windows
+
+Once these items are ready, you can test the baseline with test virtual machines first, to confirm that the correct
+applications are installed. Then you can test the HNGA release in SV&l, LST and Model Office by using Include
+and Exclude collection rules or SCCM collection direct memberships. Once all of the testing is completed, a
+rollout schedule can be agreed with Post Office to determine in what order counters will be upgraded.
+
+Using this schedule, collections can be setup (assuming they are not already) and using Include and Exclude
+rules you can target the new HNGA version at batches of counters. Once all the counters are upgraded, the
+rollout batch collections can be replaced with the LIVE — All Deployed collection to end the rollout.
+
+The compliance of a counter is tested at various stages of the build and deployment process, and once a counter
+is Live and in Production it is also tested for compliance every 30 minutes. Appendix D — Counter Compliance
+Lifecycle shows the path that a counter takes to become or remain compliant during the BuildStage in Hatfield
+through to it becoming a live counter in a branch.
+
+With each new release of HNGA the GIO Application Packaging team will first be notified by Fujitsu which of the
+HNGA component applications have changed. Fujitsu will then supply the packaging team with the new MSI
+installer files that make up any new packages. The packaging team then repackage the Fujitsu supplied MSI files
+to Computacenter standards and create a new application in SCCM for each of the changed HNGA component
+applications.
+
+Once the new applications have been made available by the packaging team the following tasks will need to be
+completed to prepare the applications and environment for testing the new version of HNGA on branch counters.
+
+° Create new versions of each of the new HNGA component applications and distribute them to all
+distribution points
+
+° Create a HNGA Install task sequence capable of installing the required HNGA component applications in
+the correct order
+
+e Create a Configuration Item with 12 registry tests, one for each of the 12 component applications
+
+° Create a Configuration Baseline made up of the Configuration Item that has been created
+
+° Create a new SCCM device collection that the Configuration Baseline can be deployed to and exclude all
+
+previous compliance baselines from the new collection.
+
+Note that it is recommended that only the previous 2 live baseline are maintained for rollback purposes, and that
+older baselines should be decommissioned. This activity is an operational SCCM task that should be completed
+under change control once the HNGA rollout has been completed. An example change
+
+5.1 HNGA Deployment Summary Flowchart
+
+The flowchart below describes the end-to-end process required to deploy a new version of HNGA into the Post
+Office Branch environment.
+
+Page 18 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+HNGA Rollout
+ted
+
+Prepare HNGA
+
+Create HNGA
+
+Component
+Applications
+
+Create SCCM
+base collection
+
+Installation
+Task Sequence
+
+Create
+Configuration
+
+Configuration
+
+for HNGA
+release
+
+Deploy the
+
+Baseline for
+HNGA release
+
+Create and
+configure the
+
+Item for HNGA
+release
+
+Deploy the
+
+Baseline to the
+base collection
+
+Baseline Sub-
+Collection
+
+Fix the
+Pre-Cache
+issue
+
+Deploy HNGA
+release to
+Production
+
+HNGA
+Rollout
+‘omplet
+
+Test HNGA
+Baseline
+Deployment with
+Virtual Machine
+
+Deploy Pre-
+Cache to
+Production
+
+Pre-Cache
+Rollout
+complete
+
+Test Pre-Cache
+
+HNGA Install
+Task Sequence
+
+Deploy the
+Force Baseline
+
+on a Virtual
+Machine
+
+Test HNGA
+Deployment in
+SV&I and LST
+
+Note that testing in SV&l and Model Office involves 2 stages.
+
+e Deployment of the new HNGA version to an existing counter in SV&l and MO.
+
+Evaluation
+
+Test HNGA
+Deployment In
+Model Office
+
+Fix HNGA
+deployme
+nt issues
+
+° Personalisation of a counter pre-built with the new version of HNGA (Buildstage testing)
+
+Complete each of the following sections to setup the applications, then prepare a Configuration Baseline.
+
+Page 19 of 128
+
+Version: V0-21, Date: 24 September 2018
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+©9/24/2018 4:08 AM
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+5.2 Applications
+
+The most important initial information that is required when starting to prepare a new HNGA release is the HNGA
+Release Bundle documentation. The HNGA Release bundle documents the component application versions that
+make up a new HNGA release. From version to version any of the component applications may change and the
+HNGA release bundle document will show what makes up the HNGA release.
+
+The packaging team will be the initial recipients of the HNGA release bundle document. They will take receipt of
+any updated applications, repackage them and then create test versions of the new application in SCCM so that
+they can complete any UAT testing with them.
+
+The new applications created by the packaging team then need to be copied and prepared in SCCM.
+
+The following procedure can be used to recreate each of the changed HNGA components for deployment use.
+In the following example the release bundle 15 will be used (see Appendix A for all current HNGA release
+bundles). Despite the version numbering bundle 15 is version HNGA 17.73 and is an upgrade from bundle 14
+which is HNGA 17.70v2.
+
+On receipt of the new HNGA release bundle note,
+identify the applications and the versions that make up
+the new bundle.
+
+Note the applications in the bundle that have changed.
+This is important as only the changed applications need
+to be recreated in SCCM as the other applications in the
+bundle will already exist.
+
+In this example we are adding HNGA version 17.73 I R R E L EVAN T
+
+(Bundle 15) which is an upgrade from HNGA 17.70v2
+(Bundle 14).
+
+In this release, 2 applications changed.
+«CBA, which has changed from CBA_118 in
+bundle 14 to CBA_131 in bundle 15. ‘
+e JRE, which has changed from JRE_18 in bundle }
+14 to JRE_20 in bundle 15
+
+Note that this document will be updated and managed
+by the CC packaging team and will also from now on
+include each of the 12 application Product Codes. The
+product code will be required when creating the
+Configuration Item for the baseline.
+
+————
+
+Login to the Primary Site server
+open the SCCM Console ~ I
+
+Page 20 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Browse the Software Library and create a new sub-
+folder in the following location named as the new HNGA
+version.
+
+Application Management > Applications > Branch
+Office > Branch Tier 3 - Di ional Application >
+Fujitsu > HNGA Apps
+
+The name of the new folder will be:
+
+New-XX.XX
+
+Where XX.XX is the HNGA version number
+
+Browse and locate any new applications in Applications.
+New applications that form part of a HNGA release will
+be added by the packaging team to the following folder:
+
+Application Management > Applications > Branch
+Office > Branch Tier 3 - Divisional Application >
+Fujitsu > HNGA Apps - Testing — Do not use
+
+Order by Date Created to locate the newly added
+applications.
+
+Right-Click each of the new applications (check the
+version is correct as per the new bundle) and select
+Copy. A new copy of the applications will be created
+with the suffix “-copy”
+
+Only do this for the changed applications. All other
+applications will already be present in SCCM.
+
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Ss
+
+ee
+
+4 1 Branch Office
+» [3 Branch Tier 1 - Hardware Applications
+» (5) Branch Tier 2 - Common Applications
+4 (5 Branch Tier 3 - Divisional Applications
+4 Gi fujitsu
+4 (HNGA Apps
+Giarchive
+i New-15.96r3
+Ti New-16.49
+3 New-16.49.1
+1 New-16.85
+(5 New-17.50
+© New-17.50v2
+5 New-17.70
+New-17.70v2
+
+—y Domenie _Deporrets stats
+
+IRRELEVANT I
+
+Page 21 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Right-Click each of the new applications and move them
+to the folder created for the new version of HNGA: -
+
+Application Management > Applications > Branch
+Office > Branch Tier 3 — Divisional Application >
+Fujitsu > HNGA Apps > New-XX.XX
+
+Then rename the new applications removing the “-Copy-
+Copy” suffix.
+
+The applications should be present in the folder with just
+the release name.
+
+Distribute each new application to all SCCM distribution I Di -isiisiras I s
+points.
+
+For each application go to the Deployment Type > ee _I
+Detection Method and make a note of the MSI Product (te aed ht neh tance paton
+Code. Sang Toe Wir aa
+
+Note that the MSI Product Code will be used for the mice I IRRELEVANT oo} =)
+Configuration Item that is used to detect that the
+application is installed.
+
+Hopefully the MSI Product Code will already have been
+provided in the HNGA release document, but if not make
+a note of it.
+
+If the MSI Product Code has not been included in the
+HNGA release document, then add the product code to
+the HNGA Bundle document so that you have a
+
+a IRRELEVANT
+
+Note that the Product Codes should be supplied in all
+future releases of the document but you can obtain the; i
+code using the above method.
+
+5.3 HNGA Installation and Pre-Cache Task Sequence preparation
+
+When the new applications have been prepared in SCCM the next stage is to prepare a Task Sequence in SCCM
+that will be used to install the complete set of HNGA component applications that make up the HNGA release in
+the correct order. This task sequence will be used by a branch counter when it is Non-Compliant for the version
+
+Page 22 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+of HNGA that is targeted at it, to re-install the HNGA applications as required. Once the task sequence has been
+executed, on its next evaluation the counter should become compliant to the new HNGA version.
+
+Also, a task sequence will be created that can be used to pre-cache the content required for the HNGA installation
+in advance of the installation. This is critical as it will help to reduce the risk that a counter will remain non-
+compliant for any longer than is required.
+
+5.3.1 HNGA Installation Task Sequence Creation
+
+Use the following procedure to create the required HNGA Install Task Sequence for the new version of HNGA.
+
+Step: Screen
+
+Login to the Primary Site serve’ =
+open the SCCM Console ~
+
+and po ee 5
+
+Browse the Software Library in the following location 4 (5 Operating Systems
+
+> (8) Drivers
+Operating Systems > Task Sequences > Branch > .
+HNGA Installation Bi Driver Packages
+
+> il Operating System Images
+© Operating System Upgrade Packages
+[B® Boot Images
+4 El Task Sequences
+4 (3 Branch
+Gi Archive
+
+Page 23 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Make a copy of the template installation Task Sequence
+
+_Template_Install_HNGA_ver
+
+The Task Sequences have been especially designed to
+support rolling back to a specific version of HNGA if
+required.
+
+HNGA Installation Task Sequences include an extra
+group of steps in addition to the HNGA component
+application installations step that MUST be included in
+all future HNGA installation Task Sequences until further
+notice.
+
+The extra required steps are included in the group:
+
+Post HNGA install steps — Always Include
+
+NGA instalation 14 items
+
+kan [Rare Decision Pactace 1
+EL _Jerpste_nsal_ ce ver Terlateforineapoi0084
+EL —_Tepate Petar NGA ver Terglotefr prac POL00535,
+
+i Ant SCAPTSeuehagan?
+Feast Cores
+RCC SCRE FoceBonintva
+
+eee TPegan Fa SE ip Caveman ona cAI
+
+Dal tb te pm econ
+Sam iFogan Fes os Caviataren ion
+Patan
+
+2
+
+Edit the properties of the new Task Sequence as
+follows:
+
+Rename the Task Sequence using the following naming
+convention:
+
+HNGA_XX.XX_Install
+
+Where XX.XX is the version number of the new HNGA
+release
+
+[Gri I Aares [Une Neen I Sec I Named
+
+esate Tea Suede update tha NGA ap onto Bench. chdesthe =
+apy exe PGA appear ela pam
+
+ane:
+
+cate ()
+ges retestentat
+© eddatiot
+
+Edit the step “Change HNGA to XX.XX” to match the
+version number of the new HNGA release
+
+(Change HNGA to 1750
+
+Page 24 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Ste
+
+Referring to the HNGA release bundle, you need to edit
+the applications listed in the “Change HNGA to XX.XX”
+step so that the match the applications listed in the new
+bundle document.
+
+tal al
+
+VANT
+
+SCESIET mater
+
+You will need to remove and replace any application that
+has been superseded in the bundle.
+
+I IRRELE
+
+Also, make sure that the applications are listed in
+order, as they need to be installed in the correct order.
+
+The correct order that the applications should be
+installed in is:
+
+IRRELEVANT
+
+Once you have made the required changes to the Task
+Sequence click OK to save it.
+
+Page 25 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+5.3.2
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+HNGA Pre-Cache Task Sequence Creation
+
+Once the HNGA Installation Task Sequence has been created you can create a second Task Sequence that will
+
+be used to Pre-Cache the required HNGA content on counters in advance of installation.
+
+Use the following
+
+procedure to create the required HNGA Pre-Cache Task Sequence for the new version of HNGA.
+
+HNGA Pre-Cache Task Seq jteps
+Browse the Software Library in the following location
+
+e Creal
+
+Operating Systems > Task Sequences > Branch >
+HNGA Installation
+
+4 (5) Operating Systems
+> I) Drivers
+Iki Driver Packages
+» Ei Operating System Images
+BE Operating System Upgrade Packages
+f& Boot Images
+
+Task Sequences
+
+4 (3 Branch
+Gi Archive
+
+Make a copy of the template Pre-Cache Task Sequence
+_Template_PreCache_HNGA_ver
+
+And rename the new Task Sequence
+PRECACHE_HNGA_XX.XX_Install
+
+Where XX.XX is the version number of the new HNGA
+release
+
+HINGA Installation 14 items
+eon I Rare = Descioton Pactaoe
+EL _Ferplate_nstal_ 18 ver Terglatefr inal. 0300538
+Tenlete PreCthe NGA ver ‘Tenet for precac.. POL00555
+
+HNGA Installation 15 items
+
+Search
+
+Name
+_Template_Install_HNGA_ver
+_Template_PreCache_HNGA_ver
+HNGA_15.96r3_inc_Rollback_from_16.85
+HNGA_17.50_Install
+HNGA_17.50v2_Install
+HNGA_17.70_Install
+HNGA_17.70v2_Install
+HNGA_Updates_15.96r2
+HNGA_Updates_15.96r3
+HNGA_Updates_16.24.4
+HNGA_Updates_16.49.1_Rollback_Capable
+HNGA_Updates_16.85_Rollback_Capable
+PRECACHE_HNGA_17.50v2
+
+BESESESGEGGSGG888B88
+
+Page 26 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+Edit the Task Sequence and locate the “Pre-Cache
+HNGA” step
+
+Select the Options tab and confirm that a condition is set
+so that the step will only run if a task sequence variable
+“FakePreCacheVariable’ is set to 99.
+
+Since the variable will never be set, the group of steps
+underneath the "PRECACHE ONLY” folder will never
+actually run. This however, does not prevent the
+content from downloading to the client.
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Sat FSgeat ol accouty
+Fin Sa
+
+acl
+@ AnccSCRPT Stefi
+@ An COSCRPT Soe
+ Pecat Corot
+
+Rename the step “HNGA XX.XX Application Content”
+to match the required HNGA version.
+
+Now you need to edit the applications listed in the
+“HNGA xx.xx Application Content” step so that the
+match the applications listed in the new bundle
+document.
+
+You will need to remove and replace any application that
+has been superseded in the bundle.
+
+Make sure that the correct version of each of the
+applications that make up the HNGA suite is listed
+correctly in the “Install the following applications” step.
+
+IRRELEVANT
+
+To save time you can copy and paste this step from
+the newly created HNGA XX.XxX Install task
+sequence if required as it will be identical.
+
+Properties I Options
+= 1g *Pre-Cache HNGA Type.
+4} HINGA «20 Application Content
+
+Page 27 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Once you have made the required changes to the Pre-
+Cache Task Sequence click ok to save it.
+
+intl nkeon
+The applications should exactly match those listed in the
+bundle document.
+
+etal te lowing apictore
+
+The Pre-Cache task sequence can now be deployed to
+batches of counters (under change control) so that the
+content will be distributed to the counters while testing is
+proceeding.
+
+IRRELEVANT
+
+The content will then be ready and available for when
+the deployment commences.
+
+For instructions on how to deploy the Pre-Cache task
+sequence go to Appendix G - Pre-Caching HNGA
+Content on counters,
+
+5.4 Creation of the Configuration Item
+
+Configurations Items are used in SCCM to form the basis of Configuration Baselines. They are used to check a
+condition on a target device and to indicate if the device is Compliant or Non-compliant to that condition. For
+instance they can be used to check a Registry setting or in the case of Post Office, whether or not one of the
+HNGA component applications is installed.
+
+For each HNGA release a single Configuration Item will be created. Each new application (x12) added to SCCM
+that is part of a HNGA release needs to have an associated setting within the Configuration Item configured to
+check if the MSI is installed. Then, once the Configuration Item has been created, it can be used to form a
+Configuration Baseline for the HNGA release version which can then be deployed to counters.
+
+The following procedure should be used to create a Configuration Item for each new HNGA release.
+
+Screen
+
+For each new application that has been created for the
+HNGA release you will require the MSI Product code.
+
+Cone ase treet penrce th aleten
+
+The codes are located in the application detection rules
+for each of the applications or will be provided in the
+HNGA Release Bundle Document.
+
+‘ecto MS poacote me bestest
+
+IRRELEVANT
+
+© Tasipoac, 398
+
+‘Th MS pect cde montage ae eer cone mat ato eat pers
+Miocene
+
+Poaacow f
+
+A
+A
+m
+re
+<
+>
+=
+=I
+
+Page 28 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Login to the Primary Site serv RELEVANT ‘and ar
+open the SCCM Console.
+
+Browse to Assets and Compliance
+
+Assets and Compliance
+
+Expand Compliance Settings > Configuration Items
+
+> Branch. 4 (RI Configuration Items
+
+4 (Branch
+
+Create a new folder for the HNGA version that you are @ 1592
+creating a Configuration Item for. (16244
+
+Use the new HNGA version number for the name of the 5 1649
+folder
+
+16491
+1685
+©1750
+© 17.502
+1770
+@ 17,702
+
+Right-Click the new folder and select Create
+Configuration Item. EH] Create Configuration Item
+
+Y Import Configuration Data
+
+@ Feedback
+
+Folder »
+
+Page 29 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Create a new Configuration Item with the following
+settings.
+
+On the “Specify general information about this
+configuration item” page, specify the name of the
+
+EEE 50.1) goncrainiormation about tis contguration tom
+Seeeed te
+
+Configuration Item as “HNGA_XX.XX_CI” pEae acter te aca eigen docsters tet:
+semay
+
+For example, for HNGA 17.73 the Configuration Item is Conte ee
+named “HNGA_17.73_Cl"
+
+“retype conten ae ou wees ce
+
+‘Stirs br devoer mee! wth ie Graton Maren
+© Wndors 0
+
+Select the “Windows Desktops and Servers (custom)” © tac 05 om)
+radio box and leave the “This configuration item 2 aeeirmrpiaeenee
+contains application settings” box blank and click on oe eee —_—
+Next (© Windo a Widows 12
+
+© into ee
+
+Somaya
+
+© tite
+On the “Supported Platforms” page, select only ae
+
+ws seconds
+
+All Windows 10 (64-bit)
+
+La! SE ee ‘systems that will assess this conf
+seve
+And click on Next Gonceeee
+seme
+For each of the 12 required HNGA component
+application you need to repeat the following
+procedure
+On the Settings page click on New
+Edit
+<Previous Next > I Sul
+Page 30 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+In the Name field, specify the application name as per
+the HNGA Release Bundle document
+
+In the Setting Type field, confirm that it is set to
+Registry Value
+
+In the Data Type field, confirm that it is set to String
+
+In the Key Name field, configure the value as:
+
+SOFTWARE\WOWG6432Node\Microsoft\Windows\Cur
+rentVersion\Uninstall\{Product Code}
+
+The Product Code should be the Product Code for the
+application as specified in the release document, or
+alternatively obtained from the applications Deployment
+Type — Detection Method.
+
+The Value Name field should be set to DisplayVersion
+Then click on Compliance Rules
+
+In the Name field, specify the application name as per
+the HNGA Release Bundle document
+
+In the Rule Type field, set the value to Existential
+
+And click on OK
+
+IRRELEVANT
+
+(ere IComsare Fie I
+
+Seed ono dere trot emer stare ocd te ane crchrenr dot
+
+Specify rules to define compliance conditions for this setting
+
+hee PS NENOMCGR SOOM
+
+Descrgton: a
+y
+
+secdearg RETA RETO
+
+Adee
+
+rcp ty ts —_—I
+(oe) _eret_I
+Page 31 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Classification: Unrestricted
+Step
+
+Click on New again and repeat the process for all 12
+application in the HNGA bundle
+
+Once all of the applications in the bundle have been
+added, click on OK
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+erm Contr es I
+
+ecw ere
+ebcrg cpa it remus h ctaane
+
+soy ta ane mi cro en arg cot on het ect he
+
+[eestsn —[Sevete [nea
+
+‘centI Sept Pars Sto I omnes es I Po I Sty I
+Ue nara eset are eet cra sachs cncrce one ees Te
+bosses
+
+SI
+
+merge secede Coane te,
+
+IRRELEVANT
+
+4 »)
+tee I_I teen I
+
+(oe) eves I__I
+
+Page 32 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Once the Configuration Item is configured with the
+correct 12 settings, complete the Wizard
+
+Be
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+“Tho ward coat an oparating Systm conigraon fom wh tho flowing
+sertngs
+
+TPES HE TSO anPaat
+
+ae ee] area) et
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+serrarirs Tecra Contain tam rao csty
+= (© se smote ore i
+— Senge ste emt
+
+When you have completed the creation of the 1773 items
+Configuration Item make sure the settings are correct =
+and that it is located in the new Configuration Item folder = =
+for the HNGA version. ‘go_I Nene we Date Type _I Reiten
+
+Bc Operating System Windows 5
+Note that an altemative to creating the Configuration
+Item completely from scratch would be to copy the
+Configuration Item for the previous HNGA release and
+then modify it accordingly by removing settings for the
+applications that are no longer in the HNGA release and
+to add new settings for any new or replaced
+applications.
+
+Page 33 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+Classification: Unrestricted
+5.5 Configuration Baselines
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Configuration Baselines are created by grouping together a collection of Configuration Items. For Post Office a
+Configuration Baseline must be configured with the Configuration Item created for the HNGA release that contains
+a setting for each of the component applications that make up the specific version of HNGA. Once created, a
+Configuration Baseline is deployed to an SCCM collection and evaluated by the collection members. To be
+classed as Compliant a device that evaluates a HNGA Configuration Baseline must be compliant to the
+
+Configuration Item in the baseline.
+
+The following procedure should be used to create a Configuration Baseline for a new release of HNGA.
+
+Step
+
+Login to the Primary Site server: IRRELEVAN
+open the SCCM Console.
+
+Browse to Assets and Compliance
+
+and
+
+Screen
+
+Select Compliance Settings > Configuration
+Baselines > Branch
+
+Where XX.XX is the new HNGA version for release.
+
+Right-Click the Branch folder and create a new 4 a) Configuration Baselines =
+Configuration Baseline. Be
+Wh ted te th baseli aye
+en prompted to give the new baseline a name, use
+the following naming convention: - [fj Use! oy HRSG
+[E)RenI A Feedback
+HNGA XX.XX Baseline > De a ,
+> © Conamonaraccess Tal
+
+Create Configuration Baseline
+
+Specify general information about this confi
+
+HNGA 17.73 Baseline]
+
+Page 34 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Click on Add and then select Configuration Items
+
+Search for the correct Configuration Item by name:
+HNGA_XX.XX_CI
+Where XX.XX is the new version of HNGA.
+
+Select the correct Cl and click on Add
+
+Confirm that the correct Cl has been selected and click
+on OK
+
+Page 35 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Confirm that the baseline has the correct name (as
+required), and that the correct Configuration Item is SRR OSE ONE VOTE A CEL Dee ES TD
+
+selected and then click on OK 7 tee Pare
+a
+
+HRCA TNO a
+
+5.6 Create the SCCM base device collection for the HNGA release
+
+Now that the Configuration Baseline has been prepared, the next thing that is required is a base Device Dollection
+in SCCM for the Configuration Baseline to be deployed to.
+
+The following procedure can be used to create the base device collection for the new baseline.
+
+Step Screen
+
+Login to the Primary Site server PVSCMPOLO001 and i eee
+open the SCCM Console. Browse to Assets and
+Compliance
+
+Assets and Compliance
+
+————
+
+Soin
+
+Page 36 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+Expand Device Collections > Computacenter
+>Branch > Compliance Baselines
+
+Create a new folder for the HNGA version that you are
+creating base collection for.
+
+Use the naming convention:
+
+HNGA XX.XX Compliance - where XX.XX is the version
+number of the new HNGA release
+
+Assets and Compliance
+4 @ Device Collections
+> (2) Applications
+4 (5) Computacenter
+(Archive
+4 (0) Branch
+> (2) Branches
+4 (5) Compliance Baselines
+> (9) BuildStage Compliance
+(2 Dummy Compliance
+(9) HNGA 15.9673 Compliance
+
+(DL HNGA 16.49.1 Live Cielo Only
+(D9) HNGA 16.85 Compliance
+
+Right-Click the new folder and create a new Device
+Collection using the naming convention:
+
+HNGA XX.XX Compliance Baseline — where XX.XX is
+the version number of the new HNGA release
+
+Configure the collection so that under General the
+limiting collection is set to:
+
+BRANCH - All Deployed and Pre-Personalised (TEST
+& LIVE) Devices
+
+ee eer neem
+
+ot
+
+{Coleco Varies I Dat Port oe I Sect [Mets
+‘Sener [Merberip Pues I Fower ManagementI Deploymeres I Martenance Windows I
+
+Select colecton to use as ing colecon, Te nrg colecton etal the
+reonurces that you con ato olecon by uarg meme tes
+
+Rules, the box “Use incremental updates for this
+collection’ is ticked.
+
+rang colton [RNCH-ADeoedadhehI [Teme]
+ve
+Configure the collection so that under Membership [7 Use incremertal updates for this colection
+Pa ecemetal ‘evaistes new resources and then adds resources that
+
+update peroctcaly
+cua oth alco. This pon oes nt regure you to sched fl defor
+econ
+
+[Y} Schedule @ full update on this collection
+Occur every 7 days effective 25/08/2017 14:24
+
+Page 37 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step
+Add the new collection to all of the previous HNGA xx.xx
+Compliance Baseline base collections using an Exclude \Colection Vatables I Dstib.tion Port Groups I Securty I Alerts I
+Collection rule. Gennral_ Membersip Fes I Power ManagementI Deployments I Mattenance Windows I
+WGlerocmgeteuersscineedcsnecergencopstionsoey te
+However, do not add the new collection to the Force ety ace cipacto Set wo mentees of he hating cotacton.
+Compliance baseline.
+Member es
+ae . ie ae 7
+This will help to prevent accidental targeting of 2
+baselines at a counter, ensuring that a counter can only ae =
+be a member of 1 baseline collection. ee
+al
+
+Remember that it is recommended that only the previous eS eS ee i i
+2 live baseline collections are maintained for rollback =
+
+purposes, and that older baselines should be eee Se ee esse
+decommissioned. Otherwise, to complete this step you Saytocs chante av needs te bg colacion kate!
+
+may need to create an Exclude Rule for many previous
+baseline collections.
+
+ener ne:
+ae + —— =
+I
+
+4
+
+Cale Vries I Dstt Port Goi I SecutyI Ate I
+
+ener Menboaho les IPerMaraperert I Demere I Mertenance Wows I
+
+Menten de deem th mcce tm eid hn coleton wha tpt
+
+‘cacanuneneronip wees 4s specks coast or sn cose itn sy Ihe
+
+‘Sechrvnnet ep cores cece tr color enrages ood
+‘Shite cca ae mente te rag ciocion
+
+Tenn vrs comarca seme tones
+
+Collection Variables I Distrbxdion Point Groups I Secusty I Alte I
+
+Sena Menbep Fs I over Managaner I Depomerts I artnance Window I
+
+"Membership rules determine the resources that are incuded in the collection when & updates.
+
+Yercanttemberi nero mids wrecks died orate cic tons uot The
+
+‘echo nerbert can do nhs o sckae Ce coecors, Ment ca ad
+‘noe concen e mondo meng clean
+
+Manbeshe veo
+se Nore rz ‘aeaanis =
+IMO Bch 05 Desloments Troe POTOSOA
+ST I
+
+Page 38 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Add the “Force Compliance Baseline” collection using an
+Exclude Collection rule to the new “HNGA XX.XX
+Compliance’ collection.
+
+This will make sure that if you need to target a counter at
+the “Force Compliance Baseline” collection (used by
+Fujitsu for testing purposes) it will only have 1 baseline
+that will not try to force a version of HNGA.
+
+Note: remember that the Force Compliance baseline has
+the highest priority.
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+[Brrr 0s onotancetnncine Noses
+
+(Gobi Vates I bition Pot Grape I Sooty I At
+“Generel pre ray pl ed ere ey
+
+“Memeréi ree ceteris he resource tht are cluded nthe cast when update
+‘Yaonome ment nisi aldo eck sit oat cf tiaton gay The
+
+recuse
+‘ei those ejects ha re mens ofthe ntgcallocton,
+
+Menertp des:
+“Rue Nave oa Colesion d=)
+Fore Conplance Basaine ude PovOOK7s
+POL.Wn10_Branch HNGA Pech Decoy... cle oto0scs
+
+gph mia eh WGA Pach Dv. rece Porooso3 =I
+
+sr Ee I
+
+Use incremental updates fortis colecton
+
+update a then ae
+‘quay oth calecton. The opten does net equre yout schedule afl update orthis
+
+OF senedsoat
+
+‘Occur every 7 day efecve 12/12/2017 1028 Schade.
+
+Page 39 of 128
+
+Version: VO0-21, Date: 24 September 2018
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+6 Configuration Baseline Deployment and
+Final Configuration
+
+Now that all of the individual components are in place it is possible to deploy the Configuration Baseline and
+complete the final configuration.
+
+To do this you need to complete the following in SCCM:
+
+e Deploy the new Configuration Baseline to the SCCM Base Collection for the baseline
+e Create the required Device Sub-Collections that indicate whether or not a counter is Compliant,
+Noncompliant, Unknown or reporting Error
+
+° Create a 4 hour Maintenance Window on the Compliant sub-collection
+° Deploy the HNGA Install Task Sequence for the new HNGA release to the Noncompliant sub-collection
+° Deploy the package “CC-SCRIPT-ForceBaselineEvaluation” to the Unknown sub-collection
+
+Once these items are in place it will be possible to test that a device can be upgraded successfully to the new
+HNGA version. Initially this will be tested using a Virtual Machine in the datacentre before moving into SV&I so
+that a personalised counter can be tested.
+
+Use the following steps to configure the Configuration Baseline deployment.
+
+6.1 Deploy the Baseline to the SCCM Base Collection
+
+The first thing to do is to deploy the baseline to the SCCM base collection and create the baseline sub-collections.
+
+Use the following steps to deploy the Configuration Baseline to the base collection.
+
+Step Screen
+
+Login to the Primary Site server IRRELEVAN'
+open the SCCM Console.
+
+it etn apt Come Net es at)
+
+and
+
+Browse to Assets and Compliance
+
+Select Compliance Settings > Configuration
+Baselines > Branch
+
+Page 40 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Right-Click the new Configuration Baseline and select
+Deploy.
+
+Select the contgurationbaselnes that you want to depioy toa colecton
+
+‘esa cote betes Seance res
+Select the SCCM Base Collection that was created for ‘aloaa Panaan I
+the new version of HNGA. [aa Zao
+
+Bi F
+
+1 tt rg en opted
+Change the schedule to every 30 minutes and then pe ee ind aad anid
+click on OK (epee! ra:
+
+Dae and ime: fom ake >
+
+6.2 Create the Baseline sub-collections
+
+Now that the Configuration Baseline has been deployed to the base collection, you need to create the 4 sub-
+collections that report what compliance state the device is in for the deployed baseline, whether it is Compliant,
+Non-compliant, Error or Unknown.
+
+Use the following steps to create the baseline Sub-Collections.
+
+With the new Configuration Baseline still highlighted,
+click on the Deployments tab at the bottom of the
+SCCM Console.
+You will notice that the Configuration Baseline aad
+deployment to the SCCM Base Collection is listed. o
+= Se Ostet ume
+eae vance, conan
+a Picci simi 2
+BD son taeay
+a cing
+fj hdeaton
+= ———
+Page 41 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step Screen
+
+Right-Click the Baseline deployment and click on
+“Create New Collection”. Click on Compliant.
+
+HINGA 16.49.1
+eon _Icatection
+Pca rsaea¢
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+You will notice that the name of the collection is
+automatically populated using the name of the SCCM
+Base Collection and the name of the Configuration
+Baseline.
+
+Also, the limiting collection will be set to the SCCM Base
+collection.
+
+Click on Next
+
+Leave the Incremental box unticked.
+
+Set the collection to perform a Full Update every 1 hour
+then click on Next.
+
+Page 42 of 128 Version: V0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+©9/24/2018 4:08 AM
+
+Classification: Unr
+
+icted
+Click on Next again
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Elec are UGA 6491 HG 648 Cortrn ane, Conn
+
+E-
+Man Comat
+
+Then click on Close to finish the collection creation
+wizard.
+
+Ose Gee
+eto WYGA 89H 16 81am Bae Creat,
+
+Tea Cota
+
+Repeat the process to create the Error sub-collection for I "™oA1e491
+the Baseline deployment. ne === SS
+G tet ®
+Set the collection to perform a Full Update every 4 ia _ as
+hours B Prepenies ld
+Seamer Deslomets I xtronn
+Repeat the process to create the Non-compliant sub- aenaees __
+collection for the Baseline deployment. a om oe
+G se ®
+Set the collection to perform a Full Update every 5 a — i
+Minutes = oor
+Sema Deaton I nto
+Page 43 of 128 Version: V0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The main baseline collection which has the HNGA
+baseline deployed to it and the 4 sub-collections
+(Compliant, Error, Noncompliant and Unknown).
+
+6.3
+Collection
+
+SEREET
+
+IGA 16.9.4 omplance Baseline
+NGA 6.49.1. NGA 1649.1 Complance Bzeane Complant
+NGA 16-19.1,HNGA 16.0.1 Complance Basdine Ear
+
+NGA 16.49.1_HNGA 16.9.1 Compliance Besaline Noncomatont
+NGA 16-49.1_HGA 1649.1 Compliance Basalne Unknoun
+
+Repeat the process to create the Unknown sub- pean aes .
+collection for the Baseline deployment. a eg 5 Se ee
+Gs 5
+Set the collection to perform a Full Update every 4 See SS
+hours Beer I
+Sm Oat I ‘I =s
+Once created, the 4 new sub-collections will be located xi
+in the root Device Collections folder.
+yO
+Locate and highlight all 4 Sub-Collections and move aT
+them to the same folder as the SCCM Base Collection =
+for the new HNGA release version.
+BuildStage Compliance
+yurmy Compance
+15.963 Compliance
+EA
+You should now have 5 collections in the baseline HNGA 16.49. Compliance 5 items
+folder. Search
+name . Leng Caco
+
+[RANCH - Al Deploy.
+NGA 6.49.1 Come
+HINA 16.19.1 Come
+HIG 16.9.1 Come
+NGA 16.9.1 Compl
+
+Configure the Maintenance Window for the Compliant Sub-
+
+With the 4 sub-collections created and located in the correct folder you now need to configure the Compliant sub-
+
+collection to have the correct maintenance window:
+
+e Counters in the Compliant sub-collection should have a 4-hour maintenance windows applied to them,
+
+opening at 3am and closing at 7am
+
+A personalised counter that is Compliant will have a 4 hour maintenance window configured so that changes
+(such as software updates) can only be installed while the maintenance window is open. When a counter
+becomes Non-compliant (e.g. when a different version of HNGA is targeted at it) the deployment of the Task
+Sequence that will install the new version of HNGA will be configured to bypass the maintenance window. This.
+will allow the counter to become compliant again as quickly as possible.
+
+Use the following steps to configure the correct maintenance window for the Compliant sub-collection.
+
+Page 44 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Login to the Primary Site serve
+open the SCCM Console.
+
+Browse to Assets and Compliance
+
+Assets and Compliance
+
+Browse to the following Device Collection folder:
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > HNGA XX.XX Compliance
+
+Vesela
+
+Where XX.XX is the version of HNGA being deployed
+
+Locate the Device Collections created for the new x
+HNGA release and edit the properties of the Compliant
+sub-collection.
+
+j Time
+Select the Maintenance Windows tab and createanew I “="°%* y Z
+maintenance window with the following properties. a Fs0000 BA ea: frov0 I
+Name: 3amMW a ao
+Start: 03:00:00 - Recurence pattem
+End: 07:00:00 ‘Configure the recurence schedule.
+Recurrence pattern: Daily ars —
+Recur every: 1 days » mF
+Apply this schedule to: All deployments. C Weetty
+
+© Daly
+When completed click on OK to complete.
+
+Apply his schedule to:
+
+[Al deoloymeris 3]
+
+Lex] _conot_I
+Page 45 of 128 Version: V0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+6.4 Deploy the HNGA Install Task Sequence
+
+The next stage is to deploy the HNGA Install Task Sequence for the new HNGA release to the Non-compliant
+sub-collection so that when a counter becomes Non-compliant it will execute the HNGA installation task sequence
+and install the required HNGA component applications (in the correct order). Then when the counter re-evaluates
+
+its compliance it will become compliant again.
+
+Use the following steps to deploy the task sequence.
+
+Step Screen
+
+Login to the Primary Site servet IRRELEVANT jand
+open the SCCM Console
+
+Browse the Software Library in the following location
+
+Operating Systems > Task Sequences > Branch >
+HNGA Installation
+
+Locate the task sequence that was created to install the
+new HNGA release.
+
+4 (5 Operating Systems
+> (8) Drivers
+Iki Driver Packages
+» Ell Operating System Images
+
+® Operating System Upgrade Packages
+
+iB Boot Images
+4 El Task Sequences
+4 (Branch
+Gi Archive
+> ET HNGA installation
+
+HNGA Installation 17 items
+
+Search
+
+The name of the task sequence will be: I ee ace: Ti ircahl =
+[E)——__Template_PreCache_HNGA_ver ‘Template for precac.._ PO:
+HNGA_XX.XX_Install — where XX.XX is the HNGA a HNGA_15.96r3_inc_Rollback from_1... TS used to installl 1. PO:
+version number a HINGA_17.50_Install Test TS used to upd... PO:
+(eA v7s0 na ST
+a HINGA_17.70_Install ‘Test TS used to upd... PO:
+(EL HINGA_17.70v2_AL Test Baseline_In... Test TS used to upd... PO:
+[E)— HNGA_17.70v2_Install Test TS used to upd... PO:
+Page 46 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Class
+
+ification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Deploy the task sequence to the Non-Compliant sub-
+collection for the new HNGA baseline deployment.
+
+Gs soemare ck Sh Costrcs ere eee
+[ea 7582 Caren de
+
+Configure the deployment as shown in the following
+steps:
+
+ar)
+
+Action: Install
+
+Purpose: Required Specify settings to control how this software is deployed
+
+sca Uplstcn e031 fobock Capable tate fo WA 16. Scie (St ssa Aaa]
+
+Assignment Schedule: (2 assignments)
+As soon as possible
+Occurs every 1 hour
+
+Gen I Demet Ser Smt I he Boome I itn Fort I He I
+
+be oon nth ete .
+Sortne bw Frosted apeara st Pe sega ede
+
+costa cesar none ne
+
+Rerun behavior: Always rerun program r aa _— a
+feat a) ar ue
+Note that Always rerun is required just in case you ever —— — ee eee eee
+need to rollback to this version of HNGA from a later Pam sapentie
+version.
+Femsstere Pan aoe z
+Page 47 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Allow user to run the program independently of
+assignments: Unticked
+Show Task Sequence progress: Unticked
+
+Software installation: Ticked
+System restart: Ticked
+
+Commit changes at deadline or during a maintenance
+window (requires restart): Ticked
+
+Unticked
+
+Note: these settings allow the deployment to occur
+outside of the configured maintenance window. This is
+required to allow the counter to become compliant as
+quickly as possible.
+
+In Deployment Options select
+
+Download all content locally before starting task
+sequence
+
+Click on Next
+
+Then finish the wizard.
+
+6.5
+sub-collection
+
+Allow task sequence to run for the client on the Internet:
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+‘Spoat tno user expoence fr tho istatlaton of ths sftaro cn the slectad
+ovens
+
+es
+FS eameamgee
+sestamibi
+iene ke ek dee
+rected art ctr cot
+
+sees IS) semen I _coee_I
+
+‘Spmctynowo run ne content os program
+
+pons
+——
+
+Late I[Euete seme I ores
+
+Deploy the Force Baseline Evaluation Script to the Unknown
+
+Once the HNGA Install task sequence has been deployed to the Non-Compliant sub-collection, the next step is
+to deploy a package named “CC-SCRIPT-ForceBaselineEvaluation” to the Unknown sub-collection. When a
+counter is first switched to a new HNGA baseline it populates the Unknown sub-collection. Deploying this package
+to the Unknown sub-collection helps the counter to force an evaluation of the baseline more quickly than if it was
+left to do it without intervention. This helps to reduce the time that a counter will take to upgrade the version of
+
+HNGA.
+
+Use the following procedure to deploy the package to the Unknown sub-collection:
+
+Page 48 of 128
+
+Version: VO0-21, Date: 24 September 2018
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+Login to the Primary Site serve!
+the SCCM Console.
+
+Browse to Assets and Compliance
+
+Browse to the following Device Collection folder:
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > HNGA XX.XX Compliance
+
+Where XX.XX is the version of HNGA being deployed
+
+Locate the Unknown sub-collection
+
+Right-Click the Unknown sub-collection
+
+Select Deploy > Program
+
+Assts and Compliance
+
+HNGA 17.50v2 Compliance 5 items
+
+eRe) RRR Re eG
+
+INGA O=rsever
+
+eon
+
+INGA 17.50v2 Baseline_HNGA 17.50v2 Compliance Baseline_Compliant
+INGA 17.50v2 Baseline HNGA 17.50v2 Compliance Baseline Error
+
+HNGA 17.50v2 Baseline_HNGA 17.50v2 Compliance Bassine_Noncompliant
+HINGA 17.50v2 Baseline_HNGA 17.50v2 Compliance Baseline,
+
+HNGA 17.50v2 Compliance Baseline
+
+HvcA17.50)
+BRANOH-A
+
+AIGA 17.02 Basene HAGA 17.S02 Comnlence seine
+“+ Show Members
+
+Gp Add Selected tems 5
+rca Chart
+
+Borage Aint Ruts
+
+5. Car Raquted PAE Delores
+
+©) vncete members
+
+WS Ad Resources
+
+SB her Notte .
+
+G erccort retecoon ,
+
+> coor
+
+i cony
+
+Gefen 5
+
+% alte Odete
+
+1 simiateDesloyrent
+
+Group Deployment Locks
+I ia Move
+
+Properties
+
+© row mrs sche cick Tonk 5
+
+Page 49 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+On the “Specify general information for this
+deployment” page, click on Browse, then select the
+software “Run Force Evaluation Script” and click on OK.
+
+Confirm that the “Run Force Evaluation Script” software is
+selected and that the Unknown sub-collection is selected
+then click on Next
+
+B-
+
+MESSI 55 goer itormatin fr this deplyent
+est
+te
+ae ood as
+porenerg cen A
+
+FF torte tere pees
+
+On the “Specify the content destination” page, confirm
+that all 6 distribution points are selected and then click on
+Next
+
+On the “Specify settings to control how this software is
+deployed” page, configure the following settings and then
+click on Next
+
+Purpose: Required
+Send wake-up packets: Not selected
+
+Allow clients on a metered Internet connection to download
+content after the installation deadline: Not selected
+
+saunter eemsue:R Barts tibsion port groups, and the dis
+‘wen calectone to seize content.
+
+Page 50 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+On the “Specify the schedule for this deployment” page,
+configure the following settings and then click on Next
+
+Schedule when this deployment will become available:
+Selected
+
+Schedule when this deployment will expire: Not selected
+Assignment Schedule: (2 assignments)
+As soon as possible
+
+Occurs every 1 hours effective “current time and date”
+
+Rerun behavior: Always rerun program
+
+‘Speaity the schedule for this deplayment
+
+“Das saran wl be ovale mc on hs ben dtd th tet
+etn bo For maursepiestons. techy magnet thea
+
+IF Sched wens dsoynert wt become ela:
+Pam sIfon ar ure
+1 Sete herb desoynert pe:
+fue _sifon ar ue
+danarment sede
+Bess scone
+
+On the “Specify the user experience for the installation
+of this software on the selected devices” page,
+configure the following settings and click on Next
+
+Allow users to run the program independently of
+assignments: Not selected
+
+locally
+
+Allow clients to share content with other clients on the
+same subnet: Not selected
+
+Allow clients to use distribution points from the default site
+boundary group: Not selected
+
+=F Saher
+Software installation: Selected oe
+System restart (if required to complete the installation): hi ncinand eanaeraata)
+Selected coach news rec smn)
+{ent nn oro i
+Commit changes at deadline or during a maintenance
+window (requires restart): Selected
+On the “Specify how to run the content for this ay
+program...” page, configure the following settings and click oy ee
+on Next oe ‘Spey now oun the content forms program aceoang to he pe of boundary
+ae mamma
+St intense depen anette
+Set both Deployment Options to:
+Download content from distribution point and run a [apelin ee a
+
+a )
+Rianne
+
+The etme or detente me
+1 Anew anette beater
+
+Page 51 of 128
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Version: VO0-21, Date: 24 September 2018
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+On the “Confirm the settings for this new deployment”
+page, confirm that the settings are correct and click on
+Next
+
+On the “The Deploy Software Wizard completed
+successfully” page, click on Close
+
+Page 52 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+7 Initial Virtual Machine Testing of the HNGA
+Release
+
+With everything now in place it is possible to complete a number of tests of the SCCM baseline deployment using
+virtual machines in VMWare.
+
+These tests will prove the following:
+
+e A virtual machine targeted at the new Baseline deployment becomes compliant to the new HNGA release
+
+e Once compliant, the test virtual machine has the correct HNGA software components installed
+
+e Once the upgrade has been completed successfully test rolling back to the original version of HNGA on
+the test virtual machine
+
+° With BuildStage configured correctly, prove that a virtual machine can be built successfully and be
+Compliant to the new HNGA release
+
+Once these initial tests have been completed you can then move on and complete the “Route to Live” testing by
+completing BuildStage testing and then testing in SV&l, LST and then Model Office, before moving rolling out the
+baseline into Production.
+
+In summary, initial testing the new HNGA baseline deployment on a test Virtual Machine is broken down into 2
+sections:
+
+Section 1
+
+° Identify a test Virtual Machine that is Compliant to an existing HNGA baseline.
+
+e Add the test virtual machine to the new base collection for the new HNGA version (the collection where
+the baseline is deployed) using a Direct Membership rule
+
+e Restart the virtual machine and make sure it becomes compliant to the new version of HNGA
+
+° Execute a PowerShell command to capture a list of installed applications and confirm that the list
+matches the bundle of applications in the new HNGA release
+
+. Remove the Include collection rule that was added for the test collection so that the test device reverts to
+its original HNGA baseline and make sure it become compliant again
+
+° Execute a PowerShell command again to capture a list of installed applications and confirm that the list
+
+matches the bundle of applications in the original HNGA release
+
+Section 2
+
+° Setup BuildStage so that test VMs build with the new HNGA version
+
+° Complete a test build of a virtual machine and confirm that on completion it is Compliant to the new
+HNGA version
+
+. Execute a PowerShell command to capture a list of installed applications and confirm that the list
+matches the bundle of applications in the new HNGA release
+
+ral Initial testing of the baseline deployment to a Virtual Machine
+
+Use the following steps to complete a test deployment of the new HNGA version on a test Virtual Machine.
+
+Page 53 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+In the Citrix Workspace, run the vSphere Client ‘VMware vSphere Client
+vmwere
+
+Set the IP address / Name as: IRRELEVANT
+
+VMware vSphere”
+
+Then enter your credentials and click on Login
+
+supporting
+“vSphere 5.0, but not exposing any of the new features in
+‘vSphere 5.5.
+
+The Client is stil used for
+ee ee
+(@.g. Site Recovery Manager).
+
+‘To directly manage a single host, enter the IP address or host name.
+‘To manage multple hosts, enter the IP address or name of 3
+‘vCenter Server.
+
+When the vSphere console opens browse to:
+
+Romford > VDI Clients
+
+Then open the console of one of the virtual machines
+that is configured as a branch counter.
+
+IRRELEVANT
+
+Note that at the time of writing the virtual machines
+configured as branch counters are
+
+(0 Wainerabiity Scarining
+IRRELEVANT
+
+However, any of the 12 virtual machines could be
+configured as a branch counter so you may need to
+search for one.
+
+If no VMs are available or in a usable state you may
+need to rebuild one in preparation for the testing.
+
+Page 54 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+
+POL00337656
+
+@)
+
+Computacen
+
+ter
+
+Step Scree
+
+Restart the virtual machine and then make a note the
+hostname of the virtual machine and the baseline that it
+is compliant to.
+
+When the virtual machine starts up the CDU scripts will
+execute and you should be able to confirm both the
+hostname and compliance state.
+
+Login to the Primary Site server! IRRELEVANT I and
+open the SCCM Console.
+
+Browse to Assets and Compliance
+
+Edit the membership of the baseline collection for the
+new HNGA release.
+
+Create a Direct Membership rule and include the test
+virtual machine.
+
+This will target the new HNGA baseline at the test virtual
+machine.
+
+Remember that you can check the properties of the VM
+to confirm that the correct baseline is now deployed to it.
+
+Restart the test VM and confirm that it tries to evaluate
+the new baseline.
+
+It should initially become Non-Compliant and display a
+message stating
+
+“Branch system update detected...”
+
+Assets and Compliance
+
+[BB 111G8 17.502 Comphance Baseline Properties
+
+‘Colecton Variables I Distrbuton Point Groupe I Sacurty I Aerts I
+Carer Menbertp Fes IPone Manager I Demers I Martenance Wenws I
+
+Meniberiho ndes deteine the rescurces that ae incudedin the calecton when undies
+‘You can use menberip testo 835» spectic set or set jects om a query The
+
+one ue rece cer coletore evcan ed
+only those objects that are members of the imting collection.
+
+—
+
+[Beene Tie [sateen =]
+NGA 1772 Coplance Bre Exc FOIOOE
+
+oan orDeGaN Diet Nat pea
+
+Use neremertal updsts forth clecton
+
+Aorta update and the. that
+‘quay othe colecton This optan doesnt equre yout soe afl ut fortis
+olecten.
+
+Branch system update detected...
+
+Loading of HNGA paused until counter is compliant
+
+Please wait for software to update.
+
+Page 55 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+AM
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+After a while the device should become Compliant again
+but to the new HNGA version.
+
+Once the device has reported as Compliant you need to
+confirm that the correct HNGA component applications
+are installed.
+
+To do this open an Administrative PowerShell window
+and run the following command:
+
+Get-WmiObject -Class Win32_Product -
+Computername . I Format-Table Name, Version I
+Out-File -FilePath
+C:\Computacenter\InstalledApps.txt
+
+Page 56 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Open the InstalledApps.txt file and confirm that the
+correct HNGA component applications that make up the
+new HNGA version are all installed (refer to the HNGA
+release bundle document to confirm).
+
+Note that other applications that are part of the standard
+build such as Eracent or the SCCM client will also be
+listed. You just need to confirm that the applications that
+make up the HNGA version are listed and that they are
+the correct versions.
+
+It is also worth confirming that only one version of each
+of the Fujitsu specific applications in the bundle are
+installed.
+
+Make sure that only one version of the following
+applications are installed and they are the correct
+versions:
+
+IRRELEVANT I
+
+Next, run the SCCM report “List of assets by compliance
+state for a configuration baseline”, select the new HNGA
+release version baseline and confirm that the test VM
+counter is reported as Compliant
+
+If you are happy that the device has successfully
+upgraded to the new HNGA version and the correct
+applications are installed, you need to roll the device
+back to its previous HNGA version.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+IRRELEVANT
+
+Page 57 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step Screen
+
+Remove the Direct Membership rule that you created for
+the virtual machine from the new HNGA baseline (Colecton Varablee I Detrbuton Port Groupe I Secuny I Aerts I
+collection. Genera Membentip Rules I Power Managemert I Desloyments I Meirtenance Windows I
+
+F)
+
+Menberthp ee detemine the rescues hata included he colacton hen &undate.
+‘Youcar use meres testo add aspecfic chet or ase of bcs om aque The
+colecton San a natu a exch cer coleciars, Menberonp rues can odd
+(nyse ects that ae menbers fhe nang Coleco
+
+Menbarihp nies:
+ie Hane Tipe [caisson =]
+HNGA 17-732 Conptance Baselne ‘Boule PO1Oo76
+
+MININTOTDGOAN
+
+Drect Net woe
+
+te
+
+Use ncreertal undetes forth clacton
+
+fo) pdate ne and then add that
+‘ualy tothe colecton. This opten des ot requre yout ace afl undat fortis
+
+Reboot the virtual machine.
+
+Branch system update detected...
+
+Loading of HNGA paused until counter is compliant
+It will attempt to re-evaluate its previously deployed
+HNGA version and will initially become Non-Compliant
+again.
+
+Please wait for software to update...
+
+Confirm that the virtual machine becomes compliant
+
+again, this time to the original HNGA version that was
+installed.
+
+Page 58 of 128 Version: VO0-21, Date: 24 September 2018
+
+©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+8 ee
+
+Once the device has reported as Compliant you need to
+confirm that the correct HNGA component applications
+are installed.
+
+To do this open an Administrative PowerShell window
+and run the following command:
+
+Get-WmiObject -Class Win32_Product -
+Computername . I Format-Table Name, Version I
+Out-File -FilePath
+C:\Computacenter\InstalledAppsRollback.txt
+
+Open the InstalledAppsRollback.txt file and confirm
+that the correct HNGA component applications that
+make up the original HNGA version bundle are all
+installed.
+
+Note that other applications such as Eracent or the
+SCCM client will also be listed. You just need to confirm
+that the applications that make up the HNGA version are
+listed and that they are the correct versions.
+
+Again, it is also worth confirming that only one version of
+each of the Fujitsu specific applications in the bundle are
+installed.
+
+Make sure that only one version of the following
+applications are installed and they are the correct
+versions:
+
+IRRELEVANT
+
+Run the SCCM report “List of assets by compliance
+state for a configuration baseline”, select the original
+
+HNGA version baseline and confirm that the test VM Nees
+counter is reported as Compliant ee .
+Page 59 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+r2 Initial BuildStage testing of the baseline deployment to a Virtual
+Machine
+
+Once you have tested that it is possible to deploy a new HNGA release to an existing virtual machine, you need
+to test that a Virtual Machine can be built and become Compliant with the new version HNGA installed.
+To do this you will need to do the following:
+
+° Add the TEST BuildStage collections for all hardware types (including virtual machines) to the SCCM
+base collection for the new HNGA release
+
+° Identify and rebuild a test virtual machine
+
+° When the build has completed, confirm compliance to the new HNGA release
+
+Use the following steps to prepare BuildStage to allow a virtual machine to build and become Compliant with the
+new version of HNGA installed
+7.2.1 Buildstage preparation for all TEST builds
+
+Use the following steps to configure BuildStage for TEST counters for the new HNGA release.
+
+Step Screen
+
+Login to the Primary Site serve eg ¢—____—
+open the SCCM Console.
+
+Browse to Assets and Compliance
+
+Browse to Device Collections > Computacenter > I
+
+Branch > Compliance Baselines Callton Vales I Distrbuion Port Grouns I Security I Aes I
+General Membertnp Fules I Power Menagemert I Deployments I Maintenance Windows I
+
+- Morbathe ule deterane he eeources that ae nce te colacton when updates
+Locate and remove the following BuildStage TEST De ee
+collections from any of the SCCM baseline collections: Sie Se
+BuildStage_Compliance_TEST_PT_VM Menbente et
+BuildStage_Compliance_TEST_PT_M79 ES 5
+
+anplarce, re
+BuildStage_Compliance_TEST_PT_Cielo pan Coons TST oe ee mal
+BuildStage_Compliance_TEST_PT_BoxPX35
+When located delete the Include Collection Rules for
+these collections from the SCCM baseline collections.
+Page 60 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Browse to Device Collections > Computacenter >
+Branch > Compliance Baselines > the folder for the
+new HNGA release.
+
+In this example we are using the HNGA 17.50
+Compliance folder.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+ooeee! Ij
+
+Edit the membership of the SCCM base collection for
+the new HNGA release.
+
+Create 4 new Include Collection Rules and add the
+following test BuildStage collections to the SCCM base
+collection for the new HNGA release.
+
+BuildStage_Compliance_TEST_PT_VM
+BuildStage_Com, ince_TEST_PT_M79
+
+BuildStage_Compliance_TEST_PT_Cielo
+BuildStage_Compliance_TEST_PT_BoxPX35
+
+Note that the BuildStage collections are located in the
+following folder:
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > BuildStage Compliance
+
+Fi
+CColeconVatabies I Csvtuten Fort Gcupe I Secuty I Aste I
+‘Genel Menbero Rules I Power Manepenert I Depoyerts I Morienence Windows I
+ee ae eee
+SS Se
+So
+saree ce ees eae
+
+Membership nies:
+
+File Nene Calecions—_I
+
+‘BuleStage_Conplance_TEST_PT_BoxPX35 Incude POT00480
+
+BuleStage-Conpiance TEST-PT Glo inchde porons = =
+Stace Conoiance TEST PTW79__Incude Porons72
+
+a »
+
+rn atte
+
+ Uneincereta updates forts colecton
+
+At this point all new TEST builds will be added to the
+SCCM Base collection for the new HNGA release.
+
+Note that a TEST build is one where the TEST build type
+is selected at the start of the task sequence rather than
+LIVE.
+
+When the builds have completed they will check their
+compliance to the new HNGA version.
+
+7.2.2
+
+Test build of a Virtual Machine Compliant to the new version of HNGA
+
+Now that BuildStage has been prepared for TEST builds, you need to complete a test build of a Virtual Machine
+to confirm that once built the counter is Compliant to the new version of HNGA and that it has the correct HNGA
+
+component applications installed.
+
+Use the following procedure to complete a test build of a Virtual Machine.
+
+Page 61 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step
+
+In the Citrix Workspace, run the vSphere Client ‘VMware vSphere Client
+vmwere
+
+Set the IP address / Name as! IRRELEVANT
+
+VMware vSphere”
+
+Then enter your credentials and click on Login
+
+[R]_InvSphere 5.5, allnew vSphere features are avalable ony
+through the vSphere Web Clent. The traitonal vSphere Clent
+
+“vSphere 5.0, but not exposing any of the new features in
+‘vSphere 5.5.
+
+“The vSphere Clentis stil used for the vSphere Update
+‘Manager (YUM) and Host Cent, along with a few solitons
+(@.g. Site Recovery Manager).
+
+‘To directly manage a single host, enter the IP address or host name.
+‘To manage multple hosts, enter the IP address or name of 3
+‘vCenter Server.
+
+When the vSphere console opens browse to:
+
+Romford > VDI Clients
+
+Then open the console of one of the virtual machines
+that is configured as a branch counter.
+
+Note that at the time of writing the virtual machines
+
+I IRRELEVANT
+configured as branch counters are /
+
+@ * Vairierabilty Seanning
+
+Any of the 12 virtual machines could have been built as
+a branch counter so you may need to search to locate
+the VM that is required.
+
+When you have identified a VM for rebuild, note the
+hostname of the virtual machine.
+
+Page 62 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+In the SCCM Console browse to
+
+Assets and Compliance and select Devices
+
+Search Devices and locate the SCCM device object for Devices Search Results - 1 items shown
+the virtual machine.
+
+[raineos
+
+Icon Name Client Site Code lient activity
+
+Right-Click the SCCM object for the VM and delete it. 2] MININT-osFPT7U Yes Pol Active
+ad
+
+Deleting a resource from the Configuration Manager console will remove the
+‘resource record from the database. Any active computer associations wil iso
+
+‘deployment migration is complete and there are no active computer
+associations for this record.
+
+Cick the active computer association status to view all computer associations
+forthat system resource.
+
+‘System resources:
+
+Name [[Aative Computer Associaton I Migration Comple
+MININT-OSFPT7U No No
+
+4 orl
+
+Page 63 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Open Active Directory Users and Computers, find the
+AD computer object for the virtual machine and delete it.
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Locate the associated AD user object and delete it.
+
+Note that the user object will have the same name as
+the computer object but will be prefixed with either PL-
+or PT- depending on if it was a TEST or LIVE build.
+
+Pe.
+
+[Sex Gonos Goes] mh [Sfacrooto ma =] _ Boe I
+
+In the vSphere console confirm that the VM has the
+CD\DVD drive connected to the ISO
+POL_BCR_WINPE_x64_v0-03.iso (or higher)
+
+Page 64 of 128
+
+Version: V0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ ©9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Reboot the VM and boot from the CD-ROM Drive so that
+it boots into the WinPE boot image. Boot Menu
+
+CD-ROM Drive
+
+On the “Welcome to the Task Sequence Wizard”
+page, click on Next apne
+Wizard
+
+oe
+contrwe.
+
+On the “Select a task sequence to run” page, select \? a =")
+
+the current live Branch Counter Task Sequence. ‘Select a task sequence to run,
+
+If you don't know which is the live one, check with GIO
+Build Management.
+
+Note that the minimum version number for the live
+
+Branch Counter Task Sequence will be v0.27 TESTOR frown Pros io VOI7IEA. DONT SS BERENS WIT.
+
+Page 65 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+When prompted to select the Build Type, select Test
+
+Build and click on the green tick to confirm. Select Build Type ©
+lease choose a build type for this computer
+(TestBuild ig
+
+The build will now proceed, based on a VM, Test build.
+
+D Post Office Limited
+
+Once the build has completed and the counter has had
+its Compliance checked for the new HNGA release you
+will see a popup on the screens saying
+
+Build complete and compliant, click ok to shutdown
+
+Build complete and compliant, click ok to shutdown
+
+Confirm that the correct HNGA component applications
+are installed.
+
+To do this open an Administrative PowerShell window
+and run the following command:
+
+Get-WmiObject -Class Win32_Product -
+Computername . I Format-Table Name, Version I
+Out-File -FilePath
+C:\Computacenter\InstalledApps.txt
+
+Page 66 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+Open the InstalledApps.txt file and confirm that the
+correct HNGA component applications that make up the
+HNGA version bundle are all installed.
+
+Note that other applications such as Eracent or the
+SCCM client will also be listed. You just need to confirm
+that the applications that make up the HNGA version are
+listed and that they are the correct versions.
+
+It is also worth confirming that only one version of each
+of the Fujitsu specific applications in the bundle are
+installed.
+
+Make sure that only one version of the following
+applications are installed and they are the correct
+versions:
+
+IRRELEVANT
+
+Once you have confirmed that the ‘device has the correct
+HNGA applications installed then the VM BuildStage
+testing is complete.
+
+Next you will need to repeat the above build test
+procedure for each of the 3 physical hardware
+models used in branches by completing test builds
+in Hatfield.
+
+Currently the 3 hardware models use in branch are:
+
+Lenovo M79
+Cielo PHU
+Box PX35
+
+You will need to engage with a resource in Hatfield
+who can build a couple of each of the hardware
+models for you in Hatfield.
+
+These counters need to be shipped to Winnersh and
+will be used to test that a pre-personalised counter
+with the new HNGA version installed can be
+Personalised.
+
+Page 67 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+8 “Route to Live” Testing for the new HNGA
+Release
+
+When the initial virtual machine testing has been completed and you have confirmed that a test VM can become
+compliant to the new version of HNGA (with the correct applications being installed), you can start to follow the
+“Route to Live” testing process.
+
+“Route to Live” is a term used to describe the testing that needs to be successfully completed to allow a major
+upgrade to be deployed to Post Office Branch Counters.
+
+For a new HNGA release the “Route to Live” process requires that the following tests are completed successfully:
+
+e Successful deployment of the new HNGA release to a set of current personalised SV&I counters
+
+e Successful deployment of the new HNGA release to a set of current personalised LST counters
+
+e Successful completion of physical LIVE counter builds in Hatfield that include the new HNGA release
+installed. These will be deployed and personalised in Model Office.
+
+° Successful deployment of a pre-personalised TEST counter with the new HNGA release installed into
+SV&I and completion of the personalisation process.
+
+° Successful deployment of the new HNGA release to a set of current personalised Model Office counters.
+
+e Successful deployment of a pre-personalised LIVE counter with the new HNGA release installed into
+
+Model Office and completion of the personalisation process.
+On successful completion of these tests you will be ready to:
+
+e Deploy the new HNGA release onto production branch counters
+
+e Configure BuildStage for LIVE counters
+
+e Build new pre-personalised counters in Hatfield with the new HNGA release installed, ready for
+deployment into a Branch
+
+Use the procedures in the following sections to assist with the completion of the “Route to Live” testing.
+
+8.1 Deployment of the new HNGA release to personalised SV&I and
+LST counters
+
+With the initial Virtual Machine HNGA deployment and BuildStage testing completed, deployment of the new
+HNGA release to a personalised test counter in SV&l and LST is required next. The objective of the SV&I/LST
+testing is to prove that the new version of HNGA can be deployed to a set of physical devices of all hardware
+types that have been personalised and are in use, to confirm that the HNGA application functions correctly and
+then to prove that the same devices can be rolled back successfully to the previous HNGA version. SV&l and
+LST testing should be completed prior to deployment in Model Office or Production.
+
+The Post Office SV&I environment is currently based at the Atos office in Winnersh, although it may also be
+available in Hatfield soon. It consists of a number of simulated Post Office Branches using live network equipment
+and physical hardware. The Post Office LST environment is located in a Fujitsu testing facility in Bracknell. The
+counters based in SV&l and LST are personalised and are used to test all deployments, including new HNGA
+releases.
+
+The SV&I and LST device collections in SCCM are currently located in the following folder:
+Device Collections > Branch > Branches > SV&l and LST
+
+Page 68 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+SV@d and LST 43 items
+
+Icon Name Limiting Collection Member Count
+
+I= LST - All Deployed BRANCH - All Deploy... 3
+Pea ‘Svad - All Deployed ‘SV&d - All Deployed. 2B
+Pea ‘SV&l - All Deployed - Cielo Tablet SV&I- All Deployed 4
+- ‘SV&d - All Deployed - Lenovo M79 ‘SV8d - All Deployed 11
+Pea ‘SV&d - All Deployed - PX35 (AIO) ‘SV&d - All Deployed 13
+Ped ‘SV&d - All Deployed & Pre-Personalised BRANCH - All Deploy... 82
+& —SVAI- All Deployed Build 22, Build 23 & Build 26 © SV&I- All Deployed 2
+Pea ‘SV&d - All Deployed Build 27 ‘SV&d - All Deployed B
+Ped SV8d - All Deployed Build 28 ‘SV&d - All Deployed 3
+Ped ‘SV - All Pre-Personalised SV8I- All Deployed. 54
+Ped SV&l - Always Compliant Counters All Post Office Branc.. 10
+Ped ‘SV8d - Banbury (900041) ‘SV&d - All Deployed. 1
+Ped ‘SV&I - Banbury (900041) Counter 1 SV&I- All Deployed... 1
+Ped Sv&l - Barmouth (167641) SV&I- All Deployed. 1
+a? = SVAI- Barmouth (167641) Counter 1 SVAI- All Deployed. 1
+Ped ‘SV&d - Garrabost (112869) ‘SV&d - All Deployed. 5
+Ped SV&l - Garrabost (112869) Counter 1 SVB&I- All Deployed. 2
+Pea ‘SV&d - Garrabost (112869) Counter 2 ‘SV&I - All Deployed. 3
+Ped ‘SVv&l - Glasgow (054832) SV&I- All Deployed... 9
+
+8.1.1 SV&I Counter Types
+
+In SV&I there are 2 types of counters, Type C and Type D. Type C counters are not as locked down as Type D
+counters so that they can be used to access logs etc. when testing deployments. Type D counters in SV&l are
+configured with the same lockdown policies as production counters which means there configuration is more
+closely aligned with production counters.
+
+When testing a HNGA release in SV&I, you should always test on Type D counters!
+
+8.1.2 Testing a HNGA release in SV&l and LST
+
+Testing in SV&l needs to be as flexible as possible. There are collections configured that include all SV&l
+counters, and collections for specific simulated branches, including Banbury, Garrabost, Glasgow, Nantwich and
+Putney. However, on any particular date it is possible that these simulated branches have either too many or no
+counters available for testing. You may need to prepare the SV&I or LST counters in advance of any HNGA
+release testing to make sure that you have counters available for testing.
+
+For Build 27 or later devices, SV&I counters once personalised will by default fall out of any automatic BuildStage
+compliance collections. Therefore to test a HNGA release in SV&l it is a case of adding personalised counters to
+a collection (using direct memberships) that targets a specific HNGA baseline.
+
+In SV&l there should be a device collection created for each HNGA release that can then be added to the required
+HNGA base collection using an Include rule. This allows you to easily select whichever devices (based on
+availability) that you require to add to the SV&l test baseline and confirm they becomes complaint.
+
+Page 69 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+The following steps describe how to create the SV&I test collection for the HNGA release and then test that a
+device can be successfully upgraded and rolled back. Note that you will need an onsite resource in the SV&l
+location with the physical counters who can execute any tests required to confirm compliance.
+
+Login to the Primary Site serve!
+open Active Directory Users and Computers File. Action View Help
+
+Browse to the OU
+
+Fle Acton Ven Heb
+
+es airi¢ OX os Bo saanrae
+
+= Tee
+races. Prosrintons
+
+Data Management\Computers\Branch\SVI Test
+
+Environment\SVI Type D Builds ‘Pomouter
+q Faroe
+} IRRELEVANT Frou
+Locate a personalized SV&I counter (computer name q Fomoute
+
+espereno-n brain
+[BLv27Us8 est Oxgarzatonal
+
+begins with S)
+
+You will need to seek agreement from the Atos staff in
+Winnersh that the counter(s) chosen for the upgrade can
+be used
+
+Open the SCCM Console
+
+Page 70 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Select Assets and Compliance and browse to the folder
+
+Device Collections > Branch > Branches > SV&l
+and LST
+
+BP dw
+
++ searches” Seige I “Sencha
+
+soo st
+
+e
+e
+e
+(GB Made Fee MO) =
+e
+ra
+
+If required, create a new Device Collection named
+
+SV&I at HNGA XX.XX
+
+Where XX.XX is the new HNGA version being tested
+
+Make sure that the collection “SV&I - All Deployed &
+Pre-Personalised” is configured as the limiting
+collection.
+
+SV&d and LST 23 items
+
+Search
+Icon Name a
+Ped ‘SV8d - Updates Testing Sep
+Ped ‘SV&I - VSAT Machines
+
+Ped ‘SV&I at HNGA 15.963
+Ped ‘SV&I at HNGA 16.49.1
+Pe ‘SVBdI at HNGA 16.49.1 Build 27
+Ped ‘SV&I at HNGA 16.85
+
+[G7 sval at HNGA 16.85 Build 27
+
+Browse to the folder where the base and sub-collections
+are located for the new HNGA release
+
+(nc 36483 nel On : =
+
+68635) 55 orton nine Conpet
+teas ya 60 contac ta re
+
+ra 635 2685 orate Sdn soar,
+GA 695 J 3685 ola Dn on
+
+Page 71 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Scree:
+
+Right-Click the baseline collection and select properties
+Select the Membership Rules tab
+
+Add the new “SV&I at HNGA XX.XX” collection with an
+Include rule.
+
+At this point you need to add the SV&Il Type D counters
+that will be used for testing the new HNGA release.
+
+The ideal approach will be to locate an SV&l Type D
+counter that is already compliant to the existing HNGA
+version through its membership of the previous “SV&I at
+HNGA XX. XxX" collection.
+
+16.85 Compliance Baseline Properties
+
+CatectionVaicblesI Ditton Fark Groups I Sect I Akts I
+Gererd Member Ruse I Power Management I Deployments I Mantenance Windows I
+
+enbertip ndes detain he neki nthe calecbon when t updates
+element tnioes pee chea ramadccaion sci
+olecten manbareep cx ace chile exci abe cobeters, Menon Men
+Striens cats someeton ef bat cco
+
+Merbertio nie:
+
+Te Nene. Celestion
+
+NGA 1649.1 Complance Baseline
+
+fue Comune VE PL Bas mace .
+AéRule fe Delete
+
+IF Use ncremertal updates forthe colocton
+
+i update ne a then ac tat
+‘ualy tothe colecton. The open doesnot eau yout schedule aul unde forthe
+
+I Schade aul update ont clacton
+cous every 7 days fective 2/08/2017 1415,
+
+sein I
+Client Type Client
+‘Computer Yes
+Computer Yes
+‘Computer Yes
+
+Add the target device to the new “SV&l at HNGA
+XX.XX" collection using a Direct Membership rule.
+
+When you have added the device to the new “SV&l at
+HNGA XX.XxX" collection, view the properties of the
+target device and confirm that it only has one baseline
+deployment, and that the deployment is for the new
+version of HNGA.
+
+Over the course of the next few hours the target device
+should execute the upgrade to the new HNGA version
+and become compliant again.
+
+Genet Delmer I tte I
+
+Deployer tot source
+
+Sanae [Rogen Te [eaten
+
+HNGA GES Menfer _Bassine HNGA 16.5 Conplance Ba
+Delintion Updite. Ina Sofware Unde SVUL-Al Deployed &Pre-Per.
+Detnsion Update nal Sofware Undate _SVUL-Al Deployed &Pre-Per.
+Delinion Update. lta Sofas Undate Post fice Branch ler
+
+Page 72 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+To confirm that the counter has reported to SCCM that it
+is compliant run the report “List of assets by compliance
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+List of assets by compliance state for a configuration baseline
+Down
+
+that the correct HNGA version is running using the on-
+screen menu system.
+
+From the default screen press Enter or Touch the
+Screen
+
+Choose System Diagnostics (82) from the Agreement
+Dialog.
+
+state for a configuration baseline”. Semen 5 Compete Sevnty——? Goat ne ame
+cone = Tk 75 abe
+cent sexe ca 75 eae
+
+Confirm that all of the SV&l or LST devices targeted at = = ee
+
+the new HNGA XX.XX baseline are reporting as conan ee ch 1750 ban
+
+Compliant.
+
+The following tests can only be completed onsite.
+
+You will either require one of the Atos staff in
+
+Winnersh to agree to perform the tests or request
+
+that a BAU engineer attend and perform the tests.
+
+The onsite resource in the SV&I location needs to check
+
+If you proceed further without authority you will commit a
+criminal offence for which you could be prosecuted and/or
+disciplined
+
+Post Office will monitor your use of this system. By,
+legging on, you consent fo information from this, yStom,
+together with personal information about you held in other
+‘systems, being used to prevent and detect crime and
+protect Post Ofice from loss.
+
+‘System Diagnostics Continue
+
+Choose Engineer (82) from the Diagnostic Options
+Dialog.
+
+Choose Node Info (22) from the Engineer's Menu
+screen.
+
+Diagnostics Options
+
+Select the diagnostic function required,
+
+e
+
+System
+
+The version of HNGA that is running will be displayed
+next to Counter App Version
+
+aes
+lows nang Ene
+
+(Courter App Version LWNGA_PACKAGE_CBA_1750_0108 1780.3
+
+(Courter App Pach Veron NA.
+(Courtr Ub Version NA
+
+{EU Bua Version}
+BAL Contig Version
+BALL Version
+
+Page 73 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+Step
+
+If you are happy that the device has successfully
+upgraded to the new HNGA version you need to roll the
+device back to its previous HNGA version.
+
+To do this, first you need to remove the device from the
+new “SV&I at HNGA XX.XxX" collection
+
+Over the course of the next few hours the target device
+should execute the rollback to the original HNGA version
+and become compliant again.
+
+To confirm that the counter has reported to SCCM that it
+is compliant to the original version, run the report “List of
+assets by compliance state for a configuration baseline”.
+
+Confirm that all of the SV&l or LST devices targeted at
+the original HNGA xx.xx baseline are reporting as
+Compliant.
+
+Again, the onsite resource needs to check that the
+correct HNGA version is running using the on-screen
+menu system
+
+If you are happy that the device has successfully rolled
+back to the original HNGA version and that the HNGA
+application is running correctly then the testing is
+complete.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+[Bisset]
+oneal Deplomert I Viais I
+
+eee
+
+Sete [reese [ype [cetecton
+
+Detintion Update. nal Softwa Udote __SVUL-Al Deployed & Pr Per.
+Delon Update. nal Sotorae Undate __SVLL-Al Deployed &Pre-Pr
+Delinion Update. lta Sofas Udste Post fice ranch Ger
+
+List of assets by compliance state for a configuration baseline
+a
+
+‘aaphet eee 106A 7.58 cae
+— ewe 1 1738 oe
+erat oo ch 15 tte
+
+Note that the SV&I testing should ideally be repeated
+on each of the 3 physical hardware types.
+
+Lenovo M79
+Cielo PHU
+Box PX35
+
+For testing LST devices you will need to add the
+required LST counters directly to the “HNGA XX.XX
+Compliance Baseline” collection.
+
+Note that LST testing is designed to allow Fujitsu to test
+that the HNGA application is functioning correctly, so
+they will need to be engaged to complete any LST
+testing once the new HNGA release has been
+successfully deployed.
+
+Ret one aragenert I Deemer I Martenson Wacows I
+
+(Caen Vane [Deeb Port Gena I Seay [Ata
+Meer
+
+es detemine he resources tht ee incided inthe colecton when pds.
+
+Meroestep ues
+le Name Tipe Colecionid
+‘Vila HNGA 1750 bocade Povo0sac
+Loorzz700102 rect Not Aopcable
+972270 rect Nee Borel
+Kah >I
+
+Page 74 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+8.2 Testing Personalisation in SV&I
+
+When you have successfully deployed the new HNGA version to counters in SV&l and LST the next test is to
+personalise the freshly built counters with the new HNGA version installed in the SV&l environment. This is
+required as it will prove that you can build replacement counters in Hatfield and they can be deployed and
+personalised onsite in a branch. If this test is not successfully completed in SV&I prior to deployment of the new
+HNGA version it represents a risk that the deployment (or replacement) of counters is not possible when a pre-
+personalised counter has the new version of HNGA installed.
+
+The Post Office SV&I environment is currently based at the Atos office in Winnersh, although it may also be
+available in Hatfield at some point in the future. It consists of a number of simulated Post Office Branches using
+live network equipment and physical hardware. The counters based in SV&l are personalised and are used to
+test all deployments, including new HNGA releases.
+
+The process for completing this test is as follows:
+
+e Ship the TEST counters previously built in Hatfield to the SV&I site in Winnersh
+
+e Co-ordinate with the Atos staff in Winnersh that a counter in SV&I can be replaced
+
+° Arrange for an engineer to replace the counter with one of the freshly shipped pre-personalised TEST.
+counters that has the new HNGA release installed
+
+° When the engineer is onsite the following procedure must be followed
+
+Step Screen
+
+First you need to identify the hostname of the
+pre-personalised counter that you will be
+deploying into SV&I
+
+Note that this will be the serial number of the
+device prefixed by PT-
+
+Get the onsite engineer who is going to
+replace the counter to get you the Hostname
+or Serial Number
+
+Open the SCCM Console
+
+Page 75 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+Select Assets and Compliance and browse to
+the folder
+
+Device Collections > Branch > Branches
+> SV&l and LST
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+eo
+
+=) ta &
+
+RR EI
+i oe 2)
+FS fl I aetna I rg cr
+
+Ter ndConpnce > Grn > een Calcio» Conpacenter 9 &
+
+Create a new Device Collection named
+SV&I at HNGA XX.XX
+
+Where XX.XX is the new HNGA version being
+tested
+
+Make sure that the collection “SV&l - All
+Deployed & Pre-Personalised” is configured
+as the limiting collection.
+
+SV&l and LST 23 items
+
+Search
+Icon Name *
+mF ——_SVAI - Updates Testing Sep
+Pe ‘SV&I - VSAT Machines
+= ‘SV&I at HNGA 15.96r3
+Peg ‘SVAI at HNGA 16.49.1
+Peg ‘SVAI at HNGA 16.49.1 Build 27
+Peg ‘SVAI at HNGA 16.85
+[a _svai at HNGA 16.85 Build 27
+
+Browse to the folder where the base and sub-
+collections are located for the new HNGA
+release
+
+Page 76 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+Step
+Right-Click the baseline collection and select
+properties
+
+Select the Membership Rules tab
+
+Add the new “SV&I at HNGA XX.XX”
+collection with an Include rule.
+
+This will ensure that any counter that you add
+to the collection will receive the new HNGA
+baseline
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Edit the membership of the “SV&l at HNGA.
+XX.XX" collection.
+
+Add Direct Membership rule for the pre-
+personalised counter that is going to be
+personalised in SV&l
+
+[Bi svar at tmcA 16.85 Properties:
+
+Page 77 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step Screen
+
+Connect up and start the counter
+
+Confirm that it starts up and logs in with the
+correct username (PT-SerialNumber)
+
+Note that the engineer should be able to
+confirm this and they should take photos as
+evidence of success.
+
+The engineer should confirm that the Counter
+Deployment Utility scripts start executing
+
+Myris 9> soon com aca: pana reas
+Niclas aoe Ss Siartesteoy
+
+£ reante3093
+
+ee seeing rn 0 ey pats
+
+b
+Traine)
+sh
+WPA 09 nor cx
+Praaeis095 = Pome rens
+oh
+
+a
+a
+
+—
+= 'sconds 10:47:53
+
+Page 78 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+The engineer should confirm that the Counter
+is compliant to the new HNGA baseline that it
+was built with at the start of the
+personalisation process
+
+The engineer should confirm that after the
+counter is confirmed as compliant, that the
+CDU scripts continue
+
+At the prompt “Is this a Type C Counter?”
+click on No
+
+Page 79 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The engineer should confirm that the correct
+FAD code is automatically detected based on
+the counter position you have connected it to.
+
+Note that the counter in this example is being
+personalised on SV&l Banbury Counter 01
+
+You will need to enter the counter position as
+required and click on Finish
+
+The engineer should confirm that after the
+FAD code is specified, the Key generation
+starts
+
+Branch 900041, Node 1
+
+4 MeYs for the counter, we must collect
+a Please type on the keyboard and
+Fandom until the bar below shows 100%
+
+Page 80 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+The engineer should confirm that the Printer
+test completes successfully.
+
+Click on OK when the print test is completed
+
+The engineer should confirm that the Final
+restart is initiated
+
+i
+
+o_she operation, Enable the Local shutdown access rights and restart the <
+
+ure, You want. Xo perform this action?
+
+TAY Yes to AIT) [MJNo IL} No to A11 [s) suspend [2] Help Cefault is ~v
+
+Page 81 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+The engineer should confirm that the
+certificates are installed
+
+You will need to click on Yes to install the
+certificates (click yes twice)
+
+The engineer should confirm that the
+Personalisation of the counter completes
+
+ovteltis took certticate,Windove ul sorhstically thst
+
+Anion
+‘1
+Worn
+POOL
+uy
+
+5 AS3AF773 FSC30CC2 936CE758 60375866
+
+by this CA. Inctaling 8 certificate with anc
+uly hit V Jou cet Yar soa teintonesoc Te
+
+000-0900-0090-0000-000000000001
+00 -0000-0000 0000000000000.
+
+‘8000-0000 000000000001
+
+plete
+
+hing Perso
+
+Page 82 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The engineer should confirm that the Counter
+Business Application starts
+
+The engineer should confirm that the correct
+version of HNGA is running. Confirm that the
+new HNGA version is running.
+
+rs NA
+unter Lib Patch Version NA
+
+8.3 Deployment of the new HNGA release to Model Office
+
+Once testing in SV&l and LST is complete and successful, the next stage is to complete the testing in Model
+Office. The Post Office Model Office consists of two branches which are physically located in the Post Office
+headquarters in Finsbury Dials. The Model Office counters are effectively in use so before any testing is
+performed you will need to book a time slot when you want to perform the testing and raise the required change
+requests to notify the change management team what changes and tests you are planning to perform.
+
+There are a number of pre-configured SCCM device collections that have been created for Model Office. You
+can create your own if required but the ones created should cover most scenarios.
+
+Page 83 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Model Office (MO) 16 items
+
+Search
+
+te te te te Mt Mt Mt Me Re Re Re RR MM 8
+
+Limiting Collection Member ¢
+MO - All Machines
+MO - All Machines
+MO - All Machines
+MO - All Machines
+
+MO - All Machines
+MO - All Machines
+MO - All Machines
+IRRELEVANT ncn
+MO - All Machines
+MO - All Machines
+BRANCH - All Deploy...
+MO - All Machines
+MO - All Machines
+MO - All Machines
+MO - All Machines
+(I MO - All Machines
+
+hee OW eH eee ON OOH
+
+The two branches that make up the Model Office are referenced as 688 branch and 699 branch. Counters
+personalised in each branch of Model Office will have hostnames that start with the naming convention H688 or
+H699.
+
+MO - All Machines 6 items
+
+Glient Type
+
+688 Branch
+
+699 Branch
+
+Again, the objective of Model Office testing is to prove that the new version of HNGA can be deployed to a set of
+live physical devices of all hardware types that are on the Post Office Production network, then to confirm that the
+new HNGA version is functioning correctly and then confirm that the same devices can be rolled back successfully
+to the previous HNGA version.
+
+To test a new HNGA release in Model Office you are required to use the standard methodology described in the
+earlier sections of using Include collection rules to set the required HNGA baseline version. Note that as well the
+option of upgrading all of the counters at each branch, you may also choose to upgrade just specific hardware
+types such as the Cielo Tablet devices the Lenovo M79 devices.
+
+Page 84 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+The following steps show an example test deployment to Model Office. You can modify this approach depending
+on the specific counters being upgraded.
+
+Step Screen
+Login to the Primary Site serve! IRRELEVANT : ind = ——EEEEE wae
+open the SCCM Console “ ° 2
+
+Select Assets and Compliance and browse to the folder
+
+D
+Device Collections > Branch > Branches > Model I ca: “gros at at
+Office (MO) carga _I reedac I Seac I
+€ T_\ + Amis ard Gavplorce > Ovenien + Devce Colors > Compatacentar +
+» Gh Applicatons cE
+
+4 Sh computsenter on tome
+
+MO. A bapoyed eo Table
+MO Al bey Lao Hi
+
+Fa
+
+e
+
+@ M0. eee Take
+°
+
+2
+
+Ho: AlMadines
+
+Identify which Model Office counters are to be upgraded
+to the new HNGA release.
+
+For the following example the “MO — 688 Branch”
+collection will be used.
+
+Locate the new baseline collection for the new HNGA HNGA 16.49.1 Compliance 5 items
+release that the “MO — 688 Branch” collection needs to —
+be added to. =
+Icon I Name
+1 —_HNGA 16.49.1 Compliance Baseline
+Edit the properties of the collection and edit the HIG 16.49.1_HNGA 16.49.1 Compliance Baseline_Compliant
+Membership Rules. Po HINGA 16.49.1_HINGA 16.49.1 Compliance Baseline_Error
+i —_HHNGA 16.49.1_HNGA 16.49.1 Compliance Baseline_Noncompliant
+i NGA 16.49.1_HNGA 16.49.1 Compliance Baseline_Unknown
+
+Page 85 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Add the “MO — 688 Branch” collection to the new
+baseline collection using an Include Collection rule.
+
+The counters in the “MO — 688 Branch’ collection should
+now be subject to the baseline for just the new HNGA
+release.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+Colecton Vaile I Deibtion Port Gos I Seay I Nets I
+“GeneatMenbarho Ries IFowerVanagerert I Departs I Nantenance Windows I
+
+Menbertip les determine the resources that re ncled nthe cllecon when t undoes.
+"You can use menbertp rues o add aepecic cbjct os et of obec rom aque. The
+olecten Fexcie che clctons Neneh tes can add
+
+ca aso chide o
+‘oni howe objects that ae membre fhe iting colacton
+
+Right-click the “MO — 688 Branch” collection and select
+show members.
+
+View the properties of one of the counters to confirm that
+the device only has one Configuration Baseline
+deployed to it and that it is for the new HNGA release.
+
+Over the course of the next few hours the target
+counter(s) should execute the upgrade to the new
+HNGA version and become compliant again.
+
+When the counter is confirmed in SCCM as Compliant,
+an onsite resource needs to check that the correct
+HNGA version is running using the on-screen menu
+system.
+
+From the default screen press Enter or Touch the
+Screen
+
+Choose System Diagnostics (82) from the Agreement
+Dialog.
+
+Choose Engineer (82) from the Diagnostic Options
+Dialog.
+
+Choose Node Info (22) from the Engineer's Menu
+screen.
+
+Typically, the onsite resource (Post Office = Phil Jeary)
+will also execute a series of regression tests to confirm
+that HNGA functionality is working correctly.
+
+When you are happy that the Model Office devices that
+were targeted with the new HNGA version have
+successfully upgraded you can begin the rollback
+process.
+
+[ Progom [iwe [ Cotection i
+NGA 1649.1 Mentor Dessine NGA 1549.7
+Deletion Update. tal Sofware Update MOA Mache
+Delton Updtet.. Instat Sofware Update MO A Machines
+Delton Updtef.. neta Sofware Update Al Poet Ofice
+
+seam
+
+5p VersionI THNGA_PACKAGE_CEA_1685_0077 [16.888]
+
+9p Patch Version NA
+‘Counter Lib Version NA
+(Counter Lib Patch Version NA
+BAL Lib Version
+{BAL Lib Patch Version
+{BAL Config Version
+
+{BAL Config Pateh Version
+
+Branch Code
+
+‘00087
+‘900041
+
+1
+
+‘s80004100101
+(MAIN_4762_8948317
+‘SPOTRATES. 4433_5929587
+(MARGINS 44115926705
+OTHER_9827_s900667
+HELP_00
+
+(Counter Name
+(Counter Ref Data Version
+
+Page 86 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Locate the new baseline collection for the new HNGA
+release that the “MO — 688 Branch” collection was
+added to.
+
+Edit the properties of the collection and edit the
+Membership Rules.
+
+Remove the include rule for the “MO — 688 Branch”
+
+collection
+Right-click the “MO — 688 Branch” collection and select FE)
+show members. “General Deploymerts I Vansbles I
+Deviomerts ote rescue:
+View the properties of one of the counters to confirm that —_ ia is I =
+the device only has one Configuration Baseline INGA 1885 Monter ‘Bessine HINGA 16.85 Co,
+deployed to it and that it is for the original HNGA ee Ea Sie I eae
+release. Defrion Update tat ‘Sitwate Update Pat Ofon 3
+Over the course of the next few hours the target device
+should execute the rollback to the original HNGA version
+and become compliant again.
+Again, an onsite resource needs to check that the
+correct HNGA version is running using the on-screen
+menu system
+If you are happy that the device has successfully rolled
+back to the original HNGA version and that the HNGA
+application is running correctly then the testing is
+complete.
+8.4 BuildStage LIVE builds in Hatfield
+
+Once you have successfully completed the deployment of the new HNGA version to a counter in Model Office,
+the next test stage is to build some physical counters with the LIVE build in Hatfield and to personalise the
+counter(s) in Model Office. Successful completion of this test will prove that newly built counters with the new
+HNGA version installed can be personalised. This will mean that pre-personalised counters with the new HNGA
+version can be deployed to any Post Office branches.
+
+Completion of this stage is broken into two parts:
+
+e Part 1 — Preparation of BuildStage for LIVE counter builds
+° Part 2 - Build a number of LIVE pre-personalised counters in Hatfield Compliant to the new HNGA.
+version
+
+8.4.1 Part 1 - Preparation of BuildStage for LIVE pre-personalised counters
+Use the following steps to configure BuildStage for LIVE counters for the new HNGA release.
+
+Note that once this process has been followed, all future LIVE builds will complete with the new HNGA version.
+
+Page 87 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+
+Login to the Primary Site serve IRRELEVANT :and
+
+open the SCCM Console.
+Browse to Assets and Compliance
+
+Browse to Device Collections > Computacenter >
+Branch > Compliance Baselines
+
+Locate and remove the following Buildstage LIVE
+collections from any of the SCCM baseline collections:
+
+BuildStage_Compliance_LIVE_PT_VM
+BuildStage_Compliance_LIVE_PT_M79
+BuildStage_Compliance_LIVE_PT_Cielo
+BuildStage_Compliance_LIVE_PT_BoxPX35.
+
+When located delete the Include Collection Rules for
+these collections from the SCCM baseline collections.
+
+Browse to Device Collections > Computacenter >
+Branch > Compliance Baselines > the folder for the
+new HNGA release.
+
+In this example we are using the HNGA 17.50
+Compliance folder.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+see0ee
+
+Assets and Compliance
+
+x
+
+(Clacton Vettes I teen Poet Ge I Sect I Ne I
+
+‘Genet Menten Fues I Power Managenert I Desert I Marionace Wrows I
+Mentone ne rat ae ced hen dite
+\Warcarum menoeorprust sds epechc chest orastageceten a Te
+aheston nace des exce cer clectors Manes tes et
+Shy ihcee choca we mente ote bg clan
+
+Menbertp nes
+File Nae i
+
+Colesong
+
+BulcSage_Conplarce UVEPLO# else POT00373
+
+gyeSae comics TEST FT tb __ rele oroos7
+
+Page 88 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+Step
+
+Edit the membership of the SCCM base collection for
+the new HNGA release.
+
+Create 4 new Include Collection Rules and add the
+following LIVE Buildstage collections to the SCCM base
+collection for the new HNGA release.
+
+BuildStage_Compliance_LIVE_PT_VM
+BuildStage_Compliance_LIVE_PT_M79
+BuildStage_Compliance_LIVE_PT_Cielo
+BuildStage_Compliance_LIVE_PT_BoxPX35.
+
+Note that the BuildStage collections are located in the
+following folder:
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > BuildStage Compliance
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+5 Comphance Basclne Properties
+
+Cation Vtaties I Ditton Port Gn I Set I Aes I
+Gena Nentetin Fs I ove anager I Desoyare I Martnarce Vion I
+
+Monier ees hen upsets
+‘lente moot rt sivaedcmesargmnd icrions ey The
+
+can ods
+ese ee ees tl
+
+Members ns:
+
+File Nome = 7 Caeaens =
+‘BuldSiage_Conplance VE PL. BexPX35 POIOOAEC
+‘BuldSage_Conplance LIVE PL Cele Po100373
+Byer Gmc IVE PW powos7!
+
+AédPule wfc Delete
+Use rcremertal updates forts colecton
+
+‘Anipcromertal updte peocaly evates new resources and then acs resources
+‘tah ot cabcsen "Tuscon doerch ease youve edie ntdupan otha
+
+At this point all new LIVE builds will be added to the
+SCCM Base collection for the new HNGA release.
+
+Note that a LIVE build is one where the LIVE build type
+is selected at the start of the task sequence rather than
+TEST.
+
+When the builds have completed they will check their
+compliance to the new HNGA version.
+
+8.4.2
+HNGA version
+
+Part 2 - Complete LIVE builds in Hatfield that are Compliant to the new
+
+Now that BuildStage has been prepared for LIVE builds, you need to engage a resource in Hatfield to build a
+number of counters (using each of the 3 hardware types) and confirm that the counter builds complete as
+
+Compliant to the new version of HNGA.
+
+Have the resource in Hatfield use the following procedure to build some LIVE counters ready for deployment in
+
+Model Office:
+
+Screen
+
+Reboot the device PXE boot so that it boots into the
+WinPE boot image
+
+Page 89 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Sci
+
+On the “Welcome to the Task Sequence Wizard” “3 Task Sequence Wizard i=)
+page, click on Next = to the Taek Sem
+[<3] Wizard ence
+
+This meda isnot password protected, Click next to
+continue,
+
+P a
+CConfgure network settings, DHCP is used unless
+cothernise spectied.
+
+Configure Network Settngs..
+
+Configure Proxy Settings...
+
+On the “Select a task sequence to run” page, select Gy Yosk Sequence Wierd =}
+the current live Branch Counter Task Sequence. ‘Select.a task sequence to re
+
+If you don't know which is the live one, check with GIO
+Build Management.
+
+Note that the minimum version number for the live RCP,
+30.27 PKS... SCRCIDPrOGW:
+
+Branch Counter Task Sequence will be v0.27 TEST DEP ranch_Prod_WW10_0.277S-A.., DONOT USE aes 4
+
+When prompted to select the Build Type, select Live
+Build and click on the green tick to confirm.
+
+The build will now proceed, based on Live build.
+
+Page 90 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Once the build has completed and the counter has had
+its Compliance checked for the new HNGA release you
+will see a popup on the screens saying
+
+Build complete and compliant, click ok to shutdown
+
+At this message the counters can be shut down as they
+are ready for deployment.
+
+Build complete and compliant, click ok to shutdown
+
+8.5 Testing Personalisation in Model Office
+
+After you have successfully built a number of LIVE counters that are Compliant to the new version of HNGA the
+next test is to personalise one of the counters in Model Office. This is done to ensure that a counter that has the
+new version of HNGA installed can be successfully personalised in a branch. Ifa live production counter fails at
+some point it will need to be replaced and this test ensures that replacing a production counter is possible.
+
+In the previous test you will have built a number of counters with BuildStage configured to make sure that the
+counters have the new version of HNGA installed. You need to ship one or more of these counters to the Model
+Office in the Post Office Finsbury Dials Head Office in London. Once received a BAU engineer should be engaged
+to replace one of the counters that are currently installed with one of the newly built counters that are Compliant
+to the new version of HNGA.
+
+Use the following procedure to replace a counter in Model Office and personalise the replacement.
+
+Screen
+
+First you need to identify the hostname of the
+personalised counter that you will be
+replacing in Model Office
+
+If required, get the onsite engineer who is
+going to replace the counter to get you the
+Hostname
+
+Page 91 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+In the SCCM Console browse to
+
+Assets and Compliance and select
+Devices
+
+@)
+
+Computacenter
+
+Assets and Compliance
+
+POL00337656
+POL00337656
+
+Search Devices and locate the SCCM device
+object for the Model Office counter.
+
+Right-Click the SCCM object for the counter
+and delete it.
+
+Devices Search Results - 1 items shown
+
+[ranne-
+
+Deleting a resource from the Configuration Manager console wil remove the
+
+-fesource record from the database. Any active computer associations will also
+be removed. You should not delete this record until the operating system
+
+migaton s complete and there sr no active computer
+associations for this record.
+
+Click the active computer association status to view all computer associations
+forthat system resource.
+
+System resources:
+
+‘Name,
+‘MININT-OSFPT7U
+
+Page 92 of 128
+
+Version: V0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step Screen
+
+Open Active Directory Users and
+Computers, find the AD computer object for
+the counter and delete it.
+
+Locate the associated AD user object and
+delete it.
+
+Note that the user object will have the same
+name as the computer object but will be
+prefixed with PL as it was a LIVE build.
+
+Browse to the folder where the base and sub-
+collections are located for the new HNGA
+release
+
+—
+22 2% §===-)
+
+€ > - [1 > tomes + over + beGoe > Comvmew > bw»
+
+1685 Compinc es
+
+16 65 aps
+
+eck 8 655 Compe nnn Cogn
+ok 16 ok 585 ange baat er
+
+or 1 9 1585 ample ang reget
+1685081685 Carnes Si kn
+
+Page 93 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+Edit the membership of the “HNGA XX.XX
+Compliance Baseline” collection
+
+Create an Include Collection Rule to add the
+collection that includes the Model Office
+Counter being replaced.
+
+Connect up and start the counter
+
+Confirm that it starts up and logs in with the
+correct username (PL-Seria/Number)
+
+Note that the engineer should be able to
+confirm this and they should take photos as
+evidence of success.
+
+The engineer should confirm that the Counter
+Deployment Utility scripts start executing
+
+Page 94 of 128 Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+The engineer should confirm that the Counter
+is compliant to the new HNGA baseline that it
+was built with at the start of the
+personalisation process
+
+The engineer should confirm that the correct
+FAD code is automatically detected based on
+the counter position you have connected it to.
+
+Note that the counter in this example is being
+personalised on Model Office Branch
+FAD688010 counter 01
+
+You will need to enter the counter position as
+required and click on Finish
+
+Page 95 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The engineer should confirm that after the
+FAD code is specified, the Key generation
+starts
+
+The engineer should confirm that the Printer
+test completes successfully.
+
+Click on OK when the print test is completed
+
+leave ensure thatthe Printeis plugged in and Po
+
+Page 96 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Screen
+
+The engineer should confirm that the Final
+restart is initiated
+
+The engineer should confirm that the
+certificates are installed
+
+Note that the certificate is a LIVE one.
+
+You will need to click on Yes to install the
+certificates (click yes twice)
+
+The engineer should confirm that the
+Personalisation of the counter completes.
+
+Page 97 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The engineer should confirm that the Counter
+Business Application starts
+
+The engineer should confirm that the correct
+version of HNGA is running. Confirm that the
+new HNGA version is running.
+
+Page 98 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+9 Releasing the New HNGA version into
+Production
+
+Once all of the testing has been completed successfully, the new version of HNGA is ready for release into
+Production. As with SV&l and Model Office testing the objective is to ensure that each device in Production only
+has one Configuration Baseline deployed to it at any given time, and that the correct HNGA version is installed
+and functions correctly.
+
+When the full Post Office Branch Counter deployment has been completed there will be over 25,000 counters in
+Production. For each HNGA release rollout the Post Office may have different requirements about which counters
+should be deployed to in which order. They may request a specific “friendly site” or set of pilot sites that need to
+be rolled out first, followed by batches of counters or even a “big bang” approach where all counters are deployed
+to in one go.
+
+To accommodate this you may need to create device collections that can be used to include batches of counters
+to the deployment. The diagram below is an example of how a HNGA rollout may look in the real world.
+
+Day1
+Include Rules
+
+Friendly Sites Collection
+
+HNGA Stock Prep Collections
+
+Live BuildStage Collections (if required)
+
+Example HNGA Rollout
+
+Day2
+Include Rule
+5 Day-Tranche 1 Collection
+
+HNGA XX.XX Compliance
+Baseline Collection
+
+Day3
+
+Include Rule
+
+5 Day~Tranche 2 Collection
+
+HNGA XX.XX Baseline
+Deployment
+
+ee
+
+Day4
+Include Rule
+5 Day-Tranche 3 Collection
+
+DayS
+Include Rule
+5 Day- Tranche 4 Collection
+
+Day6
+Include Rule
+
+LIVE - All Deployed Collection
+Remove all existing Include rules
+
+owe
+
+This example can be described as follows:
+
+. Day 1 - A collection containing a batch of friendly sites selected by POL is added to the HNGA release
+baseline collection. Also the HNGA Stock Prep collection(s) and Live BuildStage collections are included
+if required
+
+e Day 2 — the 5-day Tranche 1 collection is added to the HNGA release baseline collection
+° Day 3 - the 5-day Tranche 2 collection is added to the HNGA release baseline collection
+° Day 4 — the 5-day Tranche 3 collection is added to the HNGA release baseline collection
+e Day 5 — the 5-day Tranche 4 collection is added to the HNGA release baseline collection
+Page 99 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+° Day 6 — the “LIVE — All Deployed” collection is added to the HNGA release baseline collection. The
+Include collections used on the previous 4 days are removed from the HNGA release baseline collection
+
+Note that after the deployment has completed but before the start of a new HNGA rollout, any Live counters that
+are still in the Stock Prep collections should be removed.
+
+Page 100 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+10 Glossary of Terms
+Term efinition
+Acceptance into service AIS Acceptance into service
+Active Directory AD Active Directory
+Branch Counter Refresh BCR The name of the project to develop an updated build for
+Post Office branch counters
+Counter Business CBA The application used by Postmasters to deliver Post
+Application Office services in a branch
+Counter Deployment Utility cDU The scripts used to personalise and prepare a new branch
+counter for use in a branch
+Global Infrastructure Global Infrastructure Operations
+GIO
+Operations
+Graphical User Interface GUI Graphical User Interface
+Horizon Next Generation HNGA A suite of component applications that together make up
+Application the application used by Postmasters
+Microsoft Installer MsI Microsoft Installer
+2 simulated Post Office branches that are located in the
+Modal Office Mo Post Office headquarters in London (Finsbury Dials)
+Post Office Limited POL Post Office Limited
+System Center SCCM System Center Configuration Manager
+Configuration Manager
+Service Verification and sval Service Verification and Integration
+Integration
+Task Sequence TS Task Sequence
+User Acceptance Testing UAT Testing of the capability in SCCM to successfully deploy
+an application.
+Virtual Desktop Vpl Virtual Desktop Infrastructure
+Infrastructure
+Virtual Machine VM Virtual Machine
+
+Page 101 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Appendix A Current HNGA Versions
+
+The attached document contains a list of HNGA releases, including the version numbers for each of the
+components that make up the HNGA release (up to HNGA 17.73).
+
+HNGA Version list
+
+Post Office Limited
+HNGA Updates.xisx
+
+©9/24/2018 4:08 AM
+
+Page 102 of 128 Version: VO0-21, Date: 24 September 2018 . 4:08
+Classification: Unrestricted
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+Appendix B_ Production Rollout CRQ Templates
+
+The attached documents contain change request templates that can be used for the roll out of a version of HNGA
+into Production. The templates cover all of the required changes that will be needed to release HNGA, from the
+initial Pre-Cache of the HNGA content, deployment to SV&l, LST, MO and Production and also the
+decommissioning of a redundant version of HNGA as well.
+
+Production Change Request documentation
+
+POL - Branch Counters - Win10 MONTH YEAR -
+Content Deployment_Prod - PRECACHE TEMPLATE Ef iwi
+POL-HNGAversion POL Change Imp
+
+XX.XX - Content Dep Plan - HNGA version
+
+POL - HNGA XX.XX deployment to branch counters -
+sval x iw]
+
+POL -HNGA XXXX POL Change Imp
+deployment to bran Plan - HNGA XX.XX d
+
+POL - HNGA XX.XX deployment to branch counters -
+LST
+
+POL - HNGA XX.XX POL Change Imp.
+deployment to bran Plan - HNGA XX.XX d
+
+POL - HNGA XX.XX deployment to branch counters -
+Model Office x
+
+POL -HNGA XXXX POL Change Imp
+deployment to bran Plan - HNGA XX.XX d
+
+I
+
+POL -HNGA XXXX POL Change Imp
+deployment to bran Plan - HNGA XXX d
+
+POL - HNGA XX.XX deployment to branch counters -
+Friendly Sites
+
+POL - HNGA XX.XX deployment to Production branch
+counters
+
+POL -HNGA XXXX POL Change Imp
+deployment to Prod Plan - HNGA XX.XX d
+
+POL - Decommission redundant SCCM baseline for =
+
+HNGA XX.XX
+
+Pol POL Change Imp
+Decommission redu’ Plan - Decommissior
+
+Page 103 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Appendix C Adding a New Hardware Model and/or
+Stock Prep Collection
+
+Periodically, the Task Sequence used to build a new counter in Hatfield will need to be updated. There may be
+a requirement to add a new hardware model to the build process for deployment as a Post Office Branch Counter
+or you may need to modify the build and change the version of HNGA being delivered, you may need to create a
+new Stock Prep Collection as well.
+
+The sections below discuss the processes required to add a new hardware mode! to the build task sequence and
+also how to modify the build to update the version of HNGA being delivered in the build.
+
+These activity should be completed by the GIO Build Management team under their normal operating procedures.
+Details below are provided for reference only.
+
+The following steps describe the changes that were made to incorporate the latest hardware model added to the
+Post Office Branch Counter environment, which was the Box PX35 All-In-One device.
+
+10.1 Adding a new Hardware Model to the build
+
+At some point during the lifecycle of the Post Office Project it may be necessary to add a new hardware model to
+the build process in Hatfield.
+
+For adding a new Hardware Model the steps are:
+
+° Creation of two new BuildStage Active Directory groups, one for Live and one for Test devices
+
+e Creation of two new SCCM BuildStage collections, one for Live and one for Test devices (the collection
+memberships are based on the two new AD groups)
+
+e The current SCCM build Task Sequence needs to be updated to include the extra steps for the new
+hardware model. This will include hardware drivers and extra steps to configure BuildStage compliance
+for the new hardware model.
+
+Use the following steps to add a new hardware mode! to the current build task sequence:
+
+10.1.1 AD Group and SCCM Collection creation
+
+Screen
+
+Login to the Primary Site server PVSCMPOLO01 and
+open Active Directory Users and Computers.
+
+Browse to the following Organizational Unit
+
+{2 seat MP NE Conplnceoee
+
+I 5 geass. complnceup
+$8 eet LH Cemplnesoey
+
+EUC:\Data Management > SCCM > BuildTestOU
+
+Page 104 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Create 2 new security groups named ‘8B gBuild_PX35_LIVE_ComplianceGroup Security Group..
+$8, qBuild_PX35_TEST_ComplianceGroup Security Group...
+gBuild_HWModel_LIVE_ComplianceGroup
+gBuild_HWModel_TEST_ComplianceGroup
+
+In this example for the Box PX35 device the groups
+created were
+
+gBuild_PX35_LIVE_ComplianceGroup
+gBuild_PX35_TEST_ComplianceGroup
+
+Note that you may need to submit a Change Request or
+BAU request to have the groups created.
+
+Open the SCCM Console and select Assets and Assets and Compliance
+Compliance.
+
+4 ® Device Collections
+Browse to the following folder: >. Il Applications
+
+i i 4 5) Computacente
+Device Collections > Computacenter > Branch > = Computacenter
+
+Compliance Baselines > BuildStage Compliance D Archive
+4 (Branch
+Create a new folder named after the new hardware
+iriodel > (2 Branches
+4 (2) Compliance Baselines
+In this example the folder “Box AlO PX35” was created. 4 I BuildStage Compliance
+© Box AIO Px35
+Oi Cielo
+ims
+Gvm
+Page 105 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step Ss
+
+ee
+
+Browse to the following folder: Box AIO PX35 2 items
+
+Device Collections > Computacenter > Branch > La
+
+Compliance Baselines > BuildStage Compliance > Icon Name
+
+HWModel © BuildStage_Compliance_LIVE_PL_BoxPX35
+
+©¥ ——BuildStage_Compliance_TEST_PT_BoxPX35
+Create 2 new Device Collections, one for LIVE, one for
+
+TEST.
+
+BuildStage_Compliance_LIVE_PL_HWModel
+BuildStage_Compliance_TEST_PT_HWModel
+
+In this example the collections created were:
+
+BuildStage_Compliance_LIVE_PL_BoxPX35
+BuildStage_Compliance_TEST_PT_BoxPX35
+
+Edit the properties of the Buildstage LIVE collection. (2 Buildstage Compliance VE PL_Box?X35 Properties
+
+(Ceecion Vara [Dassen Pore Gos I Seay I te
+I Seow Menbostio Aes IPoner Wanaganert I Deport I Martenance Wrdowe I
+
+Make sure that the “Use incremental updates for this
+collection” box is ticked. \iiecuiemted oro seta cion oye
+
+er of exchde Che cobectorn, Webfeed
+Sivtone lente ae men nt clacen
+
+Create an Exclude Collections rule and exclude the
+
+collection “LIVE — All Deployed” Menbersip se:
+
+Fue Name Te Colton
+
+UVE- A Decoy Exe Poronnae
+
+ode ey omy 1 ical
+Note that “LIVE — All Deployed” must be excluded ke = i 5
+otherwise during a HNGA rollout there is an =a Ie os
+
+increased risk that counters could have 2 different
+
+[Fs nema uedts forthe calecton
+HNGA baselines which is not allowed.
+
+te ncemeta update perodicaly evades cee tesuces ad tr ae enters
+ios caer Tete Stee!
+
+(F Schece afl ute ont colection
+
+ema rey 7 dee cece 19/09/2007 1183 (sm
+[Coxe
+Page 106 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Step
+
+Create a new Query Rule for the LIVE collection named
+“AD_Build_Query’.
+
+Genera I itera II Jone
+
+y et the resus th
+Use the following query a a ee
+
+RIK) s 20)
+
+select
+
+SMS_R_SYSTEM.ResourcelD,SMS_R_SYSTEM.Reso
+urceType,SMS_R_SYSTEM.Name,SMS_R_SYSTEM.
+SMSuniqueldentifier,SMS_R_SYSTEM.ResourceDo
+mainORWorkgroup,SMS_R_SYSTEM.Client from
+SMS_R_System where
+SMS_R_System.SystemGroupName =
+“EUC\\gBuild_HWModel_LIVE_ComplianceGroup”
+
+Note that the LIVE BuildStage AD group is referenced
+and that EUC\\ (2 backslashes) prefix the group name in
+the query code.
+
+Edit the properties of the BuildstageTEST collection. (1) Buildstage Compliance TEST.PT.BoxPX35 Properties
+
+[Caen Vales [Osebuten Por Gasp I Secuy [ Neds]
+
+. I cereal] Herbostc Files I Power Managonet I Desormets I Variance Windows I
+Make sure that the “Use incremental updates for this Penec Ie “
+the eenscee fat etched nthe cole hen upon
+
+collection” box is ticked. Yescanusemebeaig trails wpe cet oral Sapcaton sqay. Te
+can do re cscs Ce alesis Nenbep et an add
+Ghytronecbeas ha ae menses of etary clean
+
+Mebane res
+‘le Nene Te lesion
+ad bud every sey Net Poocable
+
+a) (sae)
+(> Une reer updater colacton
+
+‘An ncromertal uate pacicalyevaises new reso.sces ad then as esources
+Guyot coco ade test equ you tw sSedoe scoala
+olechonI
+
+Create a new Query Rule for the TEST collection. "BuildStage. Compliance TEST.PT_BoxPX35 Query Stat.
+
+General II "I Soins
+Use the following query
+hte
+retumed.
+select
+SMS_R_SYSTEM.ResourcelD,SMS_R_SYSTEM.Reso HEX) sae)
+
+urceType,SMS_R_SYSTEM.Name,SMS_R_SYSTEM.
+SMSuniqueldentifier, SMS_R_SYSTEM.ResourceDo
+mainORWorkgroup,SMS_R_SYSTEM.Client from
+SMS_R_System where
+SMS_R_System.SystemGroupName =
+"EUC\\gBuild_HWModel_TEST_ComplianceGroup”
+
+Note that the TEST BuildStage AD group is referenced
+and that EUC\\ (2 backslashes) prefix the group name in
+the query code.
+
+Page 107 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+10.1.2 Build Task Sequence Modification
+
+As well as the AD Security Group and SCCM Device Collection creation, the SCCM Task Sequence that is used
+to build devices needs to be modified as well to add the extra hardware specific steps required for BuildStage
+
+compliance.
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+The following Task Sequence steps only relate to what is required for BuildStage compliance. Build Management
+will handle the addition of any steps relating to the new Hardware Model (e.g. device drivers). The BuildStage
+compliance steps are shown below:
+
+folder:
+
+counters.
+
+Login to the Primary Site server PVSCMPOL001 and
+open the SCCM Console.
+
+Select Software Library and browse to the following
+
+Operating Systems > Task Sequences > Branch
+
+Edit the current live Task Sequence used to build branch
+
+In reality Build Management will copy the existing task
+sequence and create a new one with an incremented
+version number.
+
+Software Library
+
+4 Boveniew
+
+> I) Drivers
+
+I Driver Packages
+
+§&¥ Boot Images
+4 Ey Task Sequences
+> I 5) Branch
+(5 CRM Tablets
+
+> (5 Application Management
+> (5) Software Updates
+4 (5 Operating Systems
+
+» EB Operating System Images
+1 Operating System Upgrade Packages
+
+Page 108 of 128
+
+Version: VO0-21, Date: 24 September 2018
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step Scree
+
+In the group “ComplianceAtBuildCheck” add a new
+
+Task Sequence Variable step named “Set Compliance Papiiae
+
+AD Group - Live HWModefl' with the following settings:
+‘Type: ‘Set Task Sequence Variable
+
+Task Sequence Variable: OSDBuildGroup a [saree ae eR
+Descnption:
+
+Value: gBuild_HWModel_LIVE_ComplianceGroup
+
+Enter the task sequence variable name and value.
+
+‘Task Sequence Varable: (OSDBulldGroup
+
+41. AWMI Query that can identify the hardware type: “ee J9Buld_PX35_LIVE_ComptanceGroup
+
+In the Options add the following conditions:
+
+For example for the Box PX35 model the WMI query is
+
+SELECT * FROM Win32_ComputerSystem WHERE Iomin, Here
+Model LIKE “%POS335%” Deaths ep
+1 Cortinse on enor
+2. The Task Sequence Variable “OSDBuildType”
+equals PL '9) Add Condition + I X Remove I XX Remove All
+“Ts grup itp wlan the ellowng candions ar met
+
+Tesk Sequence Vatable OSDBuldTipe ecu “PL
+Note: Build Management will be able to advise on the I
+
+correct WMI query when required
+
+In the group “ComplianceAtBuildCheck” add a new Properties I Options I
+
+Task Sequence Variable step named “Set Compliance i [Set Task Sequence Variable
+
+AD Group — Test HWModef' with the following settings: Nene: [Sst Conplonce AD Goup- Tea PRISAF-One
+Desorption: r
+
+Task Sequence Variable: OSDBuildGroup
+Value: gBuild_HWModel_TEST_ComplianceGroup
+
+Enterthe task sequence variable name and value.
+
+Task Sequence Variable: [OSDBuldGoup
+In the Options add the following conditions: Value: (gBuld_PX35_ TEST ComplanceGroup
+1. A WMI Query that can identify the hardware type:
+
+For example for the Box PX35 model the WMI query is [Properties I Options
+
+Ty Ditable thie step.
+SELECT * FROM Win32_ComputerSystem WHERE
+Model LIKE “%POS335%” a
+(B) Add Condition + I X Remove IX Remove All
+2. The Taok Sequence Vaiable “OSDBuilType” (I I ico Ser ait mine neato
+“Task Sequence Vatable OSDBulfTipe equals “PT
+Identify the current HNGA version that is in production
+and that is required to be installed on the new hardware
+model.
+At the time of writing this document the Box PX35
+devices use HNGA 16.85
+Page 109 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+In the group “Install HNGA” copy the step
+
+Upgrade to XX.XX (M79)
+
+and rename the new step
+
+Upgrade to XX.XX (HWModel)
+
+Where XX.XX is the current HNGA version
+
+Note that this step is used to install the required HNGA
+applications.
+
+( Install HNGA
+Upgrade to 16.85 (M79)
+Upgrade to 16.85 (PX35)
+
+Pores [ptr I
+Te asl fstenen
+Nave: ibosdets 1588 PS)
+Derren: caav7roI
+
+(© rat etotoung arpa
+
+ae a
+=
+fe
+IRRELEVANT
+eB
+pe Sep
+
+Note that the next step is only required if there is a
+specific requirement to deliver a different version of
+HNGA to a specific hardware model.
+
+Previously during the early rollout of the counters there
+was a requirement to deliver HNGA 16.49.1 to Cielo
+PHU counters and HNGA 16.85 to M79 and Box PX35
+counters. This is not currently a requirement.
+
+(Optional Step if required)
+
+In the Options of the step “Upgrade to XX.XX
+(HWModel)’ add the following condition:
+
+For example for the Box PX35 model the WMI query is
+
+SELECT * FROM Win32_ComputerSystem WHERE
+Model LIKE “%POS335%”
+
+Also tick the box “Retry this step if computer
+unexpectedly restarts” and set the “Number of times to
+retry” to 2.
+
+10.1.3
+
+1. A WMI Query that can identify the hardware type:
+
+[ropetiesI Ostons I
+
+Cy Diese tia step
+
+ety ts step # computer unenpectedyretats
+
+bere my rs)
+ Contine on error
+) Add Condition ~ I X Remove Remove Al
+
+Th poinsep lan fang cosine wet
+
+WMI Query SELECT“ FROM Win32 ComeuterSystem WHERE Model LIKE "%,POS335%"
+
+BuildStage testing of the new hardware model
+
+Once you have prepared the AD groups and configured the Task Sequence for the new hardware model, you
+next need to test that the device can be built. To do this you will need to do the following:
+
+° Add the test BuildStage collection for the new hardware model to the SCCM base collection for the
+
+current HNGA release
+
+° Build a counter using the new hardware model as a TEST build
+° When the builds have completed, confirm compliance to the HNGA release
+
+Page 110 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Use the following steps to complete the BuildStage testing of the new hardware model:
+
+Login to the Primary Site server PVSCMPOLO001 and
+open the SCCM Console.
+
+Browse to Assets and Compliance and select devices
+
+Assets and Compliance
+
+Browse to Device Collections > Computacenter >
+Branch > Compliance Baselines > the folder for the
+current HNGA release.
+
+In this example we are using the HNGA 17.50
+Compliance folder.
+
+Edit the membership of the SCCM base collection for
+the new HNGA release.
+
+Create a new Include Collection Rule and add the test
+BuildStage collection to the base collection.
+
+BuildStage_Compliance_TEST_PT_NewModel
+
+The BuildStage collections are located in the following
+folder:
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > BuildStage Compliance >
+NewModel
+
+At this point all new Test builds of the new hardware will
+be added to the SCCM Base collection for the current
+HNGA release.
+
+When the builds have completed they will check
+compliance against the current HNGA version.
+
+seer
+
+Golcin Vrbe [ Destin Part une I Seouty [Net
+
+Gener I Vantero Rulet Power Manegeert I Deloymets I Vartenance Vion
+
+enbanho nies dtemine the eources hat ae retsed nthe colactn wren updates
+‘Yeusan use menberdp testo add a pects eject oa at of cjeta fom a aur. The
+Cslechon merearsp con aso Pclide = exclae ter clactors Wench Resco od
+Sry thom agatha ae meres of De ry clr
+
+Menbeshp ies
+Te
+
+wrede
+rete
+
+Colecton
+OIE
+Poona
+
+[ Rue name
+I suléStage_Conpianes_LIVE_PLVM
+I SutsSage_Conplanee_TEST_PT_Vi
+
+Mine >I
+(Ff ee ncromertal dats forte colton
+
+Page 111 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Connect up and PXE boot the new hardware.
+
+Boot Menu
+
+CD-ROM Drive
+
+At the “Welcome to the Task Sequence Wizard” page,
+click on Next
+
+Welcome to the Task Sequence
+Wizard
+
+oe
+contrwe.
+
+At the “Select a task sequence to run” page, select the I ‘GekSquneWed a]
+current live Branch Counter Task Sequence.
+
+If you don't know which is the live one, check with GIO
+Build Management.
+
+Note that the minimum version number for the live
+
+OEP Branch Prod Wi, v0.27 BCR C/b/Prod Wi0LTSB _ Branch Buld 27]
+Branch Counter Task Sequence will be v0.27 TESTOR frown Pros io VOI7IEA. DONT SS BERENS WIT.
+
+Page 112 of 128 Version: V0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+When prompted to select the Build Type, select Test
+
+Build and click on the green tick. Select Build Type ©
+lease choose a build type for this computer
+[Test Build . ig
+
+The build will now proceed, based on a test build.
+
+D Post Office Limited
+
+Once the build has completed and the counter has had
+its compliance checked for the current HNGA release
+you will see a popup on the screens saying
+
+Build complete and compliant, click ok to shutdown
+
+This completes the buildstage testing of the new
+hardware model
+
+Build complete and compliant, click ok to shutdown
+
+10.2 Build update to change version of HNGA and Stock Prep
+Collection
+
+In section 4.4 — Moving Forward with BuildStage Compliance, a number of options were discussed for how to deal
+with a change in the live version of HNGA and how that would affect the build timings in Hatfield and
+Personalisation timings in a branch. Option 3 was to update the Build task sequence to make sure that the new
+live version of HNGA is installed on the counter during the build task sequence and the build is completed with
+the counter Compliant to the new version of HNGA.
+
+For changing the version of HNGA being delivered in the build and adding a new Stock Prep collection the steps
+are:
+
+° Creation of a new Stock Prep collection and include the new Stock Prep collection to the base collection
+for the new version of HNGA
+
+° Update the version of HNGA delivered in the build Task Sequence
+
+e Update the current SCCM build Task Sequence to add counters to the new collection
+
+Page 113 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Use the following steps to update the build task sequence:
+
+Note that for the following example, the modifications used to deliver HNGA 17.73 will be used.
+
+10.2.1 Create the new Stock Prep device collection
+
+The first step is to create a new Stock Prep Device Collection
+
+Step Screen
+
+Login to the Primary Site server and ——————
+open the SCCM Console.
+
+4
+Browse to Assets and Compliance and select devices
+
+Assets and Compliance
+
+a
+Browse to Device Collections > Computacenter > Assets and Compliance ¢ BuildStage
+Branch > Compliance Baselines > BuildStage ig oni * I Search
+Compliance < 2 eae
+
+1 Devices
+Create a new folder named > User Collections
+4B Device Collections iz
+HNGA XX.XX Stock Prep nea
+4 (5 Computacenter
+(Archive
+where XX.XX is the new version of HNGA 4 GiBranch L
+Gi Branches
+4 5 Compliance Baselines
++ [5 Buildstage Compliance
+(5 HNGA 17.7002 Stock Prep
+Select the new folder, right-click and create a new HNGA 17.73 Stock Prep 1 items
+Device Collection named
+Search
+Hatfield HNGA XX.XX Stock Prep Name *
+Hatfield HNGA 17.73 Stock Prep
+Where XX.XX is the new version of HNGA
+Page 114 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Step
+When creating the collection make sure that the
+Incremental Updates box is ticked
+
+Also, set the collection to complete a Full Update every
+7 days
+
+Add the Collection ID column and make a note of the
+Collection ID of the new collection
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Cetecton Vato I Deusan Part Ge I Seay I Aes I
+General Membertnp Rules I Power Managemert I Deoloymerts I Maitenance Windows I
+
+Menbertho nie determine he rescues that ae ncided nthe colecton when updater
+Yeleqnusemenbesto waste a ssoech che orgst of cbecs fen suey. The
+
+car aso nce rence
+‘niytoae ajo that are mares ofthe ling cabochon,
+
+Manbestio ns:
+
+File Name Tp Caeaen d=
+PLBITZSOSSA7 Det Net Applicable
+
+PLPCOGSSTa Net Apostle
+
+Fanos a Nea,
+aan I ca
+Un rooms dsetarticaen
+
+ani -evauter ne nd then ac at
+‘uaiy tothe calecien. Ths coten does ret reaure youta sche aful update fortis
+olecton.
+
+ts colecton
+cou 1/07/2010 1358 ‘Schedule.
+
+an a
+HNGA 17.73 Stock Prep 1 items
+Icon Collection ID oi ‘Name
+© Powoo7, Hotfield HNGA 17.73 Stock Prep
+
+Locate the base collection for the new version of HNGA.
+In this example the base collection is located at
+
+Device Collections > Computacenter > Branch >
+Compliance Baselines > HNGA 17.73 Compliance
+
+And is named
+
+HNGA 17.73 Compliance Baseline
+
+eeseees
+
+Page 115 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Step
+Edit the membership of the HNGA XX.XX Compliance si
+Baseline collection and create an Include Collection (Colecton Verabes I Dsrtuton Port Groves I Secumty I Aes I
+rule to include the new “Hatfield HNGA XX.XX Stock a
+Prep" collection ‘ggentmnetorteintnnise sede neta aptionsamy Be
+bo reo arexcce Coe cabs Herou te can 288
+‘thou chee a nenbon oe tg clan
+Menara nies
+ome Taieaant
+FOIOOTH4
+7 vette Povonr
+SL Fa
+rr pes Delt
+Fee neonatal de forte calcton
+dade axles the
+‘guy othe colecton Topo eee iat regure yout sowed ful baat forthe
+10.2.2 Update the version of HNGA delivered in the build Task Sequence
+
+The next step is to update the version of HNGA that is delivered in the task sequence.
+
+Step Screen
+
+Login to the Primary Site serve: IRRELEVAN Software Library
+open the SCCM Console.
+
+4 @oveniew
+Select Software Library and browse to the following » © Application Management
+folder:
+> (5) Software Updates
+Operating Systems > Task Sequences > Branch « El Operating Systems
+
+> [8] Drivers
+I Driver Packages
+» El Operating System Images
+1 Operating System Upgrade Packages
+IH Boot Images
+4 Ey Task Sequences
+> (2 Branch
+(5 CRM Tablets
+
+Edit the current live Task Sequence used to build branch
+counters.
+
+In reality Build Management will copy the existing task
+sequence and create and deploy a new one with an
+incremented version number.
+
+When the Task Sequence opens locate the group “Install
+HNGA”
+
+Page 116 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Select Software Library and browse to the following
+folder:
+
+Operating Systems > Task Sequences > Branch >
+HNGA Installation
+
+Identify the new HNGA version that required to be
+installed during the build Task Sequence
+
+Then locate the task sequence that was created to install
+the new HNGA version when a counter in Non-Compliant
+(this was created in Section 5.3.1).
+
+Edit the task sequence and copy the step “Change
+HNGA to XX.XX”
+
+Paste the “Change HNGA to XX.XX" step in the group
+“Install HNGA’” in the build Task Sequence.
+
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+Ain OCSCAPT SetinRegsay?e
+
+estat Computer °
+Fin COSCRPT FoceBaeeineEd
+
+IRRELEVANT
+
+‘Add ~ I Remove I (@) @) 3) C3) Propeties op
+[__-@ trot ActveDrecioy Module a] T9PE:
+1G Set Variable VM SyrtheticUser ee
+1G Set Variable SyrtheticUser
+1G Set Variable OUPath Descttion:
+Set Vaabe Secury Group
+“Get random password
+“Crest sythetic uer
+@ 2 Syrthetic Userto local adm
+29 Install Ter 2 Applications
+YE Nomed v2200
+‘Set Nomad lection Level
+trol Eracert 980.77
+>hntal Post Office Fert Fes
+“etal VMWare Toole
+2 [g Inatall HNGA
+
+© Instalthe fe
+
+Disable or remove the step that installed the previous
+version of HNGA so that the new step is the only
+“Change HNGA to XX.XX” enabled.
+
+Also, make sure that the “Change HNGA to XX.XX” step
+is above the step “Install StartCBA fix”
+
+Save the Task Sequence
+
+rai
+
+10 17.70v2
+
+rad
+je HNGA t
+oH Install StartCBA fox
+Set FuSupport local account pa:
+
+i Run SubinACL
+Run CC-SCRIPT-SetupFolderPe
+Run CC-SCRIPT-SetupRegistry!
+1-3 Com Port Change (Port 3)
+
+WE ida Chonan COM nnd 2
+
+Page 117 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+10.2.3 Update the current SCCM build Task Sequence to add counters to the new
+
+collection
+
+Step
+
+Browse to Operating Systems > Task Sequences >
+
+Branch
+
+Edit the Task Sequence that has been edited to deliver
+the new version of HNGA
+
+Locate the ComplianceAtBuildCheck group and then
+edit the step “Set ComplianceCollection...”
+
+Edit the name to
+
+Set ComplianceCollection to XX.XX (Stock Build) —
+where XX.XX is the new version of HNGA
+
+Edit the Value to the CollectionID for the new Stock
+Prep collection as located previously
+
+When you have edited these 2 settings, save the Task
+Sequence.
+
+Once the build task sequence has been updated, Build Management will take it through their normal process to
+
+release as the live task sequence.
+
+Remember that it will require Build Management or a Professional Services Project to be engaged to deliver an
+
+updated build Task Sequence.
+
+Page 118 of 128 Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+Appendix D Force Compliance Baseline
+
+On occasion Fujitsu require access to a branch counter that they can use to test changes to the HNGA suite of
+
+applications. For example, Fujitsu may want to test a new version of one of the applications that make up a HNGA.
+release.
+
+Due to the way in which the counters operate they must be compliant to a configuration baseline. If a counter is
+non-compliant the screen will be greyed out and the operator will not be able to interact with the counter. However,
+if the counter is targeted at a specific version of HNGA, it will always try to remain compliant to the specific
+applications that make up that version of HNGA. Within 2 hours of making any changes to a counter, it would
+become non-compliant and then reinstall any changed applications.
+
+To prevent this from happening a configuration baseline has been setup and deployed to the collection “Force
+Compliance Baseline”
+
+Force Compliance 5 items
+
+Name Member Count Members Visible on Site
+Force Compliance Baseline 5 5
+
+Force Compliance_Force Compliance Baseline_Compliant 5
+Force Compliance_Force Compliance Baseline_Error ()
+Force Compliance_Force Compliance Baseline_Noncompliant 0
+Force Compliance_Force Compliance Baseline_Unknown t)
+
+Re Me MR Me 8
+
+coon
+
+When you add a counter to this collection using direct membership, an Include Collection rule or a Query Rule it
+is removed from all existing baselines for versions of HNGA and becomes compliant to a baseline named “Force
+
+= a IRRELEVANT.
+IRRELEVANT
+
+Once compliant, the counter can then be used to test new applications.
+
+When the counter is removed from the collection it will re-evaluate its compliance against its original version of
+HNGA and if required, reinstall HNGA to become compliant again.
+
+Page 119 of 128 Version: VO0-21, Date: 24 September 2018 . ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Appendix E Pre-Caching HNGA Content on
+Counters
+
+With each release of a HNGA version the best approach will be to get the content out to counters well in advance
+of actual installation. This is because if the content has already been downloaded it will reduce the amount of
+time that a counter will remain Non-compliant after triggering the HNGA upgrade, as it will not have to wait for
+content to download before installation.
+
+The procedure to pre-cache the content will be to create a collection for the pre-cache deployment, deploy the
+HNGA Pre-Cache Task Sequence for the release to the collection and then to add batches of counters to the
+collection over a number of days. This should be completed under the required change control and monitored
+accordingly to ensure that the content is successfully downloaded to the counters.
+
+Use the following procedure (with the change control in place) to pre-cache the HNGA content to the counters.
+
+Login to the Primary Site server; IRRELEVANT ; and Assets and Compliance
+open the SCCM Console. Brows jevice
+Collections > Computacenter > GIO — Patch SA > 4 & Device Collections
+
+Branch_HNGA > (5 Applications
+4 (5 Computacenter
+D Archive
+>» ©) Branch
+(© Custom Scripts
+4 (9 GIO- Patch SA
+
+> (5) Branch Template Collections
+
+> (5) Branch_MS Patching
+
+> (5 Client_ Patching
+
+> (5) Dyn Collections - CPM
+> (5) Server_Patching
+
+Create a new Device collection named: Branch HNGA 14 items
+
+HNGA_XX.XX_Content_Distribution_Collection_Main a
+Icon Name
+Where XX.XxX is the version of HNGA that is to be pre- red HNGA_17.50v2_Content_Distribution_Collection_Main
+cached.
+Page 120 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+Deploy the HNGA Pre-Cache Task Sequence to the new
+collection with the following settings:
+
+Deployment Settings:
+Action: Install
+Purpose: Required
+
+Scheduling:
+
+Assignment Schedule: As soon as possible, Occur
+every 1 day at 03:00
+
+Rerun Behavior: Rerun if failed previous attempt
+
+User Experience:
+
+Allow users to run the program independently of
+assignments: Not ticked
+
+Show Task Sequence progress: Not ticked
+Software installation: Not ticked
+
+System restart (if required to complete the installation):
+Not ticked
+
+Commit changes at deadline or during a maintenance
+window: Ticked
+
+Allow task sequence to run for client on the internet: Not
+ticked
+
+Distribution Points:
+
+Deployment options: Download all content locally
+before starting task sequence
+
+When no local distribution point is available, use a
+remote distribution point: Not ticked
+
+Allow client to use distribution points from the default site
+boundary group: Not ticked
+
+Allow clients to share content with other clients on the
+same subnet: Not ticked
+
+POL00337656
+
+POL00337656
+
+@)
+Computacenter
+
+Genre Delamere Sets I Sched I Ue oeience I Otitaton Pots I Aas I
+
+ator i Gi
+
+Freaaes z
+
+I PRECACHE_HNGA_17.S0v2_Install Status to HNGA_17.S0v2_Content Dist
+
+‘cant I Dspomert Seine Scheug I UerEcwtence I Dataton Port I Ate
+
+“Thi rogram willbe avaable a soon ae hae been tibet the corte server rie
+leer tine blow, Forrequred sopatons, specty the assinmert schedule
+
+a
+
+TT Schedule when thie deployment will expire:
+fewer
+gmt he Wee I ea
+
+‘Occurs every 1 days effective 08/08/2018 03 00
+‘a soon as possble
+
+[Rens # fated prevousatemet
+
+cron I nye Stig I Sccdng Use Boece I ote PrtsI rs I
+eeaonere
+
+7 ow ue tonne saan dence of absarmerte
+Siow Task Seauence rogess
+
+“hen ne sched sist me ieache, alone felowrg aches 2 be paforadeuted
+marten a
+
+TF sotroe rst
+TF Splenat reasedte cite tation)
+‘Wee tartardeatr Wea Embed doen
+Cond nga dente dary marten wo fcr eas)
+I eon inet selected. crt be ple nth vey nara
+
+ered bee ete
+
+F owtaksoquenceto anf crt onthe benet
+
+(Gener I Desloment Setings I Schedhing I User Epesence  Oskibuion Ports I Ae,
+
+Spc how let tac wtb Sarton ports mts corer on package
+sconce
+
+Deve estos
+
+[Renrioode carton ces boar netrgieak eamrce
+
+Chertsey ty og contert from dation pottsin curr boundary gop. a
+<deubutn pote nexgborbaurcary group canbe coro:
+
+F When ne local dation ait is avaiable, ue aremcte dition oot.
+
+\When ts contents nat avaible cn any dtibuion pottsin curert and neighbor bound
+the chert o se adrbuton port hte default boundary up
+
+1F Aow cloreto we deren paris fromthe deaut ete boundary cup
+7 Aw clerteto char covert ath ther chert an the same subnet
+
+Page 121 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Screen
+Once the deployment has been setup, collections of x
+counters can be added to the deployment collection as _Colecton Varabies I Ditibuion Port Groups I SecurtyI Nets I
+per your requirements using Include Collection Rules. General Menbentip Fes I Power Management I Delorrerts I Martererce Wedons I
+
+erboatio rds deme the esac thd enced nf coche kes
+Youean se menvenhp nies ata sspeat cect 0 asc Soe on aque The
+
+. \alecon morbonnp car Sno reli a excise ser clossra Norberg es can odd
+
+Note that an approved change will be required to allow [oe aes tine oe onbet il Ba bation obec,
+
+you to add counters to the deployment collection.
+
+Merbeshp es:
+Tie None i Caden
+NGA T7502 Comet Dabaan Ped? ede T0051
+HNGA175\2_Cortert_Datton Pot hele OTOOsIA
+rt J +
+Page 122 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+Computacenter
+
+Appendix F Decommissioning an obsolete
+Configuration Baseline
+
+After the release of a new version of HNGA you may need to decommission an old HNGA compliance baseline
+
+so that it can no longer be deployed to a branch counter. This will typically be required under the following
+circumstances:
+
+° The version of HNGA is more than 2 versions behind the current production version, is no longer targeted
+at any counters and is no longer required for deployment.
+
+e The version of HNGA is a pre-release version that has been tested in SV&l, LST or Model Office but has
+failed testing or an issue has been discovered during testing. The potential rollout of this version of
+HNGA has therefore been cancelled.
+
+The procedure for decommissioning a release of HNGA is quite straight-forward and involves the following steps:
+
+° Removal of the Configuration Baseline deployment
+
+° Removal of the HNGA Install Task Sequence deployment
+. Removal of the Baseline Device Collections
+
+° Archival of the configuration baseline
+
+Use the following procedure to decommission an obsolete Configuration Baseline.
+
+Step Screen
+
+Login to the Primary Site server: EEE
+open the SCCM Console. Browse to Assets and
+Compliance and select devices
+
+Assets and Compliance
+
+Browse to the Device Collection folder that contains the I" "rrr
+baseline that is being decommissioned and confirm that *
+
+the baseline is not targeted at any counters by Y Renee hese
+confirming that the member count is 0. F srcns7 Pei A 7.70Carca ana mee HRCA. TCaln 9
+© 19As7. 708 NGA. Caan Naren HRA 7OCoelN. 9
+© rcAs7 7 sen 04177 Cac room HAST. Cela. 9
+. A770 coher NOAA Dmen 0
+You may also need to edit the membership of the HNGA
+XX.XX Compliance Baseline collection and remove any
+Include or Exclude rules.
+Page 123 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+
+POL00337656
+
+@)
+
+Computacenter
+
+Select the HNGA base collection and delete the
+baseline deployment “HNGA XX.XX Baseline”
+
+Browse to the folder Assets and Compliance >
+Overview > Device Collections >Computacenter >
+Branch
+
+Edit the membership of the collection “BRANCH — 24hr
+Maintenance Window” and delete the Noncompliant and
+Unknown Include collection rules from the HNGA.
+release that is being decommissioned.
+
+= inn Calon [br Get
+© CAL Be ALT Chan Ski amg ALTA Col. 0
+© RAs an ALT Caen er MGALTNNGola. 0
+© cks770 nein A779 Cn Bin erg. HALT Conn.
+© \Reks170 Rein ALT Cons Bi noes HALTIConla. ©
+© \mcks120 conga tere 1801-Al Day 8
+NGA 17.70 Compliance Baseline
+‘kon Software - Fesure Type Deployment Start Time Purpose.
+, a — Tan? Rd
+Select the Noncompliant sub-collection and delete the {INGA 17.70 Comesaice 5 ites
+HNGA Task Sequence deployment = =
+4 ” tn Ihane tig Caco I Ment Ct
+HNGA_XX.XX_Install © NGA 17.70 Baseline HCA 17.70 Comptance Baseline. Complant —HNGA17.70Complia 0
+a7 70 bani 1770 cna Bag Err HCAL7 TOCA. 0
+(© _1INGA 17.70 Beseline_}NGA 17.70 Comptience Baseline Noncompl... INGA 17.70 Comptia...
+1 1INGA 17.70 Baseline NGA 17.70 Comphance Baseline Unknown — HNGA17.70 Compa 0
+cas 70 cooper UNH ALDay0
+
+HINGA 17.70 Baseline HINGA 17.70 Compliance Baseline Noncomplant
+
+b “Task Sequence 11/02/2018 19:25 Required
+Fy
+
+Collection Vanables I Detrbution Post Groupe I Secumty I Aerts I
+CGaredonbento Fs [Pore Nanezenet I Dc I Martner Wen I
+
+escuchar rluded nthe easton when
+
+Monbersnp des ceteris the updates,
+‘You car use menbersip testo ala spec cbt oa se cf abject om «quey The
+
+or exude oer colectone, Menbertip nde can add
+nang clcton.
+
+colecton menbertip can also neice
+“ei those objects hat ae meres the
+
+Browse back to the Device Collection folder that
+contains the baseline that is being decommissioned then
+highlight and delete the 4 baseline sub-collections.
+
+santa cune
+
+[
+I
+[1 vk 7.70 nde 170 Compare aee_Uriown GAA. Grp
+4G 1770 Compe ee ‘RANCH Ale
+
+[contouratonanoger
+
+i ‘You are about to delete the selected collections.
+
+elelelele
+[
+i
+f
+I
+i
+i
+
+T Delete each collection member from the database
+
+Loc] _comes_I
+
+Page 124 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+Step
+
+Highlight the main “HNGA XX.XX Compliance Baseline”
+Collection and attempt to delete it.
+
+You will be prompted that the collection cannot be
+deleted due to the following references.
+
+This is caused by the collection being included (with an
+Exclude Rule) in all of the base collections for the
+previous HNGA releases in SCCM.
+
+POL00337656
+
+POL00337656
+
+@)
+Computacenter
+
+Ss
+
+ee
+
+HNGA 17.70 Complaince 1 items
+
+Search
+
+Icon
+
+>
+
+Name
+HNGA 17.70 Compliance Baseline
+
+a
+be eel To
+
+The aletes
+miebnanetes
+
+Fee
+
+[[Refenng Ctecton
+
+HNGA 159873 Conplace Saeere
+HNGA 1885 Constance Barer
+
+HNGA 1849.1 Conplance Sasere
+Farce Cancance Eating
+
+NGA 1750 Conptance Basen
+
+HNGA 1750 Congtance Basen}
+
+[Selected atecton
+HNNGA 1770 Conplarce Baten
+NGA 1770Conpiarce Baer
+HNGA 1770 Conplance Bzsere
+NGA 1770Conplance Basen
+HNGA 1770 Conplarce Bsn
+HNGA 1770Conplarce Bosene
+
+Ce
+
+Make a note of the list of collection references and
+remove each of them from the referenced collections.
+
+When you have removed the collection from the
+referenced collections you can delete the “HNGA XX.XX
+Compliance Baseline” collection
+
+Now that all of the collections relating to the baseline
+have been deleted, delete the “HNGA XX.XX
+Compliance” folder.
+
+x
+
+\Clecton Vas I Dstibton Port Guns I Sect I Nets I
+enw Nenbusto Res I over ManagerI Demet I Martenance Weds I
+
+asec nt Saco te merce fe hdl lc one
+
+ae es
+
+See eae ee
+
+ee oe ee a er
+
+ben de
+
+Seti % a
+
+SEN leeen ee pao
+
+a 2
+
+Be oe ess
+
+Jeon Name ~ Limiting Collection
+
+ae no San a
+=
+
+is
+
+TF Delete each colecion menberfromthe database
+
+(oo) ces _I
+
+‘Assets and Compliance 4] HNGA 17.70 Complaince 0 items
+
+(DB HINA 15.963 Compliance
+(BHNGA 16.49: Compliance Jeon_I me
+(GB HNGA 16.481 Lve Gieo Only
+
+INGA 16.85 Compliance
+
+INGA 18. Upgrade Collections
+
+1750 Compliance
+
+Page 125 of 128
+
+Version: VO0-21, Date: 24 September 2018
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+_ 9/24/2018 4:08 AM
+Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Browse to Assets and Compliance > Overview > Branch 9 items
+Compliance Settings > Configuration Baselines ‘Sank
+>Branch =
+Icon Name Status I Deployed _ User Setting
+Force Compliance Enabled Yes No
+Confirm that the baseline that is being decommissioned a Force Compliance Test 2 Enabled Yes No
+(“HNGA XX.XX Baseline”) is no longer deployed. a HINGA 15.962 Enabled Yes No
+a HINGA 15.96r3. Enabled Yes No
+a HINGA 16.24.4 Enabled Yes No
+a HINGA 16.49.1 Enabled Yes No
+BQ tneats.ss Enabled Yes No
+Q__G.17.50 Baseline Enabled Yes No
+[fia)__HNGA.17,70 Baseline Enabled [No
+Delete the baseline. —va=
+Ikon Name ~ ‘Status Deployed User Setting Date Modified
+Note - make sure that you only delete the Bronce Compliance Eratled Yes No ‘30/01/2018 18:20
+decommissioned baseline, not the production one! Hy Fm confiouration Manager
+00 8
+_ bess Be EBs orton tem os
+a a 26
+a we ae eel
+BQ ime ow
+Qt. 70sseene bled Noo sufeaois 383
+Although the Baseline and Device Collections have now
+been removed, DO NOT remove the related
+Configuration Items as they may need to be reused with
+other HNGA releases.
+Page 126 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+Document Information
+Key Contacts
+Name Role Contact Details
+
+Anthony Lander Computacenter, Consultant A
+
+Document Control
+Document Name POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+Customer I Post Office Ltd
+
+Document Version No. 0-21
+
+Document Version Date 24 September 2018
+
+Classification Unrestricted
+
+Template Tempo - Document Template.dotm Version 4.00
+
+Document references
+
+External document or source
+NIA
+
+Document history
+
+V. No. V. date Review Comments, Changes, Approval, etc. Version owner
+0-01 20171204 N/A Initial draft release Anthony Lander
+0-02 20171215 N/A Added Buildstage compliance section I Anthony Lander
+0-03 20180103 TBC Initial release for QA Anthony Lander
+0-04 20180108 I TBC Added section on Buildstage VM testing Anthony Lander
+
+Added section on adding a new hardware
+model to BuildStage compliance
+
+0-05 20180129 TBC Updated diagrams in Buildstage section. Anthony Lander
+Updated the SV&I testing section.
+0-06 20180130 TBC Added extra appendix section for Anthony Lander
+
+buildstage testing of a new hardware mode
+
+0-07 20180130 Mike Cowing Tidied up HNGA install task sequence and — Anthony Lander
+compliance baseline naming. Added Force
+Compliance appendix.
+
+0-08 20180226 Mike Cowing Added additional Buildstage preparation Anthony Lander
+and testing.
+Page 127 of 128 Version: VO0-21, Date: 24 September 2018 ©9/24/2018 4:08 AM
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx Classification: Unrestricted
+V. No.
+
+vo-11
+
+V0-13
+
+V. date
+20180313
+
+20180418
+
+POL00337656
+POL00337656
+
+@)
+
+Computacenter
+
+Review
+
+) Comments, Changes, Approval, etc.
+
+Mike Cowing Added more production rollout details and
+fixed production rollout example. Added an
+appendix on decommissioning a HNGA.
+baseline.
+
+Mike Cowing Added pre-cache task sequence creation
+steps.
+
+Version ow!
+
+Anthony Lander
+
+Anthony Lander
+
+Vo-14
+
+VO0-15
+
+0-16
+
+20180430
+
+20180530
+
+20180711
+
+Mike Cowing Added correct configuration of Force
+Compliance when adding a new HNGA.
+baseline.
+
+Mike Cowing Added recent SCCM configuration changes
+to HNGA baseline and collection
+configuration
+
+Mike Cowing Added template changes for HNGA release
+and also minor grammar updates.
+
+Anthony Lander
+
+Anthony Lander
+
+Anthony Lander
+
+0-17
+
+20180801
+
+Mike Cowing Added updated Cl configuration and other
+minor updates
+
+Anthony Lander
+
+v0-21
+
+20180924
+
+Mike Cowing Revamped testing sections and adding
+updated information on BuildStage
+compliance and Stock Prep collections
+
+Anthony Lander
+
+Page 128 of 128
+
+POL - BCR - HNGA Release and Compliance Baselines - V0-21.docx
+
+Version: VO0-21, Date: 24 September 2018
+
+©9/24/2018 4:08 AM
+
+Classification: Unrestricted

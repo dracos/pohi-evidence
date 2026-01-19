@@ -1,0 +1,669 @@
+FUJ00171927
+FUJ00171927
+
+Peak Incident Management System
+
+Jon Hulme -- Bus Apps Des
+
+D -- Non-Urgent
+Closed -- Build Fix Available to Call Logger
+
+Call Reference PC0275893 Call Logger
+Release Targeted At -- HNG-X 19.20 Top Ref PC0277808
+Call Type Internal Development Incidents/Defects Priority
+Contact Jon Hulme Call Status
+Target Date 30/12/2018 Effort (Man Days) 0
+Summary Concurrent processing of pouch delivery leads to doubling the Rem In
+All References Type Value
+Product Baseline OSR_APP_V2_1920_V0S51
+Jira CBB-3287
+Clone Call PC0277793
+Product Baseline OSR_APP_V2_1920 D051
+Jira CBB-3367
+Clone Call PC0277808
+Product Baseline HNGA_ PACKAGE CBA _ 6920 D166
+Release PEAK PC0277452
+DeviIntRel-Director Live Supp.Test
+
+Acceptance Incident CBB-3367
+
+Target release
+
+CTR_APP_X6920_V866
+
+02-Jan-2019 10:40:20
+
+This is unlikely to occur (hence D priority) - it only occurs when the same user logs on to two different
+Counters and Rems in the same pouch on both - but this should not technically be permitted.
+
+Concurrent processing of pouch delivery leads to doubling the Rem In - i.e. the branch accounts will be in
+
+Impact
+Statement Ue pee
+Steven Porter
+) error, and thus should be fixed.
+Progress Narrative
+
+Pate:20-Dee-2018 12:10:30 User:don Hulme
+ca 2c0275893 opened
+betails entered are:-
+
+target Release: HNG-x 68.20
+Routed to:Bus Apps Des - Jon Hulme
+
+Concurrent processing of pouch delivery leads to doubling the Rem In
+
+ldate:20-Dec-2018 12:10:30 User:Jon Hulme
+[Start of Response]
+
+consider the scenario:
+
+h) Press Back Office, Rems & Transfers, Delivery.
+
+2) Scan an incoming cash pouch id e.g. 301978824712.
+
+3) Enter the cash amount e.g. £100
+
+4) Go to counter 2 and log in as a different user.
+
+5) Press Back Office, Rems & Transfers, Delivery.
+
+6) Scan the same incoming cash pouch id e.g. 301978824712.
+
+7) Enter the cash amount e.g. £100
+
+ls) Press Enter to proceed to the delivery pt print/preview screen.
+Is) Print the delivery receipt (prints 2 receipts).
+
+Ho) Press enter to print the Remittance In slip.
+
+Hi) Go back to Counter 1.
+
+Enter to proceed to the delivery receipt print/preview screen.
+the delivery receipt (prints 2 receipts).
+
+enter to print the Remittance In slip.
+
+gained £100 cash.
+
+liorizon thinking the branch has a financial loss.
+
+the same pouch has now been remmed in twice, so Horizon thinks the branch has gained £200 cash, but in reality it will have only
+
+[this is very unlikely to happen, because the same physical pouch must be scanned twice, but it is important because it leads to
+
+two events do get recorded, but unfortnuately they don't contain the pouch id, so one cannot tell they are for the same pouch.
+
+FUJ00171927
+FUJ00171927
+
+the SSC could look for this because you do get two records with the same pouch id (but different delivery ids and on different
+jncdes) in BRDB POUCH DEL DETAIL:
+[End of Response]
+
+Response code to call Internal Development Incidents/Defects(I) as Potential Problem Identified (38)
+
+Date:20-Dec-2018 1:
+[fhe same bug appli
+
+718:03 User:Jon Hulme
+s to incoming ForEx pouches, and stock pouches (although stock pouches don't actually rem in value).
+
+pate: 20-Dec-2018 13:35:20 User:Jon Hulme
+on the BRSS, from John Simpkins?
+
+select POUCH ID, BRANCH ACCOUNTING CODE, count (*)
+from BRDB_POUCH DEL DETAILS
+
+laroup by POUCH ID, BRANCH ACCOUNTING CODE
+
+having count (*) > 1
+
+return no matches
+lnowever BRDB POUCH DEL DETAILS only keeps five days of data.
+
+Date:20-Dec-2018 15:12:46 Uscr:Jon Hulme
+ooking at the BAL code I see that it does protect against duplicate pouch delivery if the pouch details are in LFS_RDC_HEADER
+Jind LFS_RDC_D
+
+in development, and exceptionally in live, the pouch details are not in the LFS tables, and so this bug happens. So I don’t think
+this is likely to happen in live, though it might as an extreme edge case.
+
+Iso downgrading to D priority. The fix would be to SettlePouchDeliveryServiceSettlementProcessor to also check that the pouch
+barcode has not already been added to BRDB POUCH DEL DETAILS.
+
+bate: 20-Dec-2018 15:13:11 User:Jon Hulme
+the call Priority has been changed from C
+fhe call Priority is now D
+
+JDate:20-Dee-2018 15:19:28 User:Jon Hulme
+fhe Call record has been transferred to the team: xCtr GDC
+
+jbate:21-Dec-2018 06:38:20 Uscr:Ramesh Kalavakolla
+[fhe Call record has been assigned to the Team Member: Shweta Patil
+
+lDate:21-Dec-2018 13:10:00 User:Venu Anamalla
+the call Target Release has been moved to Targeted At -- HNG-X 69.10
+
+bate:02-Jan-2019 08:35:17 User:Steven Porter
+[the fix is a BAL fix, so the target release is wrong - R69.10 is Counter - proposing for re-target.
+
+[Date:02-Jan-2019 08:35:26 Uscr:Steven Porter
+[fhe call Target Release has been moved to Proposed For ~~ Re-target
+
+Date:02-dan-2019 10:40:20 User:Steven Porter
+new Business Impact has been adde
+
+this is unlikely to occur (hence D priority) - it only occurs when the same user logs on to two different Counters and Rems in
+
+the same pouch on both - but this should not technically be permitted.
+
+concurrent processing of pouch delivery leads to doubling the Rem In - i.e. the branch accounts will be in error, and thus should
+e fixed.
+
+Date:07-Jan-2019 07:28:09 User:Shweta Patil
+i'm able to reproduce this issue by following the steps provided by Jon.
+two events are being recorded in BRDB.
+
+Jbate:07-dan-2019 14:30:44 Uscr:Ramesh Kalavakolla
+[Start of Response]
+
+[End of Response]
+Response code to call type I as Category 41
+
+Pending == Product Error Diagnosed
+
+FUJ00171927
+FUJ00171927
+
+[Dateri4-Feb-2019 12:04:31 Uscr:Gimey johnbasco
+Reference Added: Jira CBB-3287
+
+bate: 22-Feb-2019 17:49:48 User:Steven Porter
+the call Target Release has been moved to Proposed For -- HNG-X 19.20
+
+jbate:22-Feb-2019 18:20:51 Uscr:Adam Sobot
+ction placed on Team:BIF
+
+bate: 25-Feb-2019 11:32:52 Uscr:Shweta Patil
+Problem Statement (Underlying cause of problem): When the user logs on two different counters & Rems in same pouch on both
+counters. This leads to doubling the Rem i.e the branch accounts will be in error.
+
+Risk of not fixing: if it is not fixed then this will add two entries with same pouch which should not be permitted and will lead
+to error in Branch account.
+
+Benefit of fixing: This fix will not allow two different counters to add Rems in same pouch.
+
+lAasM Utilization Capacity: 3Days.
+
+Date: 28-Feb-2019 10:50:24 User:Raj Bains
+s per PTF meeting on 28/2/2019 this has been targeted at R19.20
+
+Date:28-Feb-2019 10:50:37 User:Raj Bains
+the call Target Release has been moved to Targeted At ~~ HNG-X 19.20
+
+jDate:28-Feb-2019 10:50:41 User:Raj Bains
+lAction has been removed from the call
+
+lbate:01-Mar-2019 07:57:56 User:Shweta Patil
+[Start of Response]
+
+code patch added to JIRA CBB-3287
+[End of Response]
+
+Response code to call type I as C
+
+tegory 46 -- Pending -- Product Error Fixed
+
+jDate:01-Mar-2019 08:37:12 Uscr:Shweta Patil
+laNGX CODE FIX
+
+FIX DESCRIPTION
+Is the detailed design already described and still correct? If so state Described Above, otherwise add a description.
+Described Above
+
+IPROPOSED BRANCH
+state the name of the feature or
+cP2368
+
+fix branch that the code will be committed to once successfully reviewed.
+
+COUNTER JAVA FILES CHANGED
+Iuist changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+jone
+
+COUNTER PDL FILES CHANGED
+List changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+jone
+
+COUNTER REFDATA FILES CHANGED
+nist changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+
+SHARED CODE FILES CHANGED
+Iuist changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+lone
+
+BAI, JAVA CODE FILES CHANGED
+List changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+set tlePouchDeliveryServiceSettlementProcessor, ISettlementProcessor, SettleRemOutAutoDespatchProcessor,
+lsettleRemOutProcessor, SettleTransferOutProcessor, SettlementProcessor.
+
+sol, FILES CHANGED
+ist changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+jadd_GetSett1lePouchCountCheck_patch.sql added.
+
+THER FILES CHANGED
+bist changed files indicting if each file was added, updated or deleted. If no files changed, state None.
+None
+
+IAPPROPRIATE CODE COMMENTS
+liave you entered appropriate comments in the code with the PEAK number? State Yes or explain why not.
+ves
+
+[DEPENDENCIES
+state any
+
+endencies on other PEAKs, or files (e.g. POL reference data), or state None.
+
+FUJ00171927
+FUJ00171927
+
+one
+
+RELATED PROBLEMS
+lere related problems found that were not covered by this fix? If so, state the problems and confirm that new defects were
+raised. Otherwise, state None.
+
+jone
+
+JUNIT TESTING EVIDENCE
+[Briefly describe what manual unit tests have been performed, and add any appropriate evidence e.g. screenshots.
+ih) Press Back Office, Rems & Transfers, Delivery.
+
+2) Scan an incoming cash pouch id e.g. 301978824712.
+
+3) Enter the cash amount e.g. £100
+
+4) Go to counter 2 and log in as a different user.
+
+Ib) Press Back Office, Rems & Transfers, Delivery.
+
+Is) Scan the same incoming cash pouch id e.g. 301978824712.
+
+7) Enter the cash amount e.g. £100
+
+8) Press Enter to proceed to the delivery receipt print/preview screen.
+
+Is) Print the delivery receipt (prints 2 receipts).
+
+0) Press enter to print the Remittance In slip.
+
+H1) Go back to Counter 1.
+
+2) Press Enter to proceed to the delivery receipt print/preview screen.
+
+M3) Print the delivery receipt (prints 2 receipts).
+
+Ha) Press enter to print the Remittance In slip.
+
+jbatabase should not contain two entries with same pouch ids.
+
+REGRESSION TEST CLASS
+state the regression test class filename and what it tests, or explain why none is needed,
+jone
+
+BACKWARDS COMPATIBILITY
+state how backwards compatibility has been addressed.
+
+DEVELOPMENT DOCUMENTATION
+uist the references and title of development documents that should be changed as a result of this fix (HLD, LLD, Ref Data,
+counter-BAL messages, Support Guide etc), and also a summary of change required, or state None.
+
+IREQUIREMENTS DOCUMENTATION
+nist the references and title of requirements documents that should be changed as a result of this fix (i.e. Use Case, Menu
+ierarchy, Reports, Receipts, AP-ADC Reference Manual etc), and the QA reference number or the name of the Fujitsu designer/SME
+who has approved the change, or state None.
+
+jone
+
+HELP
+nist the ISID, and use-case step id for all new user screen interactions, or state None.
+
+Date:04-Max-2019 09:38:27 User:Shweta Patil
+[the Call record has been assigned to the Team Member: Pavan Vejendla
+
+jate:05-Mar-2019 0°
+[Start of Response]
+
+7:03 User:Ramesh Kalavakolla
+
+[End of Response]
+Response code to call type I as Category 76 -- Pending -- Fix Targeted awaiting Release
+
+Jbate:12-Mar-2019 09:19:19 Uscr:Ramesh Kalavakolla
+[the Call record has been transferred to the team: xCtr_REL_GDC
+fhe Call record has been assigned to the Team Member: Pavan Vejendla
+
+jDate:15-Mar-2019 10:58:39 User:Praveen Challa
+iH) Logged into counter, navigated to Back Office, Rems & Transfers, Delivery.
+
+2) Scanned an incoming cash pouch id e.g. 301978824712.
+
+3) Entered the cash amount e.g. £100
+
+a) On counter 2 logged in as a different user.
+
+5) Back Office, Rems & Transfers, Delivery.
+
+ls) Scanned the same incoming cash pouch id e.g. 301978824712.
+
+7) Entered the cash amount £100
+
+ls) Press Enter to proceed to the delivery receipt print/preview screen.
+
+Is) Print the delivery receipt (prints 2 receipts).
+
+HO) Press enter to print the Remittance In slip.
+
+H1) Go back to Counter 1.
+
+2) Press Enter to proceed to the delivery receipt print/preview screen.
+
+H3) Print the delivery receipt (prints 2 receipts).
+
+14) Press enter to print the Remittance In slip.
+
+settlement error Message displayed for Non POID user and POID user. Able to see the single pouch entry in the
+jBRDB_POUCH DEL DETAILS (BRDB) table.
+
+jorking as expected.
+
+tached the evidence
+
+JDate:15-Mar-2019 11:00:27 User:Praveen Challa
+evidence Added ~
+
+FUJ00171927
+FUJ00171927
+
+[Date:2e-Mar-2019 14:20:01 User:Dimensions Automated User
+reference Added: Product Baseline OSR_APP V2 1920 V051
+
+[Date:26-Mar-2019 15:33:19 User:Praveen Challa
+Defect cause updated to 14: Development - Code
+
+Date: 26-Mar-2019 15:33:32 User:Praveen Challa
+the Call record has been transferred to the team: Dev-Int-Rel
+lUser:Praveen Challa Confirmed that this Incident may be passed to the external company with the attached evidence.
+
+Jbate:27-Mar-2019 08:49:36 Uscr:Geoff Inglis
+[fhe Call record has been assigned to the Team Member: PIT Automated User
+
+jDate:27-Mar-2019 10:00:01 Uscr:Dimensions Automated User
+eference Added: Product Baseline OSR APP V2_1920 D051
+
+Date:27-Mar-2019 11:43:16 Uscr:Raj Bains
+Reference Added: Release PEAK PCO277452
+
+lbate:27-Mar-2019 1
+[Start of Response]
+Peak 0275893 handled by integration auto handler
+
+0:57 User: PIT Automated User
+
+[whe following baselines attached to this peak have the targeting flags set:
+SR_APP_V2_1920 D051 FOR (LIVE:YES TEST:YES RDT:YES) Integrator: Prashant Purohit
+
+[these baselines have completed integration testing, moving to holding stack awaiting peak ejection.
+[End of Response]
+
+Response code to call type I as Category 47 (Fix Processed by PIT)
+
+[the incident has been transferred to the Team: Int-Rel
+
+[fhe incident has been assigned to the Team Member: Matt Swain
+
+Jbate:27-Mar-2019 14:03:50 User:Matt Swain
+lkeference Added: DevIntRel-Director Live Supp.Test
+
+jDate:27-Mar-2019 14:05:04 User:Matt Swain
+[fhe Call record has been transferred to the team: Dev-Int-Rel
+[the Call record has been assigned to the Team Member: Matt Swain
+
+Jbate:27-Mar-2019 15:00:51 Uscr:PIT Automated User
+[Start of Response]
+Peak 0275893 handled by integration auto handler
+
+he following baselines attached to this peak have the targeting flags set:
+OSR_APP_V2_1920 D051 FOR (LIVE: YES TEST: YES RDT:YES) Integrator: Prashant Purohit
+
+hese baselines have completed integration testing, moving to holding stack awaiting peak ejection.
+[End of Response]
+
+kesponse code to call type I as Category 47 (Fix Processed by PIT)
+
+[the incident has been transferred to the Team: Int-Rel
+
+[the incident has been assigned to the Team Member: Matt Swain
+
+jDate:27-Mar-2019 15:02:22 User:PIT Automated User
+[Start of Response]
+## AUTOMATED UPDATE ~ INTEGRATION PEAK BOT ##
+
+Fix processed by integration, routing to dev-int-rel director...
+
+PLEASE NOTE: If this fix has failed, to send this peak back to integration it MUST have the response code Fix Failed or Response
+ejected on it, otherwise the peak will bounce.
+
+[End of Response]
+
+lkesponse code to call type I as Category 49 (Fix Available for IndependentTest)
+
+[the incident has been transferred to the Team: Live Supp.Test
+
+JDate:03-Apr-2019 15:05:04 User:Mark Ascott
+[the Call record has been transferred to the team: LiveSpTest-GDC
+
+the Call record has been assigned to the Team Member: Syam Idimadakala
+
+lUser:Mark Ascott Confirmed that this Incident may be passed to the external company with the attached evidence.
+
+Date: 7-Apr-2019 13:41:11 Usecr:Jon Hulme
+i am not happy with this fix.
+
+itt results in "Settlement Error" message MSG90955 (the generic settlement failure message) with unfriendly error text:
+
+FUJ00171927
+FUJ00171927
+
+Failed to settle basket.
+lerror code:POUCH DELIVERY ALREADY PROCESSED ERROR.
+Your basket items have been removed.
+
+contact the Horizon System Desk and quote this message ID.
+
+Ifhere is no need for the user to contact the Horizon System Desk, since this is a user generate error not a Horizon system error.
+
+[this should be a friendly *business error* message explaining that the barcode has already been processed by another counter.
+
+Jbate:17-Apr-2019 13:41:59 User:Jon Hulme
+[the Call record has been transferred to the team: xCtr GDC
+
+jOate:17-Apr-2019 13:59:45 User:gon Hulme
+lp also where is the fix to put a primary key on the pouch table?
+
+Date:17-Apr-2019 14:22:59 User:Gimey johnbasco
+Iii Jon,
+
+primary key fix on the pouch table is tracked via PC0277713 and Abrar has delivered this changes.
+
+jDate:17-Apr-2019 16:22:49 User:Gimey johnbasco
+il inputs from Jon on the business error message is as below:
+
+[there should be an existing process for getting new 41S message texts approved, but given the short timescales I will email POL
+to get the message text approvec
+
+Isut I will need a message id from yourself via Rob G.
+
+I would suggest temporary (unapproved) text of:
+lt'ype: ?Error? (Yellow message)
+
+title: ?Pouch Already Processed?
+ffext: ?This pouch has already been processed.?
+Buttons: 2Continue?.
+
+Jbate:17-Apr-2019 16:23:26 Uscr:Gimey johnbasco
+the new message allocated is MSG40053
+
+From: Best, Anne
+Sent: Wednesday, April 17
+to: Gelder, Rob {
+
+2019 4:08 PM
+
+7 Kalavakolla, Ramesh
+~k Johnbasco, Gime!
+
+}; Bennett,
+Vejendla, Pavan
+
+PC0275893 - Concurrent processing of pouch delivery
+fhe allocated message id is MSG40053
+
+Regards
+
+Janne
+
+Datei 7-Apr-2019 16:25:18 User:Gimey johnbasco
+currently, the error POUCH DELIVERY ALREADY PROCESSED ERROR from the BAL is not handled from counter. This error should be
+handled and display the new message MSG40053.
+
+Date:17-Apr-2019 16:26:37 User
+Evidence Added = New mes
+
+Gimey johnbasco
+
+MSG40053
+
+jbate:17-Apr-2019 16:26:49 User:Gimey johnbasco
+[the Call record has been assigned to the Team Member: Shane Bennett
+
+JDate:17-Apr-2019 1
+
+0:48 User:Shane Bennett
+
+FUJ00171927
+FUJ00171927
+
+fixed, ready to be tested:
+
+jDate:17-Apr-2019 1
+the Call record has b
+
+3:21 User:Shane Bennett
+een assigned to the Team Member: Praveen Challa
+
+Date:i7-Apr-2019 16:45:37 User
+call has been cloned to Call:
+
+Pavan Vejendla
+(0277793 by User:Pavan Vejendla
+
+jDate:17-Apr-2019 17:45:01 User:Dimensions Automated User
+Reference Added: Product Baseline HNGA PACKAGE CBA 6920 D166
+
+JDate:17-Apr-2019 17:58:23 User:Praveen Challa
+le to see the MSG40053 message when tried for pouch transaction.
+
+[Date:17-Apr-2019 18:01:00 User:Praveen Challa
+Reference Added: Target release CTR APP X6920 va66
+
+Date:17-Apr-2019 18:01:27 User:Praveen Challa
+[the Call record has been transferred to the team: Dev-Int-Rel
+lUser:Praveen Challa Confirmed that this Incident may be passed to the external company with the att
+
+Date: 17-Apr-2019 18:22:01 User:Geoff Inglis
+Jno integ processing required - routing to SVI test.
+
+the Call record has been transferred to the team: ITU System Validation & Integration
+[the Call record has been assigned to the Team Member: Unassigned
+
+JDate:18-Apr-2019 12:46:01 Uscr:Pavan Vejendla
+Reference Added: Jira CBB-3287
+
+joate:18-Apr-2019 12:47:02 User:Pavan Vejendla
+Reference Deleted: Jira CBB-3287
+
+JDate:18-Apr-2019 12:47:32 User:Pavan Vejendla
+Reference Added: Acceptance Incident CBB=3367
+
+lbate:18-Apr-2019 1
+top Reference set tc
+
+7:46 User:Pavan Vejendia
++ Acceptance Incident CBB-3367
+
+Date:18-Apr-2019 12:47:56 Uscr:Pavan Vejendla
+TOP Reference set to: Target release CTR APP X6920 V866
+
+[Date:18-Apr-2019 1:
+lfoP Reference set to
+
+8:04 User:Pavan Vejendla
+
+Baseline HNGA PACKAGE CBA 6920 D166
+
+JDate:18-Apr-2019 12:48:37 Uscr:Pavan Vejendla
+Reference Added: Jira CBB-3367
+
+Date:%8-Apr-2019 14:11:10 User:Amit Chorgi
+[the Call record has been transferred to the team: xCtr_GDC
+
+the Call record has been assigned to the Team Member: Pavan Vejendla
+lUser:Amit Chorgi Confirmed that this Incident may be passed to the exter:
+
+al company with the attached evidence.
+
+Date: 18-Apr-2019 1:
+Routed to Pavan to ¢
+
+1:40 User:Amit Chorgi
+one it for Counter delivery.
+
+jbate:18-Apr-2019 14:37:38 User:Pavan Vejendla
+call has been cloned to Call:PC0277808 by User: Pavan Vejendla
+
+jDate:18-Apr-2019 14:48:32 User:Pavan Vejendla
+this peak has been cloned as it has changes in c
+
+as well.
+
+JDate:18-Apr-2019 14:54:28 User:Pavan Vejendla
+[fhe Call record has been transferred to the team: ITU SV&I
+
+FUJ00171927
+FUJ00171927
+
+fiseriPavan Vejendia Confirmed that this Incident way be passed to the external company with the attached evidence:
+
+joate: 25-Apr-2019 10:47:18 User:Tony Baker
+[Start of Response]
+tested su fully in SV&I with Counter Code HNGA PACKAGE CBA 6920 D166.
+
+teaving Clone PEAK PC0277793 Open awaiting Ref Data with Approved Message content for MSG40053.
+[End of Response]
+
+Response code to call type I as Category 61 -- Final -- Build Fix Available to Call Logger
+routing to Call Logger following Final Progress update.
+
+oate: 29-Apr-2019 09:31:43 User:Jon Hulme
+CALL PC0275893 closed: Category 61 Type I
+
+Root Cause Development - Code
+
+Logger Jon Hulme -- Bus _Apps_ Des
+
+Subject Product HNG-X Counter -- Application Service (version unspecified)
+Assignee Jon Hulme -- Bus_Apps_Des
+
+Last Progress 29-Apr-2019 09:31 -- Jon Hulme

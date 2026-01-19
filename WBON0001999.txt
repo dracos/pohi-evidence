@@ -1,0 +1,429 @@
+WBON0001999
+
+WBON0001999
+From: "Matthew.Lenton GRO i
+To: Amy Prime <
+Ce: Andrew Parsons <. , Jonathan Gribben
+4. GRO. !, Katie Simmonds + GRO t
+"pete.newsomd GRO }
+"Torstein.O.Godeseth¢ GRO. >,
+
+GRO id Lucy Bremner
+
+‘L Disclosure
+: Tue, 15 Oct 2019 17:07:26 +0000
+Importance: Normal
+Attachments: JavaScripts.zip; SP_TIDY_KELS.zip; Legacy_KEL_Duplicates.xlsx
+Embedded: unnamed
+Inline-Images: image001.png; image002.png; image003.png; image005.jpg; image007.jpg
+
+Amy,
+
+Please see responses added in italics to your email below. As noted in response to point 9, Pete Newsome
+and John Simpkins are available at 15:00 on Wednesday; please also include Steve Parker and myself on any
+invitation.
+
+In addition to those responses, we believe that the existence of superseded / deprecated versions of KELs has
+been explained previously in the following ways:
+
+The attached email from Feb 2019 “RE: Peaks / KELS...”, explained both what deprecated means, and for
+which categories of KELs deprecated versions were available, it being clear from the explanation that it is a
+fairly complicated picture, in that deprecated versions are not available for all existing KELs. It is also
+implicit in the statement further down in that email chain where it is stated “The KELs listed below are all
+deleted rather than deprecated or archived, and are therefore not retrievable”.
+
+It is stated in SVM/SDM/PRO/0875 section 11.2.4, last bullet: “All KELs have version numbers, it is always
+possible to view a previous version and highlight the differences between versions.”
+
+There is evidence in Mr Coyne’s report of October 2018 that he read SVM/SDM/PRO/0875 as it is
+referenced in footnotes 32, 35, 238, and at least some of paragraphs 4.87 to 4.89 look likely to be based on
+section 11.2 of SVM/SDM/PRO/0875. Although he doesn’t explicitly acknowledge the continuing existence
+of deprecated versions, paragraph 4.89 shows some understanding: “/nformation on the KEL is updated by
+all levels of support as work to resolve the incident progresses. Any creation or update of a KEL must be
+authorised by SSC before it can be seen by all users.”
+
+We acknowledge that we were asked to check the EDQ, but noted that we were not specifically asked to
+comment on that section, but on other parts that were highlighted for our attention, and also note that we
+were given only a few hours to respond (10:20 am until 14:30 on the same day). From Michael Wharton’s
+email of the 06-Dec-2017, it seems that the EDQ resulted at least in part from a phone call on 30-Nov-2017,
+and we have been unable to find any record of the previous work that went into producing it.
+WBON0001999
+WBON0001999
+
+Matthew Lenton
+Document Manager
+
+Post Office Account
+
+Fujitsu
+
+Lovelace Road, Bracknell, Berkshire, RG12 8SN.
+
+Web: https:/www.fujitsu.com/globall
+
+From: Amy Prime <_
+Sent: Tuesday, October 15, 2019 9:16 AM
+Lenton, Matthew <
+
+GRO
+
+__GRO.
+>; Godeseth, T
+Lucy Bremner ¢
+
+GRO >; Katie Simmonds {
+
+Parker, Steve
+
+GRO
+REL Disclosure
+
+‘SaBjEC
+Matthew
+
+We have received the attached letter from Freeths in relation to the disclosure of the previous versions of the KELs.
+So as Post Office can provide a response to this letter, please could you consider and provide a response to the
+following queries — given the importance of these documents to the Horizon Issues Trial, it would be appreciated if
+your responses are accurate and provide a detailed explanation where possible. If it would be helpful to have a call to
+discuss the below before you respond, please let me know.
+
+Scripts
+
+Please could you provide:
+
+An explanation of the script(s) and/or methods by which FJ extracted the KELs disclosed in:
+[Matthew Lenton] The scripts are stand-alone Java classes.
+
+They make use of some WIKI formatting functions taken from the internal SSC website which holds the
+KELs for the support teams to view.
+
+They take two parameters:
+
+1. The database partition (the SSC website is used for more than just POA KELs and this controls
+which database we connect to)
+
+2. The output folder (where the KEL files are to be created)
+
+a. May 2018 (being KELs generated up to March 2018)
+WBON0001999
+WBON0001999
+
+[Matthew Lenton] The script used in May was named List_ALL_KELs.java (attached), this produced a list
+of the ‘current’ version of both Horizon and Horizon online KELs. This can be seen by the SOL
+command used:
+
+select * from [dbo].[kel_active] where status in (‘Authorised’, Deactivated’) union all select * from
+kel_active_HNGX where status in (‘Authorised', 'Deactivated')";
+
+By retrieving the ‘Authorised’ and ‘Deactivated’ from the tow kel_active tables we would get the latest
+version of each KEL.
+
+b. January 2019 (being KELs generated from March to December 2018 AND deleted KELs)
+
+[Matthew Lenton] The script in January was called List_Recent_KELs.java (attached)
+
+This is very similar to the script above, except it now takes a 3” : parameter which is the start date for the
+KELs creation, therefore the SOL query has changed to:
+
+select * from kel_active HNGX where status in (‘Authorised', Deactivated’) and original_date >=
+"+sDate+""
+
+Note, we are only using the Horizon Online KEL table now as there are no new Horizon legacy KELs and
+the parameter of the start date (sDate) is used to just list the recent KELs.
+
+The script to list the deleted KELs was called List_Deleted_KELs.java and is very similar to the first script.
+The main differences are the warning banner stating that this KEL was deleted and the SQL change:
+
+SELECT [kel_ref] ,/[KEL_Reference] ,[title] ,/summary] ,[username] ,[fullname] ,[email] ,[original_date]
+,lrevision_date] ,Joriginal_author] ,[revision_author] ,[release] ,[kel_type] ,/systemproduct] ,/branchcode]
+,[servername] ,/symptoms] ,[problem] ,convert(varchar(max),[solution]) as [solution]
+sconvert(varchar(max),[solution2]) as [solution2] _,convert(varchar(max),[solution3]) as [solution3] ,
+[keywords] ,[approved] ,[evidence] ,[status] ,[visibility] ,[powerhelp] as [call_ref] ,[peak] ,[version] ,[class]
+,[external_kel] ,[RefTypel] ,[RefValue1] ,[RefType2] ,[RefValue2] FROM [dbo].[kel_delete] union
+SELECT [kel_ref] ,[KEL_Reference] ,/title] ,/summary] ,[username] ,[fullname] ,[email] ,[original_date]
+,[revision_date] ,[original_author] ,[revision_author] ,[release] ,[kel_type] ,[systemproduct] ,[branchcode]
+,[servername] ,[symptoms] ,[problem] ,convert(varchar(max),[solution]) as [solution]
+,convert(varchar(max),[solution2]) as [solution2] ,convert(varchar(max),/solution3]) as [solution3] ,
+[keywords] ,[approved] ,[evidence] ,[status] ,[visibility] ,[call_ref] ,[peak] ,[version] ,[class] ,[external_kel]
+[RefTypel] ,[RefValuel] ,[RefType2] ,[RefValue2] FROM [dbo].[kel_delete_ HNGX]
+
+The SQL was slightly more verbose because the two deleted tables had slightly different columns and this
+means that the wild-card select could not be used.
+
+If a script was used, please could you provide us with a copy of the scripts used in each of the above extractions (up
+to March 18, March 18 to Dec 18, and deleted KELs).
+
+[Matthew Lenton] Attachment: JavaScripts.zip
+
+Versions
+WBON0001999
+WBON0001999
+
+We understand from Matthew's email (attached) that when Horizon moved from Horizon Legacy to Horizon Online
+only the current versions of the KELs were kept and migrated — please could you confirm:
+
+a. Where the documents were migrated from and to?
+
+[Matthew Lenton] When a KEL was identified for migration the current version was moved from the
+[kel_active] table to the [kel_active_HNGX], this was a process controlled through the SSC website
+application. In order to stop people from migrating a KEL twice the KEL record(s) were deleted from the
+old table.
+
+b. On migration, was a back-up taken of the non-migrated KELs?
+
+[Matthew Lenton] No.
+
+Please could you explain how version numbering operates.
+
+[Matthew Lenton] Versions start at 1 for the original KEL, when the KEL is updated the new version is
+put in a separate table. An authorise request is sent to the SSC team who review the changes and either
+authorise or reject the new version of the KEL.
+
+If it is authorised the new version is inserted into the active table and the previous version is marked as
+deprecated.
+
+When the SSC website hardware was hosted by the SSC and space was at more of a premium, we only
+maintained the last 3 versions of a KEL, older versions were deleted without a back-up.
+
+When the SSC website was migrated to the ITG hosting this rule was relaxed and more versions of the
+KELs were kept.
+
+Is it possible to amend a KEL without generating a new version?[Matthew Lenton] No, in order to update a KEL
+you would create a new version via the Website. In theory, with database access you could update the KEL
+directly via SOL, however only a few SSC staff have that privileged access, and in practice this does not
+happen. Does each update create a new version?/Matthew Lenton] Yes each update would generate a new
+
+version. \s the version control automatically generated by the database when any change is made to a KEL, or is it
+necessary to generate a new version manually?/Matthew Lenton] Versioning is done automatically with the SSC
+website.
+
+KEL JSimplins4251P (attached) was raised on 9 September 1999, and last updated on 20 Jan 2003 but is shown as
+being "Version 1". Please could you explain why there is a difference between the raised and last updated dates, but
+no subsequent versions have been generated? If a KEL has been updated since being raised, should it be Version
+2? Is there any way to track what was updated on 20 Jan 2003?
+
+[Matthew Lenton] We believe that can happen for a couple of reasons, unfortunately the HORIZON
+legacy KELs do not have a history table, however the HORIZON online KELs do.
+
+Example! — Original rejected JayakumarA349T
+
+Original Date: 2019-07-30 18:39:38,297
+Revision Date: 2019-09-24 13:42:16.440
+WBON0001999
+WBON0001999
+
+History:
+
+30/07/2019 18:39 Unauthorised (HNGX-Knowledge Base Information) KB "CRON 100 Error " created
+by Arunkumar Jayakumar
+
+30/07/2019 18:39 Authorisation request sent to mike.croshaw(,
+Jayakumar)
+
+(cc Arunkumar
+
+18/09/2019 15:41 Rejected by Mike Croshaw. Reason: Need more detail on this - where is the CRON 100
+Error seen?
+
+18/09/2019 15:41 No email address found for user JayakumarA (Arunkumar Jayakumar). Cannot send
+rejection message for KEL
+
+24/09/2019 13:42 Version 1 (HNGX) generated by Arunkumar Jayakumar
+24/09/2019 13:42 Version 1 AUTHORISED by Wayne Bragg
+24/09/2019 13:42 KB exported to
+
+PostOfficeAccountDutyManager GRO
+mycheryl.card john.simpkinsi
+
+GRO
+
+cdnt
+
+Example 2 — Not authorised by SSC until later MalipatilA649I
+Original date: 2016-10-25 09:18:46.020
+
+Revision date: 2017-07-31 14:11:51.767
+
+History:
+
+25/10/2016 09:18 Unauthorised (HNGX) KEL "Counter Keyboard Enter key Inactive When OSR
+Service is Unavailable" created by Anilkumar Malipatil
+
+25/10/2016 09:18 Authorisation request sent to sudip.sur,, oO. I (cc
+anilkumar.malipatil
+
+31/07/2017 14:11 Version 1 (HNGX) generated by Anilkumar Malipatil
+31/07/2017 14:11 Version I AUTHORISED by Mike Croshaw
+
+The same query arises in relation to GMaxwell574P, AChambers3558R and PCarroll2243R.
+
+[Matthew Lenton] These are Horizon legacy KELs and we have no history for them.
+
+When Mr Coyne attended Bracknell to view the KEL, was he informed that previous versions of the KELs were
+available and if so, was he given the opportunity to view previous versions of a KEL? [Matthew Lenton] The system
+demonstrated to Mr Coyne was the live system, so the “+ More details” link that leads to the list of previous
+versions would have been visible on the screen for each KEL that was viewed (noting that it is not visible or
+available on the exported versions of the KELs). Mark Wright believes that he would have explained and
+demonstrated this, since it was visible and he explained everything about how the system was used; as the
+meeting was not recorded however, he cannot state beyond any doubt that he did explain it, or that if he did,
+Mr Coyne understood it.
+
+Alternatively, is it obvious when viewing the KEL system that previous versions are still accessible (for example, they
+are listed on a side pane)?[Matthew Lenton]
+WBON0001999
+WBON0001999
+
+e This screenshot shows the default view:
+
++ If the timestamps indicate the file was imported before 20:00, then check the subsequent entries for any non-successful activities.
+In this situation, it may be necessary to raise a call with SSC.
+
++ More details
+
+¢ Clicking on + More details reveals this further information including links to the previous
+versions:
+
++ More details
+
+Knowledge Base Information
+BRDB Operational Exception: Interface Feed encountered a total of n data exceptions
+
+BRDB Operational Exception: 1 Interface Feed encountered a total of data exceptions for processing_date: dd-MMM-yyyy - Investigation required (for
+details see BRDB_HOST_INTERFACE_FEED_EXCP).
+
+by Dave Allen on 23/01/2012
+by Jaymie Lockley-Smith on 14/10/2019
+
+by Piotr Nagajek on 11/10/2018
+
+BranchDatabase
+
+Authorised
+General Usage
+
+Shared to support teams via Email
+14191147
+
+Version: 9
+
+Other versions of this KEL:
+Version § (Deprecated) by Sunil Nellikkentavita on 12/12/2016 I View Changes
+Version 7 (Deprecated) by Omkar Rangam on 23/01/2013 I View Changes,
+Version 6 (Deprecated) by Dave Allen on 04/01/2013 View Changes
+Version 5 (Deprecated) by Dave Allen on 30/07/2012 View Changes
+
+Please could we arrange web conference demo to show WBD how new versions of a KEL are generated and how
+previous versions of the KELs are viewed? We can be available on Wednesday after 2pm, or on Thursday after 11am.
+[Matthew Lenton] Pete Newsome and John Simpkins are available at 15:00 on Wednesday, please include
+Steve Parker and myself on any invitation.
+
+Deletion of KELs
+
+. Matthew's email refers to a "housekeeping procedure" by which FJ deleted versions where the KEL had more than 3
+versions - please could you explain how this procedure operated (for example, were these ad hoc deletions or was a
+
+policy followed)? [Matthew Lenton] This was a scheduled daily task run by the database. I will attached the
+script to this email (attachment:
+
+Duplicates
+
+. Matthew's email refers to a "defect in the KEL system" which produced duplicate KELs. Please could further
+information be provided on why these duplicates exist and the reasons why they are believed to have been caused by
+a defect?
+WBON0001999
+WBON0001999
+
+[Matthew Lenton] The duplicates only exist in the Horizon legacy KEL table — there are no duplicates in
+the Horizon Online table. It affected 20 KELs with a total of 34 duplicates.
+
+A list of these is attached (attachment: Legacy _KEL_Duplicates.xlsx).
+
+Looking at the worst occurrence, RKing3454R version 5 has 10 instances, they are identical except the
+revision date:
+
+2008-06-05 14:01:30.630
+2008-06-05 14:01:40.537
+2008-06-05 14:01:59,427
+2008-06-05 14:02:21.210
+2008-06-05 14:02:33.490
+2008-06-05 14:02:46.990
+2008-06-05 14:02:54.833
+2008-06-05 14:03:11.663
+
+These are all just seconds apart and it appears that the user was repeatedly trying to update the KEL but
+was receiving a failure on the SSC website.
+
+The last duplicate was on 12-March-2009.
+
+The first two I looked at (BSheldon1119J and MHall5726K) had a null entry for the Summary property,
+this is a mandatory field and would have should have cause the update to fail, instead it appears thata
+bug allowed the partial update to take place. I expect that the other occurrences are also missing
+mandatory (if difference) pieces of information .
+
+. Have these documents been reviewed to confirm they are exact duplicates? If not, how did FJ learn that they were
+duplicates?
+
+[Matthew Lenton] Some of the duplicates are indeed different (MHall5726K adds some text to help SMC
+decide upon the ticket priority). We will look to extract these as individual documents in the same format
+as previously.
+
+Kind regards
+
+Amy
+
+Amy Prime
+Associate
+Womble Bond Dickinson (UK) LLP
+
+Sign up for legal updates, e-newsletters and event invitations
+
+WBON0001999
+WBON0001999
+
+WOMBLE
+
+DICKINSON Ow)
+
+Please consider the environment! Do you need to print this email?
+
+only is authorised to
+e any copies.
+awful. Informationbout how we use
+
+nents is confidential and may be le
+
+you are no\matthew.lentont™~
+
+ation, distribution, publication or copying of this communi
+Poliey.on our website
+
+lly privileged and protected by lavmatthewlentonf
+
+ments is prohibited and ma
+
+cked by us with virus detection software before transmission. Wmble Bond Dickinson (UK) LLP accepts no liability for
+g any attachment.
+
+This email is sent by Womble Bond Dickinson (UK) LLP w nership registei
+office is 4 More London Riverside, London, SEI 2AU, whe s is open toinspection, We
+employee or consultant who is of equivalent standing. Our WAT registration number is GB123393627.
+
+Womble Bond Dickinson (UK) LLP is a member of Womble Bond Dickinson (Intemational) Limited, which consists of independent and autonomous law firms providing
+services in the US, the UK, and elsewhere around the world. Each Womble Bond Dickinson entity is a separa
+orem bind or igeia, anode Woubla Bead Diskinaoneatita Whoshle Boul Dickinsea (htwuitionn Limite oes not poste lew Pause woo
+
+www,womblebonddickinson.com/legal notices for further details.
+
+Womble Bond Dickinson (UK) LLP is authorised and regulated by the Solicitors Regulation Authority
+
+gal entity and is not responsible for the acts or omissions of,
+
+Unless otherwise stated, this email has been sent from Fujitsu Services Limited (registered in England No
+96056); Fujitsu EMEA PLC (registered in England No 2216100) both with registered offices at: 22 Baker
+Street, London W1U 3BW; PFU (EMEA) Limited, (registered in England No 1578652) and Fujitsu
+Laboratories of Europe Limited (registered in England No. 4153469) both with registered offices at: Hayes
+Park Central, Hayes End Road, Hayes, Middlesex, UB4 8FE.
+
+This email is only for the use of its intended recipient. Its contents are subject to a duty of confidence and
+may be privileged. Fujitsu does not guarantee that this email has not been intercepted and amended or that it
+is virus-free.

@@ -1,0 +1,90 @@
+FUJ00085079
+FUJ00085079
+
+SSC Offline KELs and KBs
+
+Information
+Deprecated
+
+Counter events with alertkey 0904 or 0905, or branch report seeing MSG31332
+
+‘Additional checks made during branch rollover to spot inconsistencies that should never occur, reported with alertkey 0904 or 0905
+by Anne Chambers on 18/10/2013
+
+Last updated: by Jack Steptoe on 06/11/2018
+
+Release: HNGX
+
+‘System product: CounterBusinessapplications
+
+Statu: Deprecated
+
+Medium
+
+0223870
+
+Symptoms
+
+Counter alert raised
+
+0904: Non Zero Local Suspense Branch Opening Figures are found for TP n
+
+(possibly 2 identical events)
+
+0908: The BTS branch discrepancy transferred totals do not match the branch discrepancy resolved totals
+
+and/or
+PM rings the Helpdesk to report seeing the error
+
+MSG31332 Discrepancies Mismatch
+Office Balancing Error. The discrepancies transferred and resolved do not match on branch rollover by User user to Trading Period n
+
+Problem
+Background in PCPC0223870. Two checks have been added to identify system errors when balancing.
+
+a) The next TP's Opening Figures, generated for stock unit DEF, include Local Suspense products that don't net to zero value.
+b) The sum of the two Discrepancy Transferred lines on the BTS, for the Branch Total, do not equal the sum of the two Discrepancy Resolved lines.
+
+So 2 new system errors may be logged at error level, and two new deferred events. The new events will not appear on the counter event log report.
+System errors:
+
+0904.com. fujitsu.poa.ctre. businesslogic.reporting.nonZeroLocalSuspenseBranchOpeningFigures
+0905.com.fujitsu.poa.ctrc.businesslogic.reporting. mismatchedBTSdiscrepancyTransferredandResolved
+
+Event ids:
+
+124 The branch local suspense opening figures for TP %TP% do not net to zero.
+
+125 The BTS branch discrepancy transferred totals do not match the branch discrepancy resolved totals.
+
+Solution - Helpdesk
+
+If a branch reports seeing MSG31332, advise them to continue the rollover (they will not be able to do anything to fix the problem) and explain that it
+will be investigated. Find out the date, time and node id being used. Check whether SMC have already raised a call, if so update it with the branch
+info (using OTI Log Comment if already with Peak), otherwise send a P3 call to SSC, quoting this KEL.
+
+Solution - SMC
+
+Counter events with alert key 0904 or 0905:
+
+Check whether MAC have had a call raised as a result of the branch phoning into ATOS SD, if so update it with the event details (using OT! Log
+Comment if already with Peak), otherwise send 1 call per branch, P3, to SSC, including the event details and quoting this KEL.
+
+Solution - 3LS
+
+This should never happen - something has gone horribly wrong. Or possibly the checks haven't been implemented as intended.
+
+0904: Note that the TP number in the event text is incorrect, look at the entries in BRDB_SU_OPENING_BALANCE for the next TP which the
+branch was rolling into. The local suspense entries (prods 6294-6297) in DEF do not add up to zero. When we had a problem before, the root of the
+
+problem was some old local suspense entries in BRDB_RX_BTS_DATA.
+
+0905: The amount resolved (cleared from local suspense when last active stock unit rolled over) should always equal the amount transferred (put
+into local suspense as each stock unit balanced). So check all local suspense movements/opening figures.
+
+If there is a genuine problem, as well as addressing the root cause, POL will need to be informed and the effect on the branch accounts and POLFS.
+will need to be investigated. To look for other affected branches (after the checks were implemented), search BRDB_RX_REP_EVENT_DATA for
+FUJ00085079
+
+FUJ00085079
+

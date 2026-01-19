@@ -1,0 +1,633 @@
+FUJ00173193
+FUJ00173193
+
+Peak Incident Management System
+
+Call Reference PC0280466 Call Logger Farzin Denbali -- Security Ops
+Release Targeted At -- HNG-X 19.51 Top Ref AUDIT QUERIES V2_1951_D022-D021A
+Call Type Live Incidents Priority B -- Business restricted
+Contact Farzin Denbali Call Status Closed -- Administrative Response
+Target Date 07/10/2019 Effort (Man Days) 3.00
+Summary Audit Data extract filtering failing for July 2015
+All References Type Value
+Release PEAK PC0281542
+Product Baseline WINDOWS PERL 64 5P20 V2 1951 V002-V001
+Product Baseline WINDOWS PERL 64 5P20_V2_1951_D002-D001
+Clone Call PC0280793
+Release PEAK PCO281821
+DevintRel-Director Live Supp.Test
+Product Baseline AUDIT _QUERIES V2_1951_V022
+Product Baseline WINDOWS PERL 64 5P20_V2_1951_D002-D001A
+Release PEAK PC0280892
+Product Baseline WINDOWS PERL. 64 5P20_V2_1951_Vo02
+Product Baseline AUDIT_QUERIES_V2_1951_D022-D021
+Jira POA-3069
+Document DEV/SPP/SPG/0020
+Product Baseline AUDIT_QUERIES_V2_1951_V022-V021
+Product Baseline AUDIT QUERIES V2_1951_D022-D021A
+Jira POA-3067
+Impact
+St heen : User Date
+John Simpkins 14-Nov-2019 11:30:47
+
+Problem Statement
+
+Any ARQ containing financial data sent to the Post Office must have an accompanying check of any events
+raised. Currently a check is made that there is at least one event at the beginning of the range and an event
+at the end. Recently it was discovered that the files containing events were missing for many days and they
+were all in a bigger file at a later day. Because of this possibility the checking of events needs to change to
+there being a check that there is at least one event for every single day of the period in question.
+
+Risk of not fixing:
+
+It is possible a financial spread sheet will be sent to the Post Office with some relevant events not being
+checked by the SSC because there were no events in the file of events for one of the days of the spread
+sheet.
+
+Benefit of fixing:
+
+We can be sure that all events relevant to financial spread sheets sent to the Post Office have been checked.
+
+ASM Utilization Capacity (Number of Man Days required to fix this issue) :
+
+Another 3 days is required to fix this problem.
+
+Progress Narrative
+
+FUJ00173193
+FUJ00173193
+
+fDate:04-Oct-2019 14:
+CALL PC0280466 opened
+Details entered ar
+Summary :Audit Data extract filtering failing for July 2015
+call Type:L
+
+call Priority:B
+
+jfarget Release: HNG-X Rel. Ind.
+
+Routed to:PODG-Dev - Gerald Barnes
+
+0:34 User:Farzin Denbali
+
+JDate:04-Oct-2019 14:10:34 Uscr:Farzin Denbali
+the Audit Data extract for July 01 to July 14 2015 fails with ‘Filtering Failed’ message. Perl Error log shows:
+
+[the supplied date Tue Jul 14 23:59:59 2015
+minus the largest message date found 20150706 is greater than 1. Files need to be extracted with a bigger upper date.
+
+Ir ran the ARQ for 2 branches and the result was the same. When ARQ is run for the entire month the query completes and the gaps
+lin the Events data is visible. The Events spreadsheet shows there are no events between July 3 and July 10 (see attached) but
+there is transaction data between those dates
+
+jDate:04-Oct-2019 14:11:14 User:Farzin Denbali
+evidence Added - P<
+
+JDate:04-Oct-2019 14:11:28 User
+sviden d= Events
+
+Farzin Denbali
+
+jbat¢:04-Oct-2019 14:17:24 User:Jason Muir
+the Call record has been transferred to the team: Audit-Dev
+fhe Call record has been assigned to the Team Member: Gerald Barnes
+
+Date:04-Oct-2019 16:51:57 User:Gerald Barnes
+[Start of Response]
+i gathered the event data EVEI
+
+DS1 from 1st July 2015 to 31st August 2015 and then the problem became clearer.
+It attach the spread sheet “Date Gathered" which illustrates the problem.
+
+tt has a column “Date Gathered". None are gathered from 7th July to 21st July but on the 22nd July you can see all the missing
+levent files, all of which are much bigger than usual.
+
+[End of Response]
+
+Response code to call type L as Category 40 -- Pending -- Incident Under Investigation
+
+Hours spent since call received: 2 hours
+
+04-Oct-2019 16:54:37 Uscr:Gerald Barnes
+Evidence Added - Date Cathe
+
+Jbate:23-Oct-2019 14:25:06 Uscr:Gerald Barnes
+call has been cloned to Call:PC0280793 by User:Gerald Barn
+
+lbate:23-Oct-2019 1.
+[Start of Response]
+
+It have cloned the PEAK and sent the clone to Tivoli_dev. Until we have some feed back from them it is not certain what needs to
+Ibe done from an audit perspective. There is no fault in the audit software. However we need to be aware of when it has occurred
+since it means that prosecution queries must always include the catch-up day where the query spans days with no events.
+
+[End of Response]
+
+lkesponse code to call type L as Category 40 -- Pending ~- Incident Under Investigation
+
+Hours spent since call received: 1 hours
+
+46:41 User:Gerald Barnes
+
+bate: 30-Oct-2019 15:21:59 User:Gerald Barnes
+[Start of Response]
+
+nat I am thinking at the moment is that the audit filtering will change from checking that there are events at the beginning and
+lend of the range they are being asked to check to checking that there is at least one event on each day between the beginning and
+the end of the range they are being asked to check.
+
+{End of Response]
+
+Response code to call type L as Category 40 -- Pending -- Incident Under Investigation
+
+fours spent since call received: 20 hours
+
+jDate:30-Oct-2019 15:27:13 Uscr:Gerald Barnes
+Reference Added: Jira POA-3067
+
+Date: 30-Oct-2019 15:42:25 Uscr:Gerald Barnes
+It have created the feature branch https: //subversion.apt.fs. fujitsu.com/svn/repository/POA/poa-
+jaudi t /branch/FEATURE_PC0280466/AUDIT QUERIES V2 to try out a fix.
+
+jDate:11-Nov-2019 12:33:02 User:Gerald Barnes
+new Business Impact has been adde
+jany ARQ containing financial data sent to the Post Office must have an accompanying check of any events raised. Currently a check
+
+FUJ00173193
+FUJ00173193
+
+fis made that there 15 ab least one event at the beginning of the range and an event at the end. Recently it was discovered that
+the files containing events were missing for many days and they were all in a bigger file at a later day. Because of this
+jpossibility the checking of events needs to change to there being a check that there is at least one event for every single day
+lof the period in question.
+
+jbate:11-Nov-2019 12:33:31 Uscr:Gerald Barnes
+Product HNG-X Platforms -- Audit Server (ARC) (version:V2) added.
+
+[Date:11-Nov-2019 12:36:00 Uscr:Gerald Barnes
+Reference Added: Document DEV/SPP/SPG/0020
+
+JDate:11-Nov-2019 12:59:50 Usecr:Gerald Barnes
+Development Cost updated: new cost is 3 (Man Days)
+[Start of Response]
+
+[DEVELOPMENT IMPACT OF FIX:
+
+SPECIFY THE HNG-X PLATFORMS IMPACTED:
+
+[the platform is specified and it is the audit server.
+
+[TECHNICAL SUMMARY:
+
+currently for any spread sheet of transactions presented to the Post Office a check is made that of all the events. It is
+
+confirmed that there is at least one event at the beginning of the range and one at the end. Tt now has been shown possible that
+
+there are no event files on a particular day and therefore a check is going to be made that there is an event for each and every
+y of the query.
+
+[there will be a supporting control file on the audit server showing any dates identified as having events on a later day that can
+
+be referred to see where the missing events may be (usually on this later day and so by extending the data range of the query the
+
+events can be found).
+
+IxIST OF KNOWN DIMENSIONS DESIGN PARTS AFFECTED BY THE CHANGE:
+
+UDIT_QUERIES V2
+
+DEPENDENCIES:
+
+[there are no particular dependencies.
+
+DEPLOYMENT DETAIL:
+
+install in the evening backup of the audit servers.
+
+DEV EFFORT IN MANDAYS:
+
+3 additional days. Quite a bit of work has already been done on this stored in a feature branch.
+
+IMPACT ON USER:
+
+le will be more certain that all events relevant to financial queries have been checked.
+
+IMPACT ON OPERATIONS:
+
+je will be more certain that all events relevant to financial queries have been checked.
+
+HAVE RELEVANT KELS BEEN CREATED OR UPDATED?
+
+[fhe problem is a bit to broad for a KEL. We need this fix.
+
+HMPACT ON TE:
+
+[they can run slow ARQs and repeat the filtering (with events) having moved aside all the event files for a given day in the
+IEXTRACXTED AT folder.
+
+[they can alter the MissingEvents.txt file documented in DEV/APP/SPG/0020 and confirm it works as expected.
+IRISKS (of releasing and of not releasing proposed fix):
+
+Inf we do not do this then a financial spread sheet may not have all associated events checked.
+
+LIST OF LIKELY DELIVERABLES:
+
+leventFilter.pl
+cont iguousDateChecker.pm
+lissingEvents.txt
+
+fo get the perl date time functionality.
+
+[InstallDateTime.bat
+class-Inspector-1.31.ppmx
+lass-Singleton-1.5.ppmx
+pateTime-1.42.ppmx
+bateTime-Locale~1.16.ppmx
+JbatePime-TimeZone=2. 11 .ppimx
+bateTime-TimeZone-Local-Win32-1.98.ppm
+File-Share-0.25.ppmx
+rile-ShareDir-1.102.ppmx
+
+FUJ00173193
+FUJ00173193
+
+flamespace-autoclean-0.20-ppi
+Params-Validate-1.28.ppmx
+
+Params-ValidationCompiler-0.23.ppmx
+
+Ikole-Tiny-2.000005.ppmx
+
+scalar-List-Utils-1.47.ppmx
+
+lspecio-0.22.ppmx
+
+jrest-Fatal-0.014.ppmx
+
+jtest-Requires-0.10.ppmx
+
+ftest-Warnings-0.026-ppmx
+
+1in32-TieRegistry-0.30.ppmx
+
+[End of Response]
+
+Response code to call type L as Category 55 -- Pending -- Live Fix Impact Supplied
+Hours spent since call received: 3 hours
+
+bate:41-Nov-2019 13:01:22 Uscr:Gerald Barnes
+Ihe call Target Release has been moved to Proposed For -~ HNG-X 19.51
+
+JDate:11-Nov-2019 13:01:49 User:Gerald Barnes
+ction placed on Team:BIF
+
+Date:i2-Nov-2019 13:04:51 User:Gerald Barnes
+[fhe Business Impact has been updat
+Problem Statement
+
+lany ARQ containing financial data sent to the Post Office must have an accompanying check of any events raised. Currently a check
+lis made that there is at least one event at the beginning of the range and an event at the end. Recently it was discovered that
+the files containing events were missing for many days and they were all in a bigger file at a later day. Because of this
+possibility the checking of events needs to change to there being a check that there is at least one event for every single day
+lof the period in question.
+
+Risk of not fixing:
+
+It is possible a financial spread sheet will be sent to the Post Office with some relevant events not being checked by the SMC
+because there were no events in the file of events for one of the days of the spread sheet.
+
+Benefit of fixing:
+je can be sure that all events relevant to financial spread sheets sent to the Post Office have been checked.
+
+SM Utilization Capacity (Number of Man Days required to fix this is
+
+sue) +
+
+lancther 3 days is required to fix this problem.
+
+Jbate:13-Nov-2019 10:28:34 User:Adam Harney
+ISIF approved as per BIF meeting on 13/11/2019, to go to customer BIF meeting for final approval. Peak also targeted to 19.51
+
+jbate:13-Nov-2019 10:28:46 Uscr:Adam Harney
+{the call Target Release has been moved to Targeted At -- HNG-X 19.51
+
+Joate:14-Nov-2019 11:30:47 User:John Simpkins
+[fhe Business Impact has been updated:
+
+problem Statement
+
+lany ARQ containing financial data sent to the Post Office must have an accompanying check of any events raised. Currently a check
+is made that there is at least one event at the beginning of the range and an event at the end. Recently it was discovered that
+the files containing events were missing for many days and they were all in a bigger file at a later day. Because of this
+jpossibility the checking of events needs to change to there being a check that there is at least one event for every single day
+lof the period in question.
+
+isk of not fixing:
+
+tt is possible a financial spread sheet will be sent to the Post Office with some relevant events not being checked by the SSC
+because there were no events in the file of events for one of the days of the spread sheet.
+
+Benefit of fixing:
+le can be sure that all events relevant to financial spread sheets sent to the Post Office have been checked.
+SM Utilization Capacity (Number of Man Days required to fix this issue) :
+
+lAncther 3 days is required to fix this problem.
+
+JDate:14-Nov-2019 11:46:50 User:James Guy
+ction has been removed from the call
+
+[Date:14-Nov-2019 11:47:04 User:James Guy
+
+FUJ00173193
+FUJ00173193
+
+Shion placed on Team:Pir
+
+jbate:14-Nov-2019 11:47:17 User:James Guy
+lapproved in Customer BIF @ 14/11
+
+jbate:14-Nov-2019 12:42:37 User:Gerald Barnes
+Reference Added: Jira POA-3069
+
+lDate:14-Nov-2019 1
+[Start of Response]
+Poa-3069 is the jira for copying the fix from the FEATURE branch into trunk.
+
+3:57 User:Gerald Barnes
+
+[End of Response]
+Response code to call type L as Category 40 -- Pending -- Incident Under Investigation
+Hours spent since call received: 2 hours
+
+Jbat¢:19-Nov-2019 17:46:20 User:Adam Sobot
+ction has been removed from the call
+
+[Date:19-Nov-2019 1
+
+7:19 Uscr:Adam Sobot
+
+lote = has already been to PTF and correctly targeted - no need for revisiting. So action on PTF remove.
+
+jDate:20-Nov-2019 10:50:01 User:Dimensions Automated User
+Product Baseline WINDOWS PERL 64 _5P20_V2_1951_vo02
+Product Baseline WINDOWS PERL 64 5P20_V2_1951_V002-V001
+
+Date:20-Nov-2019 11:45:00 User:Dimensions Automated User
+Reference Added: Product Baseline AUDIT QUERIES V2_1951_v022
+lkeference Added: Product Baseline AUDIT QUERIES V2_1951_v022-v021
+
+JDate:20-Nov-2019 11:51:23 User:Gerald Barnes
+Defect cause updated to 97: General — 3rd Party issue
+
+lDate:20-Nov-2019 11:52:41 Uscr:Gerald Barnes
+[Start of Response]
+
+Fixed by baselines WINDOWS _
+[End of Response]
+
+lkesponse code to call type L as Category 46 -- Pending -- Product Error Fixed
+fours spent since call received: 2 hours
+
+, 64 5P20_V2_1951_VO02-VO01 and AUDIT
+
+3S _V2_1951_v022-vo21.
+
+[Date:20-Nov-2019 11:52:53 Uscr:Gerald Barnes
+[the Call record has been transferred to the team: Dev-Int-Rel
+
+jDate:20-Nov-2019 13:00:00 Uscr:Dimensions Automated User
+Reference Added: Product Baseline AUDIT QUERIES V2_1951_D022-p021
+
+[Dat e:20-Nov-2019 13:37:36 User:PIT Automated User
+[Start of Response]
+
+signing Peak to PIT Automated User
+
+[End of Response]
+
+Response code to call type L as Category 40 (Incident Under Investigation)
+fhe incident has been transferred to the Team: Dev-Int-Rel
+
+[the incident has been assigned to the Team Member: PIT Automated User
+
+[Dat ¢:20-Nov-2019 14:10:01 Uscr:Dimensions Automated User
+Ikeference Added: Product Baseline WINDOWS PERL 64 5P20_V2_1951_p002-p001
+
+jbate:20-Nov-2019 16:15:00 User:Dimensions Automated User
+Reference Added: Product Baseline WINDOWS PERL 64 5P20 V2
+
+"1951 _D002—DO01A
+
+JDate:20-Nov-2019 17:16:42 Uscr:Matt Swain
+Reference Added: DevintRel-Director Live Supp.Test
+
+[Date:20-Nov-2019 1
+[Start of Response]
+Peak 0280466 handled by integration auto handler
+
+7:31 Uscr:PIT Automated User
+
+FUJ00173193
+FUJ00173193
+
+[the following baselines attached to this peak have the targeting flags se'
+\UDIT QUERIES V2 1951 D022-D021 FOR (LIVE:YES TEST: YES RDT:YES) Integrator: Swadesh Sureshkumar
+INDOWS PERL 64 5P20_V2_1951_D002-DOO1A FOR (LIVE:YES TEST: YES RDT:YES) Integrator: Swadesh Sureshkumar
+
+[these baselines have completed integration testing, moving to holding stack awaiting peak ejection.
+[End of Response]
+
+Response code to call type L as Category 47 (Fix Processed by PIT)
+
+the incident has been transferred to the Team: Int-Rel
+
+the incident has been assigned to the Team Member: Olu Peters
+
+bate: 20-Nov-2019 17:38:24 User:PIT Automated User
+[Start of Response]
+Ii? AUTOMATED UPDATE ~ INTEGRATION PEAK BOT #4
+
+Fix processed by integration, routing to dev-int-rel director...
+
+PLEASE NOTE: If this fix has failed, to send this peak back to integration it MUST have the response code Fix Failed or Response
+Rejected on it, otherwise the peak will bounce.
+
+[End of Response]
+
+lkesponse code to call type L as Category 49 (Fix Available for IndependentTest)
+
+[the incident has been transferred to the Team: Live Supp.Test
+
+jDats:21-Nov-2019 08:19:20 User:Adam Harney
+Reference Added: Release PEAK PG!
+
+bate:21-Nov-2019 10:50:55 User:Mark Ascott
+[fhe Call record has been assigned to the Team Member: Timothy Harris
+
+Date:10-Dec-2019 05:30:00 Uscr:Dimensions Automated User
+Reference Added: Product Baseline AUDIT QUERIES V2 1951 D022-p021A
+
+jDate:10-Dec-2019 11:48:29 Uscr:Raj Bains
+Reference Added: Release PEAK PCO281542
+
+Jbate:18-Dec-2019 11:37:19 Uscr:Timothy Harris
+tested successfully on LST rig (R19.51 Audit Maintenance Release) as follows:-
+
+} invoked Audit Client and executed slow ARQ (on IRE11B) OTH31380B. Search criteria Date range 11 December 2019 - 13
+becdaber 2019 FAD 015010 and Include Events. Resulted in 143 files being returned and ALL were and seal checked. Prior
+ko filtering stage all files relating to date 20121212 were removed from the ARQ folder i.e.
+JF: \USERAREA\OTH31380B\ EXTRACTED AT.
+
+lat filtering stage applying filter resulted in "Filtering Complete with Errors ".
+
+following the Support Guide DEV/APP/SPG/0020 the file PerlErr.txt (in F:\USERAREA\OTH31380B) was checked and the following
+information had been recorded -
+
+jperl output started at 17:22:09 on 12/16/19.
+[the date 20191212 has no events at all for it.
+
+fanually updated the file F:\USERAREA\ConmmonS
+Jcuide DEV/APP/SPG/0020 - as follows
+
+ripts\MissingEvents.txt (on
+
+) as mentioned in Support
+
+ithis file contains a list of dates in date order in the format YYYYMMDD.
+Ones which are bare are genuinely missing. Ones preceded with a "-" are missing on the
+day in question but are available at a later date.
+
+teach group of dates listed should be preceded with a comment explaining why the date is missing for bare ones
+ltand at what date the events are actually there for ones starting with a
+
+Note the syntax is very strict. Comment lines must start with "#". Special dates must start with
+initial spaces.
+HWBlank lines are allowed but they must not have any spaces in.
+
+". There must not be any
+
+liNote that if any dates are not inserted in the correct order then the audit queries will fail pointing out the mistake.
+
+#For ARQ OTH31380B there are no events for 20191212 ~ this is due to manual deletion within \Extracted AT folder in order to test
+Peak PCO280466.
+
+lt -20191212
+
+ltonly via manual deletion - Events for 20191212 are available
+
+[Date:18-Dec-2019 11:38:08 Uscr:Timothy Harris
+Returning to Release to Live for closure.
+
+jbate:18-Dec-2019 11:38:43 Uscr:Timothy Harris
+the Call record has been transferred to the team: RM-x
+
+FUJ00173193
+FUJ00173193
+
+[Jateri8-Dec-2019 11:39:02 Uscrifimothy Harris
+[the Call record has been assigned to the Team Member: Release to Live
+
+Dat ¢:03-Jan-2020 17:44:50 User
+Reference Added: Relcase PEAK
+
+‘Sarah Payne
+
+DBiB21
+
+lbate:18-Feb-2020 12:16:31 User:Sarah Payne
+[Start of Response]
+
+closing as deployed to live 04/02/20. Routing call back to call logger.
+
+[End of Response]
+
+lkesponse code to call type L as Category 60 -- Final -- S/W Fix Available to Call Logger
+kouting to Call Logger following Final Progress update.
+
+jbate:18-Feb-2020 1:
+[fhe Call rec
+
+6:37 User:Sarah Payne
+
+rd has been assigned to the Team Member: Farzin Denbali
+
+Date:25-Feb-2020 11:31:36 User:Farzin Denbali
+lest failed on LIVE rig:
+
+Slow ARO POIA5459B executed on LPRPAUW202, Search criteria Date range 1/7/2015 - 14/7/2015 FAD 208840 (Include Events).
+Filtering Failed.
+
+PerlErr.txt shows:
+jperl output started at 21:25:22 on 02/24/20.
+the date 20150707 has no events at all for it.
+
+loueryHandler.log shows:
+21:26:58 perl failed to run. The return code was 255
+
+21:26:58 Exception whilst processing Events —
+21:26:58 There has been a problem processing events. See F:\UserArea\POIA5459B\QueryHandler.log on [IR
+21:26:58 The Query File Id is -99999, the message number is 300, the stage id is 1 and process halt is T-
+Process Request Completed
+
+iT} for more details.
+
+jDate:25-Feb-2020 11:35:12 Uscr:Farzin Denbali
+Evidence Added - Perl Error
+
+jDate:25-Feb-2020 11:35:27 Uscr:Farzin Denbali
+lnvidence Added - QueryHandler
+
+Date: 25-Feb-2020 11:35:53 Uscr:Farzin Denbali
+the Call record has been transferred to the team: Audit-Dev
+[the Call record has been assigned to the Team Member: Gerald Barnes
+
+jbate:25-Feb-2020 1:
+[Start of Response]
+
+{fhe query range was 1/7/2015 to 14/7/2015.
+
+[fhe PerlErr.txt has "The date 20150707 has no events at all for it.
+
+9:51 User:Gerald Barnes
+
+Now there is a file on the audit servers F:\UserArea\CommonScripts\Mi
+events from 20150707 to 20150721 but they all get caught up on 201507
+leco2s0466."
+
+ssingEvents.txt which has within it the line "There are no
+Make sure your end date is at least 201507
+
+so if the query range is changed to "1/7/2015 to 22/7/2015" the query should work.
+[End of Response]
+Response code to call type IL as Category 40 -- Pending -- Incident Under Investigation
+
+JDate:10-Mar-2020 10:59:21 User:Gerald Barnes
+[fhe Call record has been transferred to the team: Security Ops
+the Call record has been assigned to the Team Member: Farzin Denbali
+
+JDate:10-Mar-2020 11:05:50 User:Farzin Denbali
+[Start of Response]
+
+changed the date range to 01-22 Jul 2015 and query completed Successfully.
+closing the call.
+
+[End of Response]
+
+Response code to call type L as Category 68 -- Final ~
+outing to Call Logger following Final Progress update.
+
+Administrative Response
+
+jDate:10-Mar-2020 11:06:02 Uscr:Farzin Denbali
+CALL PCO280466 closed: Category 68 Type L
+
+Root Cause General - 3rd Party issue
+FUJ00173193
+
+FUJ00173193
+Logger Farzin Denbali -- Security Ops
+Subject Product General/Other/Misc -- ACE (version unspecified)
+Assignee Farzin Denbali -- Security Ops
+
+Last Progress 10-Mar-2020 11:06 -- Farzin Denbali

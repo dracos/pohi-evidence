@@ -1,0 +1,92 @@
+From:
+Sent:
+To:
+Subject:
+
+FUJ00189289
+FUJ00189289
+
+"Parker Steve (Confluence)" }
+
+Wed 23/01/2019 10:40:00 AM (UTC)
+
+[APT Wiki] SSC Tech Support > Bramble: OCP and OCR analysis Transaction Data
+
+There's 3 new edits on this page
+
+& Bramble: OCP and OCR analysis Transaction Data
+
+Parker Steve edited this page
+
+Here's what changed:
+
+Late version where the use of SSC Tool Smiley Desktop is described.
+
+EOD and migration
+
+EOD Insertions at counter caused problems later down the line with HNGX. The migration
+process assumed that all EODs were written at counter 1.
+
+Info
+
+title We have written EOD's to existing counters but it is unusual, note in PC0180881
+
+At two large branches, 8124 and 9320, MigrationPrep is failing every time it runs, in
+fUpdateOfficeDOMs / fpOfficeTrailerExistsForT PAndDay / fsEODMarkerForNum.
+
+I have found the cause of this problem. The majority of the MigrationPrep messages
+contain an EODMessageNum attribute, pointing to the relevant EODMark. This is just the
+message number, the node isn't stored, presumably on the assumption that it is always 1.
+
+Hmmm. In the last year or so, SSC have developed a tool (which did go through LST
+testing) which will insert EOD messages for a branch. This is normally used when a branch
+has closed down and the kit removed before EOD on the last day of trading - so there are
+messages on the corr server which will never be harvested unless we take some action.
+The tool writes the necessary messages on the corr server - hence there may be EODs on
+nodes other than 1.
+
+We have also used the same tool very occasionally on branches which aren't closed, but
+where, for example, one counter has been down for over a week resulting in none of the
+transactions for the branch being harvested, and there are continuing problems trying to
+replace the box (8124). Or 9320 where the kit was removed for a 2 week refurbishment
+without writing a final EOD.
+
+So when MigPrep looks on message run 1 for EODMessageNum for these branches, it
+won't find it - hence the failure.
+FUJ00189289
+FUJ00189289
+
+These are the only two branches currently affected. Until this has been thought about,
+perhaps SSC should not use the tool for branches which are still trading (it is ok for closed
+branches since they will never run MigPrep again).
+
+There's a third branch with the same problem - 091008 - which also had an EOD written
+for it by SSC.
+
+Mr Godeseth says that, in the Old Horizon system, the SSC could also inject transactions, and
+that those transactions were clearly distinguished from those entered at the branch because
+they would have included a counter position greater than 32 when no branches would have had
+such a high number of counters (First Witness Statement of Mr Godeseth, paragraph 58.10). It
+accords with my experience that support staff should have a facility like this, so that branch
+accounts could be corrected in exceptional circumstances — without resorting to DBAs
+
+Godeseth 35:
+
+All counter data was held in a bespoke message store (which was part of the Riposte product
+supplied by Escher Inc.). This data was replicated within each branch to ail counter positions
+and from each branch to the data centres where it was held in the correspondence server
+message stores. Similarly, any data inserted into the message store at the data centre (for
+example reference data or authorisations for banking transactions) would be replicated back to
+the branch counters. Selected data was then extracted from the correspondence servers to
+update Post Office's back end systems.
+
+Godeseth 58.10
+
+In Legacy Horizon, any transactions injected by SSC would have used the computer server
+address as the counter position which would be a number greater than 32, so it would be clear
+that a transaction had been injected In this way.
+
+Go to page history
+
+Stop watching page *
+Manage notifications

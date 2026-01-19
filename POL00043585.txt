@@ -1,0 +1,737 @@
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+Date incident first raised: 27 November 2018
+
+Incident raised by: Fujitsu
+
+Date incident closed:
+
+Incident closure authorised by:
+
+Incident detail
+reported/overview
+
+Incident INC1742274/PC0275532 was raised by ATOS (26-Nov) for branch 236855 reporting a discrepancy that has appears
+overnight. It was passed to the SSC on 27-Nov. It seems that following TP/BP rollover some transactions have recorded in
+the old TP/BP and so will not appear on the branch accounts, although they will be successfully sent to back end systems
+
+Horizon Issue Management Job Title Group Role
+
+Core Group
+
+Mick Mitchell IT Security and Service Director Manage relationship and service obligations with
+POL IT/ Systems suppliers
+
+Julie Thomas Network Operations Director Chair. Operational impact on branches,
+
+customers and clients. EUM Programme Director
+
+Rodric Williams
+
+Head of Legal - Dispute Resolution & Brand
+
+Legal & contractual implication considerations
+for postmasters/agents, clients and customers
+
+Other Group Attendees
+
+Job Title
+
+Group Role
+
+Steve Bansal
+
+Senior Service Delivery Manager
+
+Fujitsu. Root cause analysis, system monitoring
+and technical resolution.
+
+Pete Newsome
+
+Post office Account Manager
+
+Fujitsu — Post Office account manager
+
+Angela Van Den Bogerd
+
+Business Improvement Director
+
+Legal & contractual implication considerations
+for postmasters/agents, clients and customers
+
+Shaun Turner
+
+Enhanced User Management Product Owner
+
+Smart ID solution expert and change
+implementation.
+
+Martin Godbold
+
+Head of IT Service (Retail)
+
+Manage relationship and service obligations with
+POL IT/ Systems suppliers
+
+Esther Harvey
+
+Enhanced User Management Programme
+Manager
+
+Implementation of the improved solution for
+Enhanced User Management
+
+Page 1 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+Background
+
+Enhanced User Management (known as Smart ID in branch network) has been introduced to ensure all
+Horizon users are both vetted and have the necessary training to transact regulated products.
+
+Part of the EUM technical delivery was a Concurrent Login functionality, which was to permit additional
+branch operations flexibility in a compliant manner, which was delivered into the Post Office branch network
+as part of the 17.73 release into pilot in July and rolled out the rest of the network in August 2018. This
+functionality is only live in Smart ID enabled branches c. 10600 branches.
+
+In summary the Concurrent Login functionality:
+
+e Allowed a user to be logged in at multiple Horizon terminals providing only one of those terminals was in
+an ‘active state’, the rest having to be in a locked state
+
+« In cases where a user proceeds with a login any other terminals that they are logged in at that time are
+in an ‘active state’ (unlocked) will have their sessions terminated
+
+* Screen messaging to advise a user upon logging into Horizon that they have unlocked sessions on other
+terminals and giving them the option to abort the login and go lock/logout of the other terminals
+
+e Breaking out the lock button which had previously been combined with Suspend/Resume, so that it was
+easier for branches to lock an Horizon terminal
+
+The Concurrent Login functionality controls were applied at a user’s Smart ID level. Horizon User IDs (HUID)
+which are the credentials used to login to the Horizon system all have to be set up linked to a Smart ID. For
+example, if a user’s Smart ID is ABCD, they could have Horizon User IDs of ABCD01, ABCDO2 etc. set up in
+the branch. The Concurrent Login functionality controls recognize a user at the Smart ID level, which means,
+in the example given, ABCDO1 and ABCDO2 could not have active Horizon sessions at the same time.
+
+Prior to Concurrent Login functionality it was not possible for the same HUID to be logged in at more than
+one terminal at all (regardless of lock status). In pre-Smart ID branches user’s wishing to login to more than
+one terminal would simply have more than one HUID set up to achieve that purpose.
+
+The capability for the same HUID to be logged in at on multiple counters, albeit with only one of those logins
+being active at any one time, therefore changed Horizon user session management at the counter.
+
+Page 2 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+POL00043585
+POL00043585
+
+What's the issue?
+
+Pre-Smart ID, a single Horizon user could only be logged in once at any one point in time. If the Horizon
+user attempted to login concurrently on a second counter, then a "concurrent login" message is output and
+Horizon will forcibly terminate the previous user session.
+
+The change was to allow a given EUM user to lock a counter and then log on to another counter. The user
+can later lock or log off from this counter and eventually resume the user session on the original counter.
+There can be multiple sessions in a locked state, but only one user session actually active at any point in
+
+time.
+
+This has caused incidents to occur in the live estate (e.g. PC0275532, PC0275563) if the active user session
+rolls over the current stock unit, and a locked session on another counter attached to the same stock unit is
+then resumed. This is because when the locked user session is resumed the counter is not aware of the
+rollover and continues to trade in the old trading period (TP) / balance period (BP). These transactions are
+then recorded in the old TP/BP and so will not appear on the branch accounts, although they will be
+successfully sent to back end systems, and will be visible in the counter transaction log for the old TP/BP.
+
+Further, if the branch is rolled over on the resumed counter, then a non-zero trading position will result and
+carried forward suspense figures may be incorrect.
+
+Investigation has shown that there are other scenarios that may be misleading but none of these have been
+found to lead to balancing errors.
+
+As of 22 Jan 19 this has impacted 19 branches to date over a 6 month period.
+
+Impact
+
+{include number of
+branches impacted and
+the detail of the impact)
+
+Branch: As of 22/1/19 19 branches are impacted. Impacts are:
+¢ Confusion for the user
+e Transactions accounted for against the wrong BP/TP.
+e Calls into contact centres from users/branches impacted
+e Remedial action required by POL to resolve cases
+
+Client: None
+
+Customer: None
+
+Financial/ Accounting
+Impact
+
+Branch: Balancing status of the branch will need to be corrected.
+
+Client: None
+
+Customer: None
+
+Page 3 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+POL00043585
+POL00043585
+
+BAU impact
+
+Contact centres (NBSC/HRSC): minimal impact due to low level of incidents.
+
+Live service desk: minimal impact due to low level of incidents.
+
+Finance Service centre: minimal impact due to low level of incidents. Transaction correction team are
+contacting branches to ensure accounts balance.
+
+Investigation by
+Fujitsu
+
+Root cause analysis
+[to be completed in
+detail before agreeing
+long term resolution]
+
+As per Fujitsu:
+Glossary
+
+SU - Stock Unit. Effectively holds some cash and stock for transacting in the branch. Each Stock Unit is
+balanced separately. Stock units can be for an individual user or shared among multiple users.
+
+TP - Trading Period. Each Branch has 12 Trading Periods per year one each 4 or 5 weeks. Each branch
+must balance all their stock and cash and send the report to the Post Office.
+
+BP - Balance Period. These are balances inside of a TP. A branch usually does 1 of these per week, so 4 or
+5 per month. However they can do up to 99 if they wish. Some offices choose to just have the 1 BP. These
+reports are not sent to the Post Office.
+
+BRSS - Branch Support Database. This is a single node Oracle database. The Support database stores the
+same transactions as the live Branch database but holds them for longer, this allowed us to investigate
+branches that had BP/TP rollovers from 01-Aug.
+
+Incident INC1742274/PC0275532 was raised by ATOS (26-Nov) for branch 236855 reporting a discrepancy
+that appears overnight. It was passed to the SSC on 27-Nov.
+
+From the incident it was identified that:
+
+The spreadsheet showing the cash declarations lists a £3712.41 cash declaration at 17:13 on 14/11/2018
+with a £0.40 discrepancy. However, a cash declaration made for the same amount the next day at 14:33
+results in a -£166.46 discrepancy. This is despite there having been no cash effecting transactions entered
+on the system between these two declarations.
+
+Page 4 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+Having investigated further it would appear that a user has been able to transact transactions within stock
+unit CC in TP8 BP2 despite that stock unit having already been rolled into TP8 BP3. As a result, although the
+transactions have been recorded in the session data table on the branch database they are not being picked
+up by the rollover process as the balance period in which they have been transacted has already been dealt
+with. As a result discrepancies are being reported in cash and stock.
+
+Following this we sent the call for investigation to development and cloned it (PC0275565) to begin an
+investigation of the size of the issue across the estate.
+
+Using the BRSS we were able to look at each stock unit rollover and then check for transactions in the
+previous BP or TP following this. We identified 10 branches that showed the same symptoms:
+
+MAC (Horizon incident management team) confirmed that they had been no incident tickets raised for these
+other branches.
+
+Looking at each of the identified branches we could see the pattern of the user performing a temporary lock
+on one counter, perform the rollover, then switch back and continue transacting in the wrong BP as
+described above.
+
+We extracted all the transactions for the wrong BP on branch 236855 and totalled the cash movement and it
+matched their discrepancy.
+
+We have alerted the branch that raised the original ticket to the cause of their discrepancy but have not yet
+gone into the detail for the cause.
+
+No clients or customers will be affected as the transactions have gone through the system correctly,
+however these transactions are just not visible to the branch for balancing.
+
+To correct these branches we will need to supply the Post Office with a list of transactions affected such that
+they can correct the branch using standard business processes.
+
+Most branches have already balanced again and therefore there is no point looking to make any correction to
+the data.
+
+Further investigation has highlighted a number of scenarios where there is the potential for issues in a
+concurrent logon scenario:
+
+Page 5 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+An Unlocked Counter Is Not Aware Of Stock Unit Rollover
+
+Scenario:
+a. An EUM user locks counter A.
+b. The same HUID logs into counter B.
+c. Counter B rolls over the stock unit.
+d. Counter B is locked or logged off.
+e. The same user unlocks counter A.
+
+Now counter A is not aware that the stock unit has rolled over, and will now trade in the old TP/BP, until it
+logs out.
+
+A variant of this scenario is that counter A times out due to inactivity, rather than being unlocked, after
+counter B has rolled over. Since timeout auto settles any items in the basket to cash, in this scenario any
+items in the basket would be settled in the old TP/BP.
+
+Another variant of this scenario is that counter A may attempt to rollover the stock unit after counter B has
+already rolled it over. This eventually leads to MSG31314 "The stock unit <su> TP or BP is inconsistent.
+Balancing cannot continue” and rollover is aborted, however misleading trial and final reports may have been
+produced prior to this message.
+
+Another variant of this scenario is that counter A may attempt to rollover the branch after counter B has
+rolled over the stock unit into the next TP. This causes a non-zero trading position to be reported and the
+trading statement produced is incorrect (notably the Carried Forward cash position is identical to the Brought
+Forward cash position). The only financial figures written by the branch rollover process are the branch
+suspense opening balances for the trading period rolled into, which may be incorrect if a non-zero net value
+is present in suspense.
+
+A Second Counter Removes The SU Balancing Lock
+
+Scenario:
+a. An EUM user logs in to counter A.
+b. The user presses the button to balance the stock unit.
+c. The stock unit is locked for balancing.
+d. The balancing process is started.
+
+Page 6 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+e. The user locks the counter.
+
+f. The same EUM HUID user logs in to counter B.
+
+g. This unlocks the stock unit for balancing since the user is the same as the locking user.
+h. Any user may trade in the stock unit since it is not locked for balancing.
+
+i. The current user rolls over the stock unit.
+
+j. The user locks or logs out from Counter B.
+
+k. The user unlocks counter A.
+
+Il. The user resumes stock unit balancing.
+
+Investigation shows that this causes a system error message and fails the stock unit rollover because the
+system detects the stock unit is no longer locked.
+Note however that the system error is not output until the end of the rollover process, and so:
+i) A balance report is printed prior to the rollover failure.
+ii) The financial position reported by the rollover process, including declarations, discrepancies
+and making good local suspense may not be based on the latest position in the stock unit.
+
+Note that if a user with a different HUID (even if linked to the same POID) attempts to login while the first
+session in the above scenario is locked, they are correctly unable to login since the rollover lock present.
+
+Another variant of this scenarios is if counter B was initially logged in with the same HUID, but locked. Then
+at step f above the user unlocks counter B rather than logged in to counter B.
+
+Branch Balancing
+
+A Second Counter Removes the Branch Balancing Lock
+
+Consider the scenario:
+
+An EUM user logs in to counter A.
+
+The user presses the Trading Statement button to balance the branch.
+The branch is locked.
+
+The branch balancing process is started.
+
+The user locks the counter.
+
+The same HUID user logs in to counter B.
+
+>paooe
+
+Page 7 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+This unlocks the branch since the user is the same as the locking user.
+The user rolls over the branch into a new trading period.
+
+The user locks or logs out from Counter B.
+
+The user unlocks counter A.
+
+The user resumes branch balancing.
+
+roose
+
+Investigation shows that this fails because the system detects the branch is not locked.
+Note that the failure does not occur until the end of the branch rollover process, and:
+
+i) The counter does not report failure to the clerk, but rather reports successful rollover into the
+next trading period, even though the rollover actually failed. This has been raised as defect
+PC0275644.
+
+ii) An invalid branch trading statement is printed prior to the rollover failure.
+
+Note that if a user with a different HUID (even if linked to the same POID) logs in while the first session in
+the above scenario is locked, they are correctly unable to rollover the branch since the branch rollover lock is
+present.
+
+Another variant of this scenarios is if counter B was initially logged in with the same HUID, but locked. Then
+at step f above the user unlocks counter B rather than logged in to counter B.
+
+Stock Unit Attachment
+
+If the clerk has changed the stock unit that their HUID is attached to on counter B, and then unlocks counter
+A, counter A is still thinks that the user is attached to the old stock unit, and continues to trade in the old
+stock unit.
+
+The existing code prevents a user's stock unit attachment being changed if that user is currently logged on,
+but does not prevent it being changed if the user in question is the user making the change.
+
+Unlock can cause problems if the TP, BP or stock unit were changed while the counter was locked by the
+same HUID logged in at another node.
+
+Even though these issues will be solved, an independent check should be made that the values in use by the
+counter match those known to the data centre.
+
+Page 8 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+POL00043585
+POL00043585
+
+Inactivity Auto Settlement
+
+The same issued described above also applies when the counter times out the lock screen due to inactivity
+and auto-settles the basket to cash.
+
+Immediate fix/short
+term resolution
+options
+
+Recommended Option:
+
+Monitoring and altering implemented to identify branches where this issue has occurred.
+
+Branch contact initiated where the monitoring identifies a user has rolled over a stock unit, whilst
+logged on at a second terminal.
+
+Communication to the entire Smart ID network, to tell them not to balance stock units whist logged
+onto other terminals using the same Horizon ID.
+
+Due to minimal number of branches impacted, and swift alerting it was felt this could be managed
+operationally, whilst a cohesive solution was implemented.
+
+Minimal impact on the majority of network.
+
+This does not stop branches from being logged on to a second terminal (with the same ID
+
+Alternative Options:
+
+.
+.
+
+Pros:
+
+Cons:
+
+Disable the concurrent logon capability
+Disable the ability for the same Horizon ID to be logged onto more than one counter at once.
+
+Speed of implementation. These changes could be implemented rapidly, as they are data centre
+changes rather than requiring a counter release.
+Disabling the concurrent logon capability would prevent branches making this error.
+
+The lock button capability was introduced to provide branches more flexibility in being able to
+manage their branch. Significant impact on operations if the lock button was withdrawn in most
+branches (apart from 1 terminal branches).
+
+Complex communication message for both solutions to explain why it was being implemented.
+Potential to drive significant number of queries into branches.
+
+Long term resolution
+options
+
+Recommended Option(s):
+To implement the following changes:
+
+Prevent stock unit balancing being started if the same EUM HUID is logged on at another node, even
+if that other session is locked.
+
+Page 9 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+Add a new check to see if the stock unit is locked by the HUID that is logging in, and that HUID is
+linked to a POID, and there is an ACTIVE or RECOVERING session present for that HUID on another
+node. In this case do not unlock the stock unit, but display new message MSGNEWO1 warning that
+the stock unit is locked for balancing, and to continue then all other sessions for this HUID will be
+terminated (there should normally only be the one session for the same HUID on another node that
+started the balance).
+
+Add a new check for the case where a user attempts to login, and the branch is locked for balancing
+by that HUID linked to a POID, and there is an ACTIVE session present for that HUID on another
+node. In this case display a new message warning MSGNEWO02 (see section 5.1.3) that the branch is
+locked for balancing, and to continue and unlock the branch then all other sessions for this user
+(HUID) will be terminated.
+
+Add a new check when Branch Balancing is started to check if the branch is locked for balancing by
+that HUID linked to a POID, and there is an ACTIVE session present for that HUID on another node.
+In this case an error message should be displayed and the user returned to the menu.
+
+Add a new check when Branch Balancing is started to check if the branch is locked for balancing by
+that HUID linked to a POID, and there is an ACTIVE session present for that HUID on another node.
+In this case an error message should be displayed and the user returned to the menu.
+
+Present a warning message when attempting to change the stock unit that a user is attached to, if
+that user is a POID user, and the attachment being changed is for the current user's HUID, and other
+ACTIVE or RECOVERING sessions for that user are found. If the user opts to continue then terminate
+the other sessions.
+
+Add a new check for when a counter is unlocked, to ensure that the current TP and BP and stock unit
+are those that the counter has cached in memory. If they are different then a system error should be
+generated and the counter force logged out without further interaction with the data centre. Any
+items in the basket will be handled by recovered as usual.
+
+The TP, BP, and SU checks described also needs to be applied if the system times out at the lock
+screen and attempts to auto-settle because one or more items are in the basket.
+
+This will fix the issue, and will ensure branches are unable to perform certain back office functions
+whilst logged onto a second terminal.
+
+This will ensure that appropriate system checks are in place when counters are unlocks.
+
+These solutions will continue to work where a branches has crashed.
+
+Length of time to implement, as this requires Fujitsu development, testing and a counter release with
+Computacentre.
+
+Page 10 of 15
+POL00043585
+
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+Cost to implement.
+
+.
+
+Pros:
+
+Cons:
+
+Alternative Options:
+
+Disable the lock button if the counter is in the back office menu. This would stop issues related to
+removing stock unit or branch balancing locks.
+
+Disable the back office menu if a counter finds at login that the user has a locked session on another
+counter. This would stop issues related to changing the state of a user or stock unit when the locked
+counter is later unlocked
+
+Ensure that the new BP/TP is recognised when the user unlocks Counter B, thereby accruing any
+transaction done in that session flow into the correct accounting period.
+
+To disallow a user's attached stock unit from being changed if that same HUID has an ACTIVE or
+RECOVERING session on another node (which would be locked). The problem with this is that if the
+
+locked counter failed then the user would not be able to unlock the counter to close down the session.
+
+When attempting to change the attachment, to give a warning message, but allow the user to
+continue. When unlocking a counter, or on inactivity time-out, if the attached stock unit does not
+match that currently known to the counter, then give an error and force logout the user.
+
+Speed of implementation. These changes could be implemented rapidly, as they are data centre
+changes rather than requiring a counter release.
+Disabling the concurrent logon capability would prevent branches making this error.
+
+The lock button capability was introduced to provide branches more flexibility in being able to
+manage their branch. Significant impact on operations if the lock button was withdrawn in most
+branches (apart from 1 terminal branches).
+
+Complex communication message for both solutions to explain why it was being implemented.
+Potential to drive significant number of queries into branches.
+
+Issues where terminals crash and need to be recovered. Or where the terminal has forced logged out
+due to period of inactivity
+
+Page 11 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+POL00043585
+POL00043585
+
+Date
+
+Communication with affected branches
+
+From 6" Dec 2018
+
+correct the state of the branch account
+
+Ongoing communication direct to individual branches by Transaction Correction team, where this occurs, to
+
+clarification workshop.
+
+Date Wider Communication
+w/c 14 Jan Updated quick reference guide issues to branches with reminder included. Covering email to include pointer
+to the new tip regarding stock unit rollover. Message to be emailed to all branches on Smart ID.
+
+Date Status Update Completed by
+
+4/12/18 Initial escalation meeting. Clarification of issue by Fujitsu and impact on branches. Esther Harvey
+
+5/12/18 Initial technical discussion to understand the issue from a systems perspective. Esther Harvey
+
+6/12/18 Progress call, to discuss further the impact and potential initial solutions Esther Harvey
+
+10/12/18 Progress call, detailed discussion on options. Decision to have detailed technical workshop to I Esther Harvey
+progress defining potential solutions
+
+12/12/18 Technical workshop. Walkthrough of issue in detail from technical perspective to understand I Esther Harvey
+why it is occurring. Investigation into what other scenarios could occur. Discussion of options
+for resolution
+
+13/12/18 Progress call, to talk through the output of the technical workshop and further occurrences. _I Esther Harvey
+
+14/12/18 Business requirements review workshop, to review first draft of solutions and what Post Esther Harvey
+Office requirements are.
+
+17/12/18 Requirements play back meeting to Fujitsu. Esther Harve
+
+18/12/18 Progress call, to review if there were any further instances and update on technical solutions I Esther Harvey
+
+20/12/18 Progress call, to review if there were any further instances and update on technical solutions I Esther Harvey
+- finalisation of business requirements discussed and desired solution discussed.
+
+21/12/18 Formal change request raised to Fujitsu with business requirements. Esther Harvey
+
+2/1/19 Progress call, to review instances since before Christmas, it was quiet over Christmas. Esther Harvey
+Update on technical solution design by Fujitsu.
+
+9/1/19 Business requirements clarification workshop with Fujitsu, to resolve a couple of queries. Esther Harvey
+
+10/01/19 e Formal change request updated with Fujitsu, detailing Post Office’s requirements post Esther Harvey
+
+Page 12 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+POL00043585
+POL00043585
+
+e Further change requests raised with ATOS and Computacenter to support the Fujitsu
+release.
+
+« EUM Balancing Enhancements Customer Solution Proposal received from Fujitsu for Post
+Office review.
+
+Balancing Enhancements Customer Solution Proposal.
+
+16/01/19 Further instance identified with FAD: 453340. Esther Harvey
+
+17/01/19 Post Office formally respond to Fujitsu’s EUM Balancing Enhancements Customer Solution Esther Harvey
+Proposal, as part of their impact assessment.
+
+22/01/19 Post Office provide uplifted business requirements to Fujitsu, based on review of the EUM Esther Harvey
+
+Page 13 of 15
+Appendix A — branches impacted
+
+POL00043585
+POL00043585
+
+Horizon Issue Management — Incident Report & Status Update
+
+No# Fads Dates Branch name Branchtype Notes
+152542 22/08/2018, 2 counters 22/08/2018, 29/08/2018 78 321 13 BP roll
+
+1 29/08/2018 IAlderholt LM
+
+2 236855, 14/11/2018. irkintilloch JAIN PCO275532, original call. BP roll
+
+3 168005 22/08/2018. lormley LM 1130 transactions 334 net cash 48 Fad Hash BP roll
+
+4 422205 13/11/2018. Coventry JAIN 7 transactions 0 net cash 67 Fad Hash BP roll
+
+5 189349 31/10/2018. Thirsk JAIN 21 transactions 8 net cash 77 Fad Hash BP roll
+
+6 204647 21/11/2018. Ludlow IAIN 4 transactions 0 net cash 91 Fad Hash PM reversed txns. BP roll
+
+7 424801 19/09/2018. acduff LM 40 transactions 166 net cash 97 Fad Hash BP roll
+
+8 435555 31/10/2018. Penzance IAIN 424 transactions 34 net cash 99 Fad Hash BP roll
+
+9 311130 10/10/2018 [Debenham LPM 11 transactions 273 net cash 90 Fad Hash TP Roll
+
+» 410226 12/09/2018 Lorby ain ee te, net cash 114 Fad Hash. Just AntiBribery Corrup2018
+
+11 178113 05/12/2018 Sutton LM
+
+12 374306 27/12/2018 Queensbury LM jode 2 10 transactions
+
+13 002113 11/12/2018 Haverhill Crown jode 8, user 6VDW01, Stock Unit DD
+Branch left 3 transactions on stack, temp lock, timed out just after BP was
+‘olled on another counter.
+
+14 473458 12/12/2018 cknield Way LM
+
+Page 14 of 15
+Horizon Issue Management — Incident Report & Status Update
+
+Office has already logged out / in again, so "capped".
+
+B transactions, zero net value.
+
+POL00043585
+POL00043585
+
+lode 2 12 transactions EUM LOCK at Branch 391230 SU:FF TP:9 BP:3
+ser:RNSPO1 Node:2 has 3 transactions after rollover 18-DEC-18
+
+15 391230 18/12/2018 Huntingdon IAIN 08.23.37.5701
+jode:4 currently has 9 transactions after rollover 09-JAN-19 09.52
+16 371432 09/01/2019 acclesfield IAIN 9 Jan 2019
+17 190406 09/01/2019 Great Lever MAIN INode:2 currently has 3 transactions after rollover 09-JAN-19 15.27
+INode:2 has 6 transactions after rollover 10-JAN-19 09.33.54.2294
+Kensington Church
+18 133006 10/01/2019 Street IFPO
+19 453340 16/01/2019 Hasland Main Node 2 user KIRN stock unit SP1
+
+Page 15 of 15

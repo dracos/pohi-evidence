@@ -1,0 +1,473 @@
+FUJ00171920
+FUJ00171920
+
+Peak Incident Management System
+
+Call Reference PC0276050 Call Logger Jon Hulme -- Bus_Apps_Des
+Release Targeted At -- HNG-X 19.20 Top Ref OSR_APP_V2_1920 D051
+Call Type Internal Development Incidents/Defects Priority C -- Progress Restricted
+Contact Jon Hulme Call Status Closed -- S/W Fix Available to Call Logger
+Target Date 12/01/2019 Effort (Man Days) 0
+Summary Concurrent login checks are bypassed if a counter is in Recovery
+All References Type _ Value
+
+DeviIntRel-Director Live Supp.Test
+
+Release PEAK PC0277452
+
+Product Baseline OSR_APP_V2_1920_V0S51
+
+Jira CBB-3284
+
+Product Baseline OSR_APP_V2_1920 D051
+Collections Name User Date
+
+BIFApproved Raj Bains 30-Jan-2019 10:14:42
+sia User Date
+
+Jon Hulme 07-Jan-2019 17:30:42
+
+In recovery scenarios, a user can bypass concurrent login checks, potentially leading to unexpected removal
+of balancing locks and other side effects.
+
+Progress Narrative
+
+oate:07-dan-2019 17:25:04 User:Jon Hulme
+
+CALL PC0276050 opened
+
+Details entered are:-
+
+lsummary:Concurrent login checks are bypassed if a counter is in Recovery
+call Type:
+
+call Priority:c¢
+
+Target Release:HING-X 68.20
+
+lkouted to:Bus Apps _Des - Jon Hulme
+
+pate:07-Jan-2019 17:25:04 User:Jon Hulme
+{Start of Response]
+consider the following scenario:
+
+h) User logs in to Counter A which displays MSG04024 "Recovery" "A failure occurred during the previous session. Starting
+jrecovery process".
+
+2) User moves to Counter B and logs in as the same Horizon User Id.
+
+3) ‘The BAL database query that checks to see if the user is already logged in (SessionAlreadyExists) only looks for ACTIVE
+sessions, and so does not think the user is logged in.
+
+4) The user is therefore able to login to counter B.
+I5) The user returns te counter A and completes the recovery process.
+
+jow there are two counters logged in with the same Horizon user id at the same time, which is could cause problems with balancing
+etc.
+
+[the EUM query (PoidSessionAlreadyExists v2) works similarly, allowing the same HUID, or two different HUIDs linked to the same
+Porp, to login concurrently even though both are unlocked.
+
+the fix is to change these queries to also return sessions in state RECOVERING.
+
+[fhe following queries with return when a user is logged in for information purposes should also include the RECOVERING state, not
+just ACTIVE state
+
++ GetBranchUsersWithRoleDetails
+I getSessionStatus
+
+Itt is possibly that the NEW session state should also be considered as the user being logged in, but this is a very short lived
+transitory state and so is unlikely to have much impact.
+
+[End of Response]
+
+Response code to call Internal Development Incidents/Defects(I) as Potential Problem Identified (38)
+
+bate:07-dan-2019 17:29:18 User:gon Hulme
+[correced typos.
+
+FUJ00171920
+FUJ00171920
+
+consider the following scenario:
+
+iH) User logs in to Counter A which displays MSG04024 "Recovery" "A failure occurred during the previous session. Starting
+recovery process". This puts the session into RECOVERING state.
+
+2) User moves to Counter B and logs in as the same Horizon User Id.
+
+3) the BAL database query that checks to see if the user is already logged in (SessionAlreadyExists) only looks for ACTIVE
+sessions, and so does not think the user is logged in.
+
+4) The user is therefore able to login to counter B.
+
+5) The user returns to counter A and completes the recovery proc
+
+iow there are two counters logged in with the same Horizon user id at the same time, which could cause problems with balancing
+llocks etc.
+
+[fhe EUM query (PoidSessionAlreadyExists_v2) works similarly, allowing the same HUID, or two different HUIDs linked to the same
+POD, to login concurrently even though both are unlocked.
+
+the fix is to change these queries to also return sessions in state RECOVERING.
+
+fhe following queries return the status of whether a user is logged in for information purposes, and should also include the
+RECOVERING state, not just ACTIVE state:
+
+I- GetBranchUsersWithRoleDetails
+
+I getSessionStatus
+
+Itt is possible that the NEW session st
+transitory state and so is unlikely to have mu
+
+te should also be considered as the user being logged in, but this is a very short lived
+
+Jbate:07-dan-2019 17:30:42 User:Jon Hulme
+new Business Impact has been added:
+
+in recovery scenarios, a user can bypass concurrent login checks, potentially leading to unexpected removal of balancing locks
+
+land other side effects.
+
+jDate:07-Jan-2019 17:31:04 User:Jon Hulme
+the Call record has been transferred to the team: xCtr GDC
+
+Joate:08-dan-2019 06:50:03 Uscr:Ramesh Kalavakolla
+the Call record has been assigned to the Team Member: Chethan Gurumurthy
+
+bate: 28-Jan-2019 09:58:40 User:Chethan Gurumurthy
+[the fix includes 4 SQL changes fo include the Séssions in RECOVERING state.
+Tt requires 2.5 mandays for Dev and testing.
+
+[DEVELOPMENT IMPACT OF FIX:
+
+SPECIFY THE HNG-X PLATFORMS IMPACTEI
+fave you used the “HNG-X Platforms" Product Group available under the PRODUCTS button in PEAK to specify all HNGX platforms
+impacted by this fix?
+
+ves
+
+lare all the platforms in the same deployment group?
+ves
+
+[TECHNICAL SUMMARY:
+summarise the impact by technical areas affected
+a SQL changes
+
+DEPENDENCIES:
+re there any other PEAKs or CPs with interdependencies on the proposed fix?
+
+are there any clone peaks to take the delivery to a different deployment group? If yes is there any order in which they must be
+Jaeployed?
+io
+
+lany other dependencies such as Infrastructure changes or technical/configuration changes that will not included in the
+Development fix?
+
+DEPLOYMENT DETATL:
+joes the fix include procedures that are known not to be packagable by Integration in an automatically deployable baseline
+(DPVB)? If so, please comment on the nature and technical complexity of such procedures
+
+io
+
+joes the fix require a reboot?
+ves
+
+DEV EFFORT IN MANDAYS
+Itt the Man Days figures will be different to the elapsed duration, please state so here. Also, if there are any constraints on
+jork beginning, please state here.
+
+2.5 Man days for Dev and testing
+
+FUJ00171920
+FUJ00171920
+
+IMPACT ON USER:
+Benefit of making the fix.
+voids two users logging in at the same time.
+
+hat does the user have to do to get this problem?
+lUser1 logs in to counter A (which should go ion to recovery mode) .
+same user tries to log in to Counter A and it allows to login.
+
+How does it affect them when it occurs?
+Itt allows two counters logged in with the same Horizon user id at the same time, which could cause problems with balancing locks
+letc.
+
+IMPACT ON OPERATIONS:
+ill the absense of a fix for this issue impact the ability of the operations team to support the HNGX system?
+No
+
+HMPACT ON TEST:
+hat independent test coverage/scenarios does development recommend?
+
+iH. Logging in to two different Counters using the same UserID while the Counter A is in recovery mode.
+
+2. Balancing Stock units in Counter B while the same user is logged in to Counter A and it is in recovery mode.
+
+hat CIT test coverage does development recommend?
+same as mentioned above.
+
+IkISKS (of releasing and of not releasing proposed fix):
+hat live problems will there be if we do not issue this fix?
+two counters logged in with the same Horizon user id at the same time, which could cause problems with balancing locks etc.
+
+what are the risks of this fix having unexpected interactions with other areas?
+None
+
+LIST OF LIKELY DELIVERABLES:
+4 SQL Changes
+
+lsessionAlreadyExists
+lPoidSessionAlreadyBxists v2
+set BranchUserswWithRoleDetails
+JsetSessionStatus
+
+JDatc:28-Jan-2019 1
+[Start of Response]
+
+0:23 User:Chethan Gurumurth;
+
+[End of Response]
+Response code to call type I as Category 41 -- Pending -- Product Error Diagnosed
+
+jbate:28-Jan-2019 12:26:36 Uscr:Macie} Frontezak
+ction placed on Team:BIF
+
+Joate: 30-Jan-2019 10:15:03 User:Raj Bains
+SIF approved on 30/01/2019, to be presented to the customer.
+
+Date:30-Jan-2019 10:15:09 Uscr:Raj Bains
+JAction has been removed from the call
+
+JDate:31-dan-2019 09:47:46 Uscr:Maciej Frontezak
+problem Statement ( Underlying cause of problem): Following the EUM investigation, in recovery scenarios, a user can bypass
+concurrent login checks resulting in two counters logged in with the same Horizon user id at the same time, potentially leading
+lto unexpected removal of balancing locks and other side effects.
+
+such scenario is unlikely but it's a loophole in an important check.
+
+lat the moment BAL database query that checks to see if the user is already logged in (SessionAlreadyExists) only looks for ACTIVE
+sessions, and doesn't check ones in RECOVERY state so does not think the user is logged in. The fix is to change these queries to
+laiso return sessions in state RECOVERING.
+
+Risk of not fixing: It allows two counters logged in with the same Horizon user id at the same time, which could
+With balancing locks etc.
+
+se problems
+
+Benefit of fixing: Avoids two users with the same id logging in to two counters at the same time.
+
+SM Utilisation Capacity: 2.5
+
+lOate:31-dan-2019 12:14:26 User:Maciej Frontczak
+lAction placed on Team:PTF
+
+lbate:04-Feb-2019 1
+[Start of Response]
+
+19:02 User:Ramesh Kalavakolla
+
+FUJ00171920
+FUJ00171920
+
+Tend of Response]
+Response code to call type I as Category 75 -- Pending -- Fix awaiting Target Release
+
+Date:07-Feb-2019 10:54:09 User:Jubita Gurung
+[fo be discussed in next RP meeting on 12/02/2019 as per 07/02/2019 PTF meeting.
+
+jate:12-Feb-2019 10:49:50 User:Jubita Gurung
+fhe call Target Release has been moved to Targeted At -- HNG-X 19.20
+
+jdate:12-Feb-2019 10:50:25 User:dubita Gurung
+targeted to R19.20 as per RP meeting on 12/02/2019
+
+[Date:12-Feb-2019 10:50:27 User:Jdubita Gurung
+ction has been removed from the call
+
+jbate:14-Feb-2019 11:43:10 Uscr:Gimey johnbasco
+Reference Added: Jira CBB-3284
+
+jdate:14-Feb-2019 11:44:17 User:Gimey johnbasco
+the call Target Release has been moved to Proposed For -- Re-target
+
+JDate:14-Feb-2019 11:45:09 User:Gimey johnbasco
+Proposed for re-target, this peak should be targeted along with CP2318 EUM changes.
+
+jDate:14-Feb-2019 11:46:21 Uscr:Gimey johnbasco
+typo CP2368 - EUM Balancing enhancements
+
+jDate:14-Feb-2019 11:46:39 User:Gimey johnbasco
+laction placed on Team:PTF
+
+[Date:21-Feb-2019 10:33:59 Uscr:dubita Gurung
+[the call Target Release has been moved to Targeted At -- HNG-X 19.20
+
+0até:21-Feb-2019 10:34:09 User:Jubita Gurung
+Targeted to R19.20 as per 21/02/2019 PTF meeting
+
+Date: 21-Feb-2019 10:34:12 User:Jubita Gurung
+ction has been removed from the call
+
+JDate:25-Feb-2019 1
+[Start of Response]
+
+5:45 User:Ramesh Kalavakolla
+
+[End of Response]
+Response code to call type I as Category 76 -- Pending -~ Fix Targeted awaiting Release
+
+lDate:08-Mar-2019 0°
+[Start of Response]
+
+SoL changes committed to poa-bal-cp2368 branch.
+
+[End of Response]
+
+lkesponse code to call type I as Category 46 —~ Pending -- Product
+
+6:07 Us
+
+syiChethan Gurumurthy
+
+[Date:08-Mar-2019 07:26:35 Uscr:CGhethan Gurumurthy
+{the Call record has been transferred to the team: xCtr REL GDC
+[fhe Call record has been assigned to the Team Member: Krishna Prabhu
+
+jbate:26-Mar-2019 14:20:01 Uscr:Dimensions Automated User
+Reference Added: Product Baseline OSR_APP_V2_1920 VO51
+
+Date: 26-Mar-2019 15:12:16 User:Krishna Prabhu
+
+h. Logged in to counter A, made a banking transaction and crashed the counter without settling it.
+2. Verified the the BRDB table "BRDB BRANCH USER SESSIONS" the user is in ACTIVE state
+
+3. Again logged in to counter A and got Recovery MSG04024 “A failure oc
+process
+
+urred during the previous session". Started the recovery
+
+FUJ00171920
+FUJ00171920
+
+fi. Verified the the BROS table “BRDB BRANCH USER SESSIONS” the user 1S in RECOVERING state
+5. Moved to Counter B and logged in with the same Horizon User Id successfully.
+ls. Returned to counter A, after completing the recovery process counter A gets logged out forcefully
+
+Now there is only one counter (Counter B) running on the Horizon user id.
+
+JDate:26-Mar-2019 15:13:07 User:Krishna Prabhu
+Defect cause updated to 14: Development — Code
+
+Date: 26-Mar-2019 15:13:16 User:Krishna Prabhu
+[the Call record has been transferred to the team: Dev-Int-Rel
+
+JDate:27-Mar-2019 08:49:36 Uscr:Geoff Inglis
+[fhe Call record has been assigned to the Team Member: PIT Automated User
+
+jbate:27-Mar-2019 10:00:01 User:Dimensions Automated User
+Reference Added: Product Baseline OSR_APP_V2_1920 D051
+
+bate:27-Mar-2019 11:43:05 User:Raj Bains
+
+Reference Added: Release PEAK PCO277452
+
+jDate:27-Mar-2019 12:00:57 Uscr:PIT Automated User
+[Start of Response]
+Peak 0276050 handled by integration auto handler
+
+the following baselines attached to this peak have the targeting flags se!
+OSR_APP_V2_1920_D051 FOR (LIVE:YES TEST:YES RDT:YES) Integrator: Prashant Purohit
+
+[these baselines have completed integration testing, moving to holding stack awaiting peak ejection.
+[End of Response]
+
+lkesponse code to call type I as Category 47 (Fix Processed by PIT)
+
+[fhe incident has been transferred to the Team: Int-Rel
+
+fhe incident has been assigned to the ‘team Member: Matt Swain
+
+JDate:27-Mar-2019 14:04:29 Uscr:Matt Swain
+Reference Added: DevIntRel-Director Live Supp.Test
+
+[Date:27-Mar-2019 14:05:15 User:Matt Swain
+[the Call record has been transferred to the team: Dev-Int-Rel
+the Call record has been assigned to the Team Member: Matt Swain
+
+oate:27-Max-2019 15:00:51 User:PIT Automated User
+[Start of Response]
+Peak 0276050 handled by integration auto handler
+
+[the following baselines attached to this peak have the targeting flags set
+SR_APP_V2_1920 D051 FOR (LIVE:YES TEST:YES RDT:YES) Integrator: Prashant Purohit
+
+[these baselines have completed integration testing, moving to holding stack awaiting peak ejection.
+{End of Response]
+
+lkesponse code to call type I as Category 47 (Fix Processed by PIT)
+
+the incident has been transferred to the Team: Int-Rel
+
+the incident has been assigned to the Team Member: Matt Swain
+
+jbate:27-Mar-2019 15:02:22 Uscr:PIT Automated User
+[Start of Response]
+## AUTOMATED UPDATE - INTEGRATION PEAK BOT ##
+
+lrix processed by integration, routing to dev-int-rel director...
+
+PLEASE NOTE: If this fix has failed, to send this peak back to integration it MUST have the response code Fix Failed or Response
+ejected on it, otherwise the peak will bounce.
+
+[End of Response]
+
+Response code to call type I as Category 49 (Fix Available for IndependentTest)
+
+fhe incident has been transferred to the Team: Live Supp.Test
+
+bate: 03-Apr-2019 15:04:36 Uscr:Mark Ascott
+[the Call record has been assigned to the Team Member: Timothy Harris
+
+JDate:25-Apr-2019 17:00:23 Uscr:Mark Ascott
+[the Call record has been transferred to the team: ITU SVaI
+
+FUJ00171920
+FUJ00171920
+
+[Date?25-Apr-2019 17:00:45 Uscr:Mark Ascott
+Routing to SV&I for testing ?..
+
+JDate:26-Apr-2019 12:22:44 User:Paul Bott
+tested and fixed
+
+aul Bott
+General - Network Change
+
+jDate:26-Apr-2019 12:24:02 U:
+cause updated to 37:
+
+jbate:26-Apr-2019 12:28:20 User:Paul Bott
+[the Call record has been transferred to the team: Bus Apps Des
+fhe Call record has been assigned to the Team Member: Jon fiulme
+
+Date: 30-Apr-2019 11:38:16 User:Jon Hulme
+[Start of Response]
+
+[End of Response]
+Response code to call type I as Category 60 -- Final -- S/W Fix Available to Call Logger
+routing to Call Logger following Final Progress update.
+
+joate:30-Apr-2019 11:38:20 User:Jon Hulme
+CALL PC0276050 closed: Category 60 Type I
+
+Root Cause : General - Network Change
+
+Logger Jon Hulme -- Bus_Apps_Des
+
+Subject Product HNG-X BAL/OSR -- Service Handler (version unspecified)
+Assignee Jon Hulme -- Bus_Apps_Des
+
+Last Progress 30-Apr-2019 11:38 -- Jon Hulme

@@ -1,0 +1,322 @@
+FUJ00171924
+FUJ00171924
+
+Peak Incident Management System
+
+Call Reference PC0275902 Call Logger Jon Hulme -- Bus Apps Des
+Release Targeted At -- HNG-X 69.20 Top Ref -HNGA_ PACKAGE CBA 6920 D165
+Call Type Internal Development Incidents/Defects _ Priority D -- Non-Urgent
+Contact Jon Hulme Call Status Closed -- Fix Released to Call Logger
+Target Date 30/12/2018 Effort (Man Days) 0
+Summary Concurrent Cheques Listing could cause duplicate cheque rem out
+All References Type Value
+
+Product Baseline HNGA_ PACKAGE CBA 6920 D165
+
+Jira CBB-3286
+Impact
+Si ees . User Date
+
+Unknown 26-Feb-2019 14:41:09
+
+Problem Statement ( Underlying cause of the problem):
+need to inform the clerk at the 2nd counter that the cheque rem out has already happened. and reversal
+needs to be done.
+
+Risk of not fixing:
+minimal risk, very unlikely to happen because the clerk should physically have the cheque at the time of
+processing, and then dispatch it, so it should not be available for concurrent processing.
+
+The benefit of fixing:
+
+risk of concurrent Cheque rem outs is no longer a problem. (BRDB_RX_REP_SESSION_DATA would
+show two product 2 transactions for the same amounts in transaction mode if concurrent rem out has
+happened.)
+
+ASM Utilization Capacity (estimated man-days required to deliver the fix):
+3 days
+
+Progress Narrative
+
+bate: 20-Dec-2018 17:13:55 User:Jon Hulme
+
+cALL Pc0275902 opened
+
+Details entered are:~
+
+lsummary:Concurrent Cheques Listing could cause duplicate cheque rem out
+call Type:T
+
+call Priority:D
+
+ffarget Release: HNG-X 68.20
+
+routed to:Bus Apps Des - Jon Hulme
+
+bate:20-Dee-2018 17:13:55 Uscr:Jon Hulme
+[Start of Responsel
+consider the following scenario:
+
+H) Counter 1 is logged in and attached to a shared stock unit
+
+2) Press Back Office, Cheques
+
+3) Print, or Preview and press Enter
+
+l4) The Print, Preview and Rem Out & Cut Off screen is redisplayed
+
+5) Switch to counter 2 which is logged in and attached to the same shared stock unit
+6) Press Back Office, Cheques
+
+7) Print, or Preview and Enter
+
+Is) The Print, Preview and Rem Out & Cut Off screen is redisplayed
+
+Is) Press Rem Out & Cut Off
+
+ho) Press Yes to confirm Rem Out and Cut Off
+
+hi) The remittance out slip is printed, followed by the daily cheques listing
+
+H2) Press Continue on the confirmation message.
+
+h3) Return to counter 1
+
+Ha) Press Rem Out & Cut Off
+
+5) Press Yes to confirm Rem Out and Cut Off
+
+Hé) The remittance out slip is printed, followed by the daily cheques listing
+
+7) MSGO0524 "Already Cut Off" is display because the report has already been cut-off.
+
+lunfortunately, the cheques have been remmed out twice at this point. The second rem out will still be visible and not cut-off on
+the cheques listing report if is produced again. The clerk would need to reverse the second rem out, otherwise they would be
+financially down.
+
+FUJ00171924
+FUJ00171924
+ffhis should be very unlikely to happen because the clerk should phyiscally have the cheque at the time of processing, and then
+
+dispatch it, so it should not be available for concurrent processing. The clerks should be alerted to the problem by the message
+SG00524 stating that the cheques list report has already been cut off.
+
+IBRDB_RX_REP_ SESSION PATA would show two product 2 transactions for the same amounts in transaction mode 12 on different nodes for
+the Same stock unit within 1 hour and 15 minutes of each other, but this could be a valid coincidence and does not mean the
+oblem has definately occurred.
+
+[the window for error could be reduced by checking when "Rem Out & Cut Off" is pressed that the cut-off marker for the cheques
+listing report has not changed - i.e. before doing the rem out, but this would not stop two rem outs happening genuinely
+concurrently.
+
+fo truly fix this, there would need to be a new BAL service that performed both the rem out and cut off, which is a complete re-
+rite of the application and a major amount of effort for very little business benefit.
+
+Perhaps the best solution would be to change the message output, instead of MSG00524, to a message advising the clerk that a
+concurrent rem out has occurred, and that they need to reverse the second rem out using existing reversals.
+
+[fhe counter code would need a new overloaded copy of method CutOffReport in CutOffReportingBLO to take the message id to display
+if the report was found to already be cut-off.
+
+I am awaiting for POL confirmation of this solution.
+[End of Response]
+lkesponse code to call Internal Development Incidents/Defects (I) as Potential Problem Identified (38)
+
+lDate:20-Dec-2018 17:15:00 User: Mail Manager_
+Added evidence item 'Originalimail.eml' from Email attachment
+external Progress Update Received via Email
+Originator : "PEAK ~
+
+sent Date : Thu De
+subject : FW: Complete Call Update PC0275902: Peak arrives on Bus Apps Des
+tno updated suppliea*
+
+pate
+the
+
+21-Dec-2018 13:09:41 User:Venu Anamalla
+all Target Release has been moved to Targeted At -- HNG-X 69.10
+
+Oate:02-dan-2019 08:31:39 User:Steven Porter
+this peak is presently targeted at R69.10 (Counter); Jon indicates he is waiting for POL confirmation of the required approach;
+ttm not sure this can be targeted until then?
+
+JDate:02-Jan-2019 08:33:28 Uscr:Steven Porter
+the call Target Release has been moved to Proposed For -~ Re-target
+
+jbate:11-dan-2019 12:13:30 User:Jon Hulme
+greed with POL and Steve Bansal that this needs to follow the normal route for incident handling. BIF will need input from POL
+las to whether they agree that this should be fix as proposed.
+
+[Date:11-Jan-2019 12:13:44 User:Jon Hulme
+[the Call record has been transferred to the team: xCtr GDC
+lUser:Jon Hulme Confirmed that this Incident may be passed to the external company with the attached evidence.
+
+Date:21-dan-2019 11:50:40 User:Ramesh Kalavakolla
+the Call record has been assigned to the Team Member: Ankit Pai
+
+[Date:04-Feb-2019 11:30:58 Uscr:Ankit Pai
+[the Call record has been assigned to the Team Member: Shane Bennett
+
+Date:08-Feb-2019 07:49:11 User:Shane Bennett
+[Start of Response]
+
+issue has been replicated, and fix is in progres
+[End of Response]
+
+esponse code to call type I as Category 41 -- Pending -- Product Error Diagnosed
+Date:14-Feb-2019 12:00:02 Us
+
+Sr:Gimey johnbasco
+
+Reference Added: Jira CBB-3286
+
+IDate:22-Feb-2019 18:03:20 User:Adam Sobot
+las per Jon Hulme's recent update BIF needs to seek approval from POL for the approach he outlines in his update 20-Dec-2018
+7:13:55
+
+lActioning on BIF accordingly - if the approach is acceptable to POL this Peak can I believe be targeted at R69.20. Please confirm
+ith Steven Porter or Jon Hulme.
+
+FUJ00171924
+FUJ00171924
+
+fbate:22-Feb-2019 18:03:48 User:Adam Sobot
+lAction placed on Team:BIF
+
+Date:25-Feb-2019 12:21:30 User:Shane Bennett
+problem Statement ( Underlying cause of the problem):
+Inced to inform the clerk at the 2nd counter that the cheque rem out has already happened. and reversal needs to be done.
+
+Risk of not fixing:
+minimal risk, very unlikely to happen because the clerk should physically have the cheque at the time of processing, and then
+Jdispatch it, so it should not be available for concurrent processing.
+
+[fhe benefit of fixing:
+Irisk of concurrent Cheque rem outs is no longer a problem. (BRDB_RX REP SESSION DATA would show two product 2 transactions for
+the same amounts in transaction mode if concurrent rem out has happened.)
+
+lASM Utilization Capacity (estimated man-days required to deliver the fix):
+Is days
+
+JDate:26-Feb-2019 1.
+Hello,
+
+3:59 User:dubita Gurung
+
+could you please assign this back to BIF stack once impact statement has been added?
+
+thanks,
+lubs
+
+[Date:26-Feb-2019 14:14:01 User:Jdubita Gurung
+Action has been removed from the call
+
+JDate: 26-Feb-2019 14:41:09 User:Maciej Frontezak
+JA new Business Impact has been added:
+
+Problem Statement ( Underlying cause of the problem):
+
+Ineed to inform the clerk at the 2nd counter that the cheque rem out has already happened. and reversal needs to be done.
+
+Ikisk of not fixing:
+ninimal risk, very unlikely to happen because the clerk should physically have the cheque at the time of processing, and then
+lispatch it, so it should not be available for concurrent processing.
+
+the benefit of fixing:
+risk of concurrent Cheque rem outs is no longer a problem. (BRDB_RX REP SESSION DATA would show two product 2 transactions for
+the same amounts in transaction mode if concurrent rem out has happened.)
+
+IASM Utilization Capacity (estimated man-days required to deliver the fix):
+Ib days
+
+JDate:27-Feb-2019 08:09:26 Uscr:Macie}j Frontezak
+ction placed on Team:BIF
+
+Joate:27-Feb-2019 14:23:12 User:Steven Porter
+the call Target Release has been moved to Proposed For -- HNG-X 69.30
+
+[Date:27-Feb-2019 14:23:44 Uscr:Steven Porter
+s discussed with Jon Hulme, this is a candidate for R69.20 as it is an EUM-related PEAK.
+
+oate:27-Feb-2019 14:23:52 User:Steven Porter
+the call Target Release has been moved to Proposed For -- HNG-X 69.20
+
+jate:28-Feb-2019 10:49:31 Uscr:Raj Bains
+3 per PTF meeting on 29/2/2019 this has been targeted at R69.20
+
+jbate:28-Feb-2019 10:49:42 Uscr:Raj Bains
+fhe call Target Release has been moved to Targeted At —- HNG-X 69.20
+
+[Date:28-Feb-2019 10:49:46 Uscr:Raj Bains
+ction has been removed from the call
+
+JDate:05-Mar-2019 07:15:54 Uscr:Ramesh Kalavakolla
+[Start of Response]
+
+[End of Response]
+
+FUJ00171924
+FUJ00171924
+
+Response code to call type 1 aa G:
+
+Tagory 16 -- Pending -— Fix Targeted awaiting Release
+
+Date:12-Mar-2019 09:18:52 User:Ramesh Kalavakolia
+the Call record has been transferred to the team: xCtr REL GDC
+the Call record has been assigned to the Team Member: Praveen Challa
+
+jbate:26-Mar-2019 13:07:53 User:Praveen Challa
+Followed the above suggested test steps. Able to see the message MSG40047,
+
+[Date:26-Mar-2019 13:09:08 Uscr:Praveen Challa
+evidence Added -—
+
+Jbate:26-Mar-2019 1:
+Reference Added: Product Baseline HNGA PACKAG
+
+5:01 Uscr:Dimensions Automated User
+;CBA_6920_D165
+
+[Date:26-Mar-2019 15:32:34 Uscr:Praveen Challa
+Defect cause updated to 14: Development - Code
+
+[fhe Call record has been transferred to the team: Dev-Int-Rel
+lUser:Praveen Challa Confirmed that this Incident may be passed to the external company with the attached evidence.
+
+[Date:27-Mar-2019 08:49:36 Uscr:Geoff Inglis
+fhe Call record has been assigned to the Team Member: PIT Automated User
+
+Jbate:27-Mar-2019 08:51:27 Uscr:Geoff Inglis
+routing to SVI test as integration have nothing to process here.
+[the Call record has been transferred to the team: ITU System Validation & Integration
+(fhe Call record has been assigned to the Team Member: Unassigned
+
+[Dat e:25-Apr-2019 0:
+[Start of Response]
+tested successfully in SVal.
+
+3:18 Uscr:Tony Baker
+
+SG40047 displayed, advising the customer:
+
+Report %ReportTitle%’ has already been cut off,
+
+concurrent rem out has occurred, please reverse the sécond rem out using existing reversals.
+
+[End of Response]
+Response code to call type I as Category 71 -- Final -- Fix Released to Call Logger
+touting to Call Logger following Final Progress update.
+
+jbate:30-Apr-2019 12:32:05 User:Jon Hulme
+CALL PC0275902 closed: Category 71 Type T
+
+Root Cause Development - Code
+
+Logger Jon Hulme -- Bus_Apps_Des
+
+Subject Product HNG-X Counter -- Application Service (version unspecified)
+Assignee Jon Hulme -- Bus Apps Des
+
+Last Progress 30-Apr-2019 12:32 -- Jon Hulme
