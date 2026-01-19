@@ -1,0 +1,159 @@
+Date:
+
+1.
+
+2.
+
+2.1
+
+FUJ00084744
+
+FUJ00084744
+
+Local Suspense Problem
+
+10/05/2013 09:06:00
+
+Management Summary
+
+The purpose of this note is to provide a management level summary of the “Local
+Suspense” problem that was identified earlier this year and was seen to impact 14 of
+the current Horizon Branches.
+
+The root case of the problem was that under some specific, rare circumstances some
+temporary data used in calculating the Local Suspense was not deleted when it should
+have been, and so was erroneously re-used a year later. When the SPMR was asked to
+clear Local Suspense the actual (ie incorrect) amount was recorded in the Audit Trail.
+This means that there was no corruption in the audit trail and it accurately reflects the
+transactions that occurred in the Branch.
+
+If the BTS from the previous period was taken to provide a set of Opening Balances
+and all transactions that were logged to the audit trail during the period were taken as
+adjustments, then this would show the correct value that should be in the Local
+Suspense account.
+
+Detailed Description
+
+Background
+
+Local Suspense is a mechanism whereby any gains or losses from a Stock Unit can be
+rolled up at a Branch Level, so that the last Stock Unit to Balance within a Trading
+Period can clear all the individual discrepancies in a single transaction.
+
+This is achieved by the various Stock Units calculating the net value of all their gains
+and losses, and Horizon then generates transactions such that the discrepancies sum to
+zero and the balance is posted to a gain / loss Local Suspense account. This is visible
+on the Stock Unit Balance report that is produced by Horizon every time the Stock
+Unit is rolled over into a new Trading Period.
+
+As well as passing these Local Suspense transactions to the normal accounting tables
+that are used to update POL SAP and Credence, they are also written to a table in the
+Branch Database that is used to support the printing of the Branch Trading Statement
+(BTS) after that Branch has been fully Balanced.
+
+When the last (or only) Stock Unit in a Branch is rolled over into a new Trading
+Period, then all these Local Suspense values are summed and an aggregate gain or loss
+for the branch is calculated. The SPMR is then asked how they propose to clear this
+gain or loss and the appropriate accounting transactions are generated. Details of the
+changes to the Local Suspense account are again written to the Branch Database both
+for reporting to Post Office Ltd’s back end systems and also for the production of the
+BTS.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+2.2
+
+23
+
+2.4
+
+FU.
+
+The Problem
+
+Data in the Branch Database is regularly archived and then deleted when it is no longer
+required. Different tables have different rules concerning exactly how long data is
+retained and when it is archived and deleted.
+
+In 2011 a problem was found with the archiving strategy related to Stock Units that
+have been deleted in a Branch. A consequence of this is that some changes were made
+to the archiving strategy on 3" July 2011. An unintended consequence of this change
+was that any Branch that deleted a Stock Unit at the end of 2010 which had local
+suspense transaction in that Stock Unit before it was deleted were left in the table used
+for constructing the BTS. This meant that as Trading Periods cycle around each year,
+these BTS records became visible in 2011 when the same Trading Period was reached.
+
+The affect of these old records was that when the BTS was being produced an
+incorrect value was calculated for printing on the report. However as well as that an
+incorrect figure was generated for the Opening Balance of the Local Suspense
+Account for the following period. This amount corresponded to the value of the
+historical record.
+
+When the next Trading Period was balanced, then this incorrect Opening Figure would
+result in the total value for Local Suspense being calculated incorrectly and the SPMR
+being asked to make good an incorrect amount. It is at this point that transactions
+would be generated into the audit trail reflecting the fact that the SPMR had cleared
+the Local Suspense account for an incorrect amount.
+
+This problem was not reported to Fujitsu in 2011 and only affected a small number of
+Branches and only for a single Trading Period.
+
+At the same Trading Period in 2012, the problem re-occurred and this time one of the
+affect Branches reported the problem resulting in a detailed analysis of this issue and
+finding the orphaned BTS records.
+
+Rectification Actions
+
+When the problem was investigated earlier this year, 14 Branches were identified that
+had such historical records in the table used to generate the BTS report (which is the
+root cause of the problem). (5 Branches had losses and 7 had gains and 2 branches
+that had both a loss and a gain. One loss was for £9,800, one gain for £3,100 and the
+rest were less than £161.)
+
+These records have now been manually deleted so that they do not cause a further
+issue in future years. Also two further checks have been identified during the
+balancing process each of which indicate a situation associated with this problem, so
+that should those situations arise in the future, then alerts would be raised to indicate
+to support staff that a situation that should never occur has occurred and thus trigger
+immediate investigation. These changes are being progressed through the normal
+support route for a maintenance release of the Horizon counter code.
+
+Affected Branches
+
+The following table lists the affected Branches and the amounts:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+FUJ00084744
+IJ00084744
+FUJ00084744
+FUJ00084744
+
+Branc I Name Amount
+002647 I Aberystwyth £6.71
+002840 I Inverness £140.61
+010007 I East Dulwich -£0.01
+011458 I Willen Village -
+£9,799.88
+
+012004 I Lower Edmonton £16.12
+054011 I Lower Regent Street I £3.34
+
+101832 _I Dundas £5.84
+104937 I Grange £0.03
+104937 I Grange -£49.65
+155025 I Hounslow £113.14
+156715 I Gilford £11.55
+211844 I Rosyth Terminus £36.20
+211844 I Rosyth Terminus £77.97
+243242 I Wardles Lane £0.51
+266418 I Bowness Road £3,186.70
+297611 I Merthyr Dyfan £160.92
+
+A negative amount signifies a loss.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+IRRELEVANT
+
+“Pages ors"

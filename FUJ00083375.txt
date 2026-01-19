@@ -1,0 +1,381 @@
+Ref:
+
+FUJ00083375
+
+FUJ00083375
+
+Local Suspense Problem
+
+g:\gij documents\poa\prosecution support\spot reviews\localsuspense.docx
+
+Author: Gareth I Jenkins
+
+Version 0.2: minor clarifications.
+
+Version 0.3: Worked example added as Section 3.
+
+Version 0.4: input from FSC
+
+Version 0.5: Additional detail from Horizon Logs: Changes from version 0.3 in red like this
+
+Date:
+
+1.
+
+2.
+
+21
+
+15/05/2013 12:22:00
+
+Management Summary
+
+The purpose of this note is to provide a management level summary of the “ Local
+
+Suspense” problem that was identified earlier this year and was seen to impact 14 of
+the current Horizon Branches. This issue occurred on Horizon Online and due to the
+different architecture of the old Horizon system, such an issue could not have
+occurred on the old Horizon system.
+
+The root case of the problem was that under some specific, rare circumstances some
+temporary data used in calculating the Local Suspense was not deleted when it should
+have been, and so was erroneously re-used a year later. When the SPMR was asked
+to clear Local Suspense the actual (ie incorrect) amount was recorded in the Audit
+Trail. This means that there was no corruption in the audit trail and it accurately
+reflects the transactions that occurred in the Branch
+
+If the BTS from the previous period was taken to provide a set of Opening Balances
+and all transactions that were logged to the audit trail during the period were taken as
+adjustments, then this would show the correct value that should be in the Local
+Suspense account.
+
+Section 2 of this report provides a more detailed description of the problem and the
+cause and rectification actions carried out.
+
+Post Office Ltd have asked for a detailed worked example which has been added as
+Section 3 to this report.
+
+Detailed Description
+
+Background
+
+Local Suspense is a mechanism whereby any gains or losses from a Stock Unit can be
+rolled up at a Branch Level, so that the last Stock Unit to Balance within a Trading
+Period can clear all the individual discrepancies in a single transaction.
+
+This is achieved by the various Stock Units calculating the net value of all their gains
+and losses, and Horizon then generates transactions such that the discrepancies sum to
+zero and the balance is posted to a gain / loss Local Suspense account. This is visible
+on the Stock Unit Balance report that is produced by Horizon every time the Stock
+Unit is rolled over into a new Trading Period.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page I of 6
+
+FI1075/1
+2.2
+
+FUJ00083375
+
+FUJ00083375
+
+As well as passing these Local Suspense transactions to the normal accounting tables
+that are used to update POL SAP and Credence, they are also written to a table in the
+Branch Database that is used to support the printing of the Branch Trading Statement
+(BTS) after that Branch has been fully Balanced.
+
+When the last (or only) Stock Unit in a Branch is rolled over into a new Trading
+Period, then all these Local Suspense values are summed and an aggregate gain or
+loss for the branch is calculated. The SPMR is then asked how they propose to clear
+this gain or loss and the appropriate accounting transactions are generated. Details of
+the changes to the Local Suspense account are again written to the Branch Database
+both for reporting to Post Office Ltd’ back end systems and also for the production
+of the BTS.
+
+The Problem
+
+Data in the Branch Database is regularly archived and then deleted when it is no
+longer required. Different tables have different rules concerning exactly how long
+data is retained and when it is archived and deleted.
+
+In April 2011 a problem was found with the archiving strategy related to Stock Units
+that have been deleted in a Branch. A consequence of this is that some changes were
+made to the archiving strategy on 3" July 2011. An unintended consequence of this
+change was that any Branch that deleted a Stock Unit at the end of 2010 which had
+local suspense transaction in that Stock Unit before it was deleted were left in the
+table used for constructing the BTS. This meant that as Trading Periods cycle around
+each year, these BTS records became visible in 2011 when the same Trading Period
+was reached.
+
+The effect of these old records was that after the BTS was produced an incorrect
+figure was generated for the Opening Balance of the Local Suspense Account for the
+following period. This amount corresponded to the value of the historical record.
+These orphaned records were created between 16" November 2010 and 9" December
+2010.
+
+When the next Trading Period was balanced, then this incorrect Opening Figure
+would result in the total value for Local Suspense being calculated incorrectly and the
+SPMR being asked to make good an incorrect amount. It is at this point that
+transactions would be generated into the audit trail reflecting the fact that the SPMR
+had cleared the Local Suspense account for an incorrect amount. The audit trail
+operated correctly in the sense that it accurately recorded the transaction on the
+system.
+
+This problem was not reported to Fujitsu in 2011 / 12 and only affected a small
+number of Branches and only for a single Trading Period. However the two branches
+with the largest discrepancies did report the issue to Post Office Ltd who could see the
+impact of the problem in their back end system and wrote off the loss or gain for the
+branch but did not ask Fujitsu to investigate further.
+
+At the same Trading Period in 2012 / 13, the problem re-occurred and this time one of
+the affect Branches reported the problem to Fujitsu on 25" February 2013 (Peak
+223870) resulting in a detailed analysis of this issue and finding the orphaned BTS
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page 2 of 6
+
+FI1075/2
+2.3
+
+2.4
+
+3.
+
+FUJ00083375
+
+FUJ00083375
+
+records. The root cause was determined by 28" February 2013 and a preliminary
+report was sent to Post Office Ltd. A further update was sent on 14" March 2013
+with a full analysis of the issue and all the affected branches.
+
+Rectification Actions
+
+When the problem was investigated earlier this year, 14 Branches were identified that
+had such historical records in the table used to generate the BTS report (which is the
+root cause of the problem). (5 Branches had losses and 7 had gains and 2 branches
+that had both a loss and a gain. One loss was for £9,800, one gain for £3,100 and the
+rest were less than £161.)
+
+These records have now been manually deleted so that they do not cause a further
+issue in future years. Also two further checks have been identified during the
+balancing process each of which indicate a situation associated with this problem, so
+that should those situations arise in the future, then alerts would be raised to indicate
+to support staff that a situation that should never occur has occurred and thus trigger
+immediate investigation. These changes are being progressed through the normal
+support route for a maintenance release of the Horizon counter code.
+
+No changes need to be made to the Audit logging process, which worked as designed.
+Affected Branches
+
+The following table lists the affected Branches and the amounts:
+
+Branch I Name Amount
+002647 I Aberystwyth £6.71
+002840 I Inverness: £140.61
+010007 I East Dulwich -£0.01
+011458 I Willen Village -£9,799.88
+012004 I Lower Edmonton £16.12
+054011 I Lower Regent Street I £3.34
+101832 I Dundas £5.84
+104937 _I Grange £0.03
+104937 I Grange £49.65
+155025 I Hounslow £113.14
+156715 _I Gilford £11.55
+211844 I Rosyth Terminus £36.20
+211844 I Rosyth Terminus £77.97
+243242 I Wardles Lane -£0.51
+266418 I Bowness Road £3,186.70
+297611 I Merthyr Dyfan £160.92
+
+A negative amount signifies a loss.
+Worked Example
+
+The following goes through in detail what happened in Branch Willen Village, which
+reported the problem and where the impact was most significant. This Branch has a
+Branch code of 011458.
+
+Detailed transaction logs have been retrieved and from these it is clear that the Branch
+is an Operator self funded Branch with a single counter.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page 3 of 6
+
+FI1075/3
+FUJ00083375
+FUJ00083375
+
+In November 2010 (where the logs start) it was operating in Stock Unit 1, and then
+when Balancing on 10" November 2010, switched to using Stock Unit AA. Rather
+than transferring stock between the two Stock units, what appears to have happened is
+that the Stock levels in the two Stock Units were adjusted resulting in a Cash Surplus
+in SU AA and a Cash Shortage in SU 1.
+
+Illustration of local suspense / deleted stock unit problem
+
+03072011
+
+oaios2013
+Rotover into TP10 Agenning Rolover acer ino
+‘Genuine Loss of one ino an rR
+£979.88 in SU1 inrosuces TP 10
+' I ,
+y T T T T T T 7 1
+uova20r1  ovvao11—overizers —osozor1 —overao1e I oveazore —ownraor2 © ownoaore—_ovmnzora
+‘owi22p10 3032019
+: canra011
+oe sui osro22012 1022013
+ey. Physically Rolover Rollover
+egiaty
+tela Guia’ im im
+eto reer en mh
+
+Orphaned
+
+3.1 Original Discrepancy
+
+The Branch balanced its Stock Units and rolled over from TP 9 to TP 10 on 8"
+December 2010. Specifically, SU 1 had a Loss of £9,799.88 which was recorded in
+the BTS table related to TP 10 BP 1. Note that this branch had a gain of £6,336.87 in
+a SU AA resulting in a net loss of £3,463.01 which was settled centrally. The
+discrepancies would have been genuine and the loss was recovered through normal
+process.
+
+Immediately after the Branch Rolled over into TP10, SU 1 was deleted. When a
+Stock Unit is deleted, it is actually updated with a “ logidalllgted flag” Should an
+attempt be made to re-create a Stock Unit with that name in the same Branch this is
+prevented by the existence of this “ logictdlgted SU” However after a period of
+205 days, the Logically Deleted Stock Unit is archived (and so physically deleted)
+from the Branch database (thus allowing the SU ID to be reused).
+
+The change to the archiving strategy was related to handling items associated with
+Logically Deleted Stock Units. If this change had not been made there would have
+been many more orphaned records left lying around in the branch database which
+could have had other impacts (and that was the problem the fix was addressing).
+However the fix didn’ retrdspectively remove records created in TPs 9, 10, 11 or 12
+associated with a Stock Unit that had been Physically Deleted and hence this resulted
+in a small number of records being left in the BTS table.
+
+As stated earlier this impacted 16 records in 14 branches.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page 4 of 6
+
+FI1075/4
+3.2
+
+3.3
+
+4.
+
+FUJ00083375
+
+FUJ00083375
+
+Balancing in 2012
+
+When the Branch came to Balance at the end of TP 9 on 4" January 2012, then this
+orphaned BTS record (for £9,799.88 loss) was picked up in the database queries.
+
+This resulted in a Discrepancy of £9,727.41 being settled centrally on 9"" February
+2012. Note that the difference between the two figures (ie £9,799.88 - £9,727.41 =
+£72.47) would have been a genuine gain for that period.
+
+This issue was reported to FSC who saw the issue in POL SAP and corrected the
+problem by journalising the values in the Local Suspense account against the value in
+the Settle Centrally account. Thus clearing the situation as far as the SPMR was
+concerned. The balancing value of £72.47 was written off in FSC. Unfortunately
+Fujitsu were not informed about this and so no investigations were made as to why
+this occurred.
+
+Balancing in 2013
+
+When the Branch rolled over into TP 10 on 2™ January 2013, the erroneous record in
+the BTS table from 2010 was found again and resulted in an Opening Figure being
+posted to account 6295 with a value of £9,799.88 (ie the value of the erroneous BTS
+record from 2 years earlier). This had no impact on the rollover from TP 9 into TP
+10, but was instrumental in causing a problem at the end of TP10.
+
+During TP 10, a (genuine) cumulative Loss of £39.57 was calculated. However when
+the erroneous £9,799.88 was added in, this resulted in a recorded Loss of £9,839.45.
+which was processed when balancing the Stock Unit as Make Good to Cash.
+
+On 8" February, a Cash Discrepancy was created by rolling the SU over into a new
+BP for £9,862.43 and at the end of the following period (TP11) with other cumulative
+discrepancies resulted in £9,830.98 being settled centrally. An uncleared value of
+£9,799.88 is presently held in the Local Suspense ledger in POLSAP along with a
+debt of £9,830.98.
+
+Settling it centrally took the loss out of the Branch’ resords.
+
+Draft FSC Letter to SPMR
+
+The basic outline of the problem will be explained to the subpostmaster in a letter.
+The net gain arising from the correct discrepancy values declared over the two trading
+periods of £32.90 will be returned to the subpostmaster through pay.
+
+The text of the proposed letter (below) will be approved by Post Office Ltd’ legal
+department prior to sending.
+
+Dear Mr Mistry
+
+Re Branch Discrepancies
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page 5 of 6
+
+FI1075/5
+FUJ00083375
+FUJ00083375
+
+Thank you for your assistance in helping us to understand the unexplained
+discrepancies that have impacted your branch.
+
+I can confirm that losses of £9,799.88 declared at TP10 in 2012 and 2013 were
+not proper to your branch. This problem was created by a specific set of
+
+circumstances dating back to an actual loss you declared in December 2010
+(TP9).
+
+In brief, the stock unit that declared the discrepancy and placed it into Local
+Suspense was deleted on or before 10th December 2010. The related Local
+Suspense entry should also have been removed, but this did not happen.
+
+The impact of this was that the loss of 2010 was picked up again at the
+beginning of TP10 the next year in Horizon. At the end of TP10 the branch
+was forced to clear this along with current discrepancies. The Local Suspense
+ledger in the Post Office Finance System was impacted in the same way.
+
+This scenario was then repeated at the same point the next year.
+
+Both TP10 discrepancies recorded at your branch were settled centrally and
+blocked on your Customer Account.
+
+The values of 2 * £9,799.88 have been cleared from your Customer Account.
+The actual discrepancies that were proper to your branch were a gain of
+£72.47 in 2012 and a loss of £39.57 in 2013. This leaves a net gain of £32.90.
+This amount will be returned to you in May’ pays
+
+Changes to Horizon in 2011 prevented this problem for stock units deleted
+after mid-December 2010, and the old Local Suspense entry has now been
+removed from the system.
+
+I apologise for the distress this will have caused you along with the support we
+have requested from you.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\users\lucybr\appdata\local\microsoft\windows\temporary internet
+files\content.outlook\c7ps3i4a\localsuspense v0 5.docx Page 6 of 6
+
+FI1075/6

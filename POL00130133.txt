@@ -1,0 +1,462 @@
+POL00130133
+POL00130133
+
+Response to Spot Report SROO1
+
+Ref: _ g:\gij documents\poa\prosecution support\spot reviews\sr001 response v0. 1.docx
+Author: Gareth I Jenkins
+Date: 26/03/2013 16:29:00
+
+1. Introduction
+
+This spot review relates to an issue raised by John Armstrong the SPMR in Lepton
+Branch (FAD Code 1913204) relating specifically to transactions carried out on
+Horizon Online on 4" October 2012. The issue is headed “Debit Cards — Cash
+Withdrawals and GIRO payments”.
+
+There has been correspondence between the Branch and FSC on this subject in
+December 2012 and Fujitsu had an informal request to investigate the transactions on
+31/1/13. As this was within 6 months of the transaction, then the data was still
+available in the support database and a response was provided to Post Office Ltd as to
+what had occurred. Also a formal ARQ response was provided which supported this
+information.
+
+This report provides information as to what was alleged by the SPMR (see section 2)
+and a detailed analysis of what actually occurred as shown in the system logs
+(section 3). Section 4 then describes how recovery operates on Horizon and Section 5
+identifies those points in the report which are not supported by the Logs. Finally
+section 6 provides a response by the Financial Services Centre of Post Office Ltd as to
+why it was not necessary to carry out the thorough investigation that has now taken
+place.
+
+It should be noted that some of the information in this report has been found in the
+“raw logs”. These are not normally provided in response to queries or examined.
+However in this case they were passed to Second Sight and I have looked at them to
+provide some more detailed responses.
+
+2. The SPMR’s view of what happened
+
+The following is an extract from the Spot Report saying what the SPMR says
+happened:
+
+The SPMR reports that there were intermittent internet connectivity problems
+(also reported to Chesterfield) on 4 October 2012. Online payments and
+withdrawal transactions were sometimes successful but also failed on
+occasions. It is possible that Horizon was partially operating through its back-
+up (mobile phone) connection. Some card payments had to be attempted two
+or three times before being accepted. At approximately 10:32 a customer tried
+to pay his £76.09 BT phone bill with his LTSB card but was not successful.
+The customer then withdrew £80.00 cash and used this to pay the phone bill.
+The SPMR stamped the customer’s phone bill to evidence receipt of the cash,
+returning change of £3.91. Several weeks later, the customer returned from
+holiday to find his phone had been cut off due to non-payment. The SPMR’s
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+g:\gij documents\poalprosecution support\spot reviews\sr001 response v0. 1 docx
+Page I of 8
+POL00130133
+POL00130133
+
+examination of the Transaction Log showed that all components of the
+transaction had been reversed. The SPMR did not initiate those reversals nor
+did he receive any reversal notifications. The SPMR raised this as an issue with
+Chesterfield but was told that due to cost issues Horizon transaction data could
+not be requested. It was implied that the SPMR had stolen the money and he
+was told to make good the shortage. This meant that 2 people had paid the
+phone bill (the customer, who handed cash to the SPMR and the SPMR on
+instructions from Chesterfield). The SPMR was informed that he should have
+a surplus of £76.09 due to the reversal of the transactions. The SPMR disputes
+this conclusion, but the more important issue here is the automated,
+unreported, reversal of the transactions.
+
+3. What the System Logs show
+
+Note that the system logs show all times in GMT rather than local time. On 4"
+October 2012, GMT was I hour behind Local Time (ie BST). I have quoted the times
+used in the logs below. Therefore the mention of 10:32 by the SPMR above relates to
+09:32 in the logs.
+
+Alternatively, I could go through the description below and change all times to BST.
+
+My feeling was that it is simpler (and less error prone) to keep the description close to that
+used in the evidence.
+
+There do appear to be 2 cases on 4 October where the system had a forced Log Out
+that resulted in a recovery Log On being required. This supports the statement above
+“The SPMR reports that there were intermittent internet connectivity problems (also
+reported to Chesterfield) on 4 October 2012”. The two “Recovery Log Ons” occurred
+at 08:51:40 (when no recovery was required) and at 09:37:20 when recovery was
+required as will be described later in this report.
+
+The following table looks at the number of online requests for either Banking or Credit
+/ Debit Card Payments that appear to have timed out:
+
+Date Total
+04/10/2012 13
+05/10/2012 I 4
+08/10/2012 1
+10/10/2012
+11/10/2012
+16/10/2012
+17/10/2012
+18/10/2012
+19/10/2012
+22/10/2012
+23/10/2012
+25/10/2012
+Grand Total
+
+gy sseonnsnn
+
+This supports the comment regarding intermittent connectivity problems on 4"
+October. I note that there were similar problems on 8" October.
+
+Strictly Private and Confidential — Subject to Legal Privilege — Not for Wider Circulation
+
+g:\gij documents\poa\prosecution support\spot reviews\sr001 response v0.1.docx
+Page 2 of 8
+POL00130133
+POL00130133
+
+I can see 4 examples prior to 09:30 where either a Banking withdrawal or a Credit /
+Debit card payment initially failed and was successful on the second attempt. There
+was also one example where there were two failures for a card and presumably the
+customer or the SMPR gave up. This supports the statements “Online payments and
+withdrawal transactions were sometimes successful but also failed on occasions.” and
+“Some card payments had to be attempted two or three times before being accepted”
+
+The raw logs do have statistics regarding times taken to connect to the Data Centre
+and also an indication of the type of Comms currently in use. From these it can be
+seen that the Branch normally operates using ADSL, but at the time of the failure that
+is being examined it appears to be using a mixture of O2G and O3G (ie mobile
+networks) presumably due to a failure of the main ADSL connection. This supports
+the statement “It is possible that Horizon was partially operating through its back-up
+(mobile phone) connection.”. This may have been visible to the user as a slower than
+normal response time.
+
+The key transactions are those described as occurring at 10:32 (ie 09:32 GMT).
+
+I'll start at 09:26 and show the sequence of baskets processed between that time and
+09:40.
+
+1. 09:26:30: Session 537799 contained two transactions: A Card Account
+Withdrawal (Withdraw Limit) for £271.54 and a corresponding Cash
+Settlement.
+
+2. 09:27:34: Session 537800 contained three transaction: A failed Card Account
+Withdrawal (Withdraw Limit) immediately (09:28:13) followed by a successful
+Card Account Withdrawal for £141.80 using the same card and a
+corresponding Cash settlement.
+
+3. 09:27:27: Session 537801 contained a single transaction: A failed Visa Debit
+card payment. This payment had been requested for £141 and had failed due to
+no response having been received by the counter within the timeout period (33
+seconds). Clearly an attempt had been made to purchase something or pay for
+a service for £141, but when the Debit card payment failed, the original
+transaction was voided and the basket completed.
+
+The value of £141 is only visible in the raw logs.
+
+4. 09:31:56: Session 537802 contained 2 transactions. A Halifax Current
+Account Withdrawal for £200 followed by the corresponding cash settlement.
+It would appear that the card used here was the same as the one used in the
+previous session when the Debit Card payment failed.
+
+5. 09:32:52: Session 537803 contained 3 transactions. A bill payment to BT for
+£76.09 followed by a Cash Withdrawal for £80 using a Lloyds TSB card and
+£3.91 cash for the difference.
+
+6. 09:37:19: User JAROO1 Logged On again
+
+7. 09:37:44: Session 537805 generated by the system as part of the Recovery
+that takes place during Log On and contains 3 transactions. The first 2 are the
+Reversals for the BT Bill Payment and Cash transactions in session 537803,
+and the 3“ is a Cash balancing transaction for £80 to correspond to the £80
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+g:\gij documents\poalprosecution support\spot reviews\sr001 response v0. 1 docx
+Page 3 of 8
+POL00130133
+POL00130133
+
+cash withdrawal which should have been treated as successful at the time of
+failure. This is why “The SPMR’s examination of the Transaction Log showed
+that all components of the transaction had been reversed.”
+
+It should be noted that the statement is not quite correct. The Banking
+Withdrawal for £80 has not been reversed.
+
+8. 09:40:19: Session 537806 contained 2 transactions. A Card Account
+Withdrawal (Withdraw Limit) for £229.72 and a corresponding Cash
+Settlement.
+
+Looking at the stats recorded with the Recovery basket at Point 7 above, it can be seen
+that there were a number of issues during session 537803:
+
+These stats are only visible in the raw logs.
+
+a. The Authorisation for the Cash Withdrawal was successful and was done on a
+3G comms Connection.
+
+b. The subsequent attempt to update the Recovery information in the basket after
+completing the Banking Transaction failed due to a timeout on a 2G comms
+connection
+
+c. There are then 4 attempts (at roughly 45 second intervals) to store the
+completed basket to the Data Centre. The first 2 use a connection type of 2G
+and the other 2 use a 3G comms connection. They are all marked as having
+failed. (Though clearly one of the attempts had resulted in data being
+successfully saved in the Data Centre.)
+
+Moving on to the end of the day I note the following Cash Declarations were made:
+
+A. At 16:31:27 a Declaration was made for £22,160.54 followed by a variance
+check which indicated a discrepancy (loss) of £1,237.16.
+
+B. At 16:32:46 a second cash Declaration was made for £23,460.54 followed by a
+variance check which indicated a discrepancy (gain) of £64.84.
+
+Looking forwards, the following variance check discrepancies were recorded:
+
+Date Variance Check Discrepancy Loss or Gain
+04/10/2012 £62.84 Gain
+05/10/2012 £66.15 Gain
+06/10/2012__I £76.98 Gain
+08/10/2012 £71.91 Gain
+09/10/2012__I £69.05 Gain
+10/10/2012 £63.99 Loss
+
+The Stock Unit was Balanced and rolled over from Balance Period 3 into Balance
+period 4 on 10" October and the Discrepancy committed to the accounts. (There was
+also a £37.75 discrepancy Gain on stamps at the same time.)
+
+4. Explanation of Recovery
+
+The fact that a Log On (and Recovery) occurred at point 6 above indicates that there
+must have been a failure just before that point and the User would have been informed
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+ij documents\poa\prosecution support\spot reviews\sr001 response v0.1.docx
+Page 4 of 8
+POL00130133
+POL00130133
+
+of a Forced Log Off. The fact that Recovery reversed most of the last Session
+recorded prior to the recovery indicates that the following sequence of events
+occurred. This is confirmed by the statistics described above at point c in section 3
+above.
+
+The user must have been aware that there was a problem in this circumstance. What
+they would have observed was the following:
+
+1. Having completed the Bill Payment and Cash Withdrawal, the User would have
+either selected “Settle” or “Fast Cash”. If Settle was selected then they would
+again have selected either “Cash” (and keyed in the amount) or selected Fast
+Cash.
+
+2. This would have completed the Basket and attempted to save the basket to the
+Data Centre.
+
+3. Following a failure of the first attempt, the system would automatically carry
+out a retry and attempt to save the basket to the Data Centre again.
+
+4. Following the failure of the second attempt, a message would have been
+displayed to the User informing them that there was a failure to contact the
+Data Centre and did they wish to Retry or Cancel.
+
+5. The fact that there were 4 attempts to contact the Data Centre, indicates that
+the User must have selected Retry and so the system would have made a 3“
+attempt to save the basket to the Data Centre.
+
+6. Following a failure of the third attempt, the system would automatically carry
+out a retry and attempt to save the basket to the Data Centre yet again.
+
+7. Following the failure of the fourth attempt, a message would have been
+displayed to the User again informing them that there was a failure to contact
+the Data Centre and did they wish to Retry or Cancel.
+
+8. The fact that there were only 4 attempts to contact the Data Centre indicates
+that the user must have selected Cancel this time. This would have resulted in
+a Forced Log Out. What this means is:
+
+a. System would have recalculated the basket and would have zeroized
+any non-recoverable transactions — in this case the BT Bill and the Cash
+“change”
+
+b. It would then have resettled the basket indicating that £80 should be
+handed to the customer
+
+c. It would then have printed out 3 copies of the Disconnected Session
+Receipt which would indicate this.
+
+3 copies as follows:
+to aid with recovery.
+
+one for Customer, one for Branch records and one to attach to the Till
+
+d. It would not have printed out the AP receipt for the BT Bill.
+9. The system would then display the Log On screen.
+
+10. Again the User must have been aware of this as at 09:37:19 they Logged on
+again
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+g:\gij documents\poalprosecution support\spot reviews\sr001 response v0. 1 docx
+Page 5 of 8
+POL00130133
+POL00130133
+
+11. As part of the Log On process, the system checks the identity of the last basket
+successfully saved at the Data Centre (which appears to be 537803) and
+compares it with the identity of the last Basket successfully processed by the
+counter (in this case 537802). As the last basked saved in the Data Centre has
+a higher number than that considered to be the last successful basket processed
+by the counter, Recover would then repeat the process that the counter carried
+out at step 8 above. This would have generated the Recovery Basket stored at
+09:37:44 as Session 537805. A Recovery receipt would have been printed to
+indicate this.
+
+5. I What the Logs don’t support
+
+There are some parts of the initial statement that are not supported by the logs.
+Specifically:
+
+1. “At approximately 10:32 a customer tried to pay his £76.09 BT phone bill with
+his LTSB card but was not successful. The customer then withdrew £80.00
+cash and used this to pay the phone bill.”
+
+There is no indication of any attempt to pay this by card. Closer examination
+of the Business Rules show that it is not permissible to pay for a BT Phone Bill
+with a Credit Card. However the LTSB card used for the Banking withdrawal
+was a Debit (and not a Credit) Card. It could be that an attempt was made to
+settle with a different Credit Card and the system indicated that it was not
+acceptable. There is no record of any attempt to use the LTSB card as a
+Payment card. Also, when checking for a failed card transaction in an earlier
+basket (point 3 in section 3), the value of the failed payment was £141 and not
+£76.09, this couldn’t be the failure referred to.
+
+It would appear that the only attempt to pay this BT Bill was with the
+withdrawn cash.
+
+2. “The SPMR stamped the customer’s phone bill to evidence receipt of the cash,
+returning change of £3.91.”. This may be what the SPMR did. However if so
+he was not following the instructions provided by Horizon as outlined in
+section 4.
+
+As explained in section 4, there were a number of indications that the
+transaction was not successful, and so the Bill payment had not been recorded:
+
+a. The fact that the SPMR was asked twice about Retrying after failed
+Data Centre interactions
+
+b. The fact that 3 copies of the Disconnected Session Receipt would have
+been printed out on the counter printer
+
+c. The fact that no AP receipt to confirm payment of the Bill was printed
+
+d. The fact that the User had to Log On again and a Recovery Receipt
+was printed.
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+ij documents\poa\prosecution support\spot reviews\sr001 response v0.1.docx
+Page 6 of 8
+POL00130133
+POL00130133
+
+3. “The SPMR did not initiate those reversals nor did he receive any reversal
+notifications.”. While I agree that the SPMR did not initiate the reversals, he
+would have been notified. When Recovery was carried out (point 7 in
+section 3) a Receipt would have been printed. Also messages are displayed to
+the User during the recovery process.
+
+4. “The SPMR raised this as an issue with Chesterfield but was told that due to
+cost issues Horizon transaction data could not be requested. It was implied
+that the SPMR had stolen the money and he was told to make good the
+shortage.” This is addressed in section 6 below.
+
+5. “This meant that 2 people had paid the phone bill (the customer, who handed
+cash to the SPMR and the SPMR on instructions from Chesterfield).”. The
+logs show that if the customer has paid the bill, this payment was not recorded
+on Horizon. If in fact the SPMR had received the payment and not recorded it
+on Horizon, then there should be a corresponding surplus of cash in Horizon.
+
+It was to address this surplus that FSC raised the Transaction Correction.
+
+6. “The SPMR was informed that he should have a surplus of £76.09 due to the
+reversal of the transactions.”. The figures in section 3 relating to cash
+declaration indicate that there was a surplus of around £63 that day.
+
+I don’t have logs for the previous day.
+
+7. “The SPMR disputes this conclusion, but the more important issue here is the
+automated, unreported, reversal of the transactions.”. The Automated
+Reversal is explained in section 4. That section also explains that the SPMR
+should have been aware of this for a number of reasons.
+
+s Input
+
+Post Office Ltd’s Financial Services Centre (FSC) need to respond to the 2nd bullet
+under second sight’s preliminary conclusions:
+
+“The decision by P&BA not to examine the Horizon detailed transaction data on
+cost grounds delayed or denied the SPMR the opportunity to process the
+transactions correctly or understand what happened.”
+
+e Under the terms of the current contract with Fujitsu Post Office Ltd are
+entitled to request Fujitsu to provide detailed branch historical transactional
+data. The number of requests that can be actioned within a month without
+additional charge is capped at 24.
+
+e The Security team of Post Office Ltd manage this process. Access to this data
+is intended to support specific Security investigations which may ultimately
+require this data to be presented before a court of law.
+
+e Finance Service Centre is able to request such data but has no budget to fund
+this should a request breach the cap.
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+g:\gij documents\poalprosecution support\spot reviews\sr001 response v0. 1 docx
+Page 7 of 8
+POL00130133
+POL00130133
+
+e Such a request would inevitably create a delay in providing the branch with a
+meaningful reply.
+
+e Finance Service Centre was able to informally determine from Fujitsu why
+there was a break of continuity in the transaction session numbers as raised by
+Mr Armstrong.
+
+e Finance Service Centre believed they had an adequate understanding of the
+event to provide a response to the points made in the letter received:
+
+1. There was no reversal carried out in branch.
+
+2. A loss of connectivity caused the problem.
+
+3. It is understandable that the branch may have got confused.
+4. The lack of receipt indicates that the bill had not been paid.
+5. There is no actual financial loss to the branch.
+
+e There was no response to the letter sent on 14th December 2012 to suggest the
+response had not addressed the concerns raised.
+
+e A transaction correction had already been issued to correct the transaction
+before the letter was sent to the Relationship Manager so the decision did not
+prevent “the opportunity to process the transactions correctly.”
+
+e Finance Service Centre does not have access to transactional information to
+evidence a loss of connectivity or the generation of disconnected session
+receipts. It is acknowledged that such visibility would enable a more complete
+response to be available under business as usual enquiries of this nature.
+
+Strictly Private and Confidential - Subject to Legal Privilege - Not for Wider Circulation
+
+g:\gij documents\poalprosecution support\spot reviews\sr001 response v0. 1 docx
+Page 8 of 8

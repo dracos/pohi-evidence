@@ -1,0 +1,113 @@
+FUJ00084742
+FUJ00084742
+
+To: Parker Steve (PostOfficeAccounf
+From: Chambers Anne Oj
+Sent: Fri 4/26/2013 3:40:49 PM (UTC)
+
+Subject: FW: CP859 / CP5416 - test plan and results
+
+Steve,
+
+Testing completed — although there were unexpected anomalies, I think there are a consequence of other oddities on the RDDT rig
+and are not expected to be encountered on live.
+
+lll put these results on PCO0218083.
+
+Anne
+
+external
+From: Chambers Anne O
+
+Sent: 18 April 2013 18:55
+
+To: Parker Steve (PostOfficeAccount)
+
+Subject: CP859 / CP5416 - test plan and results
+
+Steve, sending this just so it is recorded somewhere — nearly there, I understand all the problems I have spotted so far.
+
+Test plan:
+Branch 821777 current TP 11 2010, next TP 12 2010
+
+Stock units and branch in different TPs. AccountingPeriods data expired. Some transactions done since last rollover
+6 stock units already in TP 12, 8 stock units still in TP 11.
+
+1. Try rolling over stock unit AA to TP 12, this should fail because of the missing Accounting Periods for 2010.
+2. It may be possible to produce Trial Balances, if so, do this for every stock unit.
+3. Obtain BRDB extracts from OPENING_BALANCE and CUMULATIVE_DAILY_SUMMARIES tables for the branch
+4. Run script to move into year 2012
+@/app/brdb/trans/support/brdbx015/upd_ro_fad_fyr.sql
+enter 821777 and 2012 when prompted
+5. Check output and BRDB tables to ensure expected fields have been altered
+6. Complete stock unit TP 11 rollovers (some as active, some inactive).
+7. Complete branch rollover end TP 11.
+
+8. Rollover all stock units again (into TP 1 2013) and complete branch rollover.
+
+9. Check the reports against opening figures / summarised transactions already obtained from BRDB, and against
+original trial balances, if produced.
+
+Results/differences:
+
+1. Stock unit SH1 rolled successfully to TP 12 BP 3 before fixed applied. Attempted to roll SU6 into TP 12, but failed as
+expected.
+
+2. Balance snapshots taken for all stock units
+
+3. Done.
+FUJ00084742
+FUJ00084742
+
+4, Done, Needed my MSAD user to be added to RDDT BRDB, and permission to use role SSC (by POA UNIX team). This
+access already exists for SSC users on live BRDB.
+
+5. Done.
+
+6. Done. Nothing abnormal noticed (though since this is a test system, there are some unusually large losses/gains).
+Trial balances post-fix are in line with the balance snapshots taken before the fix.
+
+7. Done.
+
+8. Stock units all rolled over into TP 1. But then found two problems:
+a) when settling Local Suspense during final stock unit rollover (SU6), the amount was much larger than I expected
+and did not equal the sum of the discrepancies put into local suspense.
+b) when trying to print the BTS, it failed ‘ outstanding summaries’ and I cannot progress beyond this point
+
+9. Many checks made during testing, but needs a final check.
+
+Investigation of problems
+
+a)
+
+b)
+
+Related to Local Suspense transactions and BTS data from 2010 for two of the stock units which were already in TP 12.
+Discrepancies had been moved to Local Suspense at the end of TP 11 on 7-Dec-2010; these should have been included
+in the Local Suspense calculations when I completed the TP 11 rollovers, and should have appeared on the TP 11
+Suspense report, but they did not.
+
+The Local Suspense items were included on the Branch Trading Statement, and the uncleared amount was carried
+forward into TP 12 and had to be cleared then. So overall, the accounts are correct, but the discrepancy was cleared
+from Local Suspense one period later than expected. However, I want to check (as a separate issue) why the
+calculations at the end of TP 11 are wrong (it may be based on REP_SESSION_DATA which expires after 62 days), and
+whether it should instead use the BTS data which persists — this might affect other branches where rollover of some but
+not all stock units is delayed more than 62 days.
+
+Some TP 11 data was missing from table BRDB_DAILY_CUMULATIVE_SUMMARY. I have a theory that there must have
+been a problem with the RDDT schedule at some time before Feb 2013, and old data was not carried forward one night,
+but I haven’t been able to prove it.
+
+I have checked BRDB_DAILY_CUMULATIVE_SUMMARY in live, where stock units have been rolled over for a long time
+ahead of the branch, and cannot see any signs of the same problem. The proposed fix for PCO224126 would alert
+support to the consequences of this problem if it were to occur in live.
+
+There were two redeemed stamp transactions done in stock unit KK in Feb 2011, but the related products have now
+been withdrawn, so they are not printed on the report and it cannot be cut off. But the BTS can’t be printed until the
+report has been cut off. Stalemate. We have hit this in live: PCO217300 / KEL cardc5545P. The solution is for Post Office
+to reinstate the products temporarily so the report can be printed and cut off.
+
+I have checked various tables and there are no traces of the two identified problem products for any Live branches, so I
+don’t think we need to worry unduly.
+
+Completed by removing entries from the cutoff table, branch 821777 has now rolled over completely into TP 1 2013.

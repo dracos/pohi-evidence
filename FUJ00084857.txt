@@ -1,0 +1,81 @@
+FUJ00084857
+
+FUJ00084857
+From: Chambers Anne O
+Sent: 14 March 2013 12:14
+To: ‘andrew.winni __ +; Helen Love; 'Duty Manager’
+Ce: Bansal Steve (BRAO1); SSC Duty Manager; Parker Steve (PostOfficeAccount); Jenkins Gareth GI
+Subject: Local suspense POL 238 - explanation
+Attachments: Isproblem_2.xIs; Is_timeline.pdf
+Andrew,
+
+As requested, a full explanation of the problem. I have also attached a spreadsheet that shows whether the original local suspense
+item was a loss or a gain, or a clearance of loss or gain, and also a timeline of a hypothetical example which may make the
+explanation easier to follow. I didn’t use a genuine example because I couldn’t be fully accurate about the dates.
+
+The problem only affected branches that
+a) Were in TP 9 2010 by 10-Dec-2010
+b) Deleted a stock unit while in TP 9 or later, on or before 10-Dec-2010
+c) That stock unit had either transferred or resolved a discrepancy at the end of TP 8 or 9
+d) Had not rolled into TP 4 2011 by 03-Jul-2011
+
+The root cause was the archiving strategy used to remove old data from various database tables.
+
+e Old archiving strategy, as introduced Oct 2010, was meant to archive records, in various tables including
+BRDB_RX_BTS_DATA, belonging to all but the last three TPs. However it did not work as intended for deleted stock units,
+which (April 2011) caused a data centre problem with a different table, with no impact on branches. Hence the strategy
+was simplified and changed generally — but the potential risk of our current problem was not anticipated.
+
+e New archiving strategy introduced 03-Jul-2011, which immediately archived records older than 62 days belonging to
+logically deleted stock units, so the problem no longer occurs.
+
+A note on stock unit deletion:
+
+e When a stock unit is deleted, initially it is logically deleted, by setting a flag in the stock unit record. After 205 days the
+stock unit record is removed completely from the database (physically deleted)
+
+The following section assumes the problem data belongs to TP 9 — true for all except branch 011458, that the stock unit was deleted
+in TP 9 and that there was a single LS record for that stock unit. I have had to infer many of the dates and cannot prove it all ties in
+—I would need a set of Branch Trading Statements to do this.
+
+e — Astock unit had, at the end of TP 8 2010, written a loss or gain to Local Suspense(LS), or been used to clear LS. The
+attached spreadsheet shows what happened at each branch. An LS record was written into table BRDB_RX_BTS_DATA,
+carried forward into TP 9. Over all the stock units in the branch, these LS records would have netted to zero, and this is all
+‘business as usual’.
+
+e — This stock unit was logically deleted in TP 9 before 11-Dec-2010
+
+e Under old archiving strategy, the LS record belonging to the stock unit was not eligible for archiving until the branch was in
+TP 4 2011 i.e. probably sometime after 23-Jun-2011.
+
+¢ 205 days after the stock unit was logically deleted, it was permanently deleted. If this was before the branch had been
+rolled into TP 4 2011, the LS record belonging to the deleted stock unit was orphaned, and would never be archived.
+
+© End of TP 8 2011: the old TP 9 2010 LS record was picked up, along with genuine LS data for 2011, during TP 8 BTS
+production, though there was no visible impact on the TP 8 BTS or balance. The non-zero LS balance was converted during
+branch rollover, to prod 6295 Gain to Local Suspense (sign could be positive or negative), and written as an opening figure
+for TP 9, stock unit DEF.
+(I think we should consider raising an event if this happens since it is indicative of a system error).
+FUJ00084857
+FUJ00084857
+
+e End of TP 9 2011: the opening figure was included when the amount to be cleared from Local Suspense was calculated,
+when the last stock unit was rolled over, so the branch was forced to clear it.
+
+This shows up on the TP 9 BTS, since the Discrepancy Transferred lines don’t equal Discrepancy Resolved (I said on the conf
+call that this shows just on the BTS Branch figures, not the stock unit; I was wrong, the stock unit in which LS was cleared
+
+will show the additional amount that had to be cleared).
+¢ And the same happened in TP8/9 2012.
+Happy to try to answer any further questions!
+Regards,
+
+Anne.
+
+‘Anne Chambers
+Systems Support Centre, Post Office Account
+
+Fujitsu
+Lovelace Road, Bracknell, Berkshire RG12 8SN
+Tel: { F Internally
+

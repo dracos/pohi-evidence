@@ -1,0 +1,1554 @@
+POL00029610
+
+POL00029610
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+1s
+
+2.
+
+Receipts and Payments Mismatch
+
+Introduction
+
+The purpose of this note is to document a request that we have had from Post Office in terms
+of presenting details of what happened as a result of a bug in HNG-X in September 2010
+which caused a Receipts and Payments mismatch and also resulted in Discrepancies being
+lost.
+
+The background to this is the fact that there was a BBC documentary broadcast on Monday 7"
+February 2011 reporting on postmasters being unhappy about being pursued for losses by
+Postmasters on Horizon.
+
+It should be noted that the issues described here relates to HNG-X (Horizon Online) and that
+the implementation of the accounting mechanisms in the two systems is totally different (but
+they do produce the same reports and support the same business process).
+
+This version of the note reflects my current understanding of Post Office Ltd’s requirements.
+
+The Original Problem
+
+This is extracted from a note produced at the time and shared with Post Office Ltd
+called ‘Correcting Accounts for “lost” Discrepancies’ in document Lost
+Discrepancies.doc.
+
+PC0204263 describes a problem with SU Balancing that will result in a Receipts and
+Payments mismatch. A fix was created for this Peak.
+
+The fix has subsequently been fully deployed.
+
+However any branch encountering the problem will have corrupted accounts and Peak
+PC0204765 is a Master Peak to record all affected branches and also to define the process for
+correcting the accounts.
+
+It should be noted that PC0204263 was raised as a result of Fujitsu’s monitoring of system
+events and not as a result of a customer call from NBSC or HSD (although there were
+subsequent calls from Branches). This shows that the system monitoring controls for
+Receipts and Payments mismatches were in place and were effective in detecting such
+problems.
+
+The problem occurs as part of the process of moving Discrepancies into Local Suspense.
+
+When Discrepancies are found when rolling a SU over into a new TP, then the User is asked
+if they should be moved to Local Suspense (MSG31316). Should they Cancel at this point
+the Discrepancy is zeroised in the Local Cache (but nothing is written to the BRDB). Note
+that there is no corresponding Balancing Transaction generated in the Local Cache and so the
+Local Cache is in an Unbalanced state.
+
+If at the next screen (where the options are to: print or preview the trial balance again; to re-
+attempt the rollover; or to cancel the rollover) the rollover is Cancelled, then no harm is done.
+
+Ref:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+16/05/2013 16:23:00 Page I of 30
+POL00029610
+
+POL00029610
+
+eo
+FUJITSU Receipts ‘cit ayaieats lsat
+
+3.
+
+However if the Rollover is re-attempted at this point, the rollover will continue with the
+corrupted Local Cache.
+
+In practice this re-attempted rollover has usually been to a new BP, but it is the
+reattempted rollover that results in the corruption.
+
+This has the following consequences:
+
+There will be a Receipts and Payment mismatch corresponding to the value of
+Discrepancies that were “lost”
+
+Note that if the User doesn’t check their Final Balance Report carefully they may be
+unaware of the issue since there is no explicit message when a Receipts and Payment
+mismatch is found on the Final balance (the User is only prompted when one is detected
+during a Trial balance)
+
+The Local Suspense will have no knowledge of this specific Discrepancy
+
+The Opening Figures for Discrepancies in the new Period will be zero rather than the
+actual value of the Discrepancy
+
+The data used for the BTS will also have a zero value for Discrepancies at the end of the
+period. When the BTS is produced this will result in a similar Receipts and Payment
+mismatch
+
+Note that if the bug was not present, then the Discrepancy would have been transferred to
+Local Suspense and that would have been cleared, so there are a number of things wrong
+with the BTS. However the impact of the bug is that the Discrepancy is lost and so the
+simplest way to correct it is to re-introduce the lost Discrepancy in a subsequent period
+and allow the normal rollover process to correct it.
+
+Note that if more than one SU has the issue then the value will be the total value of all
+errors.
+
+The level of Discrepancies when viewed at the Branch will no longer match the level as
+seen in POL SAP or POL MIS
+
+The problem appears to have affected 62 Branches and details have been provided to Post
+Office Ltd of all the BTS and SU Rollover Reports for these Branches until they were clear of
+the issue.
+
+What Post Office want now
+
+Post Office are now looking to put together a “storyboard” showing the precise steps all the
+way through the problem, consisting of screen shots and snapshot reports from the system.
+This will assist in explaining the issue to senior management and, if necessary, the Press.
+
+Post Office are seeking help from Fujitsu in doing this.
+
+Fujitsu propose offer to do the following to meet that requirement:
+
+1. Select one of the affected Branches
+
+POL should be able to select a branch from the information they have. POL have
+responded that Fujitsu should select any of the 62 affected branches.
+
+Ref:
+
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+16/05/2013 16:23:00 Page 2 of 30
+POL00029610
+
+POL00029610
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+2. For this Branch, we need to describe exactly what happened in terms of screens that
+were displayed and reports that were actually produced. The reports that were
+produced are already available in the information we have provided to Post Office
+Ltd. We should be able to put together screenshots from a test or development
+system.
+
+3. In addition, we can identify at key points in the sequence what the state of the
+Branch’s accounts actually were, by mocking up what a SU Balance Snapshot would
+have looked like at that point of time. This can be done by taking the version of the
+report we have provided to POL and editing it to reflect the changed figures at that
+point in time.
+
+4. This information can then be presented to POL either as a document or a PowerPoint
+slide show.
+
+POL need to let us know which they want. POL have chosen 2, 3 and 4 to be
+presented in a document format followed with a walkthrough. The information is
+presented in section 4 below and a walkthrough will be arranged accordingly.
+
+4. Detailed Scenario
+
+Branch 135026 has been chosen to illustrate the problem. This Branch has two Stock Units,
+AA and ATM. The issue occurred during TP 09 when rolling over Stock Unit ATM from BP
+
+01 to BP 02 on 23" September 2010.
+Stock Unit ATM is an Individual Stock Unit.
+
+A variance between the daily cash declarations and the system figures of £88.77 had first been
+identified on 16" September (i.e. the first day after rolling over into TP 09 BP 01). Such a
+
+variance was consistently reported each time a Cash Declaration was made.
+
+What I have attempted to do below is to reproduce the sequence of activities and screens that
+
+the User (JTH001) would have gone through when carrying out the Balancing process.
+
+We have attempted to create accurate reports as they would have appeared at the
+time. The screens have been recreated as accurate as possible. The Date and Time at
+the top of each screen have not been adjusted and reflect the time that the transaction
+sequence was ran on the test system. All attempts have been made to ensure that the
+values in other parts of the screen are accurate.
+
+41 Balancing SU ATM at the end of TP 9 BP 1
+To show the initial state of affairs, Figure 1 shows what a Balance Snapshot would have
+looked like prior to starting the balancing process.
+Little Thurrock FAD: 1350269
+09:32 23/09/2010 TP: O09 BP: 01 SU: ATM
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 3 of 30
+FUSITSU
+
+HNG-X System
+Receipts and Payments Mismatch
+
+POL00029610
+POL00029610
+
+Balance Snapshot - Office Copy
+
+*#***Discrepancies in this Account*****###
+
+*Discrepancy OVER
+*Discrepancy SHORT
+
+BO se sae
+
+*Nett discrepancy
+
+re
+
+FOI III ISI IOI IOI IIIS IOI ICIS IG i lok
+
+0.00
+0.00
+
+VALUE ITEMS &MOP VOLUME VALUE
+
+Cash 12541.23
+Cash 12541.23
+MOP 12541.23
+TOTAL VALUE ITEMS &MOP 12541.23
+RECEIPTS VOLUME VALUE
+Balance B/Fwd 6541.23
+Transfers In 15000.00
+Remittance In Detail 0.00
+Discrepancy OVER Transferred 0.00
+Discrepancy SHORT Resolved 0.00
+TOTAL RECEIPTS 21541.23
+PAYMENTS VOLUME VALUE
+A&L ATM 8 9000.00
+SELF FILL ATM 9000.00
+Transfers Out 0.00
+Remittance Out Detail 0.00
+Discrepancy SHORT Transferred 0.00
+Discrepancy OVER Resolved 0.00
+Total VALUE ITEMS &MOP 12541.23
+Nett discrepancies 0.00
+TOTAL PAYMENTS 21541.23
+Balance C/Fwd 12541.23
+STOCK VOLUMES VOLUME
+
+EXAMINATION
+
+Ref:
+Auth
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+: Gareth I Jenkins
+16/05/2013 16:23:00 Page 4 of 30
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+POL00029610
+POL00029610
+
+Drawer examined and cash and stock found
+
+as shown in this summary
+
+Datestamp
+
+ten----- +
+Signature. ......... .
+Time... . 0... ee eAM/PM tone == +
+TRANSFER
+
+Cash and stock in this summary have been
+transferred to me
+Datestamp
+
+Signature ........e.e.-e .
+
+Time. 2... ee ee CAM/PM te------ +
+
+*** END OF REPORT ***
+
+Figure 1 — Initial Balance Snapshot
+
+When Balancing SU ATM, the following would have occurred:
+The User JTHOO1 would have gone to the Back Office Stock Balancing menu.
+
+Ref:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+16/05/2013 16:23:00 Page 5 of 30
+POL00029610
+POL00029610
+
+(2)
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+
+Fl Declare
+
+Figure 2 - Stock Balancing Menu
+
+Figure 2 shows the Stock Balancing Menu.
+On this menu, the Stamps button was used to declare stamps at £0.00
+
+Then the Cash button was used to Declare Cash at £12,630.00. This figure is more than the
+System Cash figure, and so a message was displayed indicating that there was a discrepancy
+and then a screen showing the gain as in Figure 3.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 6 of 30
+POL00029610
+POL00029610
+
+(2)
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+
+Iding
+
+£88.77 I Gain
+
+Figure 3 - Cash Gain
+
+The User would then have selected Enter to confirm this and had the option to print the
+Declaration report and would then have been returned to the Balancing menu as shown in
+Figure 2.
+
+Then the Balance Report button was used to Balance the Stock Unit.
+
+The first screen shown when balancing the Stock Unit is as in Figure 4.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 7 of 30
+POL00029610
+POL00029610
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+I Stock Un Tue 15 Feb 11 09:30 Help
+
+Balance Stock
+
+Quantity
+
+One or more declaration totals do not match the
+system derived figure
+
+Press Continue to see list of discrepancies for
+confirmation
+
+Figure 4 - Discrepancies Exist
+
+This indicates that there are one or more discrepancies between the System Figures and the
+Declarations that have been made.
+
+The User would have selected Continue at this point.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 8 of 30
+
+POL00029610
+POL00029610
+
+(2)
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+
+Figure 5 - Discrepancy List
+
+Figure 5 is then displayed with a list of the one discrepancy that was identified. Note that this
+is the same as he would have seen in Figure 3.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 9 of 30
+POL00029610
+POL00029610
+
+FUSITSU HNG-X System
+
+Receipts and Payments Mismatch
+
+Quantity
+I
+
+‘Remove I Scroll
+
+Item Up Down
+Fg) .
+
+View Full IReceipt Front
+
+Basket Office
+F10)_RECPT} 4
+
+Calculate ILogout I Quantity
+
+_Fit)F13)_—_F 5
+
+Figure 6 - Print Trial Balance Screen
+
+Figure 6 is then displayed allowing the user to print (or preview) the Trial Balance.
+
+Until the Trial Balance has been printed or previewed, then the Roll Over button is not
+available.
+
+At this point the Trial Balance would have been printed and it would have looked like:
+
+Little Thurrock FAD: 1350269
+09:32 23/09/2010 TP: 09 BP: 01 SU: ATM
+Trial Balance - Office Copy
+
+****%**Discrepancies in this Account********
+
+*Discrepancy OVER 88.77 *
+*Discrepancy SHORT 0.00 *
+ners *
+*Nett discrepancy 88.77 *
+
+*
+
+FOI CIC ICICI ICICI ICI I ICI ICICI ICICI IOI ICICI II A ee a ae
+
+VALUE ITEMS &MOP VOLUME VALUE
+Cash 12630.00
+Cash 12630.00
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 10 of 30
+
+FUSITSU
+
+HNG-X System
+Receipts and Payments Mismatch
+
+POL00029610
+POL00029610
+
+MOP 12630.00
+TOTAL VALUE ITEMS &MOP 12630.00
+RECEIPTS VOLUME VALUE
+Balance B/Fwd 6541.23
+Transfers In 15000.00
+Remittance In Detail 0.00
+Discrepancy OVER Transferred 0.00
+Discrepancy SHORT Resolved 0.00
+TOTAL RECEIPTS 21541.23
+PAYMENTS VOLUME VALUE
+A&L ATM 8 9000.00
+SELF FILL ATM 9000.00
+Transfers Out 0.00
+Remittance Out Detail 0.00
+Discrepancy SHORT Transferred 0.00
+Discrepancy OVER Resolved 0.00
+Total VALUE ITEMS &MOP 12630.00
+Nett discrepancies 88.77-
+TOTAL PAYMENTS 21541.23
+Balance C/Fwd 12630.00
+STOCK VOLUMES VOLUME
+
+EXAMINATION
+
+Drawer examined and cash and stock found
+
+as shown in this summary
+
+Signature .......ee-e
+
+Time... .... =. . .AM/PM
+
+TRANSFER
+
+Datestamp
+
+Cash and stock in this summary have been
+
+transferred to me
+
+Ref:
+Auth
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+: Gareth I Jenkins
+16/05/2013 16:23:00 Page 11 of 30
+POL00029610
+
+POL00029610
+Fe) <
+FU I TSU HNG-X System
+Receipts and Payments Mismatch
+Datestamp
+4------- +
+Signature ........e.e.-. . .
+Time... 1... . /AM/PM) so t------- +
+*** END OF REPORT ***
+Figure 7 - Original Trial Balance Report
+Having printed the trial balance the user would then have selected Roll Over.
+I Balance St Report Tue 15 Feb 11 09:33 Help
+
+Confirm Rollover Type
+
+7) Do you wish to rollover into the next TP, 10, or
+
+into the next BP in this TP 9/2?
+
+Figure 8 - TP or BP Rollover?
+
+Figure 8 would have been displayed giving the User the option of rolling over into either the
+next TP (TP 10) or the next BP (BP 02 of TP 09).
+
+In order to encounter the problem the user would have selected a new TP and so have selected
+the Next TP button. Note that this is incorrect as it is not time to rollover into TP 10 for
+another 3 weeks.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+: Gareth I Jenkins
+16/05/2013 16:23:00 Page 12 of 30
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+POL00029610
+POL00029610
+
+Tue 15 Feb 11 09:33
+
+Confirm Rollover MSG31311
+
+taken place. Press Continue to rollaver the stock
+
+7) Check that all stock unit accounting activities have
+Unit into the next TP.
+
+Continue Cancel
+
+__ ENTER END,
+
+Figure 9 - Prepare for new TP
+
+Figure 9 would be displayed requesting the user to confirm that all relevant Business
+Processes to roll into a new TP have been followed. They would then have selected Continue
+to progress. Note that if the User had realised their error and Cancelled at this point all would
+have been well and the User would have been returned to the screen show in Figure 6 and if
+they had then chosen to produce a Trial Balance again it would have been as shown in
+Figure 7. In particular, if the SU was then rolled over into a new BP the Discrepancy would
+
+not have been lost.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 13 of 30
+
+POL00029610
+POL00029610
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+Tue 16 Feb 11 09:34 Help
+
+Outstanding Discrepancies
+
+You have outstanding discrepancies of £ 88.77.
+
+Press Continue ta transfer this to local suspense
+and continue to rollover
+
+Press Cancel to cancel the rollaver
+
+Continue Cancel
+ENTER END
+‘SU: ATM Individual Housekee}
+
+‘STHOO1 = TP:08 BP:01 cc
+Figure 10 - Post Discrepancy to Local Suspense
+
+Figure 10 would then be shown indicating that the SU Discrepancy is to be posted to Local
+Suspense.
+
+At this point the user realises that they didn’t mean to rollover into a new TP (posting of
+discrepancies and hence this screen only appear during TP rollovers), and so they select
+Cancel. It is at this point that the bug occurs. The local memory cache in the counter has the
+discrepancy cleared at this point, but no corresponding balancing transaction has been added
+into the cache to balance it.
+
+They then return to the screen shown in Figure 6.
+
+At this point they could have selected cancel and all would have been well. If the Print or
+Preview option had been selected at this point to re-print the Trial Balance, then the following
+would have been printed:
+
+Little Thurrock FAD: 1350269
+
+09:33 23/09/2010 TP: O09 BP: 01 SU: ATM
+
+Trial Balance - Office Copy
+
+******Discrepancies in this Account********
+
+*Discrepancy OVER 0.00 *
+*Discrepancy SHORT 0.00 *
+erie res ee *
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 14 of 30
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+POL00029610
+POL00029610
+
+‘Nett discrepancy 0.00 *
+
+*
+
+FOSS IIIS IO IOI II IOI SII I IOI ICI III I IOI I lo
+
+VALUE ITEMS &MOP VOLUME VALUE
+Cash 12630.00
+Cash 12630.00
+MOP 12630.00
+TOTAL VALUE ITEMS &MOP 12630.00
+RECEIPTS VOLUME VALUE
+Balance B/Fwd 6541.23
+Transfers In 15000.00
+Remittance In Detail 0.00
+Discrepancy OVER Transferred 0.00
+Discrepancy SHORT Resolved 0.00
+TOTAL RECEIPTS 21541.23
+PAYMENTS VOLUME VALUE
+A&L ATM 8 9000.00
+SELF FILL ATM 9000.00
+Transfers Out 0.00
+Remittance Out Detail 0.00
+Discrepancy SHORT Transferred 0.00
+Discrepancy OVER Resolved 0.00
+Total VALUE ITEMS &MOP 12630.00
+Nett discrepancies 0.00
+TOTAL PAYMENTS 21630.00
+Balance C/Fwd 12630.00
+STOCK VOLUMES VOLUME
+EXAMINATION
+
+Drawer examined and cash and stock found
+as shown in this summary
+Datestamp
+
+Signature... . 2... 0. :
+
+Ref:
+Auth
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+: Gareth I Jenkins
+16/05/2013 16:23:00 Page 15 of 30
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+POL00029610
+POL00029610
+
+Time... .... . . .AM/PM
+
+TRANSFER
+Cash and stock in this summary have been
+transferred to me
+
+Datestamp
+
+Signature .......-ee-e .
+
+Time... 2. 2 2 2. AM/PM) $o------ +
+
+*** END OF REPORT ***
+Figure 11 — Revised Trial Balance
+
+In Figure 11, I have highlighted the differences from Figure 7, namely that the Discrepancy
+
+figures have been zeroised and the Total Payments no longer matches Total Receipts.
+
+The consequences of this are that the Discrepancy (which was in the postmaster’s favour in
+this case) has been lost and so the postmaster will not be advised that they can remove the
+
+£88.77 surplus.
+
+Note also that if this had occurred, then a Receipts and Payments mismatch event would have
+
+been recorded and a message would have been displayed to the User.
+
+However they decide to roll into a new BP instead and so select the Roll Over button and the
+
+screen in Figure 8 is redisplayed.
+
+This time the Next BP button is selected. This results in the Final Balance for the BP being
+
+printed.
+
+Ref:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+16/05/2013 16:23:00 Page 16 of 30
+POL00029610
+POL00029610
+
+[oe]
+FUJITSU Receipts ‘cit ayaieats lsat
+
+Confirmation MsG90019
+
+The report has been sent to the printer and
+printing will begin soon, Walt for the printing to
+complete.
+
+Pre
+
+Confirm if the report printed successfully
+
+Press Retry to reprint the report
+
+‘STHOOT = TP:09._ BP:
+Figure 12 - Final Balance Printing
+
+This would have matched the Trial balance shown above other than saying it was a Final
+balance.
+
+Note that the user is not warned about receipts and payments mismatches on the
+Final balance as it is assumed that they would already have been seen on the trial
+balance.
+
+This particular bug shows that is not necessarily the case!
+
+Also note that no Business event indicating a Receipts and Payments mismatch is
+generated during the printing of the Final balance.
+
+However a System (NT) Event is generated at this point regarding the Receipts and
+Payments mismatch.
+
+Figure 12 is displayed for the User to confirm that the Final balance has printed OK. On
+completion of the Print then Confirm is selected.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 17 of 30
+
+POL00029610
+POL00029610
+
+FUSITSU HING-X System
+
+Receipts and Payments Mismatch
+
+Tue 15 Feb 11 09:36 Help
+
+antity
+
+‘Stock Unit Rollover Successful
+
+Stock unit ATM has been rolled aver successfully
+to Trading Period 9 Balance Period 2,
+
+Continue
+ENTER
+
+Figure 13 - Rollover Complete
+
+Figure 13 is then displayed confirming that the rollover has been completed. Once the
+message has been read then Continue is selected returning the user to the Stock balancing
+Menu as in Figure 2.
+
+Internally, Horizon would have recorded Opening Figures for the new BP and these would be
+incorrect since the Discrepancy of £88.77 (gain) should have been carried forward into the
+new BP.
+
+If at this point a Balance Snapshot was taken it would appear as in Figure 14.
+
+Little Thurrock FAD: 1350269
+09:32 23/09/2010 TP: 09 BP: 02 SU: ATM
+Balance Snapshot - Office Copy
+
+****%**Discrepancies in this Account********
+
+*Discrepancy OVER 0.00 #
+*Discrepancy SHORT 0.00 ial
+BO aes es *
+*Nett discrepancy 0.00 *
+Baa aaa Kee *
+
+FOI IOI IO ICICI IO ICICI IO IG IG A ak ae
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 18 of 30
+
+POL00029610
+POL00029610
+
+FU ITSU HNG-X System
+
+Receipts and Payments Mismatch
+VALUE ITEMS &MOP VOLUME VALUE
+Cash 12630.00
+Cash 12630.00
+MOP 12630.00
+TOTAL VALUE ITEMS &MOP 12630.00
+RECEIPTS VOLUME VALUE
+Balance B/Fwd 12630.00
+Transfers In 0.00
+Remittance In Detail 0.00
+Discrepancy OVER Transferred 0.00
+Discrepancy SHORT Resolved 0.00
+TOTAL RECEIPTS 12630.00
+PAYMENTS VOLUME VALUE
+Transfers Out 0.00
+Remittance Out Detail 0.00
+Discrepancy SHORT Transferred 0.00
+Discrepancy OVER Resolved 0.00
+Total VALUE ITEMS &MOP 12630.00
+Nett discrepancies 00.00
+TOTAL PAYMENTS 12630.00
+
+Balance C/Fwd 12630.00
+STOCK VOLUMES VOLUME
+EXAMINATION
+
+Drawer examined and cash and stock found
+as shown in this summary
+
+Datestamp
+
+teoncnn- +
+Signature .......+.+-e+.e. -
+Time... . . 2. 1. /AM/PM tonne +
+TRANSFER
+
+Cash and stock in this summary have been
+
+Ref:
+Auth
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+: Gareth I Jenkins
+16/05/2013 16:23:00 Page 19 of 30
+FUSITSU HING-X System
+
+Receipts and Payments Mismatch
+
+POL00029610
+POL00029610
+
+transferred to me
+
+Datestamp
+$= -+
+
+Signature eee .
+
+Time + + 6 6 . .AM/PM $os- a= == +
+
+*** END OF REPORT ***
+Figure 14 - Balance Snapshot in new BP
+
+4.2
+
+Balancing the Branch
+
+All subsequent BP rollovers for this Stock Unit would have been OK and the next time an
+issue would be noticeable would be when rolling over the Branch into the next TP on
+21/10/2010.
+
+Ref:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+16/05/2013 16:23:00 Page 20 of 30
+oe
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+
+The BTS produced was as follows:
+Little Thurrock FAD 1350269
+1
+10:12 21/10/2010
+Final Branch Trading Statement - Office Copy From 16/09/10 To 14/10/10
+
+Branch Total Suspense
+Cash On Hand B Fwd $3272.23
+All Currencies Awaiting Collection B Fwd 66.39 66.39
+Suspense B Fwd 0.00 0.00
+Other MOP B Fwd 0.00
+ForEx B Fwd 3293.29
+Other Postage B Fwd 2786.84
+Remittances In Total 1767.50
+All Currency Rems from SUs 113422.00 113422.00
+Gains to/from Suspense 0.00 0.00
+All Currency Pouches Despatched 113488.39
+Transfers In from other SUs 45000.00
+Other Receipts 356755.05
+Remittances Out Total 132485.28
+All Currency Pouches Despatched via Sus 113488.39 113488.39
+Losses to/from Suspense 0.00 0.00
+All Currency Rems to Suspense 113422.00
+Transfers Out to other SUs 45000.00
+Other Payments 229755.25
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref; _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4,doc
+Author: Gareth I Jenkins
+Date: 16/05/2013 16:23:00 Page 21 of 30
+
+SU AA
+46731.00
+
+0.00
+3293.29
+2786.84
+
+1767.50
+
+0.00
+113488.39
+0.00
+356755.05
+
+132485.28
+
+0.00
+113422.00
+45000.00
+186695.25
+
+POL00029610
+POL00029610
+
+SU ATM
+6541.23
+
+0.00
+0.00
+0.00
+
+0.00
+
+0.00
+0.00
+45000.00
+0.00
+
+0.00
+
+0.00
+0.00
+0.00
+43060.00
+POL00029610
+
+POL00029610
+F's) *
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+Cash On Hand C Fwd 49526.86 40956.86 8570.00
+All Currencies Awaiting Collection C Fwd 0.00 0.00
+Suspense C Fwd 0.00 0.00
+Other MOP C Fwd 0.00 0.00 0.00
+ForEx C Fwd 2912.41 2912.41 0.00
+Other Postage C Fwd 3350.27 3350.27 0.00
+Total C Fwd 55789.54 0.00 47219.54 8570.00
+Trading position (+/-) 88.77- 0.00 Haz
+Discrepancy OVER Transferred 0.00 0.00 0.00
+Discrepancy SHORT Transferred 20.86 20.86 0.00
+Discrepancy OVER Resolved 0.00 0.00 0.00
+Discrepancy SHORT Resolved 20.86 20.86 0.00
+Total Branch Adjustments 20.86- 20.86- 0.00
+Little Thurrock FAD 1350269
+2
+10:12 21/10/2010 Reprint for 10:12 21/10/2010
+09
+Final Branch Trading Statement - Office Copy From 16/09/10 To 14/10/10
+Stock Holdings at End of Period
+
+DESCRIPTION VOLUME DESCRIPTION VOLUME DESCRIPTION
+
+Christmas 10 PP 4 Instants £5 78
+
+Medical PP 5 Instants £2 382
+
+WinniePoohPP 5
+
+RSF 1st Class 148
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 22 of 30
+FUJITSU
+
+POL00029610
+POL00029610
+
+HNG-X System
+Receipts and Payments Mismatch
+
+ist
+RSF
+ist
+2nd
+2nd
+
+class stmp
+1st Large
+
+class Large
+class Large
+class stmp
+
+SplDel sD3
+Airsure World
+
+Int
+Int
+
+Sign Euro
+Sign World
+
+Airsure Europe
+
+Airletter Single
+SplDel sD2
+SplDel by 9.00am
+
+S/a
+S/a
+1st
+2nd
+SAS
+SAS
+SAS
+
+2ndx100
+1stx100
+Large x 4
+Large x 4
+bk 1st x 12
+bk 2nd x 12
+bk 1st x 6
+
+PO Phonecrd £5
+PO Phonecrd £10
+PO Phonecrd £20
+Postal Orders
+
+4757
+199
+584
+618
+
+7191
+
+41
+
+10
+26
+23
+29
+49
+42
+61
+82
+634
+762
+232
+
+22
+93
+
+Ref:
+Author:
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Gareth I Jenkins
+16/05/2013 16:23:00
+
+Page 23 of 30
+F's) *
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+MVL Discs 809
+Instants £1 536
+Transaction Corrections 6
+
+POL00029610
+POL00029610
+
+I certify that the content of this balancing and trading statement is an accurate reflection of the cash and stock or
+
+Signature:
+
+*** END OF REPORT ***
+Figure 15 — Branch Trading Statement
+
+This shows a Trading Position of £88.77 (highlighted) corresponding to the lost discrepancy.
+
+However if we assume that there was no further transactions done in SU ATM in the remaining BPs, we would have a BTS as follows:
+
+T have also adjusted the data for SU AA to remove any transfers to SU ATM so that it all balances other then the £88.77 due to the bug.
+
+Little Thurrock FAD 1350269
+1
+
+10:12 21/10/2010
+Final Branch Trading Statement - Office Copy From 16/09/10 To 14/10/10
+
+Branch Total Suspense SU AA
+Cash On Hand B Fwd 53272.23 46731.00
+All Currencies Awaiting Collection B Fwd 66.39 66.39
+Suspense B Fwd 0.00 0.00
+Other MOP B Fwd 0.00 0.00
+ForEx B Fwd 3293.29 3293.29
+Other Postage B Fwd 2786.84 2786.84
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date: 16/05/2013 16:23:00 Page 24 of 30
+
+sU ATM
+6541.23
+
+0.00
+0.00
+0.00
+oe
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+
+Remittances In Total
+
+All Currency Rems from SUs
+Gains to/from Suspense
+
+All Currency Pouches Despatched
+Transfers In from other SUs
+Other Receipts
+
+Remittances Out Total
+
+All Currency Pouches Despatched via Sus
+Losses to/from Suspense
+
+All Currency Rems to Suspense
+Transfers Out to other SUs
+Other Payments
+
+Cash On Hand C Fwd
+
+All Currencies Awaiting Collection C Fwd
+Suspense C Fwd
+
+Other MOP C Fwd
+
+ForEx C Fwd
+
+Other Postage C Fwd
+
+Total C Fwd
+
+Trading position (+/-)
+Discrepancy OVER Transferred
+Discrepancy SHORT Transferred
+Discrepancy OVER Resolved
+Discrepancy SHORT Resolved
+
+1767.50
+113422.00
+0.00
+113488.39
+15000.00
+356755.05
+
+132485.28
+113488.39
+0.00
+113422.00
+15000.00
+195695.25
+
+83586.86
+0.00
+0.00
+0.00
+
+2912.41
+3350.27
+89849.54
+
+88.77-
+0.00
+
+20.86
+0.00
+
+20.86
+
+113422.00
+0.00
+
+113488.39
+0.00
+
+0.00
+0.00
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+Date: — 16/05/2013 16:23:00 Page 25 of 30
+
+1767.50
+
+0.00
+113488.39
+0.00
+356755.05
+
+132485.28
+
+0.00
+113422.00
+15000.00
+186695.25
+
+70956.86
+
+0.00
+2912.41
+3350.27
+
+77219.54
+0.00
+0.00
+
+20.86
+0.00
+20.86
+
+POL00029610
+POL00029610
+
+0.00
+
+0.00
+0.00
+15000.00
+0.00
+
+0.00
+
+0.00
+0.00
+0.00
+9000.00
+
+12630.00
+
+0.00
+0.00
+0.00
+12630.00
+
+88.77-
+0.00
+0.00
+0.00
+0.00
+POL00029610
+
+POL00029610
+F's) *
+FUJITSU ___ HING-X System —
+Receipts and Payments Mismatch
+Total Branch Adjustments 20.86- 20.86- 0.00
+Little Thurrock FAD 1350269
+2
+10:12 21/10/2010 Reprint for 10:12 21/10/2010
+09
+Final Branch Trading Statement - Office Copy From 16/09/10 To 14/10/10
+Stock Holdings at End of Period
+DESCRIPTION VOLUME DESCRIPTION VOLUME DESCRIPTION
+Christmas 10 PP 4 Instants £5 78
+Medical PP 5 Instants £2 382
+WinniePoohPP 5
+RSF 1st Class 148
+1st class stmp 4757
+RSF lst Large 199
+1st class Large 584
+2nd class Large 618
+2nd class stmp 7191
+SplDel SD3 41
+Airsure World 9
+Int Sign Euro 8
+Int Sign World 9
+Airsure Europe 10
+Airletter Single 26
+SplDel sD2 23
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref; _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4,doc
+
+Author: Gareth I Jenkins
+
+Date: 16/05/2013 16:23:00 Page 26 of 30
+FUJITSU
+
+HNG-X System
+Receipts and Payments Mismatch
+
+Transaction Corrections
+
+SplDel by 9.00am
+
+S/a
+S/a
+ist
+2nd
+SAS
+SAS
+SAS
+
+2ndx100
+1stx100
+Large x 4
+Large x 4
+bk 1st x 12
+bk 2nd x 12
+bk 1st x 6
+
+PO Phonecrd £5
+PO Phonecrd £10
+PO Phonecrd £20
+Postal Orders
+
+MVL
+
+Discs
+
+Instants £1
+
+29
+49
+42
+61
+82
+634
+762
+232
+
+22
+93
+809
+536
+
+6
+
+POL00029610
+POL00029610
+
+I certify that the content of this balancing and trading statement is an accurate reflection of the cash and stock or
+
+Signature:
+
+*** END OF REPORT ***
+
+Figure 16 — Adjusted Branch Trading Statement
+
+Given the same assumptions as above (no further transactions done in SU ATM in the remaining BPs) then the Trial Balance Report at the end of BP
+4 for SU ATM would have looked as follows:
+
+Ref:
+
+Date:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+Author: Gareth I Jenkins
+16/05/2013 16:23:00
+
+Page 27 of 30
+oe
+FU ITSU HNG-X System
+Receipts and Payments Mismatch
+Little Thurrock FAD: 1350269
+09:32 21/10/2010 TP: 09 BP: 04 SU: ATM
+
+Balance Snapshot - Office Copy
+
+***%***Discrepancies in this Account********
+
+*Discrepancy OVER 0.00 *
+*Discrepancy SHORT 0.00 *
+re eee *
+*Nett discrepancy 0.00 *
+
+*
+
+FOIE IIIS IS II SIO SISSIES IG IOI ISIE IOI i ae
+
+VALUE ITEMS &MOP VOLUME VALUE
+Cash 12630.00
+Cash 12630.00
+MOP 12630.00
+TOTAL VALUE ITEMS &MOP 12630.00
+RECEIPTS VOLUME VALUE
+Balance B/Fwd 12630.00
+Transfers In 0.00
+Remittance In Detail 0.00
+Discrepancy OVER Transferred 0.00
+Discrepancy SHORT Resolved 0.00
+
+Ref:
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+16/05/2013 16:23:00 Page 28 of 30
+
+POL00029610
+POL00029610
+POL00029610
+POL00029610
+
+re)
+
+Receipts and Payments Mismatch
+
+TOTAL RECEIPTS 12630.00
+PAYMENTS VOLUME VALUE
+Transfers Out 0.00
+Remittance Out Detail 0.00
+Discrepancy SHORT Transferred 0.00
+Discrepancy OVER Resolved 0.00
+Total VALUE ITEMS &MOP 12630.00
+Nett discrepancies 00.00
+TOTAL PAYMENTS 12630.00
+Balance C/Fwd 12630.00
+STOCK VOLUMES VOLUME
+EXAMINATION
+
+Drawer examined and cash and stock found
+as shown in this summary
+Datestamp
+
+Signature... ... 2.0.04
+
+Time... 6.0... 2. .AM/PM  +------- +
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref; _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4,doc
+
+Author: Gareth I Jenkins
+
+Date: 16/05/2013 16:23:00 Page 29 of 30
+POL00029610
+POL00029610
+
+re)
+
+Receipts and Payments Mismatch
+
+TRANSFER
+Cash and stock in this summary have been
+transferred to me
+
+Datestamp
+
+Signature. ........
+
+Time... . 2... 2). /AM/PM)—ot+------- +
+
+*** END OF REPORT ***
+
+Figure 17 — Adjusted Trial Balance for SU ATM
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+Ref: _c:\gij\pathway\miscdata\1209.discrepancies\branch 159632\receipts&paymentsv0.4.doc
+
+Author: Gareth I Jenkins
+
+Date: 16/05/2013 16:23:00 Page 30 of 30

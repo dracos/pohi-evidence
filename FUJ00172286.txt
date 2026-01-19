@@ -1,0 +1,359 @@
+FUJ00172286
+FUJ00172286
+
+Peak Incident Management System
+
+Call Reference PC0225656 Call Logger Gerald Barnes -- Audit-Dev
+Release Proposed For -- HNG-X 08.01.04.00 Top Ref PC0225071
+Call Type Cloned call Priority A -- Programme stopped
+Contact Gerald Barnes Call Status I Closed -- Duplicate Call
+Target Date 14/05/2013 Effort (Man Days) 1.00
+Summary Possibility of missing transactions on ARQ Audit spreadsheets
+All References Type Value
+
+DeviIntRel-Director Live Supp.Test
+
+Clone Master PC0225071
+
+DevIntRel-Director Live Supp.Test
+
+QFP Review QFP RC
+Impact
+St Bae ‘ User Date
+
+Gerald Barnes 13-May-2013 10:54:34
+
+This is a clone of PC0225071. Unless this is fixed there will be regression when QueryDLL.dll in
+AUDIT_EXTRACT_SVR_0801_V064-V063 is released.
+
+There is a loop hole in the code of QueryDLL.dll where by if it is running during the evening service
+shutdown the resulting prosecution spreadsheets produced later may have missing transactions.
+
+Progress Narrative
+
+pate: 13-May-2013 10:48:23 Uscr:Gerald Barnes
+
+CALL PC0225656 opened
+
+Details entered are:-
+
+summary: Possibility of missing transactions on ARQ Audit spreadsheets
+call Type:c
+
+call Priority:a
+
+lfarget Release:HNG-X 08.00
+
+routed to:Audit-Dev - Gerald Barnes
+
+Date:46-Apr-2013 08:56:09 User:Andy Dunks
+caLL PC0225071 opened
+
+Details entered are:~
+
+lsummary:Possibility of missing transactions on ARQ Audit spreadsheets
+call Type:L
+
+call Priority:a
+f'arget Release:HING-X 08.00
+
+routed to:Audit-Dev - Unassigned_
+
+j0ate:16-Apr-2013 08:56:08 User:Andy Dunks
+[Start of Response]
+there is a small possibility of missing transactions on generated spreadsheets if the query handling was run during the evening
+jouery Manager shutdown.
+
+flaw has recently been spotted in the audit code. It was introduced in the fix to PC0187097 quite some time ago (but post
+luncx) .
+
+Passing call to Audit Dev as they have requested this call to be raised.
+[End of Response]
+Response code to call Live Incidents/Defects(L) as Potential Problem Identified (38)
+
+Jbate:16-Apr-2013 10:22:04 Uscr:Gerald Barnes
+the Call record has been assigned to the Team Member: Gerald Barnes
+
+bate:16-Apr-2013 10:34:10 User:Gerald Barnes
+
+lfarget Date/Time updated: new value is 30/04/2013 08:56
+
+Development Cost updated: new cost is 14 (Man Days)
+
+[Start of Response]
+
+[the problem is principally because of a fix introduced by PC0187097. The following change -
+
+if (cStatus =~ CRFIQueryRequest::E ABSTRACT FILES OK II //Directories created ok
+sStatus =~ CRFIQueryRequest::E CONCAT FILES II //Abnormal Ternination last time - Try again
+~ CRFIQueryRequest ::E CONCAT FILES FAILED II //Failed last time - try again
+CRFIQueryRequest::E ABSTRACT FILES FAILED ) //SM - PC0187097
+
+Status
+
+FUJ00172286
+FUJ00172286
+
+eant that an error code generated on shutdown in the previous section is masked and as a result the shutting down whilst looping
+though files would not be noticed.
+
+liowever because of this problem a meeting was held yesterday attended by Gerald Barnes, Adam Spurgeon, Alan Holmes and Steve
+Goddard and the following points would be acted upon -
+
+Hh. I contact the prosecution service and request them to raise an A priority PEAK on this issue.
+2. 1 advise them that in future they should check their QueryHandler.log for any instance of the line ?Shutdown Signalled -
+Process terminating? and if one occurs they should rerun their query.
+
+Is. They should check all submitted ARQ evidence for ?Shutdown Signalled - Process terminating? and if one occurs rerun the
+
+Jmery as a precaution and confirm the results are the same as submitted.
+la. I should very thoroughly re-investigate why the line ?cStatus -= CRFIQueryRequest::E ABSTRACT FILES FAILED ) //SM -
+Pco187097? was added to address the PEAK PCO187097. The line just dose not look right for me. What ever was being addressed by
+this PEAK needs to be done another way.
+
+5. I go through the code changing any indications of the ethos that a shutdown results in a failure being reported to a
+shutdown results in a rerun after service start. I note that although this needs thorough testing it is a fairly safe change
+because already if the Query Manager code does not respond to the shutdown signal in a timely manner it is just terminated
+resulting in the same behaviour.
+
+6. I go through the code trying to spot any other instances of failure results being overwritten without being properly
+reported first.
+
+[End of Response]
+Response code to call type L as Category 38 -- Pending -- Potential Problem Identified
+fours spent since call received: 1 hours
+
+Joate:16-Apr-2013 10:37:39 User:Gerald Barnes
+A new Business Impact has been adde
+here is a loop hole in the code of QueryDLL.dll where by if it is running during the evening service shutdown the resulting
+spreadsheets may have missing files.
+
+jOate:16-Apr-2013 10:38:54 User:Gerald Barnes
+[fhe Business Impact has been update:
+[There is a loop hole in the code of QueryDLL.dll where by if it is running during the evening service shutdown the resulting
+jprosecution spreadsheets produced later may have missing transactions.
+
+bate:16-Apr-2013 10:39:34 User:Gerald Barnes
+product HNG-X Platforms -- Audit Server (ARC) (version unspecified) added.
+
+bate:16-Apr-2013 1
+[Start of Response]
+DEVELOPMENT IMPACT OF FIX:
+
+4:19 Uscr:Gerald Barnes
+
+SPECIFY THE HNG-X PLATFORMS IMPACTED:
+fhe platform is specified and it is the audit server.
+TECHNICAL SUMMARY:
+
+lA loop hole has been found in QueryDbL.dll where by if it is running during the evening shutdown of the QueryManager service the
+rosecution spread sheets produced later may have missing transactions.
+
+in addition the design ethos at the moment of QueryDLL is that on shutdown 4 failure state is indicated. This is to be changed to
+there being a rerun of the query after shutdown which would have prevented this problem in the first place although there would
+still have been a problem if a genuine error rather than a shutdown had occurred prior to the faulty code which masked the
+earlier state.
+
+las well as that and as a precaution the error handling of QueryDLL.dll is going to be looked at and improved.
+
+LIST OF KNOWN DIMENSIONS DESIGN PARTS AFFECTED BY THE CHANGE:
+
+\UDET_EXTRACT_SVR
+
+[px
+
+ENDENCIES:
+[here are no dependencies.
+
+DEPLOYMENT DETALL:
+
+It is a file to be replaced when the QueryManager service is quiescent.
+
+DEV EFFORT IN MANDAYS:
+
+[the work is about 10 days but because of possible interruptions we should allow 3 weeks elapsed.
+HMPACT ON USER:
+
+fhe prosecution spreadsheets will be more reliable after this fix is applied.
+
+IMPACT ON OPERATIONS:
+
+the prosecution spreadsheets will be more reliable after this fix is applied.
+
+AVE RELEVANT KELS BEEN CREATED OR UPDATED?
+
+FUJ00172286
+FUJ00172286
+
+jo KEL has been raised because it is intended that this problem will be fixed quickly and all members of the prosecution team has
+peen informed.
+
+IMPACT ON TEST:
+prosecution spreadsheet should be produced by slow ARQ and fast ARQ before the fix is applied and with no service shutdown of
+the QueryManager service. These should be produced again after the fix and confirmed as the same. In addition with the fix in
+jplace it should be confirmed that these same spreadsheets are produced after shutting down the QueryManager service and
+restarting it at various points in both the fast ARQ and slow ARQ.
+
+ISKS (of releasing and of not releasing proposed fix):
+
+tf this fix is not done then there is a serious risk of a spreadsheet being produced with missing transactions.
+
+LIS? OF LIKELY DELIVERABLES:
+joueryDLL dll
+{End of Response]
+
+Response code to call type L as Category 55 -- Pending ~- Live Fix Impact Supplied
+fours spent since call received: 1 hours
+
+Jbate:16-Apr-2013 11:07:18 Uscr:Gerald Barnes
+[the call Target Release has been moved to Proposed For -= HNG-X 07.22
+
+jbate:16-Apr-2013 11:10:50 User:Gerald Barnes
+laction placed on Team:RelMngmntForum
+
+joate:24-Apr-2013 14:36:44 User:Lorraine Guiblin
+[the call Target Release has been moved to Targeted At -~ HNG-X 07.22
+
+jDate:24-Apr-2013 14:36:55 Uscr:Lorraine Guiblin
+targeted in PTF as requested
+
+jbate:24-Apr-2013 14:36:58 Uscr:Lorraine Guiblin
+ction has been removed from the call
+
+lOate:02-May-2013 17:12:07 User:Gerald Barnes
+ffarget Date/Time updated: new value is 09/05/2013 08:56
+
+[Start of Response]
+
+coding and testing of the most major part of this is done. However whilst testing another problem was found by which there is a
+tiny possibility that an error in the filtering process may not be reported by the Audit Client. This is being investigated.
+[End of Response]
+
+lresponse code to call type L as Category 40
+
+Pending -- Incident Under Investigation
+
+Date:13-May-2013 10:48:23 User:Gerald Barnes
+call cloned from original call:PC0225071 by User:Gerald Barnes
+
+[Date:13-May-2013 10:50:23 Uscr:Gerald Barnes
+product HNG-X Platforms -- Audit Server (ARC) (version unspecified) added.
+
+jbate:13-May-2013 10:54:29 User:Gerald Barnes
+[fhe Business Impact has been update
+[This is a clone of PC0225071. Unless this is fixed there will be regression when QueryDLL.dll in AUDIT EXTRACT SVR 0801 V064-v063
+is released.
+
+there is a loop hole in the code of QueryDLL.dll where by if it is running during the evening service shutdown the resulting
+rosecution spreadsheets produced later may have missing transactions.
+
+[Date:13-May-2013 10:54:34 Uscr:Gerald Barnes
+[the Business Impact has been update
+[this is a clone of PC0225071. Unless this is fixed there will be regression when QueryDLL..dll in AUDIT EXTRACT SVR_0801_V064-V063
+
+lis released.
+
+[there is a loop hole in the code of QueryDLL.dll where by if it is running during the evening service shutdown the resulting
+prosecution spreadsheets produced later may have missing transactions.
+
+Joate:13-May-2013 10:55:36 Uscr:Gerald Barnes
+Ithe call Target Release has been moved to Proposed For ~~ HNG-X 08.01.04.00
+
+FUJ00172286
+FUJ00172286
+
+Ibate:13-May-2013 11:06:09 Uscr:Gerald Barnes
+Development Cost updated: new cost is 1 (Man Days)
+[Start of Response]
+
+DEVELOPMENT IMPACT OF FIX:
+
+SPECIFY THE HNG-X PLATFORMS IMPACTE
+
+fhe platform is specified and is the audit server.
+JECHNICAL SUMMARY:
+
+[this is a cloned PEAK. The technical summary is explained in the original targeted Pc0225071.
+LIST OF KNOWN DIMENSIONS DESIGN PARTS AFFECTED BY THE CHANGE:
+
+UDI'T_EXTRACT_SVR
+
+DEPENDENCIES:
+
+[there are no particular dependencies.
+
+DEPLOYMENT DETAIL:
+lkeplacement file when no audit queries are running.
+
+DEV EFFORT IN MANDAYS:
+
+H man day. It is just a matter of merging some source files and doing a rebuild.
+HMPACT ON USER:
+
+Unless this is fixed there will be regression when AUDIT EXTRACT SVR_0801_V064-V063 goes live.
+
+IMPACT ON OPERATIONS
+Unless this is fixed there will be regression when AUDIT EXTRACT SVR_0801_V064-V063 goes live,
+HAVE RELEVANT KELS BEEN CREATED OR UPDATED?
+
+his is just a clone and so no additional KELs are required.
+
+IMPACT ON TEST:
+
+mdit filtering and querying should be regression tested after trusted logons have been done.
+IkISKS (of releasing and of not releasing proposed fix):
+
+jo particular risk of applying the fix. If it is not applied there will be regression when AUDIT EXTRACT SVR_0801_V064-V063 goes
+hive.
+
+LIST OF LIKELY DELIVERABLES:
+
+jueryDLL.dll, RFIDatabase.dll, QueryManager.exe
+{End of Response]
+
+Response code to call type C as Category 55 -- Pending -- Live Fix Impact Supplied
+fours spent since call received: 1 hours
+
+jate:13-May-2013 11:06:45 User:Gerald Barnes
+Action placed on Team:Re1MngmntForum
+
+[Date:4-May-2013 09:33:34 Uscr:Matt Swain
+lOFP: Have looked at this peak. This ia not to be part of the QFP stack and should go through PTF.
+
+Jbate:15-May-2013 09:38:19 Uscr:Matt Swain
+Reference Added: QFP Review QFP RC
+
+[Date:21-May-2013 10:06:42 Uscr:Adam Spurgeon
+laction has been removed from the call
+
+jdate:21-May-2013 10:10:42 User:Adam Spurgeon
+[Start of Response]
+
+closing as duplicate of PC0225071. Thi
+decided that the original Peak will be used to deliver the fix at a release TBD at the time of writing.
+[End of Response]
+
+Response code to call type C as Category 72
+Routing to Call Logger following Final Progr
+efect cause updated to 14 -- Development - Code
+
+Peak wa
+
+cloned from PC0225071 to address the issue in that Peak. However, it has been
+
+Duplicate Call
+
+FUJ00172286
+FUJ00172286
+
+Date: 22-May-2013 11:28:05 User:Gerald Barnes
+CALL PC0225656 closed: Category 72 Type ©
+
+Root Cause Development - Code
+
+Logger Gerald Barnes -- Audit-Dev
+
+Subject Product General/Other/Misc -- Unknown (version unspecified)
+Assignee Gerald Barnes -- Audit-Dev
+
+Last Progress 22-May-2013 11:28 -- Gerald Barnes
