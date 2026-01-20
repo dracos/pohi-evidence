@@ -1,0 +1,157 @@
+Ref:
+
+FUJ00081527
+
+FUJ00081527
+
+Receipts and Payments Mismatch
+
+c:\gij\pathway\miscdata\1209.discrepancies\receipts&payments.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+1.
+
+2.
+
+11/02/2011 09:48:00
+Introduction
+
+The purpose of this note is to document a request that we have had from Post Office in
+terms of presenting details of what happened as a result of a bug in HNG-X in
+September 2010 which caused a Receipts and Payments mismatch and also resulted in
+Discrepancies being lost.
+
+The background to this is the fact that there was a BBC documentary broadcast on
+Monday 7" February 2011 reporting on postmasters being unhappy about being
+pursued for losses by Postmasters on Horizon.
+
+It should be noted that the issues described here relates to HNG-X (Horizon Online)
+and that the implementation of the accounting mechanisms in the two systems is totally
+different (but they do produce the same reports and support the same business
+process).
+
+This version of the note reflects my current understanding of Post Office Ltd’s
+requirements.
+
+The next step is to pass this to Post Office Ltd for them to confirm that my
+understanding is correct and that this is what they want and also to respond to the
+boxed questions in section 3.
+
+The Original Problem
+
+This is extracted from a note I produced at the time and shared with Post Office Ltd called
+‘Correcting Accounts for “lost” Discrepancies’ in document Lost Discrepancies.doc.
+
+PC0204263 describes a problem with SU Balancing that will result in a Receipts and
+Payments mismatch. This Peak has been fixed and was released in October 2010 with
+release 2.12.
+
+The fix has subsequently been fully deployed.
+
+However any branch encountering the problem will have corrupted accounts and Peak
+PC0204765 is a Master Peak to record all affected branches and also to define the
+process for correcting the accounts.
+
+The problem occurs as part of the process of moving discrepancies into Local
+Suspense.
+
+When Discrepancies are found when rolling a SU over into a new TP, then the User is
+asked if they should be moved to Local Suspense (MSG31316). Should they Cancel at
+this point the Discrepancy is zeroised in the Local Cache (but nothing is written to the
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\receipts&payments,doc
+
+Page I of 3
+FUJ00081527
+FUJ00081527
+
+BRDB). Note that there is no corresponding Balancing Transaction generated in the
+Local Cache and so the Local Cache is in an Unbalanced state.
+
+If at the next screen (where the options are to: print or preview the trial balance again;
+to re-attempt the rollover; or to cancel the rollover) the rollover is Cancelled, then no
+harm is done. However if the Rollover is re-attempted at this point, the rollover will
+continue with the corrupted Local Cache. This has the following consequences:
+
+= There will be a Receipts and Payment mismatch corresponding to the value
+of Discrepancies that were “lost”
+
+Note that if the User doesn’t check their Final Balance Report carefully they may
+be unaware of the issue since there is no explicit message when a Receipts and
+Payment mismatch is found on the Final balance (the User is only prompted when
+one is detected during a Trial balance)
+
+= The Local Suspense will have no knowledge of this specific Discrepancy
+
+= The Opening Figures for Discrepancies in the new Period will be zero
+rather than the actual value of the Discrepancy
+
+= The data used for the BTS will also have a zero value for Discrepancies at
+the end of the period. When the BTS is produced this will result in a
+similar Receipts and Payment mismatch
+
+Note that if the bug was not present, then the Discrepancy would have been
+transferred to Local Suspense and that would have been cleared, so there are a
+number of things wrong with the BTS. However the impact of the bug is that the
+discrepancy is lost and so the simplest way to correct it is to re-introduce the lost
+discrepancy in a subsequent period and allow the normal rollover process to
+correct it.
+
+Note that if more than one SU has the issue then the value will be the total value of all
+errors
+
+= The level of Discrepancies when viewed at the Branch will no longer match
+the level as seen in POL SAP or POL MIS
+
+The problem appears to have affected 62 Branches and details have been provided to
+Post Office Ltd of all the BTS and SU Rollover Reports for these Branches until they
+were clear of the issue.
+
+3. What Post Office want now
+
+Post Office are now looking to put together a “storyboard” showing the precise steps
+all the way through the problem, consisting of screen shots and snapshot reports from
+the system. This will assist in the explanation of the issue to senior management and, if
+necessary, the Press.
+
+They are seeking help from Fujitsu in doing this.
+Fujitsu are proposing the following to meet that requirement:
+
+1. Select one of the affected Branches
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\receipts&payments,doc
+Page 2 of 3
+FUJ00081527
+FUJ00081527
+
+POL should be able to select a branch from the information they have. If they want us to
+pick the Branch then we can do so.
+
+2. For this Branch, then we need to describe exactly what happened in terms of
+screens that were displayed and reports that were actually produced. The
+reports that were produced are already available in the information we have
+provided to Post Office Ltd. We should be able to put together screenshots
+from a test or development system.
+
+3. In addition, we can identify at key points in the sequence what the state of the
+Branch’s accounts actually were, by mocking up what a SU Balance Snapshot
+would have looked like at that point of time. This can be done by taking the
+version of the report we have provided to POL and editing it to reflect the
+changed figures at that point in time.
+
+4. This information can then be presented to POL either as a document or a
+PowerPoint slide show.
+
+POL need to let us know which they want.
+
+FUJITSU RESTRICTED (COMMERCIAL IN CONFIDENCE)
+
+c:\gij\pathway\miscdata\1209.discrepancies\receipts&payments,doc
+Page 3 of 3

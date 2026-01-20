@@ -1,0 +1,2817 @@
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION &
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Document Title:
+Document Type:
+Release:
+
+Abstract:
+
+Document Status:
+
+Author & Dept:
+
+Internal Distribution:
+
+External Distribution:
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+Technical Interface Specification (TIS)
+
+Release Independent
+
+Technical interface between TMS and POL LAN infrastructure at
+CSC Northern Data Centre, Sungard LTC at Hounslow and CSC
+Maidstone Data Centre
+
+APPROVED
+
+Stephen Wisedale, RMGA, Fujitsu Services
+
+See section 0.4
+
+See section 0.4
+
+Approval Authorities:
+
+Name
+
+lan Trundell
+
+Role Signature Date
+
+Design Authority (Post Office)
+
+Sridhar Arun Kumar
+
+Professional Services (CSC)
+
+Mark Jarosz
+
+Design Authority (Fujitsu
+Services)
+
+Note: See RMG Account HNG-X Reviewers/Approvers Role Matrix (PGM/DCM/ION/0001) for guidance.
+
+©Copyright Fujitsu Services Ltd 2
+
+1010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 1 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+0 Document Control
+
+0.1 Table of Contents
+
+0 DOCUMENT CONTROL...
+
+0.1 Table of Contents.
+0.2 Table of Figure:
+0.3 Document Histo!
+0.4 Review Details.
+0.5 Associated Documents (Internal & External
+0.6 Abbreviations...
+0.7 Glossary...
+
+0.8 Changes Expected. 1
+0.9
+0.10
+
+aaasa
+ahonbo
+
+3 MEDIUM OF TRANSFER.
+
+3.1 Interface Overview.
+3.2. Layers 1 and 2 - Phy:
+3.3. Layer 3 — Network.
+3.3.1. Control Plane.
+3.3.2 Data Plane..
+3.3.3 Virtual IP Addressing
+3.3.4 IP Address Space.....
+
+4 APPLICATION PORTS AND SERVICES SUMMARY BETWEEN HNG-X AND
+RMG 32
+
+44
+4.2
+4.3 Track and Trace Application Specific Requirement..
+4.4 Online Interface to APOP Administration Service.
+4.5 Reference Data System (RDS)...
+4.6 First Rate Travel Service (FTRS
+4.7 _ Interfaces to/from POLFS/POLSAP.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 2 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION &
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.8 Interfaces from HNG-X to POL Gateway (non POL FS}
+4.9 Interfaces from HNG-X to EDG (non POL FS).
+4.10 Interfaces to HNG-X from EDG (non POL FS).
+4.11 Interfaces from HNG-X to POL (non POL FS/POL Gateway/EDG:
+4.12 Interfaces to HNG-X from POL (non POL FS/POL Gateway/EDG:
+
+5 OPERATIONAL CONSIDERATIONS.
+
+5.1. Operational Schedule.
+5.2 Printer Setup.
+5.3. Performance..
+
+6 SECURITY.
+
+6.1 Data Integri
+6.2. Data protection
+6.3 Data Encrypti
+
+7 RESILIENCE, RECOVERY AND HIGH AVAILABILITY...
+
+7.1 Resilience.
+7.2 Fault Detection.
+7.3 Disaster Recovery.
+
+7.3.1 POLFS/POLSAP Specific Disaster Recovery Tasks. . . 46
+7.4 High Availability
+
+8 MIGRATION.
+
+8.1 Strategy.....
+8.1.1 RMG Services Migration
+8.1.2 Weekend B Migration.
+8.1.3
+4
+
+Weekend A Migratio!
+.4 POLSAP Convergence.
+8.2 Interface Characteristi
+8.3 Post-Migration.....
+
+9 TESTING
+
+A DETAILED CONFIGURATION. 51
+
+A.1_— Production System NAT Address Allocatior
+B.1. System Addresses and Ports.
+C.1RMG Hosts and IP Addresses for NDC, LTC & Maidstone.
+D.1. POLFS/POLSAP Port:
+E.1 Hardware...
+F.1 Environmental Specificat
+G.1___ WAN Interface Utilisation and Availability.
+H.1. POLFS/POLSAP Interfaces...
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 3 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+0.2 Table of Figures
+Figure 1 HNG-X — RMG Interface Context......
+Figure 2: NDC Physical Topology.
+
+Figure 3: LTC Physical Topology.
+
+Figure 4: Maidstone Physical Topology.
+Figure 5: NDC Layer 3 Topology...
+Figure 6: LTC Layer 3 Topology...
+Figure 7: Maidstone Layer 3 Topology......
+Figure 8: NAT Operation between HNG-X and RMG....
+Figure 9: Normal Operation between HNG-X and the RMG...
+
+Figure 10: Failure at IRE11 instigating a Disaster Recovery Scenario.
+Figure 11: Bandwidth Utilization for Fujer-Huthwaite-a646-r22-001 -wan0.
+Figure 12: Bandwidth Availability for Fujer-Huthwaite-a646-r22-001-wan0......
+Figure 13: Bandwidth Utilization for Fujer-Huthwaite-a646-r22-002-wan0.......
+
+Figure 14: Bandwidth Availability for Fujer-Huthwaite-a646-r22-002-wan0..... wed
+List of TablesTable 1: Interface Characteristics 321
+Table 2: SAP Application Specific Requirement 33
+Table 3: TES Application Specific Requirement 334
+Table 4: Track and Trace Application Specific Requirement 334
+Table 5: Online APOP Administration Service 335
+Table 6 Reference Data System 335
+Table 7 First Rate Travel Service 336
+The interfaces to and from POLFS and POLSAP are documented in appendix H1 3
+Table 9 Interfaces from HNG-X to POL Gateway (non POL FS) 3
+Table 10 Interfaces from HNG-X to EDG (non POL FS) 3
+Table 11 Interfaces to HNG-X from EDG (non POL FS) 3
+Table 12 Interfaces from HNG-X to POL (non POL FS/POL Gateway/EDG) 3
+Table 13 Interfaces to HNG-X from POL (non POL FS/POL Gateway/EDG) 3
+Table 15: Equipment Environmental Requirements 3
+Table 16: Component List at NDC 3
+Table 17: Component List at LTC 3
+Table 18: Component List at Maidstone 3
+Table 19: Equipment Capabilities 3
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version 2.0
+Date: 27-07-2010
+
+PageNo: 4 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+Table 20: Equipment Environmental Requirements 3
+Table 20: Equipment Environmental Requirements 59
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version 2.0
+Date: 27-07-2010
+
+PageNo: 5 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+0.3 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CP/PEAK/PPRR
+Reference
+
+4 08/04/08 Initial Draft for review
+
+02 24/04/08 Review comments incorporated.
+
+03 20/07/08 Updated diagrams and Approval Authorities
+
+04 04/09/08 Changed NAT Space as requested by POL
+
+05 12/09/08 Minor updates as requested by POL
+
+06 05/10/08 General update including NAT information
+
+O7 24/10/08 Maidstone Transit LAN Update
+
+08 24/11/08 Update for Maidstone IP addresses
+
+09 12/03/09 Update for Maidstone IP addresses
+
+0.10 16/03/09 Minor update to table in section B.1 for Maidstone IP addresses
+
+1.0 14/04/09 Issued for approval
+
+12 11/06/10 Updated for POLSAP
+
+13 14/06/10 Revised reviewer / approver list
+
+2.0 27/7/10 Issued for approval
+
+0.4 Review Details
+
+24-Jun-2010
+
+Review Comments by
+
+stephen.wisedale(,
+PostOfficeAccountDocumentManagement{-~
+
+Review Comments to
+
+Mandatory Review
+
+Role Name
+Solution Design/Development Andy Williams*
+Infrastructure Design Pat Lywood
+SSC Steve Parker*
+Role Name
+Security Architect Tom Lilywhite
+cTo Amit Apte
+Security risk team CSPOA Security.
+HNG-X R1 Programme Manager Geoff Butts
+POLSAP Infrastructure PM Dave Paddon
+LST Manager Sheila Bamber
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref. DES/NET/TIS/0005
+Version 2.0
+Date: 27-07-2010
+
+PageNo: 6 of 62
+HNG-X TO RMG
+
+Fe)
+FUJITSU
+
+TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+SV&I Manager Chris Maving
+Service Network lan Mills
+Migration Alan Flack
+Migration Craig Rogers
+
+Head of Service Operations
+
+Tony Atkinson
+
+Post Office Design Authority
+
+Issued for Information Please
+
+distribution list to a minimum.
+
+Position/Role
+
+restric
+
+lan Trundell
+
+this
+
+Name
+
+(*) = Reviewers that returned comments
+
+0.5 Associated Documents (Internal & External)
+
+Reference Versio Date Title Source
+1 TIAFS/001 7.0 02/10/03 Pathway to TIP Application Interface I Post Office Ltd
+PCSTIPIS.DOC Specification
+2 BP/IFS/010 5.2 23/10/02 Application Interface Specification I Post Office Ltd
+RDP/AIS/014 Reference Data to Pathway
+3 BP/DES/023 4.0 04/11/03 LFS to SAPADS and SAPADS to I Prism Alliance
+JED/LFS/007 LFS Application Interface
+Specification
+5 BP/CON/315 1.0 15/01/03 Schedule 15 —Service Levels and
+Remedies
+6 RDP/OLA/O01 1.3 19/07/99 Reference Data —- POCLIICL I Post Office Ltd
+Pathway Operational Level
+Agreement
+7 I TWFS/003 2.2 30/11/98 Pathway to Post Office Ltd Technical I Post Office Ltd
+RDP/TIS/001 Interface Specification
+8 BP/IFS/011 43 07/10/99 Application Interface Specification I Post Office Ltd
+RDPYAIS/011 Reference Data to Pathway Type B
+Data
+9 JED/LFS/008 1.4 16/07/99 LFS Data Retention Post Office Ltd
+BP/DES/024
+10 CS/OLA/038 441 10/10/03 Operational Level Agreement for I Fujitsu Services
+Logistics Feeder Service
+11 CS/SPE/011 5.0 28/03/03 Network Banking End to End I Fujitsu Services
+Reconciliation Reporting
+12 NB/SDS/008 2.0 14/08/02 Network Banking MIS Reports I Fujitsu Services
+Design
+13 NB/IFS/012 3.0 10/11/03 Bureau de Change Transaction Feed I Fujitsu Services
+for FRTS
+14 RD/IFS/033. 3.0 10/11/03 Post Office Ltd to Fujitsu Services I Fujitsu Services
+AIS for Bureau de Change
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref. DES/NET/TIS/0005
+Version 2.0
+Date: 27-07-2010
+PageNo: 7 of 2
+fee)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+15 AIS_ADS to I 1.0 10/12/03 SAP ADS to POL FS Application I Prism Alliance
+POLFS_V1.0 Interface Specification
+16 NB/HLD/023 Network Banking Replacement/TES I Fujitsu Services
+Reports
+17 NB/IFS/036 Transaction Enquiry Service (TES) I Fujitsu Services
+Post Office Ltd Reports Specification
+78 I NB/FS/037 Transaction Enquiry Service (TES) I Fujitsu Services
+MSU Reports Specification
+19 POLFS TIS 22 10/3/05 POLFS technical interface I Prism Alliance
+specification
+20 AS/DPR/018 Design Proposal for APOP Fujitsu Services
+21 AP/IFS/065 APOP Host System Reporting to I Fujitsu Services
+EDG Application Interface
+Specification
+22 AP/IFS/063 Post Office Ltd EDG to Horizon I Fujitsu Services
+APOP Authorisation Service
+Application interface Specification
+23 POLFS Portal I 1.0 Current Workplace and Future Portal I Prism Alliance
+Infrastructure Components
+24 AS/IFS/002 Horizon to EDG - Technical Interface I Fujitsu Services
+Specification for Track and Trace
+25 AP/AIS/O72 FAD code to Agent ID Mapping file I Fujitsu Services
+AIS
+26 AP/AIS/073 MoneyGram Web Server Control I Fujitsu Services
+Files AIS
+26a I CR/TIS/001 1.01 POLFS DR Infrastructure & Post Office Ltd/
+POLFS DR Infrastructure Diagrams csc
+27 DE/LLD/038 In PVCS Network Design for Horizon to POL I Fujitsu Services
+Including LTC DR (PVCS)
+28 PGM/DCM/TEM/00 Fujitsu Services Post Office Ltd I Dimensions
+01 Account HNG-X Document Template
+(DO NOT
+REMOVE)
+29 I DES/NET/HLD/00 I Current I 10 Nov 07 Transit LAN Design Dimensions
+15
+30 I REQ/CUS/STG/O HNG-X Migration Strategy - Agreed
+001 Assumptions and Constraints
+31 I DEV/INF/LLD/004 I Current Data Centre LAN Design Dimensions
+1
+32 I POLSAP/DEV/INF/ I Current I 04/07/09 POLSAP Consolidation Project Dimensions
+LLD/0121
+
+Unless a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+©Copyright Fujitsu Services Ltd 2010
+
+COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 8 of 62
+2
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+0.6 Abbreviations
+
+ACE Application Control Engine
+
+ADS (Post Office) Advanced Distribution System
+
+AIS Application interface Specification
+
+AS Autonomous System
+
+ASCII American Standard Code for Information Interchange
+
+BGP Border Gateway Protocol
+
+CE Customer Edge
+
+csc Computer Science Corporation
+
+cts Client Transaction Summaries
+
+DMZ De-Militarised Zone
+
+DR Disaster Recovery
+
+DRS Data Reconciliation Service
+
+EDG Electronic Data Gateway
+
+FS Fujitsu Services
+
+FTMS File Transfer Managed Service
+
+FTP File Transport Protocol
+
+FRTS First Rate Travel Services
+
+HNG-X Horizon Next Generation
+
+HO Hand-Off Router
+
+HRSAP Human Resource SAP
+
+ICMP Internet Control Message Protocol
+
+IETF Internet Engineering Task Force
+
+IP Internet Protocol
+
+IPSec Internet Protocol security
+
+IRE11 Ireland 11 data centre
+
+IRE19 Ireland 19 data centre
+
+Iso International Standards Organisation
+
+LAN Local Area Network
+
+LFS Logistics Feeder System
+
+LTC London Technology Centre
+
+LPR Line Printing Remote Protocol
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref DESINET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+PageNo: 9 of 62
+2
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+NAT Network Address Translation
+
+NBS Network Banking Systems
+
+NDC Northern Data Centre
+
+NMS Network Management Server
+
+MGRM Money Gram
+
+MIS Management Information System.
+MSAD Microsoft Active Directory
+
+OSPF Open Shortest Path First
+
+PAT Port Address Translation
+
+POL FS Post Office Ltd Financial Systems
+
+POL RDS Post Office Ltd Reference Data System
+POLSAP Consolidation of POL FS and SAPADS to be hosted in IRE11 and IRE19
+Qos Quality Of Service
+
+RDMC Reference Data Management Centre
+RDS Reference Data System
+
+RMG Royal Mail Group
+
+RV Release Verification
+
+SAPADS SAP Advanced Distribution System
+SAPGUI SAP Graphic User Interface
+
+T&T Track and Trace
+
+TES Transaction Enquiry Service
+
+TIP Transaction Information Processing
+TMS Transaction Management System
+
+TPS Transaction Processing System
+
+VLAN Virtual LAN
+
+VPN Virtual Private Network
+
+VRRP Virtual Router Redundancy Protocol (RFC3768)
+WAN Wide Area Network
+
+0.7 Glossary
+
+Term Definition
+
+Carrier Local Exchange Carrier
+csc Manage RMG Data Centres at Maidstone, & NDC
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 10 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+DMZ A DMZ is a subnet between a trusted internal network and an untrusted
+
+external network. Typically, the DMZ contains publicly accessible systems
+(e.g., Web servers, file servers, mail servers and DNS servers). It usually is
+located at the perimeter of the trusted internal network.
+
+Operation Interface Demarcation point between the HNG-X and RMG networks, which is
+implemented with the use of the Transit LAN
+
+Operational Server Hosted HNG-X Servers are the FTMS servers
+
+Production When referring to data centre use, indicates the data centre primarily
+
+providing service to the customer business. Normally the Primary data
+centre at IRE11.
+
+Test When referring to data centre use, indicates the data centre primarily
+providing a test service. Normally the Secondary data centre in IRE19.
+
+TMS This refers to all transactional services which Fujitsu services manages on-
+behalf of POL in relation to RMG
+
+0.8 Changes Expected
+
+Upgrade of circuits and handoff routers at Huthwaite to provide additional bandwidth and improved throughput
+underway at time of writing
+
+FTMS remote gateways are currently located remotely in NDC however these may move to IRExx .
+
+It has been confirmed that the CSC servers listed in appendix C.1 are incomplete. CSC have confirmed that they
+shall, in the future, provide an accurate and complete list at which point this document shall be updated
+
+0.9 Accuracy
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, whilst every
+
+effort is made to ensure the accuracy of such information, it accepts no liability for any loss (however caused)
+sustained as a result of any error or omission in the same.
+
+0.10 Copyright
+
+© Copyright Fujitsu Services Limited (2010). All rights reserved. No part of this document may be reproduced,
+stored or transmitted in any form without the prior written permission of Fujitsu Services
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 11 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+1 Introduction
+
+1.1 Background
+
+This document defines the technical interface between Transaction Management Systems (TMS)
+managed by Fujitsu Services and the POL LAN infrastructure at CSC Northern Data Centre, Sungard
+London Technology Centre (LTC) at Hounslow and CSC Maidstone Data Centre.
+
+These interfaces exist in order to supply RMG with information concerning counter transactions, stock
+movements at RMG outlets and external payments, the main recipients being RMG TIP, SAP ADS (until
+POLSAP convergence) and EDG systems respectively. TMS is also required to pass reference data
+from the Reference Data System (RDS) to RMG outlets via the HNG-X RDMC. This single Technical
+Interface Specification is defined for all RMG systems at the RMG Data Centres that need to
+communicate with systems in the HNG-X Data Centres.
+
+The LTC data centre serves as a disaster recovery site for NDC (excluding EDG). The Maidstone Data
+Centre serves as a disaster recovery site for only the EDG Remote Server.
+
+1.2 Purpose
+The purpose of the Technical Interface Specification (TIS) is:
+« To specify the technical details of the interface between the Fujitsu-hosted HNG-X and POLSAP.
+systems and the host systems of RMG.
+
+« To provide a consistent communications vehicle amongst the technical teams responsible for
+providing the various nodes and connections comprising the interface.
+
+e To be regarded as a base document against which project change control should be assessed
+when implementing changes to the HNG-X — RMG connection.
+
+1.3. Scope
+
+This document describes the boundaries of responsibility between Fujitsu Services and RMG and does
+not document the service requirements of the Fujitsu Services interface.
+
+The interface is defined at two levels:
+
+1. The Application level, concerned with the application data passed across the interface (Refer
+to 2, 8, 21, 22)
+
+2. The Technical level, concerned with the mechanisms by which the data is passed across the
+interface (The TIS — this document).
+
+It does not define the rules for each file transfer. These are documented in the relevant Application
+Interface Specifications. There are single AlS documents for each application, which could be
+referenced in section 0.6
+
+This document does not describe internal interfaces (between production and DR instances for
+example). The activity to document and understand the business impact from recovery in the event of a
+disaster will be conducted as part of the wider work in the business recovery area.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 12 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+The known applications which traverse this interface include:-
+
+e MIS (Management Information System) - An Oracle based system to provide Management
+information reporting to Post Office on POL counter transactions etc. TPS takes transactions
+from the counter and nearly all transactions are sent to POL MIS (some — e.g. balancing
+transactions) are suppressed. [ref 1]
+
+e RDS (Post Office Reference Data System) - Reference data is provided by Post Office to control
+the Horizon / HNG-X systems, and this data is held and managed from the database application
+RDMC (Reference Data Management Centre).[ref 2.8].
+
+e Distribution - ADS (receipt and distribution of transaction stock information) [ref 3] ADS
+interfaces to the HNG-X system LFS (Logistics Feeder System). ADS also interface to the Post
+Office Ltd Financial System (POL FS) Hosted within the HNG-X Data Centres [ref 15]. At the
+introduction of S80 release additional SAP hosts were employed both in the production and
+development environments with different access requirements.
+
+Please Note: The POLSAP project will merge the SAP ADS and POL-FS systems to form a
+single SAP instance hosted in the HNG-X Data Centres.
+
+e TP (DRS reconciliation reports [ref 11] and MIS reports [ref 12]. Network Banking — transfer of
+NBS reports from the Horizon System NBS and Network Banking Replacement reports [refs 16,
+17]}). It should be noted that TP is an organisation, rather than a system. A mechanism needs to
+be defined by the Post Office for extraction of the NBS, NBX and DRS reports from the remote
+gateway.
+
+e Track & Trace - Application data flows (message exchanges) across the Track & Trace interface
+between HNG-X and the EDG domain. It requires a SOAP exchange that originates from the
+HNG-X client SOAP and is used to push a message to the EDG system. [ref 24].
+
+e Online access to POL FS (and subsequently POLSAP) within POL via the CSC Data Centre in
+Huthwaite.
+
+Please Note: Although there are business data flows between POL-FS (and subsequently
+POLSAP) and the CSC Data Centre in Huthwaite, the physical interfaces employ the HNG-X
+FTMS service and there is no direct batch interfacing. The only direct connections between
+RMG and POL-FS/POLSAP are for online access.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 13 of 62
+Fe)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+1.4 Structure
+
+1.1.1 Introduction
+
+This section describes the structure of the information contained within this document.
+
+Section
+
+Overview
+
+1 Introduction
+
+This Introduction.
+
+2 Environment
+
+This section describes the context and major components of the HNG-X
+and RMG environment.
+
+3 Medium of Transfer
+
+This section describes the interface in terms of the various ISO OSI
+Reference Model layers.
+
+4 Application ports and
+services summary between
+HNG-X and RMG
+
+This section describes Application ports and services summary between
+HNG-X and RMG
+
+5 Operational
+Considerations
+
+This section considers the operational impact and characteristics of the
+interface
+
+6 Security
+
+This section covers the security aspects of the interface.
+
+7 Resilience, Recovery
+
+This section deals with disaster recovery design, facilities and
+procedures.
+
+8 Migration This section covers the migration strategies, interfaces and post
+migration
+9 Testing This section covers end-to-end testing for application platforms between
+
+RMG and HNG-X
+
+A Detailed Configuration
+Information
+
+This section details IP Address and other configuration details.
+
+©Copyright Fujitsu Services Ltd 2010
+
+COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+Page No: 14 of 62
+
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+2 Environment
+
+2.1 Introduction
+
+This section presents an overview of the context in which RMG and HNG-X operate and provides a
+lower level description of the components that are concerned directly with the operation of the Interface
+being described in this document. The approach taken to determine if a component is directly concerned
+with the interface operation is based on the Transport protocol, TCP, and this can be visualized as a two-
+way pipe into which bytes are written and /or read. In general, this ‘pipe’ terminates on two different
+computer systems.
+
+2.2 Context
+
+The following diagram provides an overview of the interface location, the application level flows across
+the interface and the roles of the HNG-X and RMG data centres:
+
+Fujitsu Services RMG
+
+——— NG. OR HNG-X -RMG Interface
+
+— RMGDR
+
+—— Test
+
+Figure 1 HNG-X — RMG Interface Context
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 15 of 62
+FUJ00002230
+
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Notes:
+
+1. Network connectivity is always maintained between both the Fujitsu Data Centres and the RMG
+sites.
+
+2. Functional testing capabilities will be provided by HNG-X IRE19 site, BRAO1 and NDC. The
+proposed design for test allows primarily for functional testing to be conducted. Within the
+constraints of the bandwidth provided (and any applied QoS measures) volume testing may also
+be carried out.
+
+2.2.1 Design Principles
+
+The following principles are assumed to govern the design and implementation of the interface. [Refer to
+29):
+
+e In the production environment, no Single Points of Failure will be operated by either party. In the
+DR environment each party will take a risk based approach to assess the need for redundancy /
+resilience etc.
+
+e No single failure will impact the service offered to customers. In the event of a single failure, the
+full load will still be supported.
+
+e Each physical communication line is routed via a different Carrier exchange, enters the building
+at a different point and approaches the building from a different direction. The option for keeping
+the individual physical communication lines separate within the Carrier network will be specified
+if the Carrier does not provide for dynamic rerouting when failures occur.
+
+e Encryption of data over the Wide Area Network (for production and test traffic) will be provided
+via the IPSEC protocol (Hand-Off router to Hand-Off router). Note that FS provide the Wide
+Area Network and the encryption / decryption takes place fully within the FS domain.
+
+e The Applications requiring resiliency, should be logically configured to use multiple threads so
+that loss of a thread does not impact the service to customers. Note that not all applications
+have resiliency requirements (Refer to AIS [2, 8. 21 & 22]).
+
+« HNG-X will Operate an Active / Active data path model, meaning that in the event of a disaster
+the data connections are already established, requiring only the Application to re-establish TCP.
+connection to RMG Data Centres. (RMG Data Centre sites operate a cold standby Disaster
+recovery model)
+
+If either the RMG or HNG-X Production systems fail, suitable contingency systems will be provided to
+maintain service in accordance with the SLA (Refer to AIS [2, 8, 21 & 22]).
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 16 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION &
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+2.2.2 Transit LAN at RMG
+
+RMG Nokiat
+RMG Noka2
+
+jonpeuued
+
+VIAN Trnk VIAN"
+
+VLAN Tank VuaNel Th
+
+£DG Remote
+eoro I Itaovs toot! I tao%0
+
+‘Application
+HNGX Production
+Application Endpoints
+Endpoints
+
+Figure 2: NDC Physical Topology
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 17 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+‘Transit LAN.
+
+VLAN Trunk
+
+TIP Remote
+(oR)
+
+01 faort
+
+B
+
+IREI9 Dota
+Cenire
+
+HNG-X Test & DR
+
+HNG-X Production
+Application Application
+Endpoints Endpoints,
+
+Figure 3: LTC Physical Topology
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 18 of 62
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+RMG Nokia
+
+Transit LAN
+
+fa0/3 Mart
+fa0/24 fa0l4 Vian!
+
+Connection to
+Maidstone-1
+
+fa0r fa0/2
+
+VLAN Trunk} VLAN Tonk
+
+(OR)
+
+f20/1
+
+HNGX Production HNGX Test & DR
+Application Application
+Endpoints Endpoints
+
+Figure 4: Maidstone Physical Topology
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref:
+
+Version:
+Date:
+Page No:
+
+DES/NET/TIS/0005
+
+2.0
+27-07-2010
+19 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+At each remote data centre a transit LAN exists to create a demarcation between the HNG-X network
+and the RMG network. This exists for security reasons and to provide unambiguous boundaries between
+the HNG-X network and the RMG network.
+
+This demarcation exists at the physical level for switches or firewalls depending on location, at the
+logical level for addressing and routing and at the service level for the traffic between application
+endpoints that traverse it. The Transit LAN should not be confused with the DMZ; the Transit LAN is the
+exposed and unpopulated perimeter of the HNG-X network, beyond which no further controlled network
+devices exist.
+
+A clearly defined demarcation is necessary to assist fault and service resolution, to facilitate technical
+interface specification and to prevent administrative conflicts or inter-penetration between HNG-X and an
+external organisations network.
+
+At the NDC Data Centre, the Transit LAN model described as the Remote High Availability with Layer 2
+provision is implemented, as shown in Figure 2 and Figure 5. In addition to the existing equipment, FS
+will provide two switches and two Hand-Off routers (requiring [Post Office Ltd/FS] IP addressing). The
+switch will provide connectivity between the existing FS CE routers and the current Horizon routers,
+therefore replacing the cross over cabling. The new routers for HNG-X will also connect to this switch.
+
+2.2.2.1 Physical Infrastructure to support HNG-X
+
+HNG-X network at NDC extends from the transit LAN, which is defined on two switches and two routers
+and made routable to the rest of the HNG-X network at Ireland across the FS WAN to the HNG-X
+Production Data Centres at IRE11 and IRE19. Traffic between Data Centres is encrypted in IPSec VPN
+Tunnels. Similar LANs are deployed at LTC and Maidstone but via a single switch and router.
+
+The WAN implementation is fully redundant, ensuring resilient data paths between HNG-X sites and
+CSC Data Centres. Utilisation, performance of the circuits and router-to-router availability are constantly
+measured by Fujitsu Services. [Ref 30]
+
+A separate remote LAN hosts the HNG-X Remote FTMS servers for EDG and TIP, (the POL back office
+applications).
+
+Specific characteristics of the interface are documented in the following table:
+
+Boundary Overview
+
+Component Post Office Ltd (through its agent Fujitsu Services) will provide
+and manage all components (routers, switches & remote servers)
+on the HNG-X boundary of the Transit LAN. RMG will also
+supply the cables for the connections to the RMG switches.
+Within the RMG Data Centres, space will be made available
+within racks for the HNG-X routers and switch, as well as the TIP
+and EDG servers.
+
+Network The HNG-X devices are fully within the HNG-X Network
+Management Management domain.
+
+The RMG devices are fully within the RMG Network
+Management domain.
+
+The Connections between the RMG devices and the HNG-X
+devices fall into both the RMG and HNG-X Network
+Management domains as far as monitoring is concerned.
+ICMP is explicitly permitted for both test and fault diagnostics.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 20 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+Operational The HNG-X routers, switches and servers located at the RUG
+
+Data Centres are operated remotely. Once these devices have
+
+been commissioned, occasional and infrequent physical access
+
+may be required.
+
+Environmental RMG are responsible for providing a suitable environment for the
+
+HNG-X Systems physically located at the RMG Data Centres.
+Table 1: Interface Characteristics
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 21 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3 Medium of Transfer
+
+3.1 Interface Overview
+
+This section provides an overview of the Physical and Network interconnection arrangements between
+HNG-X and RMG. The interface will support the Production and DR network connections:
+
+¢ Between the HNG-X Domain at IRE11/IRE19 and NDC Domain
+« Between the HNG-X Domain at IRE/11IRE19 and LTC Hounslow Domain
+¢ Between the HNG-X Domain at IRE11/IRE19 and Maidstone Domain
+
+Note that in normal operation all of these site connections are active at the same time and function
+independently. As shown in the Transit LAN diagrams, figures 2, 3 & 4, services and components below
+the line labelled “Transit LAN” fall within the HNG-X Operational Domain. Similarly all Services and
+Components above the line fall within the RMG Operational Domain.
+
+3.2 Layers 1 and 2 - Physical and Link
+
+At NDC, there are two FS remote routers and two FS transit switches as shown in Figure 2. The remote
+routers are each connected to two CE Routers via the transit switches. The two Circuits to NDC are
+8Mbps WAN circuits’. Over these WAN circuits, a single VPN is deployed across the WAN connecting
+the NDC to both Ireland sites at IRE11 and IRE19. Each remote router has two Fast Ethernet interfaces
+and is connected as follows; a single 100BaseTX interface, to the FS switch, over which the Transit LAN
+exists as well as the LAN connecting back to the HNG-X Data Centre and the second 100BaseTX
+interface, again to the FS switch to logically connect to its CE WAN router.
+
+AtLTC, there is a single FS remote router and a single transit switch as shown in Figure 3. The remote
+router connects to the CE router via the transit switch. The single Circuit to LTC is a 2Mbps WAN
+circuit. Over this WAN circuit, a single VPN is deployed across the WAN connecting LTC to both Ireland
+sites at IRE11 and IRE19. The remote router has two Fast Ethernet interfaces and is connected as
+follows; a single 100BaseTX interface, to the FS switch, over which the Transit LAN exists as well as the
+LAN connecting back to the HNG-X Data Centre and the second 100BaseTX interface, again to the FS
+switch to logically connect to the CE WAN router.
+
+At Maidstone, there is a single FS remote router and a single transit switch as shown in figure 3. The
+remote router connects to the CE router via the transit switch. The single Circuit to Maidstone is a
+2Mbps WAN circuit. Over this WAN circuit, a single VPN is deployed across the WAN connecting
+Maidstone to both Ireland sites at IRE11 and IRE19. The remote router has two Fast Ethernet interfaces
+and is connected as follows; a single 100BaseTX interface, to the FS switch, over which the Transit LAN
+exists as well as the LAN connecting back to the HNG-X Data Centre and the second 100BaseTX
+interface, again to the FS switch to logically connect to the CE WAN router.
+
+‘ Huthwaite access circuits being upgraded from 2Mb/s to 8Mb/s — due for completion 19/06/2010
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 22 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3.3 Layer 3 — Network
+
+This section is concerned with the interface description at layer 3 that is IP. For purposes of description
+this section is split into 4 subsections:
+
+e Control plane, concerned with Routing and ICMP.
+
+e Data plane, concerned with actual flow of IP datagram’s
+
+e Virtual IP Addressing
+
+e IP Address spaces, concerned with enumeration of IP address space and translation schemes
+
+3.3.1 Control Plane
+
+3.3.1.1 IP Routing - NDC
+
+Each FS Remote router at the NDC is connected to separate layer 2 switches, the transit switches. To
+provide redundancy, each remote router provides endpoints to tunnels, one from IRE11 and one from
+IRE19. The Transit switches which are used to provide demarcation between the two parties hosts
+several routed VLANs. These include, the outside LAN and the inside LAN
+
+The outside LAN is used to route traffic between HNG-X and RMG. The FS remote routers operate a
+VRRP group. Its IP address is the default-gateway for the RMG network towards HNG-X, likewise, on the
+same network, the RMG routers operates its own VRRP group on the same subnet. The VRRP IP
+address is HNG-X’s default-gateway. By running the VRRP groups, it allows for use of the available
+redundant hardware and routes between the networks without the need for a dynamic routing protocol
+between the HNG-X and RMG autonomous systems. VRRP groups also operate on the inside VLAN.
+
+The inside network, hosts both the TIP and EDG remote servers. IP connectivity exists between the
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 23 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+remote servers and the backend TIP and EDG local servers hosted at IRE11 and IRE19. See
+Figure 5.
+
+RMG
+‘Outside, Global address range
+
+RMG Nokia
+Firewall
+
+RMG Nokia
+Firewall
+
+I
+yer NERD IP \
+5
+2
+
+IREN O23
+Cente
+
+HNG-X Production § HNG-X Test & DR
+Application Application
+Endpoints Endpoints
+Figure 5: NDC Layer 3 Topology
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 24 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3.3.1.2 IP Routing - LTC
+
+A single remote router at the LTC is connected to a layer 2 switch, the transit switch. The remote router
+provides endpoints to the tunnels from IRE11 and IRE19. The transit switch which is used to provide
+demarcation between the two parties has several routed subnets configured. These include the outside
+LAN, and the inside LAN.
+
+The outside LAN is used to route traffic between HNG-X and RMG. The IP address on the remote router
+serves as the default-gateway for the RMG network towards HNG-X, likewise, on the same network, the
+RMG routing device serves as a default-gateway for the HNG-X network. There is no dynamic routing
+protocol configured between these devices. There is also no redundant network configuration such as
+VRRP configured between the networks.
+
+The inside network hosts the TIP remote server. IP connectivity exists between the remote server and
+the backend TIP local servers hosted at IRE11 and IRE19. See Figure 6
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 25 of 62
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+RMG Nokia
+Firewall
+
+Transit LAN Subnet
+
+TIP Remote (DR)
+
+HNG-X Production fj. Z HNG-X Test & DR
+
+Application
+Endpoints
+
+Figure 6: LTC Layer 3 Topology
+
+Application
+Endpoints
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+Page No: 26 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3.3.1.3 IP Routing —- Maidstone DC
+
+This setup is very similar to LTC; however it serves as a disaster recovery site for just the EDG server.
+The remote router provides endpoints to the tunnels from IRE11 and IRE19. The transit switch which is
+used to provide demarcation between the two parties has several routed subnets configured on. These
+include the outside LAN, and the inside LAN.
+
+The outside LAN is used to route traffic between HNG-X and RMG. The IP address on the remote router
+serves as the default-gateway for the RMG network towards HNG-X, likewise, on the same network, the
+RMG routing device serves as a default-gateway for the HNG-X network. There is no dynamic routing
+protocol configured between these devices. There is also no redundant network configuration such as
+VRRP configured between the networks.
+
+The inside network, hosts the EDG remote servers. IP connectivity exists between the remote server and
+the backend EDG local server hosted at IRE11 and IRE19. Refer to Figure 7.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 27 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+RMG Nokia
+Firewall
+
+Transit LAN
+
+EDG Remote (DR) toy
+
+HNG-X Production HNG.X Test & DR
+Application Application
+Endpoints Endpoints
+
+Figure 7: Maidstone Layer 3 Topology
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 28 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+3.3.1.4 ICMP
+
+ICMP is explicitly permitted for test and fault diagnosis.
+
+3.3.2 Data Plane
+
+All traffic over the interface at Layer 3 will be IPv4.
+
+3.3.3 Virtual IP Addressing
+The HNG-X Routers at the NDC Data Centre use VRRP to provide a resilient IP gateway to RMG.
+
+RMG routers use VRRP to provide a resilient IP gateway to the HNG-X network. This allows for
+resilience to Network Interface failure.
+
+3.3.4 IP Address Space
+
+The purpose of this sub section is to:
+
+e Provide an overview of the various IP address spaces from which components associated with
+the interface are allocated IP addresses. Note that the criteria for associating a component with
+the interface are stated in section 2.1.
+
+e State the points at which Network address translation (NAT) is performed and the type of NAT.
+e Enumerate the usage of IP addresses in all components associated with the interface.
+
+3.3.4.1 Network Address Translation
+
+Network Address Translation mechanism is shown in Figure 8. NAT is used to provide privacy for both
+the HNG-X and RMG networks; i.e. that for one network, the service source and destination addresses
+can be described without reference to the other network. This structure maintains address space
+autonomy. In this network interface, both parties deploy their own bidirectional NAT via a transit LAN.
+
+Each traffic flow is translated twice; once for HNG-X and once for RMG.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 29 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+RMG
+Outside Global address range
+
+Source
+Address:
+
+rer
+
+ry
+RMG Outbound RM inbound
+NAT NAT
+
+Transit LAN
+
+Source Desinaton
+Aaddeess:
+Ri
+
+I
+I v
+I
+I
+
+Destination
+‘Address
+/ ERMAT.,
+
+FS Outbound
+NAT
+
+EDG
+Remote
+Deatnaton
+HNGX ”
+IRE11 &IRE19
+HING-X Production HNGX Test & DR:
+
+Application Application
+
+Endpoints Endpoints
+
+Figure 8: NAT Operation between HNG-X and RMG
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 30 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3.1.1.1.1 Functionality
+
+For the RMG network in NDC, the local.
+address space represented single subnet
+are available to HNG-X source connectio!
+
+ses of target services are translated to a peer
+Individual addresses within this transit subnet
+internal RMG addresses.
+
+The RMG network interface makes use of both Port Address Translation and Static Translations for all
+source connections. In Port Address Translations a singl subnet address is overloaded
+with any number of real connections using separate port numbers to differentiate them. With Static
+translations, pre-defined IP addresses within the same subnet are used for translation.
+
+The use of an overloaded address both permits simplification of the HNG-X firewall rule base sets and
+limits the rule base granularity as these inbound RMG connections are regarded as a single source,
+irrespective of the application or server. However the use of PAT limits FS’s fault diagnosis capabilities.
+
+For the HNG-X network, the local HNG-X addresses of target services are translated to a peer address
+space represented by one or more subnets. Individual addresses within this peer subnet are available to
+RMG source connections and mask the internal HNG-X addresses. Furthermore, for a number of SAP.
+Services, their HNG-X target addresses further translated with a further layer of translation.
+
+Outbound initiated connections from the HNG-X network do not use Port Address Translation and exist
+as discrete connection from specific source addresses to specific destination addresses. Therefore the
+nature of the connection differs, depending on whether the RMG or HNG-X network is the initiator.
+
+The same is NATing mechanism is implemented at both LTC and Maidstone Data Centres to achieve
+the same network autonomy.
+
+3.1.1.2 IP Addressing
+
+Each RMG data centre will be allocated its own IP Address subnet for dedicated purposes. Allocation of
+IP Addresses is based on the Data Centre LAN HLD document. [Refer to 31]. Each transit LAN IP subnet
+is shared between RMG and HNG-X. See appendix A.1 and B.1 for IP addressing.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 31 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4 Application ports and services summary between
+HNG-X and RMG
+
+4.1 SAP Application Specific Requirement
+
+The SAP application makes use of additional configuration to ensure that the end systems are aware of
+the NAT architecture.
+
+The configuration change requires that the files gw/netstat and gw/alternative_hostnames on the FS
+host systems are edited to include a reference to their local global NAT address. An example is shown
+below, using the! server:
+
+Original gw/netstat =/usr/bin/netstat -in
+gw/alternative_hostnames =
+
+Final gw/netstat=
+gw/alternative_hostnames
+
+In conjunction with the above the hosts file should contain relevant entries for each host using the local
+HNG-X address space only. See Appendix C.1 for list of Ports allocated for services
+
+The following table provides a summary of main characteristics of the interface supporting access from
+RMG to the HNG-X POL FS (and subsequently POLSAP).
+
+Characteristic Overview
+
+Protocols FTP /LPR/ SAPGUI / SAPRFC / SAP Message Server / SAP
+Secure Gateway via TCP / IP
+
+RMG Domain Within the RMG domain there are multiple client platforms divided
+Application Endpoint I into the following groups;
+and Connection
+
+Management — ePortal - Production Application Servers used for client access,
+Production DB Servers, ITS6.20 ePortal Servers, Citrix Server
+Farm
+
+Other Systems- SAP Application Servers, Dedicated
+POLFS/POLSAP Print Server, SAP File Repository, etc.
+
+These groups are represented by multiple virtual source addresses
+created on the RMG network. Appendix C.1 provides the full list of
+the known RMG servers.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 32 of 62
+2
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+HNG-X Domain
+Application Endpoint
+and Connection
+Management —
+
+Within the HNG-X domain there are multiple host systems and the
+picture changes between POL-FS migration and POLSAP
+convergence.
+
+For POL-FS
+SAP POLFS R/3 Production at IRE11 PLP
+(Development and Quality Assurance remain in Bootle and Wigan).
+
+For POLSAP
+
+SAP POLSAP R/3 Production at IRE11 PLP
+
+SAP POLSAP R/3Development at IRE19 PLD
+
+SAP POLSAP R/3 Quality Assurance at IRE19 PLQ and PLE
+
+Each of these systems comprises of an R/3 main host with a
+compliment of application servers.
+
+IP Ports
+
+The specific destination TCP ports within the RMG Peering IP
+address:
+
+LPRINT —
+FTP; (Build and ongoing SAPGUI Requirement)
+
+The specific destination IP ports within the HNG-X Peering IP
+address with the full range of possible SAP instances:
+
+SAPGUI
+SAPRFC —
+SAP Message Server
+SAP Secure Gateway
+
+Additionally, it has been indicated by RMG that the following ports
+are required:
+
+The full details for port access are described within DE/LLD/029
+POL Perimeter Access.
+
+Table 2: SAP Application Specific Requirement
+
+A full listing of all IP addresses allocated for the RMG servers can be found in Appendix A
+
+4.2 TES Application Specific Requirement
+
+The table below shows the NAT operation only from the RMG network perspective. The interactive traffic
+for the TES service uses TCP Port 443 between TES servers in IRE11 and IRE19 and user workstations
+in the RMG corporate network.
+
+Characteristic Overview
+Protocol HTTPS / TCP/IP
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DESINET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 33 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+Application TES uses HTTPS within the HNG-X. Network Address Translation is
+Endpoints and I used to allocate a single virtual IP address (VIP). This VIP points to
+Connection the real IP addresses hosted at IRE11 for normal operation and in
+Management case of disaster recovery, the real IP address at IRE19.
+
+During disaster recovery, traffic will be automatically re-routed
+towards IRE19 for the same service under agreed SLA terms.
+
+See Appendix A.1 for IP address details
+
+Table 3: TES Application Specific Requirement
+
+4.3. Track and Trace Application Specific Requirement
+
+The following table provides a summary of main characteristics of the Track and Trace online interface
+supporting interface between RMG and HNG-X. Note for more details please refer to [24].
+
+Characteristic Overview
+
+Protocol SOAP / HTTP/ TCP / IP
+
+Application Track & Trace uses SOAP over HTTP over TCP. RMG host the T&T
+Endpoints and I servers NDC and use uses a single virtual IP address for the HTTP
+Connection servers. Maidstone serves as a disaster recovery site for T&T.
+Management
+
+Track & Trace use the existing Network platform between HNG-X
+and RMG.
+
+The T&T http clients (agents) are hosted at IRE11 for normal
+operation and IRE19 in case of a disaster recovery. One VIP address
+is used for the T&T agents.
+
+During disaster recovery, traffic will be automatically re-routed
+towards IRE19 for the same service. [ref 24 ]
+
+See Appendix A.1 for IP address details
+
+Table 4: Track and Trace Application Specific Requirement
+
+4.4 Online Interface to APOP Administration Service
+
+The following table provides a summary of main characteristics of the online interface supporting access
+from RMG to the HNG-xX APOP Authorisation service. Note for details of the APOP Administration
+service and APOP Authorisation application please refer to [20].
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 34 of 62
+Fe)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+Characteristic Overview
+Protocol HTTP / TCP/IP
+Application Within the RMG domain there is a single virtual HTTP client platform
+Endpoints and I created using Network Address Translation. This has a single IP
+Connection address and can initiate multiple concurrent TCP connections.
+Management
+The HTTP Client can initiate connections to either of the two APOP
+Administration web services since they are both Active in normal
+operation.
+IP Ports The source ports for the HTTP clients are as follows; [1024-5000].
+
+The APOP Authorisation web service listens on port:
+
+See Appendix A.1 for IP address details
+
+Table 5: Online APOP Administration Service
+
+4.5 Reference Data System (RDS)
+
+Characteristic Overview
+
+Protocol FTP /FTMS
+
+Application RDS is hosted within the RMG domain at Huthwaite. FTP is used to
+Endpoints and I manually transfer files from RMG TIP to FS remote TIP gateway.
+Connection FTMS is used to send files to RDMS database hosted within HNG-X.
+Management
+
+Table 6 Reference Data System
+
+4.6 First Rate Travel Service (FTRS)
+
+Characteristic Overview
+Protocol FTP /FTMS
+Application First Rate clients transfer two types of files (Spot Rate and Margin
+Endpoints and I files) to the FTMS local gateways:- EDG Local and TIP local servers.
+Connection . These files are processed and made ready for transfer to the FTMS
+Management remote gateways
+FTMS remote receives the files, logs the delivery, confirms their
+integrity and delivers them to RMG EDG environment, FRTS pulls
+the files from the EDG to their environment
+Table 7 First Rate Travel Service
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version 2.0
+Date: 27-07-2010
+
+Page No: 35 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.7 Interfaces to/from POLFS/POLSAP
+
+The interfaces to and from POLFS and POLSAP are documented in appendix H1
+
+4.8 Interfaces from HNG-X to POL Gateway (non POL FS)
+
+Description Transfer Transfer Requirements/
+Mechanism 1 Nectar Comments
+
+NB101 and NB102 and DRS I TIP POL Gateway
+
+summary reports for Debit Card
+
+transactions
+
+NB101 and NB102 and DRS I TIP POL Gateway
+
+summary reports for Banking
+
+transactions
+
+Various Data warehouse I TIP POL Gateway
+
+Reports (Banking e.g. Bank
+
+Analysis)
+
+Various TES Reports TIP POL Gateway
+
+CTS Report TIP POL Gateway
+
+Desktop Buttons/Account Node I TIP POL Gateway
+
+data for RDS80
+
+Table 8 Interfaces from HNG-X to POL Gateway (non POL FS)
+
+4.9 Interfaces from HNG-X to EDG (non POL FS)
+
+Description Transfer Transfer I Transfer Requirem
+- Mechanis I Mechanism 3 I ent/
+Mechanism 1 me Comment
+
+AP Client files TIP EDG
+
+Bureau Transaction Data I TIP EDG
+
+(to FRES)
+
+Bureau Control Total I TIP EDG POL Gateway
+
+File
+
+NB101 and NB102 and I TIP EDG POL Gateway
+
+DRS summary reports
+
+for E Top-ups
+
+EDG Verification File I TIP EDG
+
+(APOP)
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DESINET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 36 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+APOP = POMM and I TIP EDG PO Admin
+Generic Reporting Server
+
+Table 9 Interfaces from HNG-X to EDG (non POL FS)
+
+4.10 Interfaces to HNG-X from EDG (non POL FS)
+
+Description Transfer Transfer Transfer Comment
+Mechanism I Mechanism
+Mechanism 1 I 5 3
+FRES (Bureau Spot Rate & I EDG TIP
+Margin Files)
+EDG Verification File I EDG TIP
+(APOP)
+
+Table 10 Interfaces to HNG-X from EDG (non POL FS)
+
+4.11 Interfaces from HNG-X to POL (non POL FS/POL
+
+Gateway/EDG)
+Description Transfer Requirements/ Comments
+Mechanism 1
+HR SAP file (remuneration data) TIP.
+POL MI file (transaction data) TIP
+Various SAPADS files (LFS Interface) TIP
+
+Table 11 Interfaces from HNG-X to POL (non POL FS/POL Gateway/EDG)
+
+4.12 Interfaces to HNG-X from POL (non POL FS/POL
+Gateway/EDG)
+
+Description Transfer Transfer Requirement
+Mechanism 1 Mechanism 2 s/ Comments
+RDS80 FTP TIP
+
+Various SAPADS files (LFS I TIP
+Interface)
+
+POL MI Error files TIP
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+Page No: 37 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Table 12 Interfaces to HNG-X from POL (non POL FS/POL Gateway/EDG)
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 38 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+5 Operational Considerations
+
+The following sections define the operational considerations of the Production Operational Interface in
+normal steady state use.
+
+The Test Interface is established to perform application functional testing as determined by the specific
+requirements of each application test phase.
+
+5.1 Operational Schedule
+
+The HNG-X servers are run continuously 24 hours a day.
+
+For TPS, the frequency and timing of file transfers between the HNG-X Operational Server and the HNG-
+X Data Centres are determined by the AIS [ref 4].
+
+For LFS, the frequency and timing of file transfers between the HNG-X Operational Server and the HNG-
+X Data Centres will be recorded in the Operational Level Agreement [ref 10].
+
+Frequency and timing of file transfers between the Reference Data System and HNG-X are defined in
+the OLA [ref 6].
+
+For the Bureau de Change service introduced at S50, the timing and frequency of file transfers are
+defined in [ref 1] (TIP), [ref 13] (Bureau de Change Transaction Feed for FRTS) and [ref 14] (Reference
+Data).
+
+If a RMG system finds a problem in the transfer of files to/from the HNG-X Operational Server this is
+reported using Help Desk procedures defined in the OLA [ref 6].
+
+In the event of an unrecoverable failure on any component of HNG-X Operational Server to HNG-X Data
+Centre file transfer link, the link will be automatically re-configured to use an alternate component. This
+enables file transfers to take place, whilst the failed component on the file transfer link is being restored.
+
+In the event of HNG-X, server, router or switch failure, engineer site access to the hardware is required.
+Arrangements for engineer server access are covered in the OLA [ref 6].
+
+5.2 Printer Setup
+
+Printers are configured in SAP transaction /nspad. An IP address is configured as the printer server
+destination host. In the event of DR being invoked a new IP address will be provided for the printer
+server and it will be necessary to manually change the configuration of each printer to access this new
+address. See Appendix A for the allocated IP addresses.
+
+5.3 Performance
+
+The interface between HNG-X and NDC over which files are transferred has sufficient bandwidth to cope
+with the requirements and meet Service Level Agreements [ref 19] prior to the POLSAP convergence
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 39 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+(when SAPADS online users will connect to the POLSAP system in the HNG-X Data Centres) . Please
+see appendix F.1 for current link utilisation. To meet the additional bandwidth requirements of the on-line
+POLSAP users, upgrades are planned to the HNG-X to NDC link, from 2x2Mbit/Second to
+2x8Mbit/Second circuits.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 40 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+6 Security
+
+6.1 Data Integrity
+
+Data integrity controls across the Operational Interface are implemented at application level as
+determined by the corresponding AIS [refs 1, 2, 3, 8, 13 & 14].
+
+6.2 Data protection
+
+On the NDC side of the Operational Interface the RMG firewall permits RMG systems to access as far
+as and not beyond the HNG-X Operational Server.
+
+On the HNG-X side of the Operational Interface the HNG-X routers permit selected HNG-X systems
+access to the HNG-X Operational Server, and permit the Operational Server to access only the relevant
+HNG-X systems.
+
+6.3 Data Encryption
+
+Data encryption (using IPSEC tunnels) will be deployed to protect all the production application data
+being transported over the Wide Area Network circuits in place between HNG-X and RMG. Cisco router
+encryption (IPSEC) is used.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 41 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+7 Resilience, Recovery and High Availability
+
+7.1 Resilience
+The HNG-X side of the Operational Interface at NDC is configured to avoid single points of failure.
+
+LTC and Maidstone are disaster recovery sites and therefore are not built with resiliency but serve as
+backup sites to NDC.
+
+In the Operational Server a resilient pair of processors is provided as protection against server failure. In
+normal operations the primary server processor is used to run the applications. In the case of failure of
+the primary processor the backup processor is manually brought into use. The backup processor
+assumes the IP addresses of the primary processor, so avoiding IP address changes in connecting
+systems. Raid discs are used to protect against disc failure.
+
+Two links are provided and are diversely routed to separate ducts to protect the file transfer between the
+HNG-X Data Centres and the remote HNG-X servers against link or router failure. The routers and
+switches at NDC are cross connected to the server processors to protect against switch or server
+processor failure.
+
+7.2 Fault Detection
+
+A resilient network management system will manage the FS network infrastructure. This system will
+monitor the network for abnormal activity at all times. Fault detection is the responsibility of each party in
+their respective domains.
+
+7.3 Disaster Recovery
+
+Fujitsu Services support for RMG disaster recovery is via replication of the NDC operational
+environment at LTC and Maidstone Data Centre. In terms of Network connectivity, the NDC network is
+similarly setup at LTC and the Data Centre at Maidstone, however is not resilient. Figure 9 shows the
+flow of traffic to the active Data Centre at NDC during normal services:
+
+e Both LTC and Maidstone networks uses a similar but unique address scheme to allow the network to
+remain operational for access and monitoring purposes outside of this DR deployment. In this context
+the LTC network infrastructure is operational within the same constraints of the rest of the HNG-X
+network.
+
+e The failover from NDC to LTC must not exceed 72 hours. While the LTC network is available
+immediately, some tasks are required on the associated platforms to move the Operational Server
+between NDC and LTC. The same applies to Maidstone Data Centre for the EDG Server.
+
+e In the case of POLFS (and subsequently POLSAP) there are operational tasks required to activate
+LTC for Production use in the event of a DR scenario. These do not apply for normal DR testing,
+where a dummy service is used in its place. The operational tasks are described in the next section.
+
+e Ina DR scenario the POLSAP user traffic will come to HNG-X from the LTC site. An upgrade to the
+LTC network circuit is proposed, from 2Mbit/Sec to 8Mbit/Sec.
+
+e Testing of disaster recovery arrangements will be co-ordinated between POL and Fujitsu Services.
+Figure 9 shows the normal flow of traffic and service between the Data Centres. In the event of aDR
+
+scenario caused by IRE11 failure, then all Traffic flow will continue between the HNG-X DR Sites and
+NDC, as shown in Figure 10.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 42 of 62
+FUJ00002230
+FUJ00002230
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+; POLSAP, TIP - DR EDG-DR
+POLSAP, EDG, TIP - Active (Inactive) (Inactive)
+Huthwaite ‘Sungard Maidstone
+
+>
+
+Fujitsu WAN
+
+Inactive
+
+Active
+
+Secondary
+Route
+
+Primary
+Route
+
+NG Productn HNG-X Test & DR
+Application
+Endpoints Endpoints
+
+Figure 9: Normal Operation between HNG-X and the RMG
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 43 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+POLSAP, EDG & TIP - Inactive POLSAP & TIP - Inactive EDG - Inactive
+Huthwvaite ‘Sungard Maidstone
+
+RMG
+Maidstone
+
+OC ®@ O ©
+
+Fujitsu WAN
+
+Ga
+
+© Inactive
+@ Active
+Primary Secondary
+a Route Route
+IRE11
+HNG-X Production HNG-X Test & DR
+Application Application
+Endpoints Endpoints
+
+Figure 10: Failure at IRE11 instigating a Disaster Recovery Scenario
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 44 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+In the event that NDC undergoes a Disaster Recovery Scenario, then RMG DR Sites, LTC and
+Maidstone become active. All traffic flows would be directed to both IRE11 and IRE19
+
+7.3.1 POLFS/POLSAP Specific Disaster Recovery Tasks
+
+In the event of DR being invoked, FS SAP BASIS activities will be to verify the configuration detailed
+below and make any necessary IP address changes:
+
+7.3.1.1 RFC Connection
+RFC connections are maintained in SAP transaction /nsm59.
+Existing connections UMP_400 and CSP_400 are configured to enable connectivity between POLFS and
+
+other RMG SAP systems. In the event of DR being invoked, these entries will require a manual IP.
+address change.
+
+RFC Connection IP address configured in IP address for DR only
+sm59
+
+UMP_400 TBC TBC
+
+CSP_400 TBC TBC
+
+For testing connectivity only, the connections UMP_DR and CSP_DR will also exist.
+
+RFC Connection IP address configured in
+sm59
+
+UMP_DR TBC
+
+CSP_DR TBC
+
+Note: These connections are for testing only and will not affect the existing environment.
+
+7.4. High Availability
+
+HNG-X provides a High Availability transit LAN with active/standby firewalls in each of IRE11 and
+IRE19.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 45 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+8 Migration
+
+8.1 Strategy
+
+Over a period of time, both the HNG-X infrastructure for IRE11 and IRE19 will co-exist in parallel with
+the Horizon infrastructure at Wigan and Bootle. At this time, the Horizon infrastructure at all the RMG
+data centres will also co-exist sharing the same FS WAN infrastructure. Therefore the full content of
+TI/IFS/008 is applicable in the period of dual operation.
+
+8.1.1 RMG Services Migration
+
+RMG links will be considered live as part of weekend B and will operate in a Parallel configuration with
+both Wigan/Bootle and IRE11/19 active at that point.
+
+All configuration activities will be complete in advance of the migration weekend and left in an admin
+down status. Minimal activity will be required to bring the RMG interface online, RMG will continue to
+target the Horizon address space for services provided in Horizon.
+
+HNG-X Migration is split up into 4 weekends.
+e Weekend A: POL FS (weekend A follows weekend D)
+« Weekend B: Batch Services
+e WeekendC: Online Service “There is no impact on CSC”
+e Weekend D: Branch Services “There is no impact on CSC”
+
+There is a subsequent migration step for SAP, when SAPADS is converged onto the POL-FS platform to
+form POLSAP.
+
+e POLSAP Convergence
+
+8.1.2. Weekend B Migration
+This starts the service for the following services in IRE11/19
+« FTMS TIP and EDG
+° Track and Trace
+© TESQA Web Service
+« APOP Admin Web Service
+
+Changes will be required by RMG to redirect traffic towards the HNG-X address space for the services
+moving during weekend B
+
+8.1.3 Weekend A Migration
+
+The POL-FS production system will migrate to IRE11 over a single weekend. At that point the
+development and QA testing environments for POL-FS will continue to use the server infrastructure in
+Bootle (PLD) and Wigan (PLQ and PLE).
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 46 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+The POLFS landscape becomes active in IRE11 in this phase. In the event of a DR scenario for POL-
+FS, the production system will be hosted in the IRE19 data centre.
+
+Changes will be required by RMG to redirect traffic towards the HNGX NAT address space specifically
+for the services moving during Weekend A. POLFS will be running on new servers, with new IP.
+addresses assigned as part of the migration activity when they receive their “HNG-X personality”.
+
+8.1.4 POLSAP Convergence
+
+A programme of Fujitsu development work is taking place to transition SAPADS functionality from the
+existing CSC hosted system to the new Fujitsu hosted SAP system in the HNG-X Data Centres. As well
+as rationalising the hosting of Post Office SAP systems, this development will rationalise existing
+interfaces between POL-FS and SAPADS.
+
+Development and testing is taking place on new POLSAP servers in the IRE19 Data Centre. To facilitate
+Post Office access to these environments, CSC are configuring ePortals for the Development and QA
+Testing.
+
+At POLSAP Convergence the SAPADS functionality is merged into POL-FS to form the POLSAP
+Service. Certain reference data and opening balances are migrated, and the user credentials for
+SAPADS users are migrated to the new system. SAPADS printer definitions will be transferred.
+
+At POLSAP convergence Fujitsu assumes responsibility for all application development and
+maintenance for the SAP solution. CSC retains management of the ePortal and RMG Wide Area
+Network used by Post Office users to connect out to the POLSAP environment. The Bootle and Wigan
+development and QA testing environments are decommissioned and IRE19 hosts the new development
+and test environments for the converged POLSAP service.
+
+The ePortal will be rationalised by CSC to give a single production portal, pointing at the POLSAP.
+service. Effectively this portal can be based on the POL-FS live system created at Weekend A. The
+ePortals established during the development and testing phase of POLSAP will be retained after
+convergence.
+
+8.2 Interface Characteristics
+
+The following interface characteristics are explicitly declared:
+
+1. Physical: The provision by POL of additional rack space, power and environment for HNG-X
+hardware at NDC, LTC and Maidstone.
+2. Network: The allocation of new LAN and subnet details outside of the Horizon addressing. FS.
+
+will provide new WAN infrastructure paths separate from Horizon. As the Horizon infrastructure and
+HNG-X are separate from a deployment perspective, traffic for one system cannot be passed across the
+other system interface.
+
+8.3. Post-Migration
+
+Once migration has successfully concluded, decommissioning of obsolete infrastructure will be
+scheduled jointly.
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 47 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION &
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+9 Testing
+
+Testing of Production application services and platforms is “Business As Usual” and requires a
+permanently built infrastructure to support testing. Several Testing Rigs exist and reside at IRE19. These
+platforms will be utilised continuously to carry out application testing. However, only the Release
+Verification Accreditation Rig requires end-to-end network connectivity between the RMG and HNG-X
+Networks. The following applications would be tested end-to-end between the RMG network and the
+HNG-X network:
+
+« POLFS and subsequently POLSAP
+e SAPADS (until POLSAP convergence)
+
+« EDG
+« TIP
+
+« APOP
+« TES
+
+e —E-Portal/ Citrix
+e Track and Trace via SOAP
+
+All test traffic will share the tunnel between IRE19 and the secondary remote router at NDC. A dedicated
+NAT Space and IP address range will be used to isolate the test traffic from the Production traffic. Even
+though the traffic flows traverse the same IP network, on each side of the network, their destinations are
+separate platforms. The RMG network supports a dedicated test server platform and at IRE19, the RV
+Accreditation Rig is isolated from the production platform. The test POLFS platform is discrete and
+resides on Pathfinder. The table below is a list of required test interfaces between RMG and HNG-X:
+
+From To Transfer Requirements/Comments —
+_ Mechanism 1 : :
+SAPADS POL FS TIP. RMG to run job to create POL FS file and transfer
+
+file to HNG-X test Gateway (TIP Remote) for
+onward transfer to POL FS
+
+Requirement ends with POLSAP Convergence
+
+POL FS SAPADS TIP. FS to transfer file to HNG-X test gateway, ready
+for processing by SAPADS, for onward pick up by
+RMG
+Requirement ends with POLSAP Convergence
+E-Portal POL FS Online Continued access to test instances of POL FS in
+
+Wigan and Bootle through E-Portal and run user
+transactions
+
+Requirement ends with POLSAP Convergence
+
+E-Portal POLSAP Online Access to test instances of POLSAP in IRE19
+TES Reports TIP. POL Gateway Files transferred automatically from HNG-X test
+gateway to POL Gateway (CS ID)
+APOP TIP EDG Files transferred automatically from HNG-X test
+gateway to POL Gateway
+SAPADS LFS TIP Files transferred automatically from HNG-X test
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+PageNo: 48 of 62
+2
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+gateway to POL Gateway
+
+Requirement ends with POLSAP Convergence
+
+LFS SAPADS TIP Files transferred automatically from POL
+Gateway to HNG-X test gateway
+Requirement ends with POLSAP Convergence
+Track and I SOAP over I EDG Files transferred automatically from HNG-X test
+Trace TCP gateway to RMG test EDG
+Messages to
+Royal
+Mail/Parcel
+force
+
+Table 13: Equipment Environmental Requirements
+
+As shown in the table above, several of the transfer mechanisms use FTMS gateways. For the testing
+platform, the FTMS remote gateways will be located at IRE19, instead of placing them at the remote
+RMG data centres.
+
+©Copyright Fujitsu Services Ltd 2010
+
+COMMERCIAL IN CONFIDENCE Ref:
+
+Version:
+Date:
+Page No:
+
+DES/NET/TIS/0005
+
+2.0
+27-07-2010
+49 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+A Detailed Configuration
+
+A.1 Production System NAT Address Allocation
+
+Li
+[i i
+Li !
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+Page No: 50 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+B.1 System Addresses and Ports
+
+HNGX Logical
+
+VLAN ID -
+Network Mask Accessor Routing HSRP/VRRP/
+Description address address Trunking protocols Host address VIP
+
+NDC Subnet information
+
+IRRELEVANT
+
+IRRELEVANT
+
+IRRELEVANT
+
+IRRELEVANT —
+
+IRRELEVANT
+
+C.1 RMG Hosts and IP Addresses for NDC, LTC &
+Maidstone
+
+RMG IP Addresses
+
+IRRELEVANT
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 51 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+IRRELEVANT
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 52 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+l
+
+IRRELEVANT —
+
+H
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+
+Version: 2.0
+
+Date: 27-07-2010
+
+Page No: 53 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Li
+iH i
+
+IRRELEVANT
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 54 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+RMG Host Names - LTC IP Addresses
+
+IRRELEVANT
+
+Host Names RMG IP Addresses
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 55 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+IRRELEVANT eae !
+
+D.1 POLFS/POLSAP Ports
+
+The ports listed below are ports via which e-portal clients (sap-users) talk to the SAP Applications
+Servers hosted at IRE11 & IRE19. They will be allowed through the FS Firewall and defined on all the
+SAP Servers (Production, Development & Test Platforms)
+
+Enterprise Portal Development (UMD and IPD)
+
+a a
+
+: ee
+i
+
+IRRELEVANT ~
+
+Enterprise Portal Development 2 (UMC and IPC)
+
+IRRELEVANT
+
+I
+
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE. Ref: DES/NET/TIS/0005
+
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 56 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+IRRELEVANT
+
+Sections D.1 and E.1 list the hardware and environment specification at all RMG data centre sites.
+
+E.1 Hardware
+
+Owner Part No Description Qty
+Fulitsu Integrated services router with AC power, 2GE, 1 NME, 4
+Sowviees Cisco 2851 HWICs, 2 3VDM slots, 2 AIMs, and Cisco 1OS IP Base I 2
+
+Software
+
+Fujitsu WS-C2980-24TT-L 24 Ethernet 10/100 ports and 2 fixed Ethernet 10/100/1000 2
+Services uplink ports
+
+gulsu RXx300 Rack mountable server 19" (2U), Power Supply Module I 4
+
+ervices GOOW (hot plug)
+
+Table 14: Component List at NDC
+
+Owner Part No Description Qty
+Fulitsu Integrated services router with AC power, 2FE, 1 NME, 4
+Services Cisco2811 HWICs, 2 PVDM slots, 2 AIMs, and Cisco IOS IP Base I 1
+
+Software
+
+Fujitsu ; ATT. 24 Ethernet 10/100 ports and 2 fixed Ethernet 10/100/1000
+Services WS-C2960-24TT-L uplink ports 1
+Fujitsu RX300 Rack mountable server 19" (2U), Power Supply Module I 4
+Services 600W (hot plug)
+
+Table 15: Component List at LTC
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref DESINET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 57 of 62
+FUJ00002230
+FUJ00002230
+
+oO HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Owner Part No Description Qty
+Fujitsu Integrated services router with AC power, 2FE, 1 NME, 4
+Services Cisco2811 HWICs, 2 PVDM slots, 2 AIMs, and Cisco IOS IP Base I 1
+Software
+Fujitsu 24 Ethernet 10/100 ports and 2 fixed Ethernet 10/100/1000
+Services WS-C2960-24TT-L uplink ports 1
+case RXx300 Rack mountable server 19" (2U), Power Supply Module I 4
+600W (hot plug)
+Table 16: Component List at Maidstone
+Owner Model Interfaces Function pported Media
+Fujitsu Cisco 2811 2xEthemet 10/100 I Transit Router 10/100BaseT
+Services
+24 x Ethernet 10/100
+Fujitsu Cisco Catalyst WS- Transit Switch 10/100BaseT
+Services €2960-24TT-L 2.x Ethernet now 40/100/1000BaseT
+10/10/1000 ‘ase
+Fuse Rx300 2x Ethemet LAN Remote TIP &EDG I so1o9/1000BaseT
+ervices (onboard) Servers
+
+Table 17: Equipment Capabilities
+
+F.1 Environmental Specification
+
+Owner Platform Power BTU/Hr Weight Rack Dimensions
+(Watts) (KG) Unit HxWxDincM
+Fujitsu Cisco 2811 170 580 64 1 4.45 x 43.8 x 41.66
+Services
+Fujitsu Cisco 2851 280 955 11.5 2 88.9 x 438.2 x 416.6
+Services
+Fujitsu Cisco 30 103 36 1 44x 44.5 x 23.6
+Services Catalyst WS-
+2960-24TT-
+L
+Fujitsu RX300 600 2324 25 2 8.6 x 48.3 x 78.5
+Services
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DES/NET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+
+Page No: 58 of 62
+fee)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+Table 18: Equipment Environmental Requirements
+
+G.1 WAN Interface Utilisation and Availability
+
+Bandwidth Utilization
+
+60%
+
+oo lb kt. uli, ut
+
+10%
+5% rl i n
+0%
+
+min Out
+
+Figure 11: Bandwidth Utilization for Fujer-Huthwaite-a646-r22-001-wan0
+
+100%
+80%
+60%
+40%
+20%
+0%
+
+Figure 12: Bandwidth Availability for Fujer-Huthwaite-a646-r22-001-wan0
+
+Availability
+
+Bandwidth Utilization
+
+) De
+
+in BH Out
+
+Figure 13: Bandwidth Utilization for Fujer-Huthwaite-a646-r22-002-wan0
+
+©Copyright Fujitsu Services Ltd 2010
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+Version:
+Date:
+Page No:
+
+DES/NET/TIS/0005
+
+2.0
+27-07-2010
+59 of 62
+Fe)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+Availability
+
+100%
+80%
+60%
+40%
+20%
+0%
+
+Figure 14: Bandwidth Availability for Fujer-Huthwaite-a646-r22-002-wan0
+
+H.1 POLFS/POLSAP Interfaces
+
+FROM TO INTERFACE NAME MECHANISM
+
+SAPADS POL-FS Cash Ledger Entry (CLE) FTMS
+
+POLFS SAPADS Cash-in-Pouch (CIP) FTMS
+
+SAPADS. TransTrack I Master/Transaction Data SAP Business
+Connector
+
+SAPADS. TransTrack I Pouch and Coin Data SAP Business
+Connector
+
+SAPADS TransTrack I Routes Performed SAP Business
+Connector
+
+Notes Counting I SAPADS Notes Counting Results XI from POLSAP-
+
+Machine
+
+WCS POL-FS Secure Stock Movements FTMS
+
+RDS POL-FS Product Data (Articles) FTMS
+
+RDS POL-FS Branch Data FTMS
+
+RDS POL-FS Customer Data FTMS
+
+RDS POL-FS Vendor Data (Suppliers) FTMS
+
+©Copyright Fujitsu Services Ltd 2010
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+Version:
+Date:
+Page No:
+
+DES/NET/TIS/0005
+
+2.0
+27-07-2010
+60 of 62
+fee)
+FUJITSU
+
+HNG-X TO RMG TECHNICAL INTERFACE SPECIFICATION
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002230
+FUJ00002230
+
+POL-FS GL Accounts FTMS
+Camelot POL-FS Client Actuals FTMS
+EDS Cheques POL-FS Client Actuals (Cheques Inbound) FTMS
+EDS Personal I POL-FS Client Actuals (Personal Banking) FTMS
+Banking
+Moneygram POL-FS Client Actuals (Moneygram) FTMS
+Sodexho POL-FS Client Actuals (Sodexho) FTMS
+POL-FS Alliance & I Transaction Summary (Alliance & I FTMS
+. Leicester)
+Leicester
+POL-FS Horizon Transaction Corrections NFS share
+Horizon POL-FS Branch Level Entry Data (BLE) NFS share
+POL-FS BACS Outbound Processing (BACS) FTMS
+FRTS POL-FS Pre-orders and Travellers Cheques (First I FTMS
+Rate Travel Service)
+Bank Machines I POL-FS Client Actuals (Bank Machines ATM) FTMS
+ATM
+TRM ATM POL-FS Client Actuals (TRM ATM) FTMS
+Hanco ATM POL-FS Client Actuals (Hanco ATM) FTMS
+Alliance & I POL-FS Client Actuals (Alliance & Leicester ATM) FTIMS
+Leicester ATM
+POL-FS NS&l Transaction Data (National Savings & I FTMS
+Investments)
+Shopping Basket POL-FS Shopping Basket sales of Travel Money I FTMS
+Cards
+ETL POL-FS POL ETL system sales/ financial postings I NFS share
+(via SDI)
+FRES Spot Rates POL-FS Exchange rates used to revalue all I TBC
+currency stock by branch
+POL-FS Coop Transaction Data (Co-Op) TBC
+©Copyright Fujitsu Services Ltd 2010 COMMERCIAL IN CONFIDENCE Ref: DESINET/TIS/0005
+Version: 2.0
+Date: 27-07-2010
+PageNo: 61 of 62

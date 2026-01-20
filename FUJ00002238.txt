@@ -1,0 +1,2288 @@
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+Document Title: Application Interface Specification: Horizon to e-pay
+Document Type: Application Interface Specification (AIS)
+Release HNG-X Release I
+Abstract:
+Document Status: APPROVED
+Originator & Department: Tom Northcott (T — Development Unit
+Contributors: Richard Hicks
+Rex Dixon
+Steve Lewin
+Andy Williams
+Approval Authorities
+Name I Role I Signature I Date
+Mark Burley Post Office Ltd
+Amit Apte CTO, Fujitsu Services
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 1 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+FUJ00002238
+
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 0 -
+Document Control
+
+0.1 DOCUMENT HisTORY
+Version Date Reason for Issue Associated CP/
+airs PinICL Nos.
+0.1 24/02/03 First Draft issued for comment and input to a None
+number of outstanding questions.
+0.2 07/03/03 Changes following review with Post Office Ltd and e-
+I _ pay on 27/02/03
+03 I 10/03/03 I Minor changes following internal comments
+04 11/04/03 Changes following review with Post Office Ltd and e-
+pay on 28/03/03
+0.5 18/06/03 Changes following review with Post Office Ltd and e-
+pay
+1.0 10/07/03 Released for approval
+44 31/07/03 Changes following review with Post Office Ltd
+2.0 [01/08/03 _I Released for approval
+21 I 25/09/03 I Minor change to reflect delayed reversal generation
+3.0 I 17/10/03 I Released for approval
+3.1 24/10/04 Changes to support 20 digit transaction ID's issued I CP3838
+for informal review
+3.2 I 02/03/05 I Issued for formal review following comments
+4.0 [05/05/05 _I Released for approval
+41 23/03/06 Changes to support failed reversal detection and CP4180
+relaxation of reversal throttle CP4191
+5.0 16/05/06 Minor changes from formal review
+5.1 03/08/10 Minor revisions to reflect ETU solution changes
+I _ introduced at HNG-X Release 1
+5.2 I 20/08/10 I Minor changes to address Fujitsu comments
+6.0 24/08/10 Issued for approval.
+0.2 REVIEW DETAILS
+Review Comments by: T
+Review Comments to: Originator & Document Management
+[Mandatory Review: oo. Oro OO ME NaMp O20 Oo OO Seo Ore ele.
+POL Security Manager Sue Lowther
+Fujitsu Security Architect. Tom Lillywhite
+POL Solution Architect Bob Booth
+Fujitsu Solution Owner Gareth Jenkins
+Fujitsu Solution Design Development Andy Williams
+FujitsuSSC 0 I Steve Parker
+Optional Review
+Fujitsu Customer Requirements Business I David Cooke
+Analyst I
+Fujitsu Security & Risk Team I CSPOA Security@uk fujitsu.com
+Fujitsu Crypto/Agent I Sarah Selwyn
+Fujitsu Infrastructure Design I Pat Lywood
+Fujitsu CTO Amit Apte
+Fujitsu Testing Manager Debbie Richardson
+Fujitsu SV&l Manager Chris Maving
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 2 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+Fujitsu Test Design George Zolkiewka
+Fujitsu Programme Manager I Geoff Butts
+Fujitsu HNG-X Release 1 Project NIA
+Manager
+Fujitsu LST Manager I Sheila Bamber
+POL Test Manager I Lee Farman
+Fujitsu Vi & TE Manager Mark Ascott
+(*) = Reviewers that returned comments
+0.3 AssociATED DOCUMENTS
+Reference Doc Vers- I Date Title Source
+jon
+[CD] CRICDE/002 I 1.0 I 11/03/03 I Electronic Top Up — Conceptual I Fujitsu
+Design Services
+[EPAY_DTF] I SU/IFS/046 I 1.13 I 01/11/04 I e-pay: Retailer Transaction e-pay
+reconciliation: Daily Transaction
+Feed
+[EPAY_ERR] I SU/IFS/049 [14.5 I 22/07/03 I e-pay: Error Codes e-pay
+[EPAY_TS] I SU/IFS/045 I 1.22 I 02/06/04 I e-pay: Electronic Top-Up e-pay
+Technical Specification
+[POTIS} TIFS/008 Pathway to Post Office Fujitsu
+Technical Interface Specification I Services
+[RCPT_TXT] I ET/IFS/005 Electronic Top-Up Response Fujitsu
+Code and Receipt Text Services
+Definitions
+Tris} ET/IFS/003 Technical Interface Specification I Fujitsu
+Horizon to e-pay Services
+[EPAY_REV] I SU/IFS/054 I 1.1 I 28/11/05 I e-pay: Post Office Failed e-pay
+Reversals
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents. In particular later versions of some of these
+documents do exist; however, it is the versions indicated that have been used for the
+development of this interface.
+
+All document references above relate to the PVCS document repository.
+
+0.4 ABBREVIATIONS & DEFINITIONS
+
+0.4.1 Abbreviations
+Abbreviation I Definition
+[Al ‘Authorisation Response message returned from e-pay to the Horizon Counter
+il Confirmation message
+[CO] Confirmation message indicating that the Outcome of a Transaction differs from
+that in the [A] received by the Counter (or that no [A] was received)
+[C1] Confirmation message written by the counter and harvested into the DRS to record
+the outcome of an ETS transaction
+{RL Request message
+AIS Application Interface Specification; standard document type required for each
+external interface to the Horizon system
+APACS Association for Payment Clearing Services
+ASCII American Standard Code for Information Interchange
+CR Change Request
+ORS Data Reconciliation Service
+OTF Daily Transaction Feed
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 3 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+ETS Electronic Top-Up Service
+
+ETSM ETS Management (Server) [same platform as the DCS Management Server]
+
+ETX End of Text: ASCII control character (0x03)
+
+ETU Electronic Top-Up
+
+FAD Finance Accounts Division, part of Post Office Ltd
+
+FS Field Separator in APACS-format messages (hex 1C)
+
+FTMS File Transfer Management Service; Horizon process that provides configurable file
+transfer services between Horizon and Post Office Ltd’s Clients. Services available
+include data compression and encryption
+
+FTP File Transfer Protocol
+
+HIN Issuer Identification Number
+
+MAG Message Authentication Code
+
+MID Merchant ID
+
+MSU Management Support Unit (within Fujitsu Services POA Customer Services)
+
+NO Network Operator
+
+NPS Network Banking Persistent Store
+
+OBC Operational Business Change (procedures for change to Post Office Ltd Reference
+Data)
+
+PAN Primary Account Number
+
+PIN Product Identification Number (not Personal identification Number in the context of
+this document) also referred to as ‘activation code’
+
+PVA Pin Voucher Activation
+
+RDS Reference Data System; Post Office Ltd system that provides a Reference Data
+feed to Horizon and other systems
+
+RID Registered Identifier: identifies the organisation to which a range of TIDs has been
+allocated.
+
+STX Start of Text: ASCII control character, (0x02)
+
+TID Terminal Identit)
+
+US Unit Separator (hex 1F)
+
+0.4.2 Definitions
+
+The following terms, when capitalised as here, have specific meanings as indicated.
+
+Term Definition
+
+Authorisation I On-line Authorisation [A] response by e-pay to on On-line Request. It can have a
+value of “Approve” or “Decline”
+
+Authorisation Software provided by Fujitsu Services POA used to interface from Horizon to e-pay
+
+Agent in real-time
+Business Rules governing the conduct of a Transaction which are contained within Reference
+Rules Data
+
+Campus One of two data centres installed by Fujitsu Services POA in IRE11 and IRE19 .
+
+Each can handle the entire Horizon workload
+Confirmation Confirmation [C] message sent from the Counter in near time to the Campus
+stating the outcome of an ETS Transaction
+
+Counter Counter PC installed in a Post Office Outlet
+Counter An application resident within the Counter that contains the business logic
+Application controlling the dialogue with the Clerk, or other business specific functions on the
+
+Counter (such as End of Day processing)
+Counter Clerk _I Person working in an Outlet and operating a Counter
+
+Customer A member of the public transacting, or seeking to transact, business with Post
+Office Ltd through any of the Services
+Data Service provided by Fujitsu Services POA to Post Office Ltd which matches
+
+Reconciliation I Transaction flows from Counter and ETSM, and reports on these to Post Office Ltd
+Service (DRS)
+e-pay Retailer I Value used by e-pay to identify Post Office Ltd DTF files. The value to be used is
+
+Account 921133
+Number
+ETS Agent Hardware platform on which the Authorisation Agent and its controlling processes
+Server run
+ETS A Transaction in the Electronic Top-Up Service: either an ETU Transaction or a PIN
+Transaction Transaction
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 4 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+ETU Product __I An airtime sale using a card supplied by the Customer's Network Operator
+
+ETU A Transaction for an ETU Product
+
+Transaction
+
+e-voucher A PIN Product which is an ‘anonymous’ airtime or content sale with an activation
+
+Product code printed on the Receipt
+
+e-voucher A Transaction for an e-voucher Product
+
+Transaction
+
+Fallback Where a system has attempted to go On-line but failed and has the ability to
+
+proceed with the Transaction in an Off-line manner — typically with limits on the
+Transaction value
+
+Horizon Name that encompasses the totality of the systems provided by Fujitsu Services
+Post Office Account to support the automation requirements of Post Office Outlets
+
+Merchant Outlet specific identifier used by e-pay to identify Post Office Ltd transaction
+
+Number requests — in this context the FAD value will be used
+
+Network The provider of mobile phone services to a Customer
+
+Operator
+
+On-line Where a system attempts to communicate with another system — in this context the
+Counter seeking immediate authorisation from a Network Operator
+
+Operational Anon-contractual agreement between Fujitsu Services and Post Office Ltd on the
+
+Level nature and quality of specific elements of a service (e.g., Interface Agreement for
+
+Agreement Problem Management (CS/IFS/009))
+
+Outlet Post Office location with one or more Counter PCs installed as part of the Horizon
+programme
+
+PIN Product Either an e-voucher Product or a PVA Product
+
+PIN A Transaction for a PIN Product
+
+Transaction
+PVA Product _I Physical Voucher Activation Product. A PIN Product where the activation code is
+contained on an associated magnetic stripe card rather than being printed on the
+
+Receipt
+
+PVA A Transaction for a PVA Product
+
+Transaction
+
+Receipt Aprinted record of the Transaction at the Outlet
+
+Reconciliation I Ensuring the financial integrity of Transactions across service boundaries
+
+Reference Configuration data and parameters for use by the rest of the system, within the
+
+Data Horizon Programme.
+
+Refund A stand alone transaction separate to the original sale transaction which negates
+the original sale and where the customer has their money returned to them.
+
+Request Authorisation Request message [R] sent On-line from Counter to e-pa
+
+Reversal At the interface to e-pay, it is a Transaction that nullifies the previous Transaction.
+
+It is generated by the Counter application, never at the instigation of the Clerk.
+Reversals can aiso be initiated by e-pay where the response cannot be delivered
+back to Horizon
+
+Settlement This is used in two different ways:
+
+« Settling a Customer Session where the balance of the session is reduced to
+zero and the appropriate cash (and other items such as cheques, tokens,
+stamps etc) is exchanged between the Customer and the Clerk
+
+« Settlement between Post Office Ltd and an Acquirer where an agreement is
+made as to the aggregate value of Transactions for a given period (in this case
+
+a day)
+Transaction I A recorded and auditable instance of business activity, involving service provision
+or Stock movement across organisational or service boundaries
+Vanilla Card A vanilla card has no association with a customer's mobile phone until a
+
+registration procedure is performed, usually by the customer
+Vanilla ETU An ETU Transaction performed using a vanilla card
+
+Transaction
+
+0.5 CHANGES IN THIS VERSION
+
+0.5.1 Changes in Version 0.2
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 5 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Changes to Approval Authorities, Reviewers and Associated Documents
+
+Changes following informal review with Post Office Ltd and e-pay.
+
+Change to include alll relevant interface specification rather than cross-references to e-pay docs
+Removal of background information which will appear in the ETU Design Proposal
+
+0.5.2 Changes in Version 0.3
+
+Changes following informal internal review:
+Defined means of receipt text change mechanism as being via CR
+Defined DTF ‘empty’ file requirement when no transactions to report
+Minor textual revisions
+
+0.5.3 Changes in Version 0.4
+
+Changes to Approval Authorities, Reviewers and Associated Documents
+
+Minor textual changes following review comments
+
+Defined Reversal to e-pay time limit — section 2.2
+
+Defined Horizon Receipt text and mappings — section 3.2.2, Table 13, Table 17
+Reworded unique transaction identifier definition — section 3.3.1
+
+Reworded Reversal duplication wording — section 3.4.1
+
+Revised Reversal retry approach — section 3.4.4
+
+Revised Settlement Reporting section to reflect revised DTF file specification — section 4.1
+Revised DTF Record Processing Rules - Table 1
+
+Added new table defining rules for Reversals - Table 2
+
+DTF file specification revised to include liability code —- Appendix B
+
+DTF record to C4/D mapping definitions added - Table 12, Appendix D
+
+0.5.4 Changes in Version 0.5
+
+Minor textual changes throughout to improve clarity and correct errors
+
+Renamed Confirmation Interface to DTF Interface to improve document clarity
+
+Added definition of PVA product
+
+Added STX/ETX delimiter information to section 3.1
+
+Detail added to section 3.3.1 defining that the Retailer Transaction Reference identifier should only
+contain uppercase characters
+
+Detail added to section 3.3.2 regarding e-pay returning Unique Transaction Identifiers to Horizon
+Reworded section 3.4 regarding Duplicate Authorisation and Reversal Requests
+
+Reworded section 3.5.1 detailing security
+
+Revised section 3.5.3 detailing Resilience and Fail-over
+
+The Retailer Account Number has been defined by e-pay and is detailed in the Definitions table,
+section 0.4.2
+
+Estimated peak day DTF file size estimate revised in section 4.2.2.
+
+Revised Appendix C to reflect:
+
+« Horizon Receipt Text Code used for Refund successes.
+
+* Receipt Text Code to be used for ‘Transaction Already Refunded’ (Response Code 17) and
+‘Refund Already Processed’ (Response Code 91) e-pay refund transaction responses
+Welsh Translations provided by Post Office Ltd
+Horizon Receipt Text Code 319 not being used.
+
+Correction of ‘Refund Disable’ (Response Code 89) Horizon Receipt Text Code to RT317
+Horizon Receipt Text Code reference on reversal responses (Response Codes 16, 18, 93,94)
+being not applicable.
+
+0.5.5 Changes in Version 1.1
+
+e-pay response code and receipt text definitions (Appendix C) moved to new document [RCPT_TXT].
+Minor modifications following Post Office Ltd comments.
+Modified section 3.2.2 to indicate that response codes and receipt text changes for new and revised
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 6 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+FUJ00002238
+
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+0.5.6
+
+0.5.7
+
+0.5.8
+
+0.5.9
+
+0.5.10
+
+0.6
+
+0.7
+
+ETS products will be notified to Fujitsu Services via OBC. .
+Revised Table 12 — DTF Record to C4/D Mapping Rules to reflect impact of reversals
+Authorisation Request is declined.
+
+Changes in Version 2.1
+
+Modified section 3.4.2 to reflect new delay period with regard to duplicate Reversal generation.
+
+Changes in Version 3.1
+
+Revised to reflect revised 20 digit transaction ID's & released for informal review.
+
+Changes in Version 3.2
+
+Minor text revisions & released for formal review.
+
+Changes in Version 4.1
+
+Revised to reflect details of new reversal failure file generated by e-pay and revised reversal throttle rate.
+
+Changes in Version 5.1
+
+Revised to reflect minor changes related to the introduction of the HNG-X Release 1 solution
+
+CHANGES EXPECTED
+
+None
+
+CONTENTS
+
+CHAPTER 0 - DOCUMENT CONTROL...
+
+01 DocuMENT History.
+
+0.2 RevIEW DETAILS.
+
+0.3 ASSOCIATED DOCUMENTS...
+
+0.4 ABBREVIATIONS & DEFINITIONS.
+
+0.41 Abbreviations.
+0.4.2 Definitions...
+
+A Rw w
+
+0.5 CHANGES IN THIS VERSION..
+
+0.5.1 Changes in Version 0.2...
+0.5.2 Changes in Version 0.3.
+
+0.5.3 Changes in Version 0.
+0.5.4 Changes in Version 0.
+0.5.5 Changes in Version 1.1
+0.5.6 Changes in Version
+0.5.7 Changes in Version 3.
+0.5.8 Changes in Version
+0.5.9 Changes in Version 4.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 7 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+0.5.10 Changes in Version 5.1.
+
+0.6 CHANGES EXPECTED. 7
+0.7 CONTENTS
+0.8 TABLE OF FIGURES. 9
+
+0.9 TABLE OF TABLES..
+
+CHAPTER 1 - INTRODUCTION..........
+
+LL PURPOSE,
+
+1.2 SCOPE.
+
+13 EXCLUSIONS,
+
+1.4 STRUCTURECHAPTER 0 - DOCUMENT CONTROL.,.....cc.sessesseeses
+
+0.1 DocuMENT HIsTory...
+
+0.2 ReviEW DETAILS.
+
+0.3 ASSOCIATED DOCUMENTS..
+
+04 ABBREVIATIONS & DEFINITIONS...
+
+0.4.1 Abbreviation:
+0.4.2 Definitions
+
+0.5 CHANGES IN THIS VERSION...
+
+0.5.1 Changes in Version 0.2
+0.5.2 Changes in Version 0.3.
+0.5.3 Changes in Version 0.4...
+0.5.4 Changes in Version 0.5.
+0.5.5 Changes in Versi
+
+0.5.6 Changes in Version 2.1
+0.5.7 Changes in Version 3.1
+0.5.8 Changes in Version 3.
+0.5.9 Changes in Version 4,
+
+0.5.10 Changes in Version 5.1...
+
+0.6 CHANGES EXPECTED.....
+
+0.7 CONTENTS
+
+0.8 TABLE OF FIGURES
+
+0.9 TABLE OF TABLES.
+
+CHAPTER 1 - INTRODUCTION.
+
+Ll PURPOSE.
+1.2 SCOPE... 13
+13 EXCLUSIONS,
+14 STRUCTURE.. wee tose .
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 8 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+LS READERSHIP.
+
+1.6 RELATED DOCUMENTS.
+
+CHAPTER 2 - ARCHITECTURE...
+
+2.1 INTERFACE COMPONENTS...
+
+2.2 AUTHORISATION INTERFACE...
+
+23 DTF INTERFACE.
+
+2.4 MONITORING INTERFACE.
+
+CHAPTER 3 - AUTHORISATION
+
+3.1 GENERAL, 19
+3.2 SUPPORTED TRANSACTION & MESSAGE TYPES...
+
+3.2.1 Authorisation Request.
+
+3.2.2 Authorisation Response.
+3.3 TRANSACTION IDENTIFIERS AND MESSAGE NUMBERS...
+
+3.3.1 Retailer Transaction Reference.......
+
+3.3.2 Unique Transaction ID.
+
+3.3.3 Message Number.
+
+3.4 TRANSACTION DUPLICATES AND TIMEOUTS...
+
+3.4.1 Duplicate Authorisation Requests.
+
+3.4.2 Duplicate Reversal Reque:
+3.4.3 Authorisation Request Timeouts.
+3.4.4 Reversal Request Timeouts.
+
+3.5 SYSTEM QUALITY ATTRIBUTES.
+
+3.5.1 Security...
+3.5.2 Scalability.
+3.5.3 Resilience and Fail-ove
+
+CHAPTER 4 - DTF INTERFACE...
+
+4.1 SETTLEMENT REPORTING...
+4.11 File Availabilit 26
+4.1.2 Detail Records. 26
+
+42 SYSTEM QUALITY ATTRIBUTE! 8
+421 Security...
+4.2.2 Scalability.
+4.2.3 Resilience and Fail-over
+
+CHAPTER 5— MONITORING INTERFACE...
+
+5.1 REVERSAL FILE SUMMARY Data.
+
+5.2 SYSTEM QUALITY ATTRIBUTES.
+5.2.1 Securit
+5.2.2 Scalability,
+5.2.3 Resilience and Fai
+12
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 9 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+READERSHIP,
+
+16 RELATED DOCUMENT
+
+CHAPTER 2 - ARCHITECTURE,
+
+21 INTERFACE COMPONENTS...
+2.2 AUTHORISATION INTERFACE.
+23 DTF INTERFACE.
+
+24 MONITORING INTERFACE.
+
+CHAPTER 3 - AUTHORISATION INTERFACE...
+
+31 GENERAL...
+
+3.2 SUPPORTED TRANSACTION & MESSAGE TYPES...
+3.2.1
+
+Authorisation Reques.
+
+Retailer Transaction Reference.
+
+Unique Transaction ID.
+Message Ni
+
+3.4 TRANSACTION DUPLICATES AND TIMEOUTS...
+
+3.4.1 Duplicate Authorisation Requests.
+3.4.2 Duplicate Reversal Request:
+3.4.3 Authorisation Request Timeouts.
+34.4 Reversal Request Timeouts...
+
+Resilience and
+CHAPTER 4 - DTF INTERFAC
+
+4 SETTLEMENT REPORTING.
+
+41.1 File Availabilit
+4.1.2 Detail Recora
+
+42 SYSTEM QUALITY ATTRIBUTE
+
+4.21 Securit
+
+CHAPTER 5 — MONITORING INTERFACE...
+
+SL
+
+VERSAL FILE SUMMARY DAT.
+
+29
+29
+29
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 10 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+APPENDIX A - AUTHORISATION REQUEST/RESPONSE FORMAT...
+
+APPENDIX B - DAILY TRANSACTION
+
+PED SPECIFICATION. wcssessessesseesseesees
+
+Bl FILE FORMAT 33
+B2 FILE NAMING CONVENTION...
+
+B3 FILE HEADER.
+
+Ba DETAIL RECORD..
+
+B.S FILE FOOTER...
+
+APPENDIX C - DTF RECORD TO C4/D MAPPING,
+
+APPENDIX D— FAILED REVERSAL SUMMARY FILE SPECIFICATIO!
+
+D1 FILE FORMA’
+
+0.8 TABLE OF FIGURES
+
+Figure 1 — ETS Architecture,
+
+Figure 2 — Horizon — e-pay message flow
+Figure 3 ~ Authorisation Request Message Sequence.
+Figure 4 — Authorisation Response Timeout Message S
+
+SUR
+
+0.9 TABLE OF TABLES
+
+Table 1 — DTF Record Processing Rules.
+Table 2 ~ Rules for Authorised Transaction Reversals.
+Table 3 — Authorisation Request/Response Data Lypes.
+Table 4 — Authorisation Request Fields...
+Table 5 ~ Message Types from Horizon to e-pay
+Table 6 — Authorisation Response Fiel
+Table 7 ~ DIF File Data Types.
+Table 8 — DTF File Naming Conventio
+Table 9 — DTF File Header Record Format.
+Table 10 — DTF Detail Record Format,
+Table 11 ~ File Footer Record Format.
+Table 12 — DTF Record to C4/D Mapping Rules
+Table 13 — Failed Reversal Summary File Data Types.
+Table 14 — Failed Reversal Summary File Naming Convention.
+Table 15 ~ Failed Reversal Summary File Detail Record Format.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 11 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 1 -
+Introduction
+
+1.1. PURPOSE
+
+As part of the Horizon service capability, Electronic Top-Up functionality has been
+introduced. This is a method of applying credit to pay-as-you-go mobile phone
+accounts and of selling specific type of ‘content’ or PIN products.
+
+Post Office Ltd has appointed e-pay as their Electronic Top-Up ‘acquirer’ interfacing to
+the appropriate Network Operator.
+
+This document defines the application level interfaces between the e-pay domain and
+the Horizon domain to support the Horizon Electronic Top-Up Service (ETS).
+
+The specification for the e-pay interfaces is derived from the following e-pay
+documents:
+
+e Technical Specification [EPAY_TS]
+
+¢ Daily Transaction Feed Specification [EPAY_DTF]
+e Error Code Specification [EPAY_ERR]
+
+e Post Office Failed Reversals [EPAY_REV]
+
+The e-pay documents are not contract controlled. This document is the definitive
+contractual definition of the Horizon — e-pay application interfaces.
+
+1.2 SCOPE
+
+This document provides a specification of the various application messages and file
+flows between Horizon and e-pay and forms part of the requirements baseline against
+which the Horizon ETS will be built; it also states any exclusions.
+
+An overview of the architecture of the Horizon ETS is given in Figure 1.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 12 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Itt == + Individual Network Operators
+Operational
+
+NO 1 NO 2 NO3
+
+\ . Domain +
+! . ETU Acquirer
+ony Operational
+Transaction POL
+Interface specified __yI TID Reference I I j,2nsaction
+in this document Processing I IData System] I Processing I Pm"!
+ssone I aaa a Zann Domain
+
+Horizon
+
+Horizon Data Centres Operational
+
+Domain
+
+! Outlet
+
+i Outlet approx. 11,400 Outlets
+
+pa tocomes > TIT
+H I I approx. 30,000 Counters
+
+i Counters Counters
+
+Counter transactions
+
+Figure 1 — ETS Architecture
+
+1.3 EXCLUSIONS
+
+The following subjects are not covered within this document:
+= MID/TID Management
+
+= The physical interconnection arrangements between Horizon and e-pay to support
+the above application interfaces; these are the subject of the Technical Interface
+Specification [TIS]
+
+= e-pay Short Code values and corresponding receipt text definitions; these are the
+subject of a separate document [RCPT_TXT]
+
+1.4 STRUCTURE
+
+This document is composed of the following chapters:
+
+= Chapter 2 contains a high level overview of the Horizon — e-pay interface and its
+context.
+
+= Chapter 3 contains a detailed description of the Authorisation Interface.
+
+= Chapter 4 contains a detailed description of the DTF interface
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 13 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+= Appendix A contains a detailed breakdown of the e-pay Authorisation Interface
+message contents.
+
+= Appendix B contains a detailed breakdown of the e-pay Daily Transaction Feed file
+contents.
+
+= Appendix C contains the rules used to map DTF records to DRS message types for
+the purpose of reconciliation.
+
+1.5 READERSHIP
+
+This document is intended for application developers concerned with development of
+the ETS capability between Horizon and e-pay.
+
+1.6 RELATED DOCUMENTS
+
+See section 0.3 for a full list of referenced documents
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 14 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/FS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 2 -
+Architecture
+
+2.1. INTERFACE COMPONENTS
+
+The following diagram illustrates the main components of the end-to-end message and
+file flows.
+
+AlSs& TISs Recondition POLS" POLS.
+
+ogee cit Taresiton
+caine cut ea simmates
+(ORS tee) Potted »
+
+Branch Database
+
+coors
+
+ame regres Borie
+ie Aisrepared a aezce
+
+i]
+oO
+
+vrn 04
+
+Figure 2 — Horizon — e-pay message flows
+
+2.2 AUTHORISATION INTERFACE
+To support ETS at the counter, e-pay provides a real-time authorisation interface
+which supports the following message types:
+= Sale
+= Refund
+= Reversal
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 15 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+There are three types of ETS product available at the counter that utilise the
+authorisation interface:
+
+= ETU Product- An airtime sale using a card supplied by the Customer’s Network
+Operator
+
+= e-voucher Product - A PIN Product which is an ‘anonymous’ airtime or content
+sale with an activation code printed on the Receipt
+
+= PVA Product - A PIN Product where the activation code is contained on an
+associated magnetic stripe card rather than being printed on the Receipt
+
+All ETS product types require authorisation from e-pay when being purchased or
+refunded.
+
+An ETS product sale at the counter will result in an ETS Agent Server presenting a
+Sale Request across the e-pay authorisation interface. An ETS product refund will
+result in an ETS Agent Server presenting a Refund request across the e-pay
+authorisation interface.
+
+When a Sale or Refund request has been presented to e-pay, e-pay will respond with
+an Authorisation Response indicating success or otherwise. The ETS Agent Server
+will pass this response back to the counter application and the product Sale/Refund
+will complete or be abandoned depending on the Authorisation Response.
+
+In the event that the Authorisation Response times out at the counter, the
+Transaction’s status at e-pay is indeterminate. This may be due the Response from e-
+pay arriving at the counter after the counter time-out has expired or to message loss
+either internally or externally to Horizon. Similarly, during Counter recovery after
+failure, the status of an ETS Transaction at e-pay may be indeterminate.
+
+In both cases, a [CO] message is generated automatically by the ETS Counter
+application without intervention from the Counter Clerk, and is passed to the Agent
+which in turn generates a Reversal Request. Reversals are generated only for Sale
+Requests, not for Refund Requests. This Reversal is presented across the e-pay
+authorisation interface and the Authorisation Response captured. This is then stored
+for audit purposes.
+
+Reversals will only be presented to e-pay if the time elapsed since the authorisation
+request is less than 50 minutes. All Reversals older than 50 minutes will not be
+forwarded to e-pay.
+
+2.3 DTF INTERFACE
+
+Once a day, e-pay generates a single Daily Transaction Feed (DTF) file that is
+retrieved by Horizon systems. The DTF records the outcome of each transaction from
+e-pay’s perspective. It contains reconciliation information to be used by the Horizon
+Data Reconciliation Service. The file is generated and transferred every day of the
+year, weekends and bank holidays included.
+
+The DTF contains one record for each Transaction, with Sales and Refunds being
+treated as separate Transactions. The outcome of a reversal request will be reflected in
+the Sale Request record provided that e-pay can match it with the original request.
+Where e-pay cannot match the reversal with the original Sale Request, the reversal
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 16 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+outcome will be reflected in the DTF as a separate Transaction in addition to the
+original transaction record.
+
+The DTF is interpreted by Horizon for reconciliation purposes using the rules defined
+in Table 12, Appendix D.
+
+2.4 MONITORING INTERFACE
+
+To facilitate timely warning of scenarios where reversals are not being successful, e-
+pay generate failed reversal summary files on a periodic basis (initially 5 minutes) that
+summarise reversal information for transactions processed in the preceding time
+interval.
+
+The files contain information relating to reversals that have been generated by the
+Horizon system but have failed at e-pay or at the network operator either because they
+have been received too late for action to be taken by e-pay or the network operator, or
+because the e-pay host cannot match reversals to their original sales.
+
+These files are collected by Horizon on a periodic basis using FTP. A Tivoli Sentry
+monitor will then parse the file and will raise an alert if a threshold of reversal failures
+is exceeded.
+
+The files will be generated 7 days a week, 24 hours a day.
+
+Each file’s summary will be based on the 5 minutes of transactions preceding the latest
+time stamped transaction (which may not be a Horizon transaction).
+
+Further details including the file formatting are defined in Chapter 5.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 17 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+FUJ00002238
+
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 3 -
+Authorisation Interface
+
+3.1 GENERAL
+This interface supports message flows between Horizon Agents on ETS Agent Servers
+and the e-pay host system.
+Messages are conveyed on a TCP byte stream interface as defined in [TIS]. Each
+message is delimited by a leading STX message (0x02) and a trailing ETX character
+(0x03); these two characters are not considered to be part of the message.
+The commentary following identifies how the interface is operated in the context of the
+Horizon system.
+3.2 SUPPORTED TRANSACTION & MESSAGE TYPES
+Figure 3 and Figure 4 identify the Transaction Types and message sequence to be used
+between Horizon and e-pay. All messages exchanged with e-pay are stored by the
+Agent in the NPS for audit purposes.
+Figure 3 is a composite figure that illustrates two scenarios:
+= Authorisation Response received by the Agent and Counter without a timeout
+occurring
+= The Counter times out the Authorisation Response and generates a [CO]. The
+Agent receives the Exception and generates a Reversal Request.
+Horizon Horizon - e-pay interface
+Counter it =I
+[R1] Agen Authorisation Request e-pay
+Timer > >
+' [A3] Authorisation Response
+ye Re IR t
+Expiry) [CO - Counter timeout] S ‘eversal Reques oc
+Reversal Response
+Cpmplete
+transaction [¢1 Confirmation]
+toDRS
+Figure 3 — Authorisation Request Message Sequence Includes Counter
+Timeout
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 18 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+3.2.1
+
+Figure 4 illustrates the scenario when the Horizon Agent times outs the Authorisation
+Response from e-pay. The Counter will generate a [CO] which is passed to the Agent,
+which in turn generates a Reversal Request. When the Agent eventually receives the
+late Authorisation Response it generates an NPS journal entry for audit purposes only.
+The figure shows the case where e-pay sends the Authorisation Response before it
+receives the reversal Request, but it could happen the other way round or they could
+overlap — they are independent messages.
+Horizon Horizon - e-pay interface
+Counter Agent e-pay
+
+Authorisation Request
+(R41 a Tinner 4
+
+; : I(Timer
+[A3] Decline — Agent timeout Expiry)
+
+Authorisation Response
+
+[CO — Agent timeout] Reversal Request
+
+Reversal Response
+
+Cpmplete
+
+transaction [C1 Confirmation]
+DRS
+
+Figure 4 — Authorisation Response Timeout Message Sequence includes Agent
+Timeout
+
+Note that it is also possible that a Reversal Request will be generated where the
+original Sale Request has not reached e-pay.
+
+Reversals will not be transferred across the Authorisation Interface under any
+circumstances for Refund transactions.
+
+Authorisation Request
+
+ETU Transactions and PVA Transactions are initiated by the presentation at the
+Counter of a magnetic stripe card in conformance with ISO 7810-7813, identified as
+valid for such Transactions within the Post Office Ltd supplied Reference Data. The
+normal mode of use will be swipe-captured data. The use of manually entered card
+data is supported (if allowed by the Reference Data), with an appropriate Message
+Type used.
+
+For these Transactions, manual entry may not be used for Refunds. This is controlled
+
+by Post Office Ltd supplied Reference Data. Swipe-captured data must be used for a
+Refund even when the original Transaction was entered manually.
+
+e-voucher Transactions are initiated by the Counter Clerk by selecting the requested
+product. The Post Office Ltd supplied Reference Data for the product contains the
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 19 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+“card number” (PAN) to be used. The Sale Request is treated as though a card has
+been manually keyed. The Refund will also be treated as manually keyed.
+
+Table 5 in Appendix A documents the message types that will be generated by
+Horizon.
+
+Table 4 in Appendix A documents the complete Authorisation Request message format
+and data content.
+
+3.2.2 Authorisation Response
+
+The Authorisation Response message will always include the Transaction Amount
+field. If the Request is authorised, then the authorised amount will always be equal to
+the requested amount.
+
+A Response Code of ‘00’ indicates successful authorisation/reversal. e-pay will also
+return a Short Code value. This Short Code along with the IIN and Product code is
+used by the counter to look up the Horizon receipt text. The Short Code definitions
+and accompanying receipt texts are detailed in [RCPT_TXT].
+
+[RCPT_TXT] defines the failure Response Codes that are supported across the
+Horizon — e-pay interface and the corresponding receipt texts.
+
+Table 6 in Appendix A documents the Authorisation Response message format and
+data content.
+
+3.3 TRANSACTION IDENTIFIERS AND MESSAGE NUMBERS
+
+All Sale Request, Refund Request and Reversal Transactions are initiated by Horizon
+at a Counter PC. Reversal Transactions are generated by the ETS counter application
+only, never by the action of a Clerk.
+
+3.3.1 Retailer Transaction Reference
+
+Each Sale or Refund Transaction will be allocated a Horizon Transaction Identifier by
+Horizon at the Counter. The Retailer Transaction Reference used as part of the
+Authorisation Request and Response messages across the Horizon to e-pay interface
+will be constructed from the Horizon Transaction Identifier and the counter receipt
+date and time. This will provide a unique reference value for each ETS transaction
+across the Horizon estate.
+
+The Retailer Transaction Reference as defined in Appendix A, is an alphanumeric field
+however e-pay convert any lowercase characters present to uppercase prior to
+processing. Therefore only uppercase characters should be used in this field.
+
+A Reversal Transaction quotes the same Retailer Transaction Reference as the original
+Transaction.
+
+3.3.2 Unique Transaction ID
+
+For each Transaction a product specific Unique Transaction ID (for a PIN Transaction
+this is known as the PIN Serial Number) is returned in the Authorisation Response
+from e-pay.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 20 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+For a Refund Request, Horizon returns the Unique Transaction ID in the Original
+Transaction ID field.
+
+When the ETS counter application generates a [CO] (leading to a Reversal Request to
+e-pay), the Authorisation Response from e-pay will not be available. Therefore, the
+Reversal Transaction will not contain the Unique Transaction ID — the original
+Transaction is identified by the Retailer Transaction Reference.
+
+In certain cases where e-pay responds to reversal requests with an error response, e-
+pay will not return a unique transaction ID because e-pay has not generated a reversal
+request to the network. This will happen for example when e-pay cannot match the
+reversal request to the original transaction.
+
+3.3.3 Message Number
+
+The Message (sequence) Number on the Request message is generated by the ETS
+Agent starting at 0000 and incrementing by one for each ETS Transaction. A Refund
+Request has a different Message Number from the original Sale Request. Once 9999
+has been reached the Message Number is reset to 0000 on the next transaction.
+
+For a Reversal, e-pay allows cither a new Message Number or the same Message
+Number as used on the original transaction. This AIS does not constrain Fujitsu
+Services as to which option to adopt.
+
+3.4 TRANSACTION DUPLICATES AND TIMEOUTS
+
+3.4.1 Duplicate Authorisation Requests
+
+The HNG-X Release 1 architecture changes preclude the possibility of duplicate
+authorisation requests being generated by the Horizon Agents.
+
+However, prior to HNG-X Release 1, in rare instances duplicate authorisation requests
+could occur. In this scenario, e-pay will process each authorisation request
+independently which will result in funds being credited twice to the Customer’s
+account with his/her Network Operator. Horizon will react to the first Authorisation
+Response it receives. Any subsequent Authorisation Response will not be processed.
+
+The ETS will not match a duplicate Response message from e-pay against the Request,
+so there are no circumstances that may result in a duplicate [A] message being
+processed at the Counter.
+
+3.4.2 Duplicate Reversal Requests
+All Reversal attempts including duplicates and the consequent outcome in the DTF,
+
+are determined using the rules defined in Table 2.
+
+To protect the e-pay systems, the maximum rate of Reversals across the Horizon/e-pay
+boundary will be throttled to a maximum of 20 a second.
+
+Where duplicate Reversals match an ETS transaction, the final reversal outcome will
+be recorded in the appropriate fields of the Message Type 01 record for the transaction
+in the DTF. e-pay will reverse the relevant transaction once and once only.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 21 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+If the first reversal matches against the top-up and is successful then the second (or any
+subsequent reversals) will fail with "Void already processed" because the reversal has
+already been processed. However, if e-pay receive duplicate Reversals within a very
+short duration of time (within several milliseconds of one another) it is possible that
+the second duplicate Reversal will also be processed.
+
+Where duplicate Reversals are received for a declined ETS transaction, e-pay will not
+be able to match the Reversals to the transaction, therefore each Reversal will be
+represented in the DTF file as a separate failed Reversal record.
+
+3.4.3 Authorisation Request Timeouts
+
+The ETS will operate timeouts at the Counter PC and across the Horizon to e-pay
+interface.
+
+At the Horizon to e-pay interface, a timeout value will be applied against the period
+between generating an Authorisation Request and receipt of the Authorisation
+Response message. The timeout value is set at 18 seconds. Any response received
+from e-pay after the timeout period has expired is discarded. When the timeout period
+is exceeded, the Horizon system informs the Counter application, which immediately
+generates a [CO] message.
+
+To maximise the likelihood of the reversal being successful, an additional ‘guaranteed’
+reversal route is implemented using reversal information committed to the Branch
+Database as part of counter session settlement. A near real-time batch process copies
+these reversals to the NPS where the ETS Agent evaluates whether the reversal has
+been sent to e-pay and a response received and resends if required. In certain
+scenarios, e-pay may receive one or more Reversal Requests before having timed out
+the response from the Network Operator. In these circumstances e-pay will reverse
+any authorisation subsequently returned by the Network Operator. No Authorisation
+Request retries will be implemented by the Horizon system.
+
+In the scenario above e-pay will respond to the reversal request with an error code
+indicating ‘void pending’ which means that e-pay has received the reversal request and
+subsequently will go on to execute a reversal with the network if necessary. This
+means the reversal may eventually be successful even though an error code was
+returned in the reversal response. This will be represented in the DTF file as a
+successful reversal within the original Sale Request record.
+
+If the Sale Request failed at the network, e-pay would have no need to subsequently
+send a reversal and this will be represented in the DTF as a failed Sale Request
+transaction.
+
+If the Authorisation Request is declined and the Authorisation Response times out, e-
+pay will not match the two Reversal Requests with the original Authorisation Request.
+This will result in three records in the DTF file, one for the original declined Sale
+Request and one of each of the Reversal Requests.
+
+3.4.4 Reversal Request Timeouts
+Where a Reversal Request message is generated, the timeout used for reading the
+
+Reversal Response is much longer and on e-pay’s advice will be set to 60 seconds.
+(Horizon uses the Reversal Response simply as an acknowledgement that the Reversal
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 22 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Request has been received by e-pay, no interpretation of the Reversal Response will be
+performed.)
+
+In certain failure scenarios, for example following a network problem across the
+interface, Horizon will retry the reversals. These Reversal retries will only occur if less
+than 50 minutes has elapsed since the authorisation request.
+
+Reversal retries will use Message Type 25 as identified in Table 5.
+3.5 SYSTEM QUALITY ATTRIBUTES
+
+3.5.1 Security
+
+No application level encryption or signing (MAC check) is used on the Authorisation
+Request or Authorisation Response messages including PIN values. However, all ETU
+transactions are carried using standard Horizon data transport facilities, which includes
+encryption for some network segments. Additionally, the WAN connections used to
+connect Horizon and e-pay data centres are protected by encryption. For further
+details see [TIS].
+
+3.5.2 Scalability
+
+There are no scalability implications at application level. The concurrency of the
+application level interface is bounded by
+
+=the speed of the physical communications interface(s) and
+= the number of available concurrent circuits and their re-use policy
+
+These characteristics are specified within the [TIS].
+3.5.3 Resilience and Fail-over
+
+Resilience is provided by having two ETS Agents operating in an Active/Standby
+configuration from the primary Horizon Data Centre. The active Agent will direct
+authorisation & reversal requests to both e-pay operational sites.
+
+Failure of an ETS Agent Server will affect all outstanding Request Transactions. In
+these cases outstanding requests are not recovered and the Requests for authorisation
+will time out at the Counter. Normally, a standby ETS Agent Server will become
+active within a minute, at which point all subsequent Request Transactions will be
+passed to e-pay. Reversal Requests will not be lost but may be delayed and duplicates
+may occur. The use of an independent ‘guaranteed’ near real-time reversal route based
+on session settlement increases the likelihood of the Reversal Request being received
+within 10 minutes of the original transaction in the event of an ETS Agent failure.
+
+In the event of Disaster Recovery being invoked and the live service fail-over to the
+secondary Horizon Data Centre occurring, all outstanding Request Transactions will
+be affected. Depending on the nature of the incident causing the invocation of Disaster
+Recovery, Reversal Requests for these transactions may be lost or delayed.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 23 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Failure of the e-pay authorisation host or site will result in all outstanding Requests
+being timed out at the Horizon to e-pay interface (or in some cases at the Counter).
+Subsequent requests will be routed to e-pay’s alternative site.
+
+Fail-over to the alternative e-pay site will only affect any outstanding requests (which
+will be timed out), provided immediate connection is possible to the alternative e-pay
+site.
+
+Failure of communications between an ETS Agent Server and e-pay will result in any
+
+outstanding Requests failing (timing out). The ETS Agent Server will route all
+subsequent authorisation requests to the alternative e-pay site.
+
+Failure of Outlet communications will result in all outstanding Transaction Requests
+failing. All subsequent Transaction Requests generated at the affected Outlet will fail
+until communications have been restored
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 24 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 4 -
+DTF Interface
+
+4.1 SETTLEMENT REPORTING
+
+Horizon uses the information obtained from the e-pay Daily Transaction Feed (DTF)
+for reconciliation reporting to support Post Office Ltd settlement. The data contained
+within the DTF is formatted and structured in accordance with the file definition in
+Appendix B.
+
+A DTF is generated every day of the year, weekends and bank holidays included. A
+single DTF file includes all correctly formatted Top-Up: (Message Type 01) and
+Refund (Message Type 02) transactions processed by e-pay between 00:00:00 to
+23:59:59 based on the e-pay host system clock. Reversals will be matched against
+these transactions until 00:59:59. Any Top-Up and Refund transactions received after
+23:59:59 will go into the following day’s file.
+
+The Settlement Date will be the day to which the DTF file relates, as recorded in both
+the file’s name and in its File Header record.
+
+The file handling conventions to support the file flow are defined within the [TIS].
+Details of file names to be used are specified in Appendix B
+
+If no transactions occur on any given day, e-pay will generate an ‘empty’ file at the end
+of day that contains only a header and footer record.
+
+4.1.1 File Availability
+
+DTF files will be made available to Horizon by 02:00:00 the day following the day to
+which the file relates.
+
+41.2 Detail Records
+
+The DTF file contains an individual detail record for every ETS Transaction. Records
+contain the Retailer Transaction Reference to identify the Transaction.
+
+When a Transaction has been reversed, the record contains the net outcome. If e-pay
+receives more than one Reversal in a day, the duplicates are ignored in the net
+outcome. An “orphan” Reversal record (Record Type 03) is included in the file if, and
+only if, a reversal cannot be matched to the Top-Up transaction.
+
+The e-pay Success/Error Code will be ‘0000’ if and only if the e-Pay Returned
+Success/Failure Code is ‘00’, meaning Success.
+
+Message Type I e-pay Success / Failure I Payment Effect on
+Identification Success / Error Code for e-pay Liability Retailer
+code Reversal Indicator Billing total
+
+1 The term ‘Top-Up’ and ‘Sale Request’ can be used interchangeably
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 25 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+I Position I Position Position
+25 - 26 152 - 155 171-174 190-191
+01 = 0000" Spaces Spaces Add value
+01 = ‘0000" = ‘0000° ‘00° None
+1 = 0000" <> ‘0000" ‘00° None?
+01 = ‘0000° < > ‘0000" 01" Add value
+O11 => 0000" Spaces ‘Spaces None
+02 = 0000" Spaces ‘Spaces Subtract value
+02 <> 0000" Spaces ‘Spaces None
+03 An Spaces ‘Spaces None
+
+Table 1 — DTF Record Processing Rules
+
+Table I is a matrix of the different combinations of success and failure of the original
+Sale or Refund Request and success or failure of any associated Reversal Request. The
+ETS uses this matrix when transforming the DTF into a form suitable for input into the
+DRS. The processing rules use the e-pay Success/Error Code, e-Pay Returned
+Success/Failure Code and Payment Liability Indicator fields when determining the
+effect on reconciliation and billing.
+
+Table 2 shows the rules for the inclusion of Reversal Transactions in the DTF file.
+
+‘No. I Condition Message Comments
+Type
+Identification
+
+1 Top-Up ot
+
+2 Top-Up + Reversal within 10 O1+ Reversal is matched to Top-Up.
+minutes on the same day
+
+3 Top-Up + Reversal within 1 hour I 01+ Reversal likely to be unsuccessful at
+on the same day network if > 10 minutes after Top-Up.
+
+Reversal is matched to Top-Up.
+
+4 I Top-Up + Reversal later than? I 01 &03 Reversal is unmatched at e-pay
+hour on the same day Message Types 01 and 03 are written to
+
+the same feed file.
+
+5 Top-Up + Reversal within 10 O1+ Reversal is matched to Top-Up.
+minutes on the next day
+
+6 I Top-Up + Reversal within 1 hour I 01+ Reversal likely to be unsuccessful at
+on the next day network if > 10 minutes after Top-Up.
+
+Reversal is matched to Top-Up.
+
+7 I Top-Up + Reversal within 10 N/A — Reconciliation processing does
+minutes on next day but not start until after 01:00.
+reconciliation processing has
+started
+
+8 Top-Up + Reversal within 1 hour N/A — Reconciliation processing does
+‘on next day but reconciliation not start until after 01:00.
+processing has started
+
+9 I Top-Up + Reversal received The Reversal is unmatched by e-pay
+more than 1 hour after the ‘cut- 01 The 01 Top-Up record is written to the
+off feed file for the ‘cut-off period.
+
+03 (next day's I The 03 orphan Reversal is written to the
+file) feed file for the next day.
+
+10 Refund 02
+
+1 Unmatched Reversal 03
+
+2 Where a reversal fails and the Network is liable, the Top-Up may appear as a billed item between e-pay and PO Ltd but will be
+deducted from the final settlement total.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 26 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Table 2 — Rules for Authorised Transaction Reversals3
+In Table 2 the following notation is used:
+
+= ‘Ol’ is a Top-Up Message Type 01 with no matching Reversal hence the last 3
+fields are space filled
+
+= ‘01+’ is a Top-Up Message Type 01 which has been matched to a Reversal and
+hence the last 3 fields are filled with the results of the Reversal
+
+4.2 SYSTEM QUALITY ATTRIBUTES
+
+4.11 Security
+
+No application level encryption or signing (MAC check) is used on the DTF file or
+data within it. However, the WAN connections used to connect Horizon and e-pay
+data centres are protected by encryption. For further details see [TIS].
+
+As [TIS] does not provide any verification of the integrity of the file received from e-
+pay, the application on the Horizon system will verify the contents of the file as best it
+can. In particular, it will:
+
+= verify that the File Identifier field in both the File Name and in the File Header
+record is “EPAY921133” where 921133 is the Retailer Account Number that e-
+pay has allocated to Post Office Ltd.
+
+= check the value of the Number of Detail Records in the File Footer record against
+the number of Detail Records present in the file
+
+4.1.2 Scalability
+
+There is no limit to the size of a generated DTF file.
+
+Based on the design limit peak day maximum volumes documented in [CD], the
+maximum DTF file size will be 26.77Mb based on 17,500 outlets.
+
+4.1.3 Resilience and Fail-over
+Files are not resilient to in-flight failures during transfer. However FTMS has the
+ability to retry file retrievals. See [TIS] for further details.
+
+No specific measures are provided at application level. [TIS] includes procedures for
+fail-over to alternative host sites.
+
+3 It is possible that Horizon will generate Reversal Requests where the Authorisation Request was declined. See section 3.4.3 for
+further details.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 27 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Chapter 5 —
+Monitoring Interface
+
+5.1 REVERSAL FILE SUMMARY DATA
+
+The following summary data is provided in each file:
+
+1. The date and time of the latest transaction on the replication database (which
+may not be a Horizon transaction).
+
+2. The total number of sale transaction requests during the interval period. This
+means all sales transactions including successes and failures.
+
+3. The number and value of reversal transactions during the interval period that
+have been rejected by the network because they are outside the network
+reversal period i.e. more than 10 minutes after the original sale transaction.
+Other network failure conditions are not considered.
+
+4. The number and value of reversal transactions during the interval period that
+have failed at e-pay because the e-pay host cannot match the reversal to the
+original sale transaction, i.e. the failure reason is ‘Unmatched Transaction’
+This includes any reversals received more than I hour after the original sale
+transaction and reversals where the original sale transactions could not be
+identified on the e-pay host, e.g. where the e-pay host has not seen the original
+sale transactions.
+
+5. The total number and value of reversal transactions in the interval period, both
+successes and failures (except ‘Void already processed’).
+
+6. The total number and value of failed reversal transactions during the interval
+period. This means all reversals that have been failed by the e-pay host (except
+‘Void already processed’) or rejected by the network for what ever reason.
+
+If there are no transactions for an interval period, a file is still produced with the totals
+being zero. It is likely that many files produced overnight will have zero totals.
+
+Due to the summary file being produced from an e-pay replication database which can
+lag by varying amounts the e-pay production database during the day, it is possible that
+the transaction count across all files produced on a given day may not be accurate.
+
+5.2 SYSTEM QUALITY ATTRIBUTES
+
+5.2.1 Security
+
+The summary file is formatted in plain ASCII text. No application level encryption or
+signing (MAC check) is used on the Failed Reversal Summary file or data within it.
+However, the WAN connections used to connect Horizon and e-pay data centres are
+protected by encryption. For further details see [TIS].
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 28 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+5.2.2 Scalability
+
+The file only contains a single record therefore file size is not an issue.
+
+The file is generated from a replication database whose view of transactions may lag
+the production database by a period of time depending on a number of factors.
+Therefore the transaction set used to generate a summary file for a given interval may
+differ from that transaction set on the production database. For example, if there are
+two minutes of latency between the production and replication database, the 11:30 file
+may report on transactions between 11:23 and 11:28. As latency increases or
+decreases, a small number of transactions may be included in more than 1 file or may
+be excluded altogether.
+
+5.2.3 Resilience and Fail-over
+The summary file is only retrieved to Horizon’s Primary Data Centre. In the event of
+
+Horizon Data Centre fail-over, the monitoring would be suspended until operations
+resumed at the Primary Data Centre.
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 29 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Appendix A -
+Authorisation Request/Response Format
+
+The Authorisation Request and Response definitions exchanged between Horizon and
+e-pay are defined in Table 4 and Table 5. The following data types will be used:
+
+Description kal :
+Text/numeric, Fixed or Variable length
+Integer, characters (0-9). Fixed or Variable length
+Date/Time Fixed length YYMMDDHHMM.
+
+FS Field Separator (0x1C)
+
+Table 3 — Authorisation Request/Response Data Types
+
+INo I Size I Fixed I Mandatory I NAME Data I Value I NOTES
+or or : type
+Varia I Optional
+ble :
+0 1 F M Dial Indicator N 4 No dial
+1 8 F M Terminal Identity N Looked up by agent
+2 [4 F M Message N Maintained at the ETS Agent and
+
+Number incremented by one for each ETS
+Transaction. A Refund Request has a
+different Message Number from the original
+Sale Request. A Reversal has the same
+Message Number as the original Sale
+
+Request
+3 [4 IF M Terminal Type? I N 2000 I Magnetic Stripe Reader only
+Capabilities
+a [2 F M Message Type I A ‘See Table 5 for values
+Identification
+5 15 Vv M Merchant N The Counter's 6-digit FAD Code, with its
+Number leading zeroes
+(numeric part of
+Store ID)
+6 [4 F M FS FS Field Separator character (0x10)
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 30 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+Fujitsu Services
+
+FUJ00002238
+FUJ00002238
+
+Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+
+COMMERCIAL IN CONFIDENCE
+
+Version: 6.0
+Date: 24/08/2010
+
+7 40 Vv M Card Details A For a swiped card: Track2 including start
+and end sentinels and LRC
+For manually entered card details: US,
+PAN, US. Expiry Date is omitted
+For a PIN transaction the format is US,
+PAN, US with expiry date omitted
+On a Refund, only the PAN must match the
+Sale, e.g. the Sale Request may be
+manually keyed and the Refund Request
+swiped
+Individual PIN e-voucher products are
+defined within the first 12 digits of the PAN,
+which is structured as follows:
+* Digits 1-6 ‘633654’. The e-pay IIN
+* Digits 7-8 ‘10’, signifying an e-
+voucher product
+* Digits 9-12, internal e-pay
+structure
+Digits 13-18 are filled with 1's followed by
+the Luhn digit
+1 F M FS FS Field Separator character (0x1C)
+14 M Transaction N Variable field, maximum 11 digits, in the
+Amount currency minor denomination, minimum 2
+digits must be transmitted, i.e. 1 pence is
+sent as 01
+For a Sale Request, as determined at the
+Counter.
+For a Refund or Reversal, as on original
+Sale Request
+10 [1 F M FS FS Field Separator character (0x1C)
+19 I 10 F M Timestamp Date/ YYMMDDHHMM
+Time Date and time to be written on Receipt
+(from Counter) rounded down to the
+complete minute — the seconds are omitted
+20 I 1 F M FS FS Field Separator character (0x1C)
+21 I 20 Vv oO Cashier ID A Identity of Counter Clerk (from Counter
+login)
+22 I 1 F M FS FS Field Separator character (0x1C)
+23 I 40 Vv M Retailer A Constructed from the Horizon Transaction
+Transaction Number and Receipt Date and Time. All
+Reference text characters must be in uppercase.
+2414 F M FS FS Field Separator character (0x1C)
+25 I 3 F M Currency N 826 GBP Code
+26 [1 F M FS N Field Separator character (0x10)
+27 [20 IV ° Original A ‘On a Refund, copied from the Unique
+Transaction ID Transaction ID value in the Authorisation
+Response for the original Sale
+Otherwise omitted (including for a
+Reversal)
+28 174 FS FS Field Separator character (0x1C)
+29 I 8 F M Message A 00000 I Set to “00000000” where MACing is not
+Authentication 000 implemented.
+Code.
+
+Table 4 — Authorisation Request Fields.
+
+© 2010 Fujitsu Services
+File: ETIFS001 v6.0.doc
+
+COMMERCIAL IN CONFIDENCE Page 31 of 40
+
+Printed on 05/8/2010 10:36:00 by AU
+Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Application Interface Specification: Horizon to e-pay Ref.:
+
+FUJ00002238
+FUJ00002238
+
+ET/IFS/001
+Version: 6.0
+Date: 24/08/2010
+
+Message Message Type Identification I Used for
+Sale Request, 1* try, card swiped 10 ETU & PVA Transactions
+Sale Request, 1* try, manually keyed 20 ETU & PIN Transactions
+Refund Request, 1* try, card swiped 58 ETU & PVA Transactions
+Refund Request, 1* try, manually keyed 61 PIN/e-voucher
+Transactions
+Sale Reversal Request 25 ETU & PIN Transactions
+Table 5 — Message Types from Horizon to e-pay
+No I Size I Fixed I Mandatory I NAME Data I Value I NOTES
+or or type
+Varia Optional
+ble
+0/4 F M. Dial Indicator N Ignored by Horizon
+1 8 F M Terminal Identity I N From
+original
+request
+2 4 F M Message N From
+Number original
+request
+3 [2 F M Message Type I A M2" ‘Same value for Sale Response, Refund
+identification Response and Reversal Response
+4 2 F M Response Code N See [RCPT_TXT] for values
+5 )4 F M Confirmation N lo UNUSED
+Request
+6 19 Vv °O Authorisation A UNUSED
+Code
+7 1 FE M FS FS Field Separator character (0x1C)
+8 [i Iv M Transaction N Always present - if request authorised then
+Amount will _be equal to requested amount
+41 ig M FS FS Field Separator character (0x1C)
+10 I 20 Vv M Unique A e-pay’s identifier for the Transaction. Also
+Transaction ID known as PIN Serial Number for a PIN
+(or PIN Serial Transaction. Omitted in some reversal
+Number) failure scenarios.
+1 F M FS FS Field Separator character (0x10)
+12 I 15 Vv oO Mobile Number A Customer's mobile number. Conditionally
+present for ETU depending on network and
+Response Code.
+This field will be omitted for PIN
+13 I 1 F M FS FS Field Separator character (0x1C)
+14 I 48 Vv ie} PIN A Only present for PIN transactions
+15 14 FE M FS FS Field Separator character (0x1C)
+116 F fe) PIN Expiry Date N YYMMDD; Present for some PIN
+6 transactions. Omitted on ETU transactions.
+47 [4 F M. FS FS Field Separator character (Ox1c)
+18 [80 Iv M Short Code A [RCPT_TXT] defines the mapping of Short
+Codes to receipt texts
+79 [4 F M. FS FS Field Separator character (0x1C)
+20/8 F M Message A 1000000 I Set to “00000000” where MACing is not
+Authentication 100 implemented.
+Code.
+
+Table 6 — Authorisation Response Fields
+
+© 2010 Fujitsu Services
+File: ETIFS001 v6.0.doc
+
+COMMERCIAL IN CONFIDENCE
+
+Page 32 of 40
+Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Appendix B -
+Daily Transaction Feed Specification
+
+B.1 FILE FORMAT
+
+The file will consist of ASCII characters, fixed width without field separators. Records
+will be space padded up to the maximum record length and terminated with <CR>
+<LF>. Variable length fields will be not be permitted. The following data types will be
+
+used:
+
+DataType l
+
+Alphanumeric (n)
+spaces.
+
+Numeric (n) Integer, characters (0-9). Length n characters, right aligned with leading
+zeros
+
+Spaces(n) Spaces used for padding
+
+Date Fixed length YYYYMMDD
+
+Date/Time Fixed length YYYYMMDDHHMMSS
+
+Table 7 - DTF File Data Types
+
+B.2 FILE NAMING CONVENTION
+
+The file name will be formatted as follows, fixed width without separators:
+
+Field Position Type(Size) Description
+
+File Identifier 1-10 Alphanumeric (10) Constant value ‘EPAY921133.
+Where 921133 is e-pay’s retailer
+account number
+
+File Type 41-12 I Alphanumeric (2) _I ‘DT’ = constant value (Daily
+Transaction feed)
+Transactions Date 13-20 Date (8) Date of transactions
+YYYYMMDD
+
+Table 8 — DTF File Naming Convention
+
+B.3 FILE HEADER
+
+The file header will be formatted as follows:
+
+Field Position Type (Size) Description
+Record Type 1 Numeric (1) Constant value ‘1’ - Header
+File Identifier 2-11 Alphanumeric (10) Constant value ‘EPAY921133’
+
+Where 921133 is e-pay’s retailer
+account number
+
+File Type 72-13 _ I Alphanumeric (2) Constant Value ‘DT’ - Daily
+Transaction feed
+Transactions Date 14-21 Date (8) Date of transactions
+File Date/Time 22-35 I Date/Time (14) Date and Time file was produced
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 33 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+Space Padded Filler I 36-201 I Spaces (166) Constant value (166) spaces - to fill to
+
+fixed record length
+
+Table 9 — DTF File Header Record Format
+
+B.4 DETAIL RECORD
+
+The detail records will be formatted as follows, one line for each transaction including
+refund status if applicable.
+
+The records will be ordered chronologically (ascending) using the date/time received at
+e-pay.
+Fields 1 to 15 of the Authorisation Response message will always be present. Fields
+
+16, 17 and 18 will ONLY be present if a reversal is processed (and matched) by e-pay.
+The optional fields are padded with spaces when not used.
+
+No Field I Positio I Datatype Description
+1 Record Type 1 Numeric (1) Constant value ‘2’ —
+Transaction Detail
+2 APACS TID 2-9 Numeric (8) APACS Terminal ID
+3 Store ID 10-24 I Numeric (15) Identifier for each physical
+store
+4 Message Type 25-26 I Numeric (2) Top-Up — 01
+Identification Refund — ‘02’
+Reversal — ‘03°
+5 Last Attempt No. 27-28 I Numeric (2) Last Attempt No. received by
+e-pay
+6 Transaction 29-42 I Date/Time (14) I EPOS/ Terminal Date and
+Date/Time time of last transaction
+attempt
+7 Cashier ID 43-62 I Alphanumeric ID/Name of till operator (if
+(20) available)
+8 PAN 63-81 I Numeric (19) PAN from customer's swipe
+card
+9 Retailer 82-— Alphanumeric Retailer's transaction
+Transaction 121 (40) reference (if available —
+Reference EPOS systems only)
+10 Currency 122-12 I Numeric (3) APACS Currency code
+4
+11 Value 125-13 I Numeric (11) Transaction amount in
+5 pence. e.g. £10 Top-Up —
+‘00000001000"
+12 e-pay Returned 136-14 I Date/Time (14) I Date and Time of last
+Date/Time 9 transaction attempt on
+e-pay’s host system
+13 @-pay Returned 450-15 I Numeric (2) ‘e-pay Response Code sent
+Success/Failure 1 back in Authorisation
+Code Response
+14 e-pay 152-15 I Numeric (4) Full e-pay error code
+Success/Error 5
+Code
+15 e-pay Returned 756-17 I Alphanumeric I Network Transaction ID
+Network 5 (20)
+Transaction 1D
+16 Success/Failure 176-17 I Numeric (4) Full e-pay error code
+code for e-pay 9
+Reversal
+(where applicable)
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 34 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+17 Network 180-19 I Alphanumeric Network Transaction ID
+Transaction ID for I 9 (20)
+e-pay Reversal
+(where applicable)
+18 Payment Liability I 200-201 I Alphanumeric I “00'= _ the Retailer has no
+indicator (2) payment liability because
+
+either:
+
+(1) the reversal was
+successful, or
+
+(2) the reversal failed but
+the Network is liable for the
+failed transaction.
+
+‘01'= the Retailer is liable
+for this transaction. The
+reversal failed (most likely
+because it was received
+more than 10 minutes after
+the original Top-Up).
+
+Table 10 — DTF Detail Record Format
+
+B.5 FILE FOOTER
+
+File Field Position I Datatype pay Field/Description
+
+Record Type 1 Numeric (1) Constant value ‘9’ - Footer
+
+File Identifier 2-11 Alphanumeric (10) I Constant value ‘EPAY921133'
+where 921133 is e-pay’s retailer
+account number
+
+File Type 12-13 Alphanumeric (2) _ I Constant Value ‘DT’ — Daily
+Transaction feed
+
+Transactions Date 14-21 Date (8) Date of transactions
+
+File Date/Time 22-35 Date/Time (14) Date and Time file was produced
+
+Number of detail 36-43 Numeric (8) number of transactions
+
+records
+
+Space Padded Filler I 44-201 Spaces (158) Constant value (158) spaces — to fill
+to fixed record length
+
+Table 11 — File Footer Record Format
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 35 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+
+Appendix C -
+DTF Record to C4/D Mapping
+
+If in any one (logical) day e-pay _I®-Pay outcome Liability IDRS
+receive: Q
+[R]: Sale [C0]: Sale _Ireturned in Daily Txn File IIndicato IReceives
+Request Reversal ir
+yes: success Ino Top-Up Success - [C4] value
+response
+yes: fail response [no Top-Up Fail - [C4] zero value
+Yes: fail response yes Top-Up Fail, Unmatched Reversal I- 3 x [C4] zero value
+yes: success yes: success response I Top-Up Success, Reversal 00 [C4] zero value
+response Success:
+
+net value zero
+yes: Success yes: fail response I Top-Up Success, Reversal Fail [00 [C4] zero value
+response
+yes: success yes: failresponse I Top-Up Success, Reversal Fail [01 [D] discrepancy code
+response ot
+no yes: fail (Unmatched Reversal - 2 x [C4] zero value
+
+Table 12 - DTF Record to C4/D Mapping Rules
+
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 36 of 40
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
+Fujitsu Services
+
+Application Interface Specification: Horizon to e-pay Ref.:
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00002238
+FUJ00002238
+
+ET/IFS/001
+Version: 6.0
+Date: 24/08/2010
+
+Appendix D —
+Failed Reversal Summary File Specification
+
+D1
+
+D.2
+
+FILE FORMAT
+
+The file is plain ASCII text with a fixed length record - variable length fields are not
+used. There are no field separators. The record is terminated with <cr> <If.
+
+The following data types are used:
+
+Data Type
+
+Description
+
+Alphanumeric (n)
+
+Text/numeric, length n characters, left aligned and padded with trailing
+
+spaces
+
+Numeric (n) Integer, characters (0-9), length n characters, right aligned with leading
+zeros.
+
+Date/Time Fixed length YYYYMMDDHHMMSS
+
+Table 13 — Failed Reversal Summary File Data Types
+
+FILE NAMING CONVENTION
+
+The File Name is formatted as follows:
+
+Field Position I Data Type Description
+
+File Identifier 1-10 Alphanumeric (10) Constant value ‘EPAY921133'
+where 921133 is the Post Office
+account number at e-pa’
+
+File Type 11-12 Alphanumeric (2) Constant value ‘FR’ (Failed
+Reversals)
+
+Date and time the file 13-26 Date/Time (14)
+
+was generated
+
+YYYYMMDDHHMMSS
+
+Table 14 — Failed Reversal Summary File Naming Convention
+
+© 2010 Fujitsu Services
+File: ETIFS001 v6.0.doc
+
+COMMERCIAL IN CONFIDENCE
+
+Page 37 of 40
+Printed on 05/8/2010 10:36:00 by AU
+FUJ00002238
+
+FUJ00002238
+Fujitsu Services Application Interface Specification: Horizon to e-pay Ref.: ET/IFS/001
+Version: 6.0
+COMMERCIAL IN CONFIDENCE Date: 24/08/2010
+D.3 DETAIL RECORD
+The file contains a single detail record.
+
+No.I Field Position I Data Type I Description
+
+1 Most recent 1-14 Date/Time I Date and time of the latest transaction on the
+transaction date (14) replication database (may not be an Horizon
+and time transaction)
+
+2 Total number of 15-20 Numeric Total number of all sale transaction requests
+sale transaction (6) in the interval period both successful and
+requests in the unsuccessful
+interval period
+
+3 Number of 21-26 Numeric Number of reversals in the interval period that
+reversals rejected (6) have been rejected by the networks because
+by the networks the network reversal period has expired
+in the interval
+period
+
+4 Value of reversals I 27 - 35 Numeric In pence — i.e. £100 is expressed as 10000
+in 3 above (9)
+
+5 Number of 36-41 Numeric Number of reversals that have failed at e-pay
+reversals that (6) in the interval period either because they are
+have failed at e- outside the 1 hour matching window or
+pay in the interval because the e-pay host has not seen the
+period original sale transaction request
+
+6 Value of reversals I 42 - 50 Numeric In pence — i.e. £100 is expressed as 10000
+in 5 above (9)
+
+7 Total number of 51-56 I Numeric Total number of reversals in the interval
+reversals in (6) period regardless of success or failure
+interval period
+
+8 Value of reversals I 57 - 65 Numeric In pence — i.e. £100 is expressed as 10000
+in 7 above (9)
+
+9 I Total number of 66-71 Numeric Total number of failed reversals in the interval
+failed reversals in (6) period regardless of failure condition (except
+interval period ‘Void already processed’)
+
+10 I Value of reversals I 72-80 I Numeric In pence — i.e. £100 is expressed as 10000
+in 9 above (9)
+
+Table 15 — Failed Reversal Summary File Detail Record Format
+© 2010 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 38 of 40
+
+File: ETIFS001 v6.0.doc Printed on 05/8/2010 10:36:00 by AU
