@@ -1,0 +1,65 @@
+POL00001272
+POL00001272
+
+SSC Offline KELs Monday 19 Mar
+
+HORIZON KEL AChambers2252R
+
+KEL type: Information
+
+Title: Discrepancy after reversing a Bureau de Change transaction
+Summary: Discrepancy after reversing a Bureau de Change transaction
+Raised: by Anne Chambers on 06/12/2005
+
+Last updated: — by Anne Chambers on 06/12/2005
+
+Release: S80
+
+System product: Counter
+
+Keywords: foreign currency bde discrepancy discrepancies"
+
+Status: Authorised
+
+Visibility: Medium
+
+Version: 1
+
+Symptoms
+
+PM sold some foreign currency (1000 Euros, sale value £750), but then realised it had been settled to the
+wrong product (cash instead of debit card). So he used Existing Reversal to reverse the transaction, and
+then redid it correctly.<br><br>When he came to balance at the end of the Trading Period, his currency
+stock holding on the system was too high by 1000 Euros. When corrected, this gave him a gain on
+currency of £720 and a cash loss of £750 - a net loss of £30
+
+Problem
+
+Foreign currency transactions consist of two parts: the currency itself, which has a value based on the
+exchange rate, and margin, which is added to cover the cost of the transaction.<br><br>When the
+transaction was reversed, the PM entered the transaction id for the cash settlement part of the transaction.
+So although he thought he had reversed the whole transaction, he had not.<br><br>When the stock unit
+was balanced, the wrong number of Euros became apparent. The stock holding was corrected by the
+declaration of the actual number held. But this does not correct the margin, which is generated as part of
+the currency sale and is not directly linked to the stock.
+
+Solution - ATOS
+
+If a PM reports a loss connected with a currency transaction that was reversed, it is possible that the
+reversal had not been carried out successfully.<br><br>Ask the PM to check the Reversal Receipt. If this
+shows<br><br>Cash FROM CUSTOMER 750.00<br>Cash TO CUSTOMER 750.00<br><br>they have
+reversed just the cash settlement part of the transaction, which has no overall effect. The currency and
+margin part of the transaction has not been reversed.<br><br>Do a transaction log search using the Session
+Id from the original receipt, or by date/time.<br><br>This should show 3 elements - for example<br>
+<br>2-29826-2 SC Euro 1- 720.00-<br>2-29826-2 SC Curr Sell Margin 1- 30.00-<br>2-29826-3 SC Cash
+1 750.00<br><br>The element which should be reversed is 2-29826-2 (i.e. Euros and margin). As long as
+the PM has not yet rolled over the stock unit, they should be able to reverse this transaction now.<br>
+<br>If the stock unit has been rolled over, NBSC will have to advise on what can be done to resolve the
+
+F/316/1
+POL00001272
+POL00001272
+
+system loss relating to this transaction.
+
+F/316/2

@@ -1,0 +1,493 @@
+Fujitsu Services
+
+POL00001074
+
+POL00001074
+Major Incident Report Ref: CS/REP/190
+Version: 1.0
+COMMERCIAL-IN-CONFIDENCE Date: 24" August 04
+
+Document Title:
+
+Document Type:
+Release:
+
+Abstract:
+
+Document Status:
+Originators & Dept:
+
+Contributors:
+
+Internal Distribution:
+
+External Distribution:
+
+Approval Authorities
+
+Major Incident Report for Quantum inbound files non delivery
+between 10" July — 23" July 04
+
+Report
+S60
+
+Report covering the partial failure of Fujitsu Services to Deliver
+Client inbound data from Quantum to Post office branches.
+
+APPROVED
+Jan Daniel and Carl Marx - POA Customer Service
+
+Roger Barnes, Andrew Gibson, Mik Peach, Garrett Simpson,
+Roy Birkenshaw
+
+Distribution for Approval, Martin Riddell, Carl Marx, Reg
+Barton, Andy Gibson
+
+Post Office Ltd Library plus reviewers
+
+Name Position Signature Date
+Dave Baldwin FS CS Service Director
+Dave Hulbert Operations Service Manager
+Post Office Ltd
+COMMERCIAL-IN-CONFIDENCE. Page: 1 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/1
+POL00001074
+
+POL00001074
+Fujitsu Services Major Incident Report Ref: CS/REP/190
+Version: 1.0
+
+COMMERCIAL-IN-CONFIDENCE Date: 24" August 04
+0.0 Document Control
+0.1. Document History
+Version No. I Date Reason for Issue Associated
+
+CP/PinICL
+0.1 27" July 04 Initial Draft
+1.0 24" Aug 04 For Approval
+0.2 Review Details
+Review Comments by :
+Review Comments to :
+Mandatory Review Authority Name
+Post Office Ltd Dave Hulbert
+FS CS Director Martin Riddell
+FS CS Business Support Management Manager I Richard Brunskill
+FS CS Service Introduction Manager Reg Barton
+FS CS Infrastructure and Availability Manager I Carl Marx
+FS Core Services Unix Operations Manager Andy Gibson
+Optional Review / Issued for Information.
+
+(* ) = Reviewers that returned comments
+0.3 Associated Documents
+Reference Version I Date Title Source
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents.
+
+COMMERCIAL-IN-CONFIDENCE.
+
+© Copyright 2004 Fujitsu Services
+
+Page: 2 of 10
+
+F/219/2
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+0.4 Abbreviations/Definitions
+
+Abbreviation Definition
+
+BMC [DN] CFM] to update
+
+CFM1 Core Services Unix
+
+DM Duty Manager
+
+.DCM Naming convention given to the customer specific messages.
+DRD Naming convention given to the customer tariff messages.
+OcP Operational Change Process
+
+LST Live System Testing
+
+PM Problem Manager
+
+PMDB Problem Management Database
+
+PO Post Office
+
+POA Post Office Account
+
+POL Post Office Limited
+
+SMC Systems Management Centre
+
+0.5 Changes in this Version
+
+Version Changes
+0.1 This is the first drafi
+0.1 For Approval
+
+0.6 Changes Expected
+
+Changes
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE.
+Page: 3 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/3
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE
+Page: 4 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/4
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+0.7. Table of Contents
+
+1.0 INTRODUCTION..
+
+2.0
+
+3.0 MANAGEMENT SUMMARY.....
+
+1.0 DESCRIPTION OF THE FAULT AND SERVICE FAILURE
+
+4.0...
+
+4.1 SYMPTOMS AND BUSINESS IMPACT.
+4.1.1 Symptoms as seen by Branches...
+42 DETAILED EXPLANATION OF THE INCID
+
+5.0 INCIDENT MANAGEMENT.
+
+6.0 PROBLEM MANAGEMENT.
+
+7.0 CORRECTIVE ACTIONS.
+
+Introduction
+
+This document reports on the issues on the failure of Fujitsu Services to Deliver Client
+inbound data files from Quantum to Post office branches.
+
+This report covers:
+- How the problems came to light
+- The impact on the branch service
+- The investigation
+- The resolution
+- The root cause
+
+- Actions and recommendations to prevent recurrence
+
+Scope
+
+The scope of this report covers the failure of Fujitsu Services to Deliver Client inbound data
+from Quantum to Post office branches between 10" July — 23" July 04. The files in question
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE.
+Page: 5 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/5
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+are customer specific messages received daily (DCM) & Daily Tariff files received daily
+(DRD)
+
+1.0 Management Summary
+
+The first file problem with the .DCM file was initially alerted by CFM1 on 19" July 04
+following receipt of an alert on the BMC patrol, which referred to a Quantum file failing
+checksum validation. A subsequent call was raised by operations following this alert at
+23:19hrs. On further investigation it was discovered that .DCM files had not been processed
+since 10" July 04 (S60 Data Centre upgrade), but all files had generated a similar BMC alert.
+
+The second file problem related to the .DRD file, following a more detailed analysis for the
+reasons of the .DCM file failing validation, it was discovered that this file also had been
+failing validation also since the 10" July 04 (S60 Data Centre upgrade).
+
+Throughout these problems the correct escalation routes — including to POL ~ were followed.
+
+Full services were resumed on 24" July 04, following successful development and testing of
+the required scripts prior to release into the live estate.
+
+2.0 Description of the fault and service failure
+
+2.1 Symptoms and Business Impact
+
+2.1.1 Symptoms as seen by Branches
+
+Whilst it cannot be guaranteed, it is likely that individual branches may not have witnessed
+any symptoms bought on by this failure. This is due to the fact that whilst we receive files on
+a daily basis they rarely change in detail form week to week. Where changes had been made
+to either Tariff data or customer specific messages, the branches would only have discovered
+this through customers querying either their credit or debit or changes to their supply of gas
+in terms of tariffs.
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE.
+Page: 6 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/6
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+2.2. Detailed explanation of the incident
+
+S60 involved moving the APS Host application from its original host platform running on the
+Dynix operating system to a new platform running on a Solaris operating system in order to
+ensure continued support. This involved a number of program code changes to accommodate
+some differences in the operating systems. One of these was unfortunately missed in the
+change. This bug caused the checksum field on these inbound files to be incorrectly
+identified as the wrong type of data and passed to validation as a hex value instead of a
+numeric field. This caused the files to be incorrectly rejected, the failure of delivery of the
+data to the counters and a rejection sent to the client.
+
+Alerts were being generated on both of these file types. However, due to the number of
+spurious alerts generated following the S60 upgrade, it would appear that these alerts where
+ignored as they were considered, albeit erroneously, to be insignificant. The incident raised
+on 19th July followed a more detailed review of those BMC alerts, which remained after the
+quantity of spurious alerts had fallen.
+
+The patrol user environment was not fully migrated from DYNIX to Solaris at S60 — this has
+since been corrected in live through OCP being raised and actioned.
+
+3.0 Incident Management
+
+Date & I Avoidance, mitigation and I Communication and escalation I Business Impact
+
+time resolution activities activities
+
+INCIDENT
+19/07/04 I CFMI was alerted via BMC patrol } Unclear at this stage as to whether I Extent unknown at this
+23-19 of an issue with Quantum inbound I this was part of a number of alerts I time.
+
+file. Call logged as “B” priority raised since S60.
+
+O14 Call passed to SSC for
+investigation/analysis
+
+09:00 SSC contacted APS — Service
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE.
+Page: 7 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/7
+Fujitsu Services
+
+Major Incident Report on Online Services
+
+Ref:
+
+unavailable Issue
+
+COMMERCIAL-IN-CONFIDENCE
+
+Version:
+
+Date:
+
+POL00001074
+POL00001074
+
+CS/REP/19014817
+7023
+
+1.01.01.00.1
+
+2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+Manager to highlight potential
+problem with incoming Quantum
+files.
+
+09:46 SSC confirmed a number of files I Incident was escalated within FJS
+had not been delivered to Post
+Office branches
+
+10:00 APS Service Manager advised POL
+
+of the issue further updates to follow
+
+10:40 APS Service Manager raised Call I FJS Senior Management advised
+status to “A” priority.
+
+70:45 SSC confirmed that no fi APS Service Manager advised POL
+been delivered to the counters from I of the issue and instigated formal
+Quantum since 10" July04. Problem Management procedures
+
+71:00 APS service Manager raised formal I POL updated accordingly
+Problem on PM Database.
+
+105 Incident was passed to Problem Currently the incident
+
+Management team. can only be measured
+at this time in terms of
+customer
+
+dissatisfaction.
+
+It should be noted that, additionally, senior management in POA and, onwards, senior
+management in POL were advised of these issues during the day.
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE.
+Page: 8 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/8
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+4.0 Problem Management
+
+The problem (PM0000505) was well managed and the appropriate procedures were followed.
+POL were kept fully informed as to the Root cause, actions being taken & the expected fix
+time. The code (fix) was delivered into live the morning of the 24" July 04 following
+successful development and LST testing. The problem is still active on the PMDB at the
+moment following a period of monitoring, the forecast closure date being 2™ Aug 04. The fix
+was delivered to live some 48hrs ahead of the expected forecast date / time.
+
+5.0 Corrective Actions
+
+6.0 (Online services unavailable)
+
+7.0
+Incident/problem Action to be taken By By Progress made
+Issue Whom When
+Alerts Not fully Allalerts to be CFMI Immediate I New instruction been
+actioned By CFMI1 _I actioned issued.
+BMC patrol not Raise OCP to CFMI 25" July I Completed
+Migrated correct
+Patrol Response Raise OCP to correct CFMI1 25" July I Completed
+Timings to be
+changed
+Fix Delivered to Development to Dev ASP Completed on 24" and
+Live undertake fix to released to live
+
+migrate tables form
+Dynix to Solaris
+
+The code handling Completed
+checksums should
+have been exposed
+to sample live files
+during development
+testing. Live files
+were used to test the
+fix and these have
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE
+Page: 9 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/9
+POL00001074
+POL00001074
+
+Fujitsu Services Major Incident Report on Online Services Ref: CS/REP/19014817
+unavailable Issue 7023
+
+Version: —1.01.01.00.1
+
+COMMERCIAL-IN-CONFIDENCE Date: 2429th2309-
+JulyJANOCT-
+200410" August
+043
+
+been retained by
+development for
+future use should it
+be necessary to
+change this area of
+the code again.
+
+Relating to Message broadcast distribution
+
+8.0
+
+© 2002 Fujitsu Services. COMMERCIAL-IN-CONFIDENCE
+Page: 10 of 10
+
+© Copyright 2004 Fujitsu Services
+
+F/219/10

@@ -1,0 +1,2669 @@
+Fujitsu Services
+
+Document Title:
+Document Type:
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Contributors:
+
+Reviewed By
+
+Comments To:
+
+NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+4.19
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+
+Network Banking End to End Reconciliation Reporting
+Reconciliation Report Specification (AIS)
+
+N/A
+
+This document specifies the reconciliation report output to
+satisfy the end to end reconciliation of the Network Banking
+Stream
+
+APPROVEDDraft
+
+Richard Brunskill: Fujitsu Services Pathway Management
+Support
+
+Richard Hicks: Fujitsu Services Pathway, Linda Austin: POL
+POL: Linda Austin: Bob Booth: Peter Jones: Sue Harding:
+Glenys Latham; Clive Reed: Steve Grayston, Claire Bennett,
+Jayne Widdowson; Danny Bathmaker; Marion Dale; Tom
+Basquille
+
+Fujitsu Services Pathway: Richard Hicks: Roger Donato: John
+
+Pope: Pete Chandler: Dave Johns: Michael King, Nathas-Meak,
+
+Dina-Chavhen, Angela Shaw; Kevin Barrett; Harji Hothi; Mark
+
+Taylor, Tony Drahota
+
+John Moran, Richard Hicks
+
+Comments By:
+
+Distribution:
+
+22/11/02
+
+Reviewers & PVCS
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE Page: 1 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OL
+RECONCILIATION REPORTING
+
+4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+0.0 Document Control
+0.1 Document History
+Version No. I Date Reason for Issue ‘Associated
+CP/PinICL
+0.1 06/06/01 First draft for review
+02 20/06/01 Second draft for review following POL
+discussion workshop and other comments from
+reviewers.
+0.3 02/08/01 Third draft for review following POL
+discussion workshop and other comments from
+reviewers.
+04 27/09/01 Fourth draft for review following POL
+discussion workshop and other comments from
+reviewers.
+0.5 03/12/01 Fifth draft for review following POL discussion
+workshop and other comments from reviewers.
+1.0 19/12/01 REMOVED FROM APPROVAL CYCLE
+Ld 08/01/02 REMOVED FROM REVIEW CYCLE
+2.0 16/01/02 REMOVED FROM APPROVAL CYCLE
+21 22/01/02 Sixth draft for review following amendments CR27
+
+incorporated as a result of IBM interface
+changes and late POL comments received
+against Version 1.0 (now removed)
+
+22 2702/02 Seventh draft for review following amendments
+as a result of two workshops between Fujitsu
+Services Pathway and POL on 6&7 February,
+and 20/21 February 2002 and informal
+comments received from Fujitsu Services
+
+Pathway
+
+3.0 2703/02 Fighth draft for approval following review
+comments
+
+31 12/07/02 Draft for review following:
+
+© Correction of typos
+© Inclusion of 3 definitions outstanding from
+V3.0
+
+40 29/07102 Final Version for approval
+
+PO comments: Marion Dale added to reviewers
+
+Fujitsu Services comments:
+
+© Tony Drahota to approval authority
+
+© Change of date format within “Receipt
+Time’ on NB102 sections from hhmmss to
+hh:mm:ss (cosmetic change to report only —
+not requiring review)
+
+© ICLreplaced with Fujitsu Services
+throughout
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 2 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+ve 4.10
+COMMERCIAL IN CONFIDENCE. Date: 2904/0711/02
+41 171702 Draft for review CP 3348
+Changes are highlighted.
+0.2. Approval Authorities
+Name Position Signature Date
+Bill Reynolds Fujitsu Services Pathway
+Tony Drahota Fujitsu Services Pathway
+ASD Manager
+Sue Harding PON / BDA
+Clive Reed PON/ TDA
+0.3 Associated Documents
+Reference Version _I Date Title Source
+NB/SPE/002 ‘Network Banking DRS On- I Fujitsu
+line Workstation Specification I Services
+Pathway
+Pcs
+NBIFS/008 Network Banking Engine Fujitsu
+NBE - Horizon Application _ I Services
+Interface Specification Pathway
+Pvcs
+NB/PRO/002 Network Banking Fujitsu
+Reconciliation & Incident Services
+Management Pathway
+Pvcs
+
+Unless a specific version is referred to above, reference should be made to the current
+
+approved versions of the documents.
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE
+
+Page: 3 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: __-2904/0711/02
+
+0.4 Abbreviations/Definitions
+
+Abbreviation Definition
+‘Authorised Client This signifies projected settlement awaiting the Confirmed Client
+Transaction Awaiting ‘Transaction. From a system perspective, an ‘S’ transaction — Not
+Confirmation applicable to Network Banking Reports.
+
+Bank Transaction Id I Message sequence number assigned by the message originator
+(except Horizon), to assist in identifying a transaction uniquely.
+Stays unchanged through the life of the transaction.
+
+C4 Processing Date The System Processing Date on which the ‘C4’ was received by
+the DRS. Where a C4 is included on report NB1O1, the C4
+Processing Date is the same as the Run Date for report NB1O1.
+
+C4 Settlement Date The Settlement Date provided on the C4 transaction.
+Confirmed Client From a ‘Client’ perspective, a transaction that has been authorised
+Transaction to either debit or credit an account. From a system perspective, a
+
+‘C4’ transaction.
+
+Counter Confirmations I From an outlet / POL perspective, a successfully completed
+transaction at the counter. From a system perspective, a ‘C12’
+
+transaction.
+Exceptioned Client From a Client perspective, a transaction reconciliation difference
+Transaction highlighted within the NBE and notified to Horizon. From a
+system perspective, a ‘D” transaction.
+Exception Types Within all reports the ‘Exceptions’ category will include:
+
+© ‘Incomplete States’, i.e. those transactions where one or more
+transaction component is missing — a C4 without a C12 ete
+
+© Genuine exceptions where transaction components belonging
+to the same high level transaction have been exceptioned, i.e.
+C12 (amount) not = to C4 (amount) ete.
+
+* NBE/ DRS corruption’s
+
+Horizon_Txn_Num Unique transaction number to be used in all messages between
+Horizon and the NBE relating to the transaction. Generated by
+Horizon and provided in the request message initiating the
+transaction.
+
+‘New’ Transactions ‘Transactions that have had a change of state since they were last
+reported, or have never been reported except in NB102 section 6.
+Note that if transaction appears in NB102 section 6 it is future
+dated as is reported in that section for information only. Once
+future dated transactions become current dated, they must be
+reported as though they have not appeared on the reports before.
+
+“Old” Transactions Transactions that have NOT had a change of state since they were
+last reported.
+
+Receipt Date Receipt Date is the Date as printed on the transaction Receipt at
+the Counter. It forms part of all transactions.
+
+Receipt Time Receipt Time is the Time as printed on the transaction Receipt at
+the Counter. It forms part of all transactions.
+
+Reconciliation Date The Reconciliation Date is the date attributed to a transaction to
+
+allow POL to reconcile. It will be set the first available Bank
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 4 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services
+
+NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+4.19
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+
+Settlement date from the transaction elements (C112, C12, C4, S
+& D) that make up a Network Banking transaction. If'no Bank
+Settlement date is available, the Reconciliation Date will be set to
+the processing date that the Data Reconciliation Service first
+recorded any element of the transaction being received. If a
+Settlement date subsequently becomes available, the first
+available Bank Settlement date will replace the processing date.
+However, once a transaction has been accounted for on the
+reconciliation reports, the Reconciliation Date will never change
+
+Routing_Gateway Identifies a system, where the authorisation for a specific
+transaction should be sought. For Network Banking, this refers to
+the Routing_Gateway as defined in Network Banking Engine
+NBE - Horizon Application Interface Specification (NB/IFS/008)
+
+Run Date This is the System Processing Date for which the report refers, ic.
+
+all transaction components processed by the DRS on System
+Processing Date dd/mm/yyyy are accounted for on this report.
+
+Settlement Date
+
+Settlement Date is often the same as Run Date but some Financial
+Institutions may assign a Settlement Date in the future: e.g. the
+following Monday may be set on transactions processed on the
+preceding Friday. Saturday and Sunday.
+
+TIP Transactions
+
+From an outlet / POL perspective, a transaction that has been sent
+from TPS to POL TIP. From a system perspective, a *C112”
+transaction.
+
+CAP Cash Account Period
+
+CBDB Counters Business Data Base (POL)
+
+cs Customer Service (Fujitsu Services Pathway)
+
+DRS Data Reconciliation Service
+
+EFTPOS Electronic Funds Transfer at Point Of Sale
+
+EPOSS Electronic Point Of Sale Service
+
+MSU Management Support Unit (Fujitsu Services Pathway)
+POL Post Office Limited
+
+TIP Transaction Information Processing (POL)
+
+TPS Transaction Processing Service
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE Page: 5 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services
+
+NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+4.19
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+
+0.5 Changes in this Version
+
+Version
+
+Changes
+
+0.2
+
+Changes to report layouts
+POL & inclusion of revis
+
+ind format following discussions with
+tate table.
+
+0.3
+
+Changes to report layouts and format following discussions with
+POL & inclusion of revis
+
+state table.
+
+0.4
+
+Clarification provided following review comments from POL.
+Major revision of NB101a data definition to explain both in a
+business and technical sense the progression of transaction
+components throughout the reporting cycle. The final
+reconciliation and settlement in accordance with the
+requirements has not been amended.
+
+Inclusion of Incomplete State and Exception state matrices to
+identify report population for specific error types. Section
+3.1.4.14/ 15
+
+2 transaction components have now been renamed C12.
+Revised System State Table
+
+0.5
+
+Cl transaction components have now been renamed C112
+Revised System State Table — now section 5
+
+New sections, 11 & 12 added to NB102 to allow for Future
+Dated Transactions:
+
+Transaction flow diagram removed from section 1
+
+New R.A.C diagram included as section 4
+
+Definition of ‘Today’ removed from document.
+
+Definition of ‘New’, ‘Old’ and ‘Settlement Date’ included in
+document.
+
+Removal of exception states E15 — E19 from all reports
+following revision to State Table.
+
+New fields inserted into NB102 series reports & revision of
+format of cleared reports (sections 7 — 10)
+
+Incomplete and Exception state amendments to some reports
+where inconsistencies were evident.
+
+Re-ordering of NB102 sections
+
+Review following detailed check of system states
+
+‘New sub total lines included in NB100a and NB100b_
+Detailed rules added to NB103
+
+Discrepancy reason codes added to NB102
+
+NOW REMOVED FROM APPROVAL CYCLE
+
+New Section 5 included identifying reported values in
+accordance with system states. Appropriate report rules point to
+this new section.
+
+NOW REMOVED FROM REVIEW CYCLE
+
+2.0
+
+NOW REMOVED FROM APPROVAL CYCLE
+
+21
+
+General changes following receipt of CR27 re. IBM interface
+changes
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE Page: 6 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services
+
+NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+
+4.19
+
+2904/0711/02
+
+COMMERCIAL IN CONFIDENCE
+
+Major changes resulting from the reviews between Fujitsu Services
+
+Pathway and POL on 6/7 February and 20/21 February 2002 held at
+
+POL Chesterfield. Present: Fujitsu Services Pathway: Richard
+
+Brunskill, Richard Hicks. POL: Linda Austin (6/7 only), Glenys
+
+Latham, Claire Bennett, Marion Dale, Jayne Widdowson.
+
+Changes are as follows:
+
+«Fujitsu Services Pathway sign off amended to Bill Reynolds
+
+© Comments from Bob Booth (POL) incorporated where
+applicable
+
+* Removal of reporting requirements for Balance Enquires and
+PIN changes, agreed ‘Not Required’ - Section 2.0 deletion of
+columns from the table
+
+© Deletion of reports NB100a and NB100b from report set, agreed
+“Not Required”
+
+* Deletion of worked examples (sections 3.1.3.4.1 & 2), agreed
+‘Not Required”
+
+© Major structural and data definition changes to report NBI01
+
+© Deletion of report NB101(b) from report set, agreed ‘Not
+Required”
+
+«Report NB101(a) re-named as NB1O1
+
+«Report NB101 now combined to include both Deposits and
+Withdrawals
+
+* Addition of CAP identification to all exceptions listed within
+reports NB102 sections 2, 3, 4, 5, 8, 9, 10 & I] where a C112 is
+present
+
+« NB102 Sections I and 7: Titles amended to delete references to
+<24hours to aid in development understanding. Both sections
+now refer to “All” exceptions
+
+© Major data definition changes to report NB103
+
+* Additional rule applied to all remaining reports stating that
+within the Network Banking report set, “S’ states are not
+expected to occur. (See rule for exact wording applicable to
+system states)
+
+* Section 4 — Transaction Flows: Diagram removed and reference
+to NB/SPE/001 included.
+
+* Section 5 now deleted from document, agreed ‘Not Required’
+
+© Section 6 State Table amended to exclude Patrol Alerts, agreed
+‘Not Required”
+
+Changes as per POL and Fujitsu Services Pathway comments
+
+3.
+3.1
+
+Section 0.4: Added
+
+> “Bank_Transaction_Id: Message sequence number assigned
+by the message originator (except Horizon), to assist in
+identifying a transaction uniquely. Stays unchanged through
+the life of the transaction.”
+
+> “Horizon_Txn_Num: Unique transaction number to be used
+
+in all messages between Horizon and the NBE relating to the
+
+transaction. Generated by Horizon and provided in the
+
+request message initiating the transaction.”
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE Page: 7 of 48
+
+FUJ00001687
+FUJ00001687
+Fujitsu Services
+
+NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+4.19
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+
+Section 3, No8: Added “Every line will have the character
+‘newline’, Hex ‘0A’, as the last character.”
+© Section 3.2.1.6.2 (NB102: Section 6 - Data Definition), System
+State: Corrected “All States” to “Al States excluding F99”
+Section 3.2.1.8.2 (NB102: Section 8 - Data Definition),
+> System State: Corrected “Received = Old + New” to “Set to
+F99: New”.
+> “System State” replaced by “For last reported System
+States” to be consistent with other sections for cleared
+errors.
+
+4.0
+
+PO comments: Marion Dale added to reviewers
+
+Fujitsu Services comment
+
+Tony Drahota to approval authority
+
+© Change of date format within ‘Receipt Time’ on NB102
+sections from hhmmss to hh:mm:ss (cosmetic change to report
+only — not requiring review)
+
+Change to add ‘Currency’ to report headings (cosmetic change
+to report only — not requiring review)
+
+«ICL replaced with Fujitsu Services throughout
+
+Changes are highlighted:
+
+¢__Nil Return Report Added
+¢__NB102 section 11 definition corrected
+
+¢ Other minor corrections in wording
+
+0.6 Changes Expected
+
+Changes
+
+No further change expected
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE Page: 8 of 48
+
+FUJ00001687
+FUJ00001687
+
+——{Formatted: Bullets and Numbering )
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OL
+RECONCILIATION REPORTING.
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+
+0.7 Table of Contents
+1.0_INTRODUCTION..
+
+2.0_ Scope...
+2.1_ RECONCILIATION REPORTS SPECIFIED.
+
+3.0_GENERAL REPORT SPECIFICATIONS
+
+3.1_NB000: SUMMARY REPOR
+3.1.1 NBO000: Rules...
+3.1.1.1 NB000: Report Layout
+3.1.1.2 NB000: Data Definition
+3.2_NB101: NETWORK BANKING SETTLEMENT STATEMENT.
+3.2.1_NB101: Rules
+3.2.1.1 NB101: Report Layout...
+3.2.1.2 NB101: Data Definition
+3.3__NB102: EXCEPTION SUMMARY...
+3.3.1 _NB102: Rules.
+1 NB102: Section 1
+22
+1.2 NB102: Section 2: Uncleared Exceptioned Client Transactions ..
+3 3 NB102: Section 3: Uncleared Corruption’s......
+3.3.1.4 NB102: Section 4: Uncleared Timing Differences
+3.3.1.5 NB102: Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24
+hours _29
+3.3.1.6 NB102: Section 6: Uncleared Future Dated Transactions by Client... 31
+3.3.1.7 NB102: Section 7: All Cleared Confirmed, Unconfirmed & TIP exceptions .32
+
+3.3.1.8 NB102: Section 8: Cleared Exceptioned Client Transactions I
+3.3.1.9 NB102: Section 9: Cleared Corruption’s........ semanas ine
+3.3.1.10 NB102: Section 10: Cleared Timing Differences. 37
+3.3.1.1] NB102: Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions >
+24 hours 39
+
+12_NB102: Section 12: Cleared Future oe ae by Client
+wrt Mat
+
+3 3.1.14 Exception State: Report Matrix
+
+3.4_NB103: SETTLED TRANSACTION / CASH ACCOUNT. RECONCILIATION STATEMENT 44
+3.4.1 NB103: Rules... 44
+3.4.1.1 NB103: Report Layout.
+3.4.1.2 NB103: Data Definition
+
+SYSTEM STATES..
+10-4
+2.0-Si
+24 Ree
+30-6) R Si "
+34-NBIOI-N: Bankinc Si " s: " 14
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE. Page: 9 of 48
+
+FUJ00001687
+FUJ00001687
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END CS/SPE/OL
+RECONCILIATION REPORTING.
+4.10
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+341 NBIOL Rules 4
+34.1 NBIOL Report L 4
+3.44.2. NBIOL Data Definit
+
+3.2-NB102:Exces
+
+3.24 NBIQ2: Rules.
+
+3242 NBIG2-
+
+3213 NBIO2-
+
+3214 NBIO2
+
+3.2.15 NBIO2
+
+hours 26,
+
+3.217NB102
+
+tion 7-All Cleared-Confirmed Us
+
+J & TIP ¢ 9
+
+3.2.1.8 NBIO:
+3219 NBIO2-
+
+Section &: Cleared Exceptioned Client
+Section 9-Cleared- dade
+
+‘Transactions
+
+32442 NBIC
+
+32 113-h
+3214 E
+3.3-NBHO3-S)
+33.1 NBIO3: Rul
+3.3.1.1 NB103: Report Layout a
+3.3.1.2 NBIO3-Data Definit
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE.
+
+Page: 10 of 48
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OL
+
+1.0
+
+2.0
+
+RECONCILIATION REPORTING
+4.19
+2904/0711/02
+
+COMMERCIAL IN CONFIDENCE
+
+Introduction
+
+This document has been compiled to specify all Fujitsu Services Pathway outputs
+from the Data Reconciliation Service (DRS) to enable a generic end to end
+reconciliation of Network Banking transaction processing.
+
+Scope
+
+This document defines the format and content of all reconciliation reports, which
+satisfy the Network Banking reconciliation requirement. It does not attempt to define
+within the operating systems, including the Network Banking Engine, (NBE) how the
+transactions are processed.
+
+The following Network Banking requirements are satisfied by this document:
+
+© Reconciliation: [NBR0040], [NBR0042], [NBRO183], [NBR0212], [NBR0227],
+[NBR0229], [NBR0278], [NBR0294], [NBR0389}
+
+© Settlement: [NBR0230}, [NBR0456]
+
+¢ Error Resolution: [NBR0260]
+
+It is assumed that each of the POL clients, as dictated by Routing_Gateway (assumed
+to be at this point the Banks / LINK) will require a separate reconciliation report set.
+
+Within this report set, separate reports will be provided as per the following table:
+
+Report Number Deposit Transactions [ \drawal Transactions
+NBIOL ‘Combined Report
+NBIOZ ‘Combined Report
+NB1O3 Y I ¥
+
+NB000 is a combined report for all Routing Gatewa'
+
+The format and content of each client’s report is considered to be identical when
+allowing for these specific requirements. It should therefore be understood that the
+specifications documented here are applicable to each client report set. (Specific client
+requirements outside of this reporting specification are not covered within this
+document)
+
+‘There must be a separate set of reports to provide for transactions for which the
+Routing Gateway and/or Transaction Type is not known.
+
+Balance Enquiries and PIN changes are explicitly excluded from the report set as “Not
+Required by POL”
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 11 of 48
+
+FUJ00001687
+FUJ00001687
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11L
+RECONCILIATION REPORTING
+4.10
+COMMERCIAL IN CONFIDENCE. 2904/0711/02
+No report will mix currency, so if ever the transactions selected to appear on a set of
+reports are not of a single currency, then a separate set of reports will be produced for
+each currency. All the amounts in a single transaction will always use the same
+currency
+2.1 Reconciliation Reports Specified
+¢_NBO000: _DRS Summary + Formatted: Bullets and Numbering J
+
+* NBIOL: Network Banking Settlement Statement
+* NB102: Exception Summary
+¢ NB103: _ Settled Transaction / Cash Account Reconciliation Statement
+
+Rows and columns ate described in detail, together with the mathematical calculations
+required to achieve reconciliation.
+
+All general aspects relating to the production and transmission of the reports are
+described.
+
+This document does not attempt to define the business processes undertaken within
+Fujitsu Services Pathway and POL with respect to the resolution of any exceptions,
+which may arise, nor does it scope the requirement for any systems that may be
+required to assist in this process. This information can be found in the associated
+documents, reference:
+
+¢ NB/SPE/002: Network Banking DRS On-line Workstation Specification
+¢ NB/PRO/002: Network Banking Reconciliation & Incident Management
+
+NB: It should be noted that where a system ‘State’ definition is quoted, this takes
+precedence over any narrative which has only been provided to help understand the
+business processes.
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 12 of 48,
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+4.10
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+3.0 General Report Specifications
+A separate set of reports is produced for each POL client as identified by the
+Routing_Gateway. (LINK being a single client). The specification is general to all
+reports sets.
+1. For volumes and values the accounting sense for reporting purposes to allow
+settlement totals to be correctly derived, will be:
+«Absolute volume
+© Net value
+© Where no value reported show “{Cusreney}-0.00”
+© Where no volume reported show 0
+¢_-ve values will be shown in brackets e.g. (nnn.nn) + (Formatted: Bullets and Numbering }
+
+iy
+
+Each report will show the following general information:
+
+Report title — including the client name (derived from Routing_Gateway.)
+Transaction Type — (if applicable)
+
+Report ‘Run Date’ - ie., the period for which the report refers
+Production date and time
+
+Fujitsu Services Pathway report number
+
+Fujitsu Services Pathway reference-and-contact point
+
+3. Where ‘Received’ and ‘Reconciliation Date’ are quoted against time parameters:
+
+« ‘Received = New’: defines transactions that have had a change of state since
+they were last reported, or have never been reported, except in NB102 section
+6
+
+© ‘Received = Old’: defines transactions that have NOT had a change of state
+since they were last reported
+
+4. Reports: NB000, NB101, NB102 will be produced DAILY, NB103 will be
+produced WEEKLY atter Friday’s and prior to Saturdays TPS processing
+schedule. They will be delivered by 08.00hrs the day following the Run Date to:
+© POL/ TIP gateway: The Host writes the reports to a directory. These are
+
+picked up by FTMS and posted to the TIP gateway. (As per other Host to
+external systems applications)
+* Fujitsu Services Pathway CS / MSU, DRS Workstation,
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 13 of 48
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: __-2904/0711/02
+
+5. Within report NB 102 the ‘Exceptions’ category will include:
+© ‘Incomplete States’, i.e. those transactions where one or more transaction
+component is missing — a C4 without a C12 ete
+* Genuine exceptions where transaction components belonging to the same high
+level transaction have been exceptioned, i.e. C12 (amount) not = to C4
+(amount) etc.
+¢ NBE/ DRS corruption’s
+
+6. For clarity within this document, field sizes are shown within ‘Report Layout’ and
+not within the ‘Data Definition’
+
+7. All reports are run against a consistent data set.
+
+8. All reports will be produced as ASCII text files ~ one for each report. The report
+layout will be fixed format with space characters providing the blank space. This
+will allow for ‘Excel’ input, using fixed field width facilities. The formatting
+(lines & shading referred to in this document) will not be included within the file.
+Every line will have the character ‘newline’, Hex ‘0A’, as the last character. Each
+report will have the text “End of Report” as the last line.
+
+9. See also comments in Section 2: “Scope”
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 14 of 48,
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+4.10
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+3.1 __NB000: Summary Report (Formatted: Bullets and Numbering J
+This report summarises all reconciliation reports produced by the DRS. It also
+summarises all reports that were not produced by the DRS because there was no data
+to report.
+4.1 NBO000: Rules +—— (Formatted: Bullets and Numbering }
+
+1. Reports are listed by application type, routing gateway, and report number.
+2. Where a report is produced, the filename will be shown.
+
+there is no data, then the filename will be replaced by [NO DATA].
+
+4. Where for a routing gateway there is no data at all, the application type cannot be
+shown and the file name will be replaced by [NIL RETURN].
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE. Page: 15 of 48
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CSISPE/OIL
+
+RECONCILIATION REPORTING
+
+Version: 4.10
+
+COMMERCIAL IN CONFIDENCE Date: __2904/0711/02
+3.1.1.1 NB000: Report Layout
+NB000; DRS Summary Report I Client: All I Produced on: dd/mm/yyyy at hhshihiss
+
+Date. ddim [Transaction Type: AT] it
+
+‘Tonlication Routing Gateway Name Tename
+Type
+“APP 30 character name pn NBumesttew TXT
+
+B000: Data Definition
+
+FUJ00001687
+—{Formatted: Bullets and Numbering )
++——[ Formatted: Bullets and Numbering }
+
+[48000 DRS Summary Report I Client: All
+
+I Produced on; (Date / Time of report production)
+
+Run Date: (The period for which thereportrefers) I Transaction Type All
+
+‘Roplication outing Gateway Ni Filename
+Type
+“Applicaton Routing Gateway name, Wil ‘Where there is data fora report the filename willbe shown:
+Type (eg. NBS be “ALL CLIEN’ appvwvvmunddssgasegeneN Bannsstcur
+‘oz DCP) forreporis NB102 I reports NB102 sections 6 and + app is a3 character application code (e.g. NBS of DCP,
+Willbe = I sections 6 and 12 as I 12 as there are single reports —vxyunadi ia repent adel
+where no there are single for all routing gateways Sreach, I sores, I 5 —ccesaranes ieee yews taabe Maciepaats
+application ype I reports forallrouting I Shown against each routing I routing I report ‘NBIO2 Sections 6 and 12 use ‘0000000ALL*
+isknown, gateways. Repeated I gateway number gateway I number I 4 Banus is the report number and section
+Repeated for I foreach routing ¢tttis the wansaetion group, For NB1OL, and NB1O2, this
+each application I gateway within will be “ALL’, for NB103, it will be “DEP” for deposits,
+‘ype, pplication type (or WR’ for withdrawal.
++ _curis the currency eg. GBP
+Where fora routing gateway, there is some data to report, but
+fora specific report there is no data, then show [NO DATA]
+‘Where fora routing gateway there iso data at all (the
+lication type is“) show [NIL RETURN)
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+Page: 16 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11L
+RECONCILIATION REPORTING
+4.10
+COMMERCIAL IN CONFIDENCE. 2904/0711/02
+343.2 NB101: Network Banking Settlement Statement
+This report identifies *C4” transactions received against each ‘C4 Settlement Date’ as
+reported to the DRS for the most recent processing date. The report will be used by
+POL as a basis for settlement of Network Banking transactions with the Financial
+Institutions.
+34:43.2.1__NB101: Rules + (Formatted: Bullets and Numbering }
+
+NB101 is run daily
+. NBI1O1 is repeated for each Routing_Gateway
+. NB101 will show °C4’ transactions received from the NBE for ONE day only —
+breaking these down into individual ‘C4 Settlement Dates’ There will be one line
+for each ‘C4 Settlement Date”
+4. NB1OI will show Deposit and Withdrawal transactions in separate columns,
+(headed ‘Receipts’ and ‘Payments’ respectively) derived from “Txn_Type”
+5. NB1O01 will show a final settlement column derived in the following way:
+© Volume: Volume of Deposits plus Volume of Withdrawals
+© Value: Value of Deposits minus Value of Withdrawals
+© Where the net total is negative i.e. the Value of Withdrawals exceeds the
+Value of Deposits, the total will be shown as (Exxx.xx)
+6. Where the volume for a given ‘C4 Settlement Date’ is nil, the date will not be
+reported.
+7. ‘C4 Settlement Dates’ are shown in reverse chronological order.
+
+1
+2.
+3.
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 17 of 48
+NETWORK BANKING END TO END. Ref:
+RECONCILIATION REPORTING
+
+Fujitsu Services CS/SPE/O11
+
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: ___2904/0711/02
+
+3ebebe13.2.1.1 NB1O1: Report Layout
+
+NB 101: Network Banking Settlement Statement Client: Barclays ete
+
+Produced on: ddimm/
+
+yy at hh:mm:ss
+
+Run Date: dd/mm/yyyy ‘Transaction Type: Deposit & Withdrawal
+
+‘Curreney: GBP
+
+Receipts Payments Net Settlement
+‘C4 Settlement Date Volume Value ‘Volume Value Volume Value
+1. ddimm/yyyy 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99
+2._dd/immi/yyyy 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99
+3._dd/imm/yyyy 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99
+4. ddimm/yy, 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99 99,999,999 9,999,999,999.99
+TOTAL 999,999,999 9,999,999,999.99 999,999,999 9,999,999,999.99 999,999,999 9,999,999,999.99
+End of Report
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+Page: 18 of 48
+NETWORK BANKING END TO END.
+RECONCILIATION REPORTING
+
+Fujitsu Services
+
+COMMERCIAL IN CON!
+
+FIDENCE
+
+Ref: CS/SPE/O11
+
+Version: 4.10
+Date: ___ 2904/0711/02
+
+3-44:23.2.1.2_NB101: Data Definition
+
+NB 101: Network Banking Settlement Statement
+
+I Client: (Derived from ‘Routing Gateway’)
+
+FUJ00001687
+
+FUJ00001687
+
+—{Formatted: Bullets and Numbering
+
+I Produced on: (Date / Time of report production)
+
+Run Date: (The period for which the report refers)
+
+I Transaction Type: Deposit & Withdrawal
+
+I Currency: (Derived from ‘currency’)
+
+I Receipts Payments Net Settlement
+C4 Settlement Date Volume Value Volume Value Volume Value
+1. Date 1 No. of C4 Deposits I Value of C4 Deposits I No. of C4 Value of C4 No. of C4 Deposits I Value of C4 Deps
+Rec'd Rec'd Withdrawals Rec'd I Withdrawals Rec'd I Rec'd +No of C4 Rec'd ~ Value of C4
+Withdrawals Rec'd _I Withdrawals Ree’d
+2. Date? No. of C4 Deposits I Value of C4 Deposits I No. of C4 Value of C4 No. of C4 Deposits I Value of C4 Deposits
+Rec'd Rec'd Withdrawals Rec'd I Withdrawals Rec’d I Rec'd +No of C4 Rec'd — Value of C4
+Withdrawals Rec'd _I Withdrawals Rec'd
+3. Dates No. of C4 Deposits I Value of C4 Deposits I No. of C4 Value of C4 No. of C4 Deposits I Value of C4 Deposi
+Rec'd Rec'd Withdrawals Rec'd I Withdrawals Ree’d I Rec'd +No of C4 Rec'd ~ Value of C4
+Withdrawals Rec'd _I Withdrawals Rec'd
+4 Dated No. of C4 Deposits I Value of C4 Deposits I No. of C4 Value of C4 No. of C4 Deposits I Value of C4 Dep
+Rec'd Rec'd Withdrawals Rec'd I Withdrawals Rec’d I Rec'd +No of C4 Rec'd — Value of C4
+Withdrawals Rec'd _I Withdrawals Rec'd
+TOTAL ‘Total All Lines ‘Total All Lines Total All Lines Total All Lines Total All Lines Total All Lines
+End of Report
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 19 of 48
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+
+4.19
+
+2904/0711/02
+
+COMMERCIAL IN CONFIDENCE
+
+(Formatted: Bullets and Numbering )
+
+3.23.3 NB102: Exception Summary
+
+This report is divided into twelve sections:
+
+Section 1: All Uneleared Confirmed, Unconfirmed & TIP exceptions
+
+: Uneleared Exceptioned Client Transactions
+
+Uncleared corruption’s
+
+: Uneleared Timing Differences
+
+Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+Section 6: Uncleared Future Dated Transactions by Client
+
+Section 7: All Cleared Confirmed, Unconfirmed & TIP exceptions
+Section 8: Cleared Exceptioned Client Transactions
+
+Section 9: Cleared corruption’s
+
+Section 10: Cleared Timing Differences
+
+Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+Section 12: Cleared Future Dated Transactions by Client
+
+Liability issues are not covered within this document, nor are the business
+processes involved in the resolution of any exception.
+
+3.2.43.3.1 _NB102: Rules (Formatted: Bullets and Numbering )
+
+NB102 is run daily
+
+'NB102 is repeated for each Routing_Gateway.
+
+For each report section, the column ‘Values’ will be partitioned into 8 sub
+
+columns to contain the values for: ‘C12’, ‘S’, ‘C4’, C112’ & the four values from
+
+a‘D’ which are: Amount Requested, Amount Authorised, Amount Confirmed,
+
+Amount Discrepancy. The reports will populate all values that are available.
+
+4. For reporting purposes, within NB102 sections 2, 3, 4, 5, 8, 9, 10 & II, the
+column headed *CAP” will report the Cash Account period obtained from the
+*C112° transaction element, Where no *C112° transaction element has been.
+received, the “CAP” will be blank.
+
+5. For reporting purposes within NB102 sections 2, 3, 4, 5, 8,9, 10, 11, the column
+headed ‘Discrepancy Type’ will report the ‘D’ discrepancy type and be populated
+with the following codes:
+
+(NB: For a list of Discrepancy Reason Codes for Network Banking, refer to
+NB/IFS/008: NBE - Horizon Application Interface Specification)
+
+Where no “D” transaction element has been received, the ‘Discrepancy Type’ will
+be blank
+
+6. Where an exception is set to F99 by Fujitsu Services Pathway, clearance of this
+exception within the appropriate NB102 section, (e.g. section 2 exceptions shown
+as cleared within section 8), will always refer to the previously reported state
+regardless of any change of state which may have occurred within the DRS.
+
+7. All Uncleared Confirmed, Unconfirmed & TIP exceptions are reported as
+
+summary totals by exception type - (NB102 section 1)
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 20 of 48,
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+4.19
+COMMERCIAL IN CONFIDENCE 2904/0711/02
+
+8. Uncleared Exceptioned Client Transactions are listed individually - (NB102
+section 2)
+
+9. Uncleared NBE/ DRS cormuption’s exceptions are listed individually - (NB102
+section 3)
+
+10. Uncleared Timing Differences are listed individually — (NB102 section 4)
+
+11. Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours are listed
+individually — (NB102 section 5)
+
+12. Uncleared Future Dated Transactions are reported as summary totals by Client
+identified by Routing_Gateway — (NB102 Section 6)
+
+13. All Cleared Confirmed, Unconfirmed & TIP exceptions are reported as summary
+totals by exception type - (NBE102 section 7)
+
+14, Cleared Exceptioned Client Transactions are listed individually — (NB102 section
+8)
+
+15. Cleared NBE / DRS corruption’ are listed individually — (NB102 section 9)
+
+16. Cleared Timing differences are listed individually ~ (NB102 section 10)
+
+17. Cleared Confirmed, Unconfirmed & TIP exceptions >24 hours are listed
+
+individually — (NB102 section 11)
+
+Cleared Future Dated Transactions are reported as summary totals by Client
+
+identified by Routing_Gateway — (NB102 Section 12)
+
+19. Within each section, exception summary totals / individual transactions are to be
+grouped and sub totalled by reconciliation date with a total provided for the entire
+section.
+
+20. For reporting purposes:
+
+© Timing Differences: relate to differences in the reconciliation date / settlement
+date allocated where a settlement date on a transaction element is not the same
+as the reconciliation date first reported on that transaction.
+
+© Future Dated Transactions: relate to those transactions that have a
+Reconciliation Date ahead of the Run Date of the report. For example, most
+Clients will settle Friday, Saturday and Sunday transactions on the following
+Monday. This means that each transaction completed on these days will have a
+Reconciliation Date ahead of the Run Date of the report. These transactions
+are expected to clear naturally once the Reconciliation Date and the Run Date
+are in sync, however in the rare eventuality that a Reconciliation Date is
+considerably ahead of the Run Date, POL may wish to clear the exception
+manually. In this case, Fujitsu Services Pathway will set the transaction to
+“£99.
+
+For reporting purposes, within NB102 sections 2, 3, 4, 5, 8, 9, 10,11, the column
+
+headed “Transaction Type’ will be populated by the following codes:
+© 03 — Withdrawal (With PIN)
+
+04 — Withdrawal with balance (With PIN)
+
+05 — Withdraw all (With PIN)
+
+13 = Withdrawal (With signature)
+
+14 — Withdrawal with balance (With signature)
+
+15 = Withdraw all (With signature)
+
+2 Deposit (No verification)
+
+. For Network Banking reconciliation reporting, System States 8, 9, 10, 11, 16, 17,
+
+18, 19, 20, 3, F05, B06, £07, E14, E2: E31, E32, £33, E38 are never
+expected within report NB102 because ‘S’ transactions are not used in NB.
+
+%
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 21 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11L
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE. Date: 2904/0711/02
+3.2-443.3.1.1_NB102: Section 1: All Uncleared Confirmed, Unconfirmed & TIP + —[Formatted: Bullets and Numbering )
+exceptions
+3.24443.3.1.1.1_NB102: Section 1 - Report Layout
+NB102 Section 1: All Uncleared Client Barclays ete Produced on:
+Confirmed, Unconfirmed & TIP dd/mm/yyyy at hh:mm:ss
+exceptions
+Run Date: dd/mm/yyyy Transaction Type: Deposit & ‘Currency: GBP
+Withdrawal
+Exception Volume Values ( 8 sub columns)
+Type
+State I ete 99999999 9999999999.99
+State 2 ete 99999999 9999999999.99
+Sub total 999999999 9999999999.99
+State E02 ete dd/mm 99999999 9999999999.99
+Sub total 999999999 9999999999.99
+Total Section 1 9999999999 9999999999.99
+End of Report
+3.244.23.3.1.1.2 NB102: Section 1 - Data Definition +—— (Formatted: Bullets and Numbering )
+NB102 Section 1; All Uncleared Client: (Derived from Produced on:
+Confirmed, Unconfirmed & TIP I Routing Gateway.) (Date and time of report
+exceptions production)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Currency: (Derived from
+the report refers) Withdrawal ‘currency’)
+Exception Type / Reconciliation Volume ‘Values ( 8 sub columns)
+Date Value of each transaction
+component
+One row for each system state m State: 1-2, 4-11, 16-18, E01-02 04-06, E10-12, E14,
+
+where exceptions are being
+reported grouped within
+reconciliation date with a sub total
+for each reconciliation date and a
+grand total for the section. Where
+no data is being reported against
+and exception state, the row for
+that exeeption state is to be
+suppressed. Where dates are shown
+for the same exception type, list in
+descending order
+
+E34 -E36, E38
+ved = New + Old
+Reconeiliation date: <
+
+Run Date
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE Page: 22 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref:
+
+Version: 4.10
+Date: ___2904/0711/02
+
+3.24,23.3.1.2_NB102: Section 2: Uncleared Exceptioned Client Transactions
+
+3.242-43.3.1.2.1_NB102: Section 2 — Report Layout
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+‘NB102 Section 2: Uncleared
+Exceptioned Client Transactions
+Run Date: dd/mm/yyyy
+
+Client: Barclays ete
+
+Transaction Type: Deposit &
+
+Currency: GBP
+
+Produced on: dd/mm/yyyy at hh: mm: ss
+
+Withdrawal
+Exception I Reconciliation I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Diserepaney I Values ( 8 sub
+‘Type Date 1d Type ‘Type columns)
+
+E13 ddimm/yyyy Char (32) Cade (99) Char (6) ddimmiyyyy hh:mm:ss Num 2) Cade (99) I 9999999999.99
+E13 dd/imm/ ‘Char (32) Code (99) Char (6) dd/mm/yyyy hh:mm:ss Num (2) Code (99) 9999999999.99
+State 12 dd/mm/yyyy Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total 9999999999.99
+EB dd/mm/yyy Char (32) Code (99) Char (6) dd/imm/yyyy hh:mm:ss ‘Num (2) Code (99) I 9999999999.99
+Sub Total '9999999999.99
+Total Section 2 9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OM
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: ___2904/0711/02
+
+3.2rh2-23.3.1.2.
+
+.2_NB102: Section 2 — Data Definition
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+‘NB102 Section 2: Uncleared Client: (Derived from
+Exceptioned Client Transactions I Routing Gateway.)
+
+Produced on: (Date and time of production)
+
+Run Date: (The period for which I ‘Transaction Type: Deposit &
+
+‘Currency: (Derived from ‘currency’)
+
+the report refers) Withdrawal
+Exception Type / Horizon Txn I Transaction I Bank Txn ld I Receipt Date I Receipt Time CAP Diserepaney I Values ( 8 sub
+Recon ion Date Id ‘Type ‘Type columns)
+‘One row for each exception, I Horizon Txn_ I Txn_Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy _R I Value of each
+with specific system states Num ond ction _Date ction Time eason_Codes I transaction
+listed in order, grouped within component
+
+reconciliation date with a sub
+
+total for each reconciliation
+date and a grand total for the
+section. Where dates are shown
+for the same exception type, list
+in descending order.
+
+System State: 12-15, 20-23, £03, E07 — B09, E13, E25 — E26, £33, E37
+Received = New + Old
+Reconciliation date: <= Run Date
+
+End of Report
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+Page: 24 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+3.2:433.3.1.3_NBI102: Section 3: Uncleared Corruption’s +——[ Formatted: Bullets and Numbering )
+
+3.24343.3.1.3.1_NB102: Section 3— Report Layout
+
+‘NB102 Section 3: Uncleared Glient: Barclays ete Produced on: dd/imm/yyyy at hh:mm:ss
+Corruption’s
+Run Date: ddimm/yyyy Transaction Type: Deposit & ‘Curreney: GBP
+Withdrawal
+Exception I Reconciliation I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time ‘CAP Diserepaney I Values ( 8 sub
+‘Type Date 1d ‘Type ‘Type columns)
+ddimm/yyyy Char (32) Cade (99) Char (6) daimmiyyyy hh:mm:ss Num (2) Cade (99) I 9999999999.99
+
+29 ddimm/yy\ Char (32) Code (99) Char (6) dd/mm/yyyy hh:mm: Num (2) Code (99) I 9999999999.99
+E31 dd/mmiyyyy Char (32) Code (99) Char (6) ddimmiyyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total 9999999999.99
+E31 ddim) Char 32) Code (99) Char (6) ddimm/yyyy Ihemm:ss Num (2) Code (99) I 9999999999.99
+Sub Total '9999999999.99
+Total Section 3 9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+Fujitsu Services NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref: CS/SPE/OM
+Version: 4.10
+Date: ___2904/0711/02
+
+3.243-23.3.1.3.
+
+.2_NB102: Section 3 — Data Definition
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+‘NB102 Section 3: Uncleared Client: (Derived from Produced on: (Date and time of production)
+corruption’s Routing Gateway.)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Currency: (Derived from currency’)
+the report refers) Withdrawal
+Exception Type / Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+Reconciliation Date 1d ‘Type ‘Type columns)
+‘One row for each corruption, I Horizon Txn__I Txn_Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R-I Value of each
+with specific system states Num on Id ction Date ction Time eason Codes I transaction
+listed in order, grouped within component
+reconciliation date with a sub mia
+total for each reconciliation 3
+Received = New + Old
+date and a grand total for the é 4
+Reconciliation date: <= Run Date
+section. Where dates are shown
+for the same exception type, list
+in descending order.
+
+\d of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 26 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref: CS/SPE/OM
+Version: 4.10
+Date: ___2904/0711/02
+
+3.24.43.3.1.4 NB102: Section 4: Uncleared Timing Differences
+
+3.24443.3.1.4.1_NB102: Section 4 - Report Layout
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+'NB102 Section 4: Uncleared
+‘Timing Differences
+
+Glient: Barclays ete
+
+Produced on: dd/mm/yyyy at bh: mm: ss
+
+Run Date: dd/mm/yyyy
+
+Transaction Type: Deposit &
+
+Currency: GBP
+
+Withdrawal
+
+Exception I Reconciliation I Horizon Txn I Transaction I Bank TxnId I ReceiptDate I Receipt Time CAP Diserepaney I Values ( 8 sub
+
+_ Type __Date I ‘Type _ _ ‘Type columns) _
+B39 dd/mm/yyyy Code (99) Char (6) ‘dd/mnv/yyyy ‘Num (2) Code (99) 9999999999.99
+B39 ddimm/yyy ‘Char (32) Code (99) Char (6) dd/mm/yyyy ‘Num (2) Code (99) 9999999999.99
+539 dd/mmiyyyy Char (32) Code (99) Char (6) ddimm/yyyy Num (2) Code (99) I 9999999999.99
+Sub Total 9999999999.99_
+#39 ddan ‘Char (32) Code (99) Char © dd/mmlyyyy Num Q) Code (99) _ I 9999999999.99
+Sub Total 9999999999.99
+Total Section 4 9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Fujitsu Services NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref:
+
+Version:
+
+Date:
+
+CS/SPE/OIL
+
+4.10
+2904/0711/02
+
+3.2eh4-23.3.1.4,
+
+2_NB102: Section 4 — Data Definition
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+‘NB102 Section 4: Uncleared Client: (Derived from Produced on: (Date and time of production)
+‘Timing Differences Routing Gateway.)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Currency: (Derived from currency’)
+the report refers) Withdrawal
+Exception Type / Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+Reconciliation Date 1d ‘Type ‘Type columns)
+‘One row for each timing Horizon Txa_ I Ten Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R-I Value of each
+difference, grouped within Num on Id ction Date ction Time eason Codes I transaction
+reconciliation date with a sub component
+total for each reconciliation
+date and a grand total for the I ee ee ota
+section. Where dates are shown é
+Reconciliation date: <= Run Date
+for the same exception type, list
+in descending order.
+
+End of Report
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+Page: 28 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref:
+Version: 4.10
+Date: ___2904/0711/02
+
+3,24543.3.1.5.1NB102: Section 5 — Report Layout
+
+NB102: Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+'NB102 Section 5: Uncleared
+Confirmed, Unconfirmed & TIP
+exceptions >24 hours
+
+Glient: Barclays ete
+
+Produced on: dd/mm/yyyy at bh: mm: ss
+
+Run Date: dd/mm/yyyy
+
+Transaction Type: Deposit &
+
+Currency: GBP
+
+Withdrawal
+
+Exception I Reconciliation I Horizon Txn I Transaction I Bank Txnld I Receipt Date I Receipt Time ‘CAP Discrepancy I Values ( 8 sub
+
+‘Type Date 1d ‘Type ‘Type columns)
+
+Sate 1 aim) Char 32) Cade (99) Char (6 daimmlyyyy Num @) Cade (99)__ I 9999999999.99
+State 2 ddimm/yyy ‘Char (32) Code (99) Char (6) dd/mm/yyyy Num (2) Code (99) _ I 9999999999.99
+State 6 dd/mmiyyyy ‘Char (32) Code (99) Char (6) dd/mm/yyyy Num (2) Code (99) _ I 9999999999.99
+Sub Total 9999999999.99
+State 6 ddimmiyyyy Char (32) Cade (99) Char (6) ddimmiyyyy hh:mm:ss Num (2) Cade (99) I 9999999999.99
+Sub Total 9999999999.99
+‘Total Section 5 '9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE,
+
+Ref: CS/SPE/OM
+Version: 4.10
+Date: ___2904/0711/02
+
+3.24,5.23.3.1.5.2_NB102: Section 5 - Data Definition
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+‘NB102 Section 5: Uncleared
+Confirmed, Unconfirmed & TIP
+exceptions >24 hours
+
+Client: (Derived from
+Routing Gateway.)
+
+Produced on: (Date and time of production)
+
+Run Date: (The period for which
+the report refers)
+
+Transaction Type: Deposit &
+Withdrawal
+
+‘Currency: (Derived from ‘currency’)
+
+Exception Type/ Reconciliation I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+Date 1d Type ‘Type columns)
+‘One row for each exception, with I Horizon Txa_ I Txn_Type Bank Transacti I Receipt Trans I Receipt Trans [From Cil2_ I Discrepancy R_ I Value of each
+specific system states listed in order, I Num on Id action Date I action Time eason Codes I transaction
+grouped within reconciliation date component
+
+with a sub total for each
+reconciliation date and a grand total
+for the section. Note: an extra
+constraint for system states 2 & 18 is
+that the outlet must have harvested
+(TPS) successfully. Should an outlet
+be confirmed as non-polling, system
+‘states 2 &18 for that outlet on the
+date(s) in question should not be
+included on this report, Where dates
+are shown for the same exception
+type, list in descending order.
+
+Received = Old
+Reconciliation date: < Run Date
+
+System State: 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18, B01-02 £04-06, 10-12,
+
+E14, 20-24, £32, £34 -F36,
+
+(ie. where transaction components have remained in the above incomplete states for >24 hours)
+
+38
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 30 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMM
+
+]ERCIAL IN CONFIDENCE
+
+Ref: CS/SPE/O1
+Version: 4.10
+Date: __-2904/0711/02
+
+3.2.4.63.3.1.6 NB102: Section 6: Uncleared Future Dated Transactions by Client
+
+3:2:4643.3.1.6.1_NB102: Section 6 - Report Layout
+
+FUJ00001687
+FUJ00001687
+
+~~ (Formatted: Bullets and Numbering
+
+NBI02 Section 6: Uncleared
+Future Dated Transactions by
+Client
+
+Produced on:
+dd/mm/yyyy at hh:mm:ss
+
+Run Date: ddimmiyyyy
+
+Transaction Type: Deposit &
+Withdrawal
+
+‘Currency: GBP
+
++—-[Formatted: Bullets and Numbering
+
+Client Reconciliation Date ‘Volume ‘Values (8 sub
+columns)
+
+Barclays ddimmlyyyy 99999999 '9999999999.99
+Lloyds ddimm) 99999999 '9999999999.99
+Total Section 11 9999999999 '9999999999.99
+End of Report
+3.24.6.23.3.1.6.2_NB102: Section 6 - Data Definition
+NBI02 Section 6: Uncleared AM Cli Produced on:
+Future Dated Transactions by (Date and time of report
+
+nt production)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Curreney: (Derived from
+the report refers) Withdrawal ‘curreney”)
+
+Client / Reconciliation Date
+One row for each Client derived from
+
+Routing_Gateway where transactions have
+a reconciliation date
+
+been received wil
+ahead of the run date. Where dates are
+
+shown for the same exception type, list in
+
+descending order.
+
+Volume
+
+‘Values ( 8 sub columns)
+
+System State: All States excluding F99
+Reconciliation date: > Run Date
+
+End of Report
+
++——[ Formatted: Bullets and Numbering
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 31 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O11L
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE. Date: 2904/0711/02
+3.2:4.73.3.1.7 NB102: Section 7: All Cleared Confirmed, Unconfirmed & TIP exceptions
+3.247.43.3.1.7.1 NB102: Section 7 — Report Layout
+NB102 Section 7; All Cleared Barclays ete Produced on:
+Confirmed, Unconfirmed & TIP dd/mm/yyyy at hh :mm : ss
+exceptions
+Run Date: ddimm/yyyy Transaction Type: Deposit & ‘Currency: GBP
+Withdrawal
+Exception ‘Volume Values ( 8 sub columns)
+Type
+State 1 ete dd/mm/yyyy 99999999 9999999999.99
+State 2 ete dd/mm/y 99999999 9999999999.99
+Sub total 999999999 9999999999.99
+State E02 ete dd/mm/yyyy 99999999 9999999999.99
+Sub total 999999999 9999999999.99
+Total Section 1 9999999999 9999999999.99
+End of Report
+3.2.4.7.23.3.1.7.2._ NB102: Section 7 - Data Definition + {Formatted: Bullets and Numbering i}
+NB102 Section 7; All Cleared Client: (Derived from Produced on:
+Confirmed, Unconfirmed & TIP I Routing Gateway.) (Date and time of report
+exceptions production)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Currency: (Derived from
+the report refers) Withdrawal ‘currency”)
+Exception Type / Recon Volume Values ( 8 sub columns)
+Date Value of each transaction
+component
+One row for each system state For last reported System States: 1-2, 4-11, 16-18, E01-02, E04-06,
+where exceptions are being E10-12, E14, E20-24, E32, E34 -36, E38
+reported grouped within Sct to F99: New
+reconciliation date with a sub total I Reconciliation date: < = Run Date
+for each reconciliation date and a
+grand total for the section. Where
+‘no data is being reported against
+and exception state, the row for
+that exception state is to be
+suppressed. Where dates are shown
+for the same exception type, list in
+descending order.
+End of Report
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 32 of 48,
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+3,2-4.83.3.1.8 _NB102: Section 8: Cleared Exceptioned Client Transactions +——[ Formatted: Bullets and Numbering )
+
+3.24,8:13.3.1.8.1 NB102: Section 8 — Report Layout
+
+‘NB102 Section 8: Cleared Client: Barclays ete Produced on: ddimm/yyyy at hh:mm:ss
+Exceptioned Client Transactions
+Run Date: dd/mm/yyyy Transaction Type: Deposit & Currency: GBP
+Withdrawal
+Exception I Reconciliation I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+‘Type Date 1d ‘Type ‘Type columns)
+
+EIS iiimm/yyyy Char 2) Cade (99) Char @ ‘ddimmlyyyy hams Num @) Cade (99) I 9999999999.99
+EB dd/mm/yyyy Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+State 12 dd/mm/yy\ Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total '9999999999.99 I
+EB ddimmlyyyy Char (32) Code (99) Char (6) ‘ddimmiyyyy hh:mm:ss Num (2) Cade (99) I 9999999999.99
+Sub Total '9999999999.99
+Total Section § '9999999999.99
+End of Report
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 33 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO E! Ref:
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+3,2:48.23.3.1.8.2_NB102: Section 8 - Data Definition +——[ Formatted: Bullets and Numbering )
+NBI02 Section 8: Cleared Glient: (Derived from Produced on: (Date and time of production) I
+Exceptioned Client Transactions I Routing Gateway.)
+Run Date: (The period for which _ I Transaction Type: Deposit & Curreney: (Derived from currency’)
+the report refers) Withdrawal
+Exception Type / Horizon Txn I Transaction I Bank Txnld I Receipt Date I Receipt Time CAP Diserepancy I Values ( 8 sub
+Reconciliation Date Id Type ‘Type columns)
+‘One row for each exception, I Horizon_Txn Txn_Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R_ I Value of each
+with specific system states. I Num on Id ction Date ction Time eason_Codes I transaction
+listed in order, grouped within component
+reconciliation date with a sub Fo Tast reported System States: 12-15, 20-23, E03, FO7 E09, E13, E25 —E26, E33, E37
+total for each reconciliation:
+date and a grand total forthe I Set 10 F99: New
+Reconciliation date: <= Run Date
+section. Where dates are
+shown for the same exception
+type, list in descending order.
+End of Report
++ (Formatted: Bullets and Numbering )
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 34 of 48
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO Ref: CS/SPE/O11
+
+RECONCILIATION REPORT
+
+ING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: ___2904/0711/02
+
+3.2-4,93.3.1.9 NB102: Section 9: Cleared Corruption’s
+
+3.2:4.9:13.3.1.9.1_ NB102: Section 9 — Report Layout
+
+NB102 Section 9: Cleared Client: Barclays ete Produced on: dd/mm/yyyy at hh:mm:ss
+Corruption’s
+Run Date: dd/mm/yyyy Transaction Type: Deposit & Currency: GBP
+Withdrawal
+Exception I Reconciliation I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+‘Type Date 1d ‘Type ‘Type columns)
+
+E28 iiimm/yyyy Char 2) Cade (99) Char @ ‘ddimmlyyyy hams Num @) Cade (99) I 9999999999.99
+E29 dd/mm/yyyy Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+State 31 dd/mm/yy\ Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total '9999999999.99 I
+E31 ddimmlyyyy Char (32) Code (99) Char (6) ‘ddimmiyyyy hh:mm:ss Num (2) Cade (99) I 9999999999.99
+Sub Total '9999999999.99
+Total Section 9 '9999999999.99
+End of Report
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 35 of 48
+Fujitsu Services
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+Version:
+
+Date:
+
+4.10
+2904/0711/02
+
+3.24,9.23.3.1.9.2_NB102: Section 9 - Data Definition
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+NBI02 Section 9: Cleared Client: (Derived from Produced on: (Date and time of production)
+corruption’s Routing Gateway.)
+Run Date: (The period for which I Transaction Type: Deposit & Curreney: (Derived from currency’)
+
+the report refers)
+
+Withdrawal
+
+Exception Type/ HorizonTxn I Transaction I BankTxnId I Receipt Date I Receipt Time P Diserepaney I Values ( 8 sub
+Reconciliation Date Id ‘Type ‘Type columns)
+‘One row for each corruption, I Horizon Txn_ I Txn_Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R I Value of each
+with specific system states Num ond ction Date ction Time eason_Codes I transaction
+listed in order, grouped within component
+
+reconciliation date with a sub
+total for each reconciliation
+date and a grand total for the
+section. Where dates are shown
+for the same exception type, li
+
+in descending order.
+
+For last reported System States: E27 —31
+
+Set to F99: New
+Reconciliation Date: <= Run Date
+
+End of Report
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE
+
+Page: 36 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref: c
+
+Version: 4.
+
+OSISPE/OIL
+
+1.10
+
+Date: 2904/0711/02
+
+3.24403.3.1.10
+
+3.241043.3.1.10.1 NB102: Section 10 - Report Layout
+
+NB102: Section 10: Cleared Timing Differences
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+NBI02 Section 10: Cleared Client: Barclays ete Produced on: dd/mmi/yyyy at hh:mm:ss
+‘Timing Differences
+Run Date: dd/mm/yyyy Transaction Type: Deposit & Currency: GBP
+Withdrawal
+
+Exception Type I Reconciliati I Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Diserepaney I Values ( 8 sub
+
+__on Date. __ Id ‘Type_ _ — _ ‘Type __columns) _I
+E39 dd/mm/yyyy ‘Char (32) Code (99) Char (6) dd/mm/yyyy ‘hh:mm:ss ‘Num (2) Code (99) 9999999999.99
+E39 Char (32) Code (99) Char (6) ‘dd/mm/yyyy hh:mm:ss ‘Num (2) Code (99) 9999999999.99
+£39 Char (32) Code (99) Char (6) ddim hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total 9999999999.99
+E39 Char 32) Code (99) Char ©) ‘ddimmiyyyy I _hh:mm:ss Num Q) Code (99) __ I 9999999999.99
+Sub Total 9999999999.99
+Total Section 10. 9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE
+
+Page: 37 of 48
+FUJ00001687
+
+FUJ00001687
+
+Fujitsu Services Ref:
+
+RECONCILIATION REPORTING
+
+Version: 4.10
+
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+3:2c40-23.3.1.10.2 _NB102: Section 10 - Data Definition +——[ Formatted: Bullets and Numbering )
+‘NB102 Section 10: Cleared Glient: (Derived from Produced on: (Date and time of production) I
+‘Timing Differences Routing Gateway.)
+Run Date: (The period for which I Transaction Type: Deposit & ‘Currency: (Derived from ‘currency’)
+the report refers) Withdrawal
+
+Exception Type/ Horizon Txn I Transaction I Bank TxnId I Receipt Date I Receipt Time SAP Discrepancy I Values ( 8 sub
+Reconciliation Date ld ‘Type ‘Type columns)
+‘One row for each timing Horizon _Txn Txn_Type Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R I Value of each
+difference, grouped within Num on Id ction Date ction Time eason Codes I transaction
+reconciliation date with a sub component
+total for each reconciliation - = Sater
+date and a grand total for the For last reported System States: 139.
+Set to F99: New
+section. Where dates are shown -
+Reconciliation Date: <= Run Date
+
+for the same exception type, list
+in descending order.
+End of Report
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 38 of 48
+FUJ00001687
+
+FUJ00001687
+Fujitsu Services NETWORK BANKING END TO Ref: CSISPE/O11
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: ___2904/0711/02
+3.24H3.3.1.11 NB102: Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions > 24 hours +e ~{Formatted: Bullets and Numbering )
+
+3.244443.3.1.11.1 NB102: Section 11 — Report Layout
+
+NB102 Section 11: Cleared Client: Barclays ete Produced on: dd/mm/yyyy at hh:mm:ss
+Confirmed, Unconfirmed & TIP
+exceptions > 24 hours
+
+Run Date: dd/mm/yyyy Transaction Type: Deposit & Currency: GBP
+Withdrawal
+Exception Type I Reconci Horizon I Transaction I Bank TxnId I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+Date Txn Id Type Type columns)
+State 1 ‘ddimm/yyyy Char (32) Code (99) Char (6) ‘ddimmiyyyy hh:mm:ss Num (2) ‘Code (99) I 9999999999.99
+State 2 dd’mm/yyy’ Char (32) ‘Code (99) Char (6) ‘dd’mm/yyyy hh:mm:ss Num (2) ‘Code (99) I 9999999999.99
+State 6 ‘ddimm/yyyy Char (32) Code (99) Char (6) ‘ddimmiyyyy hh:mm:ss Num (2) ‘Code (99) I 9999999999.99
+Sub Total 999999999999
+State 6 ddimm/yyyy Char (32) Code (99) Char (6) ddimm/yyyy hh:mm:ss Num (2) Code (99) I 9999999999.99
+Sub Total 9999999999.99
+Total Section 11 '9999999999.99
+
+End of Report
+
+© 2002 Fujitsu Services ‘COMMERCIAL IN CONFIDENCE Page: 39 of 48
+Fujitsu Services
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+Version: 4.10
+Date: ___2904/0711/02
+
+3-2r444-23.3.1.11.2
+
+‘NB102 Section 11: Cleared
+Confirmed, Unconfirmed & TIP
+exceptions > 24 hours
+
+B102: Section 11 — Data Definition
+
+Glient: (Derived from
+Routing Gateway.)
+
+Produced on: (Date and time of production)
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+Run Date: (The period for which
+the report refers)
+
+Transaction Type: Deposit &
+Withdrawal
+
+‘Currency: (Derived from “currency’)
+
+Exception Type / Reconciliation I Horizon Txn Bank TxnId_I Receipt Date I Receipt Time CAP Discrepancy I Values ( 8 sub
+Date 1d ‘Type columns)
+‘One row for each exception, with I Horizon _Txn Bank Transacti I Receipt Transa I Receipt Transa I From C112 Discrepancy R- I Value of each
+
+specific system states listed in
+order, grouped within
+reconciliation date with a sub total
+for each reconciliation date and a
+grand total for the section. Note:
+an extra constraint for system states
+2 & 18 is that the outlet must have
+harvested (TPS) successfully.
+Should an outlet be confirmed as
+non-polling, system state 2 & 18
+for that outlet on the date(s) in
+question should not be included on
+this report. Where dates are shown
+for the same exception type, list in
+descending order.
+
+Num
+
+on_Id
+
+ction Date
+
+ction Time
+
+eason_Codes
+
+transaction
+component
+
+For last reported System States: 1, 2, 4, 5, 6,7, 8, 9, 10, 11, 16, 17, 18, B01-02 £04-06, 10-12, E14, 520-24, £32,
+
+Set to F99: New
+
+* ewer eas!
+included in NB102 Section 5 on ‘today’s’ reports.”
+
+: sTransactions that were included on report NB102 Section 5 on ‘yesterday’s’ reports and_are not
+
+34-F36, E38
+
+End of Report
+
+© 2002 Fujitsu Services
+
+‘COMMERCIAL IN CONFIDENCE
+
+Page: 40 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMM
+
+324-4123.3.1.12
+
+3.2442433.1.12.1
+
+]ERCIAL IN CONFIDENCE
+
+NB102: Section 12 - Report Layout
+
+Ref: CS/SPE/O1
+Version: 4.10
+Date: __-2904/0711/02
+
+NB102: Section 12: Cleared Future Dated Transactions by Client +
+
+FUJ00001687
+FUJ00001687
+
+~~ (Formatted: Bullets and Numbering
+
+NBI02 Section 12: Cleared
+Future Dated Transactions by
+Client
+
+Produced on:
+dd/mm/yyyy at hh:mm:ss
+
+Run Date: ddimmiyyyy
+
+Transaction Type: Deposit &
+Withdrawal
+
+‘Currency: GBP
+
++—-[Formatted: Bullets and Numbering
+
+Client Reconciliation Date ‘Volume ‘Values (8 sub
+columns)
+
+Barclays ddimmlyyyy 99999999 '9999999999.99
+Lloyds ddimm) 99999999 '9999999999.99
+Total Section 11 9999999999 '9999999999.99
+End of Report
+3.2442.23.3.1.12.2 _NB102: Section 12 - Data Definition
+NBI02 Section 12: Cleared AM Cli Produced on:
+Future Dated Transactions by (Date and time of report
+
+nt production)
+Run Date: (The period for which _ I Transaction Type: Deposit & ‘Curreney: (Derived from
+the report refers) Withdrawal ‘curreney”)
+
+Client / Reconciliation Date
+One row for each Client derived from
+
+Routing_Gateway where transactions have
+a reconciliation date
+
+been received wil
+ahead of the run date. Where dates are
+
+shown for the same exception type, list in
+
+descending order.
+
+Volume
+
+‘Values (8 sub columns)
+
+System State: All States
+
+on ‘today’s* reports.
+
+All transactions that were ineluded on report NB102 Section 6
+on ‘yesterday's’ reports and are not included in NB102 Section 6
+
+End of Report
+
++——[ Formatted: Bullets and Numbering
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 41 of 48
+Fujitsu Services
+
+324433,3.1.13
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref: CS/SPE/O1
+Version: 4.10
+Date: __-2904/0711/02
+
+Incomplete and Discrepancy State: Report Matrix
+
+This table identifies the NB102 series report section where incomplete and
+discrepancy States are reported in detail.
+
+Incomplete ‘Transaction Components Exception report
+State NBIO02 Section
+ez [2 € 5 D___I Uncleared I Cleared
+I v 1&5 7&1
+2 V T 1&5 7&Ul
+4 T T&S I 7&il
+3 v 1&5 Tel
+6 V v 1&5 T&L
+7 V T 1&5 7&ll
+8 V T&S T&l
+9 7 ¥ 1&5 T&M
+10 ¥ ¥ 1&5 T&M
+in T ¥ ¥ 1&5 7& U1
+2 v 2 8
+ig rl v 2 8
+4 v v 2 8
+15 V Y 7 B 8
+16 Then V V T&S T&T
+17 7 Then V ¥ T&S T& I
+18 v ‘Then V v 1&5 7&1
+20 ¥ Then V 2 8
+21 Vv Vv Then V 2 8
+22 V Vv Then ¥ 2 8
+23 Vv v v ‘Then ¥ 2 8
+
+Shaded lines represent System States not expected to be reported within the Network
+
+Banking report set
+
+FUJ00001687
+FUJ00001687
+
+~——[Formatted: Bullets and Numbering )
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 42 of 48
+Fujitsu Services
+
+NETWORK BANKING END TO END Ref:
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+CS/SPE/O1
+Version: 4.10
+Date: __-2904/0711/02
+
+3.24443.3.1.14 Exception State: Report Matrix
+This table identifies the NB102 series report section where an exception is reported in
+detail.
+Exception Description Exception report NBIO2
+State Section
+Uneleared I Cleared
+
+FOL Additional C112 1&5 T&L
+B02 I Additional C12 1&5 T&M
+B03 ‘Additional D 2 8
+B04 I Additional C4 1&5 T&I
+B05 Additional S tas] 7ait
+B06 I SafterC4 1&5 I 7&i1
+B07 Safter D 2 [ 8
+BOS I C4afterD 2 8
+B09___I Dafter Ca 2 8
+E10 I C112 afer final state 1&5 7&ll
+Ell C12 after final state 1&5 T&M
+F12____I C4 after final state 1&5 T&M
+E13 D afer final state 2 8
+E14 I Safter final state T&S T&M
+EIS I Not Used
+
+E16 I Not Used I
+
+E17___[ Not Used
+
+E18 I Not Used
+
+E19 I Not Used
+
+F20__[ Amount of CI12#C12 T&S T&M
+E21 ‘Amount of C112#C4 1&5 T&L
+£22 I Amount of C112#S & C112#0 1&5 I 7&ll
+E23 Amount of C12#C4 1&5 7&1
+E24 I Amount of C12#S & C12#0 1&5 I 7&i1
+E25 Amount of C112#D 2 8
+£26 I Amount of C124D 2 8
+£27 I Tncomplete/eorrupt C112 3 9
+E28 I Incomplete/corrupt C12 3 9
+£29 I Incomplete/eorrupt C4 3 9
+#30 Incomplete/eorupt D 3 9
+E31 Tncomplete/corrupt S 3 9
+¥32___I Amount of C4#S & C40 1&5 T&M
+E33 I Amount of D#S 2 8
+E34 I C2 arrived after state FO9 T&S T&M
+35 C12 arrived after state F99 1&5 7&1
+F36___I C4 arrived after state P99 1&5 Tei
+137___ I Darived after state F99 2 8
+E38 S arrived after state F99 1&5 I 7&1
+E39 I Settlement Date # Reconciliation Date 4 10
+
+Shaded lines represent System States not expected to be reported within the Network
+Banking report set
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 43 of 48
+
+FUJ00001687
+FUJ00001687
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OL
+RECONCILIATION REPORTING
+
+4.19
+2904/0711/02
+
+COMMERCIAL IN CONFIDENCE
+
+3.33.4 NB103: Settled transaction / Cash Account (Formatted: Bullets and Numbering )
+
+Reconciliation Statement
+
+This report allows POL to reconcile the settlement stream against the Outlet Cash
+Account stream. This reconciliation is required as settlement with the individual POL
+clients is based upon the C4 Processing Date’. To complete a full reconciliation, it is
+important to know which Cash Account the settled transaction was posted to, to
+enable a reconciliation of settlement to be made with the outlet records. This report
+reconciles the transactions by *C4 Processing Date’ and Cash Account record.
+
+3.3.13.4.1__NB103: Rules + (Formatted: Bullets and Numbering )
+
+1. NB103 is run weekly: In order to align with internal POL / TIP processing it is
+required that this report is produced AFTER TPS and NB101 processing on
+Friday and BEFORE PS processing on Saturday. The report should include all
+“C4 transaction values where:
+
+¢ °C4 Processing Date’ = run date and,
+
+« ’C4 Processing Date’ = run date minus‘N’ (where ‘N’ = I to 13),
+
+Where a C112 is available and the CAP is known, the ‘C4’ transaction value will
+be posted against the appropriate CBDB CAP column.
+
+3. Where a C112 is available and the CAP is known, but there is no C4, it will not
+be reflected in the report because this report includes C4 transaction values only.
+
+4. Where no C112 is available and therefore the CAP is unknown:
+
+e the ‘C4* transaction value should be posted to ‘No Cash Account Allocated”
+
+e then, when the C112 becomes available, the entry should be deleted from
+Cash Account Allocated’ and posted to the appropriate CBDB CAP column
+
+«  ifno C112 has been received after 14 days, the entry within ‘No Cash
+Account Allocated’ should remain until the C112 becomes available even
+if exceeds 14 days
+5. If a transaction is posted to the row ‘No C/A to TIP’ (according to rule 2 and 3
+above:
+¢ the transaction should remain in this row until the Cash Account has been
+delivered to TIP and then move up into the row ‘C/A to TIP”
+
+¢  ifno Cash Account has been delivered to TIP after 14 days, the entry in
+‘No C/A to TIP’ should remain until the Cash Account is delivered to TIP
+even if this exceeds 14 day:
+
+6. As the report is run each week, the transactions should move across the report
+according to the CAP and the reconciliation date; for example, a transaction
+posted to CBDB>=plus 2 in the first week, will move to CBDB plus I the second
+week and then appear in CBDB the third week, until disappearing off the report
+after 14 days
+
+7. Where the columns headed ‘CAPXX’ are referred to, the actual report produced
+with show the actual CAP number, for example CBDB CAP 40 is quoted, the
+column ‘CAPXX: will show ‘CAP40<=-2"
+
+8. NBI103 reports on VALUE only
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 44 of 48
+
+iy
+
+FUJ00001687
+FUJ00001687
+
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/O1
+RECONCILIATION REPORTING
+
+4.19
+
+2904/0711/02
+
+COMMERCIAL IN CONFIDENCE
+
+9. A separate report NB103 will be produced for both Deposit and Withdrawal
+transactions derived from “Txn_type’
+
+10. Five CAP’s will be shown, the “CBDB’, the ‘CBDB’ minus 1, the ‘CBDB? <=
+minus 2, the ‘CBDB’ plus I and the “CBDB’ >=plus 2. In addition, those settled
+transactions which currently have not been allocated a Cash Account will be
+shown,
+
+. The ‘CBDB’ Cash Account period (CAP) equates to TWO CAP’s prior to the
+CAP applicable to the run date of the report. For example: If the report was run on
+Saturday 20" January within CAP42 (CAP 42 commenced on Thursday 17%
+January), the *CBDB’ CAP would be CAP40 (CAP40 commenced Thursday 3"
+January, ended Wednesday 9* January)
+
+12. Where the CAP in which the Outlet is trading is numerically more than 2 weeks
+prior to the “CBDB’ CAP, if this takes the Outlet CAP into the previous year, this
+will be reported as such. For example: The *CBDB’ CAP is CAP 1 and the Outlet
+is trading in CAP 51, this is assumed to be CAP 51 of the previous year,
+(therefore ‘CBDB’ <=minus 2) and not reported ahead in the current year.
+
+13. The C4 processing dates will be shown in reverse chronological order.
+
+14. For a given C4 Processing Date, the sum of the two Total values (for the two rows
+C/A to TIP and No C/A to TIP) should be equal to the Total corresponding
+Receipts or Payments value on report NB10I for the same Run Date.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 45 of 48,
+Fujitsu Services
+
+NETWORK BANKING END TO END.
+RECONCILIATION REPORTING
+
+Ref: CS/SPE/O11
+
+Version: 4.10
+
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+3.3-443.4.1.1_NB103: Report Layout
+‘NBIO3: Settled Transaction / Cash Account Client: Barclays ete Produced on: ddimm/yyyy at hh:mm:ss
+
+Reconciliation Statement
+
+Run Date: ddimm/yyy,
+
+‘Transaction Type Deposits ete
+
+Currency: GBP
+
+C4 Processing Date CAP ‘XX? <=-2] CAP *XX? 1 CBDB CAP ‘XX’ +H] CAP *XX7>=+42 [No Cash Account I Total Value
+CAP *XX° Allocated
+(Column 2) (Column 3) (Column 4) (Column 5) (Column 6) (Column 7) (Column 8)
+‘ddimmlyyyy I C/A to TIP 9999999999.99 I__9999999999.99 I __9999999999.99 I _9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99
+No C/A to TIP 9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99
+‘ddimmlyyyy I CA to TIP 9999999999.99 I __99999HHIHI.99 I __9999999999.99 I _9999999999.99 I _9999999999.99 I 99999999II.99 I _9999999999.99
+No C/A to TIP 9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99 I _9999999999.99 I __9999999999.99 I 9999999999.99
+‘ddimm/yyyy I C/A to TIP 9999999999.99 I 9999999999.99 I _9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99 I _9999999999.99
+No C/A to TIP 9999999999.99 I 9999999999.99 I __9999999999.99 I 9999999999.99 I _9999999999.99 I 9999999999.99 I__9999999999.99
+‘ddimmlyyyy I C/A to TIP 9999999999.99 I _9999999999.99 I___9999999999.99 I _9999999999.99 I 9999999999.99 I 9999999999.99 I 9999999999.99
+No C/A to TIP 9999999999.99 I _9999999999.99 I __9999999999.99 I _9999999999.99 I _9999999999.99 I _9999999999.99 I _9999999999.99
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 46 of 48
+
+FUJ00001687
+FUJ00001687
+
+—{Formatted: Bullets and Numbering )
+
+Fujitsu Services
+
+NETWORK BANKING END TO END. Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+
+Version: 4.10
+
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+
+3.34:23.4.1.2_NB103: Data Definition
+
+‘NBIO.
+
+Reconciliation Statement
+
+jettled Transaction / Cash Account Client: (Derived from Routing Gateway) Produced on: (Date and time of production)
+
+FUJ00001687
+FUJ00001687
+
++——[ Formatted: Bullets and Numbering )
+
+Run Date: (The period for which the report refers —post_I Transaction Type: (Derived from Txn_Type) Curreney: (Derived from “eurrency’)
+
+Friday pre Saturday TPS processing)
+
+C4 Processing Date CAP ‘XX’<=-2 I CAP ‘XX? -1 CBDB CAP ‘XX’ +H I CAP ‘XX’ >=42 [No Cash Account I Total Value
+(The Run Date of NB101 that ‘CAP ‘XX? Allocated
+included the C4)
+
+_ ee Column 2) — _(Cotumn 3) __I __ (Column 4) (Column 5) I 1 6) (Column 7) I ___ (Column 8) _
+
+dd/mm/yyyy, C/A to TIP Total value of all settled transactions (C4) where the Cash Account has been delivered to POL / TIP, according to C4 Sum Columns 2,
+processing date to allocate rows and using the CAP available from the C112 component to allocate the appropriate column, I 3, 4, 5, 6, 7 for
+Where no C112 transaction component is present, use the ‘No Cash Account Allocated” column. this C4 processing
+
+date
+C4 values
+
+Use C4 processing date for 14 days prior to Run Date of the report, and where C4 transactions are still being shown against
+‘No Cash Account Allocated’ or ‘No C/A Delivered to TIP” show these days in addition.
+
+ddimm/yyyy I NoC/Ato TIP I Total value of all settled transactions (C4) where the Cash Account has not been delivered to POL / TIP, according to C4 I Sum Columns 2,
+
+processing date to allocate rows and using the CAP available from the C112 component to allocate the appropriate column.
+Where no C112 transaction component is present, use the ‘No Cash Account Allocated’ column.
+
+AIL C4 values
+Use C4 processing date for 14 days prior to Run Date of the report, and where C4 transactions are still being shown against
+*No Cash Account Allocated’ or ‘No C/A Delivered to TIP” show these days in addition.
+
+3,4, 5, 6, 7 for
+this C4 processing
+date
+
+End of Report
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE Page: 47 of 48
+Fujitsu Services NETWORK BANKING END TO END Ref: CS/SPE/OLI
+RECONCILIATION REPORTING
+Version: 4.10
+COMMERCIAL IN CONFIDENCE Date: 2904/0711/02
+we
+mewn Varese aes
+(nrermianctare pe 7 em 28 EM
+Be ety ae ross toga) we seen
+fio ortaoet MEE TES wrervagopese I sonmtitn I sonrtatn I armutean "I sateeetnrsion I sacs
+wad Page a a :
+1 oe 62 nw : : mo
+2 ee > fe cotton ex I cinecerna : cea cwreerees I rm
+fod 2c ot oie fe EM em ep eu I ciwciee ——_creacu te i BS
+‘ one mee} a ia
+6) e2 I an fre 9 18 1 I omer io
+7 Pac fo 2 got ag, eos] cco crow omens Ir
+ra 0 0 BE = a
+Boe) 0 15 Ge eo En ev I MOORE Dever oweeecke I F29
+ir Pac Bs 8 eo I cRMCyES er a)
+G20 ome BLE ev ab ev I cic CROCS or a)
+6 ot 7 ees ex I cameos chs owrectees I 29
+w sot re er 19 et a9) ow I cinecen ——_ cueaowoe chs owe tees I 29
+ea act 19 6 sue ee I cieeceen cam acum cto cee tees I oa
+fate ace ote BOE Bf ED eM I CheecIe) CACHED I CwBACUWER I cesta ower CEES
+Fa ra 2 2 Bi Bs se! opwsEe Davee creche I Fa
+Fa a ig BA Dw ap ex [citeeacimen — oaese Dever wre ceem Ir
+2) 68 leo Bek BH Eee I comacuMEN ORE Dever owe cer Ir
+Blea /e0 ie Bo ee Bex I chcIe) Cie wcniomesI Opes I Demecwmec teen I Fo9
+E =
+: ra
+: 3 5 ra
+: i
+5 ea
+3 3 a 9
+Sieh a = : a
+cena 5 =
+feed é
+ened :
+Pen
+ED oxi 7
+2 montatcrint a)
+ED mangeasot : ia
+EM artaoiars Acie ia
+ES mortso 0 ra
+E35 art 4 fa
+ET eengec anal a
+mango fa
+> munpaorst ot = ia
+69 nampa a ia
+nang fa
+art O1S EOI z z a
+Eyerricd = ss io
+1 C1 waa = a
+6 Chat or a F28 eI eI = ra
+(7 ard de Fd = = - ia
+oe ee . - rz
+Frade Att Bes oe er oF : :
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE. Page: 48 of 48,
+
+FUJ00001687
+FUJ00001687

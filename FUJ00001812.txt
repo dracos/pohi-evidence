@@ -1,0 +1,1482 @@
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Document Title: ETU Technical Interface Specification: Horizon to e-pay
+Document Type: Technical Interface Specification (TIS)
+Release BI3 SSO
+Abstract: This document defines the technical interface between Fujitsu
+
+Services (Post Office Account) and e-pay to support Electronic
+Top-Up transactions.
+
+Document Status: Approved
+Originator & Department: Mark Jarosz (Tel:
+Contributors: Richard Hicks
+David Tanner
+Rex Dixon
+Les Andrew
+
+Tom Northcott
+
+Approval Authorities
+Name I Position 7 Signature Date
+Clive Read Chief Technical Architect, Post
+Office Ltd
+Tony Drahota Requirements, Architecture &
+
+Strategy Development Manager,
+Fujitsu Services
+Jamie Robertson I IT Project Manager, e-pay Ltd
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 1 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00001812
+FUJ00001812
+
+Ref.: ET/IFS/003
+Version 1.0
+
+Date: 21/07/2003
+
+Chapter 0 -
+
+Document Control
+
+0.1 DOCUMENT HISTORY
+Version Date Reason for Issue Associated CP/
+PinICL Nos.
+041 25/04/03 First Draft issued for comment and input to a None
+number of outstanding questions.
+0.2 20/05/03 Second draft incorporating comments
+03 19/06/03 Third draft taking account of comments from POL
+and Fujitsu
+1.0 21/07/03 Issued for Approval
+0.2 REVIEW DETAILS
+
+Review Comments b)
+
+Review Comments to:
+
+Mandatory Review Authority Name
+Consultancy Services David Cooke
+RASD Richard Hicks (*)
+Allan Hodgkinson
+Customer Services John Moran
+Development Unit - Design Team David Johns
+
+David Tanner
+
+Development Unit - Development Team I Mark Taylor
+
+Integration & Test Janusz Holender
+Post Office Ltd Keith Lawless
+e-pay Jamie Robertson
+
+“Optional Review/issued for Information _
+
+Development Unit Mark Ascott
+
+Simon Fawkes
+
+James Stinchcombe
+
+Colin Mills
+Brian Muir
+Steve Lewin
+
+Tom Northcott
+
+Les Andrew (*)
+
+Rex Dixon (*)
+
+RASD Gareth Jenkins
+Geoffrey Vane
+Programmes John Burton
+Network Services David Haywood
+Colin Johnson
+Post Office Ltd Bob Booth (*)
+
+(*) = Reviewers that returned comments
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE
+File: ptce43.doc
+
+Page 2 of 1
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+0.3 ASSOCIATED DOCUMENTS
+Reference Doc Vers- I Date Title Source
+ion
+[AIS] ET/IFS/001 Application Interface Fujitsu
+Specification Horizon to e-pay Services
+[Os] OSI/ISO Reference Model, ISO
+Standard 7498
+[FTP] RFC 959 FILE TRANSFER http://www.f
+PROTOCOL (FTP) ags.org/rfos
+/rfc959. html
+[OLA] Operational Level Agreement
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents. In particular later versions of some of these
+documents do exist; however, it is the versions indicated that have been used for the
+development of this interface.
+0.4 ABBREVIATIONS & DEFINITIONS
+0.4.1 Abbreviations
+
+Abbreviation I Definition
+
+[Al Authorisation Response message returned from e-pay to the Horizon Counter
+
+[C] Confirmation message
+
+[Coy Confirmation message indicating that the Outcome of a Transaction differs from
+that in the [A] received by the Counter (or that no [A] was received)
+
+[Rl Request message
+
+AES: Advanced Encryption Standard
+
+AIS Application Interface Specification; standard document type required for each
+external interface to the Horizon system
+
+APACS. Association for Payment Clearing Services
+
+ASCII American Standard Code for Information Interchange
+
+DCS Debit Card System
+
+ORS Data Reconciliation Service
+
+OTF Daily Transaction Feed
+
+ETS Electronic Top-Up Service.
+
+ETSM ETS Management (Server) [same platform as the DCS Management Server]
+
+ETU Electronic Top-Up
+
+FAD Finance Accounts Division, part of Post Office Ltd
+
+FS Field Separator in APACS-format messages (hex 1C)
+
+FTMS File Transfer Management Service; Horizon process that provides configurable file
+transfer services between Horizon and Post Office Ltd’s Clients. Services available
+include data compression and encryption
+
+FIP. File Transfer Protocol
+
+ICMP. Internet Control Message Protocol — defined in RFC 792
+
+1IN Issuer Identification Number
+
+IP Internet Protocol ~ defined in RFC 791
+
+IPv4 Internet Protocol version 4
+
+IPSEC IP Security Protocol
+
+MPLS. Multiprotocol Label Switching
+
+MSB Most Significant Bit
+
+MSU Management Support Unit (within Fujitsu Services POA Customer Services)
+
+NO Network Operator, e.g. Orange, Vodafone, 02
+
+OBC Operational Business Change (procedures for change to Post Office Ltd Reference
+Data)
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 3 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+Ost Open System Interconnection
+PAN Primary Account Number.
+PIN Product Identification Number (not Personal identification Number in the context of
+this document)
+RDS Reference Data System; Post Office Ltd system that provides a Reference Data
+feed to Horizon and other systems.
+REC Request for Comments
+RID Registered Identifier: identifies the organisation to which a range of TIDs has been
+allocated.
+TCP Transmission Control Protocol - defined in RFC 793
+TID Terminal Identity
+TIP. (Post Office Ltd’s) Transaction Information Processing system
+US. Unit Separator (hex 1F)
+VPN Virtual Private Network
+WAN. Wide Area Network
+0.4.2 Definitions
+The following terms, when capitalised as here, have specific meanings as indicated.
+Term Definition
+Authorisation On-line Authorisation [A] response by MA to on On-line Request. It can have a
+value of “Approve”, “Decline” or “Refer”
+A response of “Refer” will be treated as a “Decline”
+Authorisation Software provided by Fujitsu Services POA used to interface from Horizon to e-pay
+Agent in real-time
+‘Campus ‘One of two data centres installed by Fujitsu Services POA in Bootle and Wigan
+
+Each can handle the entire Horizon workload
+
+Confirmation
+
+Confirmation [C] message sent from the Counter in near time to the Campus
+stating the outcome of an ETS Transaction.
+
+Reconciliation
+Service (DRS)
+
+Counter Counter PC installed in a Post Office Outlet
+
+Counter An application resident within the Counter that contains the business logic
+
+Application controlling the dialogue with the Clerk, or other business specific functions on the
+Counter (such as End of Day processing)
+
+Customer A member of the public transacting, or seeking to transact, business with Post
+Office Ltd through any of the Services
+
+Data Service provided by Fujitsu Services POA to Post Office Ltd which matches
+
+Transaction flows from Counter and ETSM, and reports on these to Post Office Ltd
+
+ETS Agent Hardware platform on which the Authorisation Agent and its controlling processes
+
+Server run
+
+ETS A Transaction in the Electronic Top-Up Service: either an ETU Transaction or a PIN
+
+Transaction Transaction
+
+ETU Electronic Top-Up Transaction using a card supplied by the Customers Network
+
+Transaction Operator
+
+Horizon Name that encompasses the totality of the systems provided by Fujitsu Services
+Post Office Account to support the automation requirements of Post Office Outlets
+
+Network The provide of mobile phone services to a Customer
+
+Operator
+
+On-line Where a system attempts to communicate with another system — in this context the
+Counter seeking immediate authorisation from a Network Operator
+
+Operational A non-contractual agreement between Fujitsu Services and Post Office Ltd on the
+
+Level nature and quality of specific elements of a service (e.g., Interface Agreement for
+
+Agreement Problem Management (CS/IFS/009))
+
+Outlet Post Office location with one or more Counter PCs installed as part of the Horizon
+programme
+
+PASV PASV refers to an alternate mode for establishing File Transfer Protocol (FTP)
+
+connections.
+
+© 2003 Fujitsu Services
+File: ptce43.doc
+
+COMMERCIAL IN CONFIDENCE Page 4 of 1
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Speci
+Services
+
+‘ion: Horizon to e-pay Ref.: ET/FS/003
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+PIN A Transaction for the sale of a mobile phone product (e.g. a ring tone) where a PIN
+Transaction is the activation number printed on the customers receipt. Known as a PIN or e-
+voucher product.
+
+Receipt A printed record of the Transaction at the Outlet
+
+Reconciliation I Ensuring the financial integrity of Transactions across service boundaries
+Reference Configuration data and parameters for use by the rest of the system, within the
+Data Horizon Programme
+
+Refund A stand alone transaction separate to the original sale transaction which negates
+the original sale and where the customer has their money returned to them
+Request Authorisation Request message [R] sent On-line from Counter to e-pa
+
+Reversal At the interface to e-pay, it is a Transaction that nullifies the previous Transaction
+Transaction ‘A recorded and auditable instance of business activity, involving service provision
+or Stock movement across organisational or service boundaries
+
+0.5 CHANGES IN THIS VERSION
+
+Added a description of the Agent ‘ping’ process in section 4.2.
+Added Appendix A to define IP addresses across the interface.
+Minor typo corrections made.
+
+Sections “4.2 Link Capacity” and “5.3 Link Capacity and File Transfer timing” have
+been removed.
+
+0.6 CHANGES EXPECTED
+
+0.7 CONTENTS
+
+CHAPTER 0 - DOCUMENT CONTROL.....
+
+0.1 DocuMENT History.
+
+0.2 Review DETAILS.
+
+0.3 AssoclATED DOCUMENTS.
+
+0.4 ABBREVIATIONS & DEFINITION
+
+0.4.1 Abbreviations
+0.4.2. Definitions.
+
+0.5 CHANGES IN THIS VERSION..
+
+0.6 CHANGES EXPECTED.
+
+0.7 CONTENTS...
+
+0.8 TABLE OF FIGURES.
+
+0.9 TABLE OF TABLES.
+
+CHAPTER 1 - INTRODUCTION
+
+1.1 PURPOSE...
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 5 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Speci ‘ion: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+1.2 Scope.
+
+1.2.1 Interfaces
+1.2.2. Components and Interface description.
+1.2.3 Architecture overview.....
+
+1.3 STRUCTURE...
+
+1.4 READERSHIP.
+
+1.5 RELATED DOCUMENTS.
+
+CHAPTER 2 - APPLICATION
+
+TERFACEG.........
+
+2.1 INTERFACE COMPONENTS...
+
+2.2 TECHNICAL INTERFACI
+
+CHAPTER 3 - INTERFACE ARCHITECTURE..
+
+3.1 GENERAL...
+
+3.2. CHARACTERISTICS OF INTERFACE LAYER I TO LAYER
+
+3.2.1 Layers 1 and 2 ~ Physical and Link.
+3.2.2. Layer 3 — Network.
+3.2.3 Scalability..
+
+3.2.4. Network management...
+3.2.5 Securit
+
+CHAPTER 4 - TRANSACTIONAL INTERFACE...
+
+4.1 LEVEL 4 TRANSPORT PROTOCOL LAYER CHARACTERISTICS...
+
+4.1.1 I Message delimitation.
+4.1.2 Endpoint Addressing.
+4.1.3. Endpoint Mapping.
+
+4.1.4 Connection / session management.
+4.1.5 Level 6 Presentation...
+
+4.2 RESILIENCE MECHANISM!
+
+CHAPTER 5 - DTF BATCH INTERFACE........
+
+5.1 LEVEL 4 TRANSPORT PROTOCOL LAYER CHARACTERISTICS...
+
+$1.1 Endpoint Addressing...
+5.1.2 Connection / session management
+5.1.3 Level 6 Presentation.
+
+RNN NN
+
+5.2 FILE TRANSFER CHARACTERISTICS...
+
+5.3 RESILIENCE MECHANISMS.
+
+APPENDIX A IP ADDRESSING ACROSS THE INTERFAC!
+
+A.1 OVERVIEW...
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 6 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+0.8 TABLE OF FIGURES
+
+Figure 1 — ETS Architecture...
+Figure 2 Horizon — e-pay message flows...
+Figure 3 Technical Interface Components...
+
+wn
+
+0.9 TABLE OF TABLES
+
+Table 1 Technical Interfaces.
+Table 2 Physical Interface characteristics.
+Table 3 Interface Layer 3 characteristic:
+Table 4 Virtual Addressing.
+
+Table 5 Connection Properties.
+Table 6 Session Properties.
+
+RNNKNW
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 7 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+Fujitsu
+Services
+
+FUJ00001812
+FUJ00001812
+
+ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Chapter 1 -
+Introduction
+
+1.1
+
+1.2
+
+1.2.1
+
+PURPOSE
+
+As part of the Horizon service capability, Electronic Top-Up (ETU) functionality is
+being introduced. ETU is a method of applying credit to pay-as-you-go mobile phone
+accounts and of selling specific type of ‘content’ or PIN products.
+
+Post Office Ltd has appointed e-pay as their ETU ‘acquirer’ interfacing to the
+appropriate Network Operator.
+
+This document defines the Technical level interfaces between the e-pay domain and the
+Horizon domain to support the Horizon Electronic Top-Up Service (ETS).
+
+This document provides:
+
+= An overview of those Application level data flows supporting Electronic Top-Up
+Functionality between components within Horizon and those situated in the e-pay
+Operational Domain. This overview provides a context for the lower level
+Technical interfaces.
+
+= A Mapping of Application level data flows onto Technical interfaces
+
+= A specification of the Technical Interfaces between Horizon and e-pay.
+SCOPE
+
+Interfaces
+
+An interface exists whenever information is exchanged between two computer
+systems. For purposes of description, this interface can be considered to exist at three
+levels:
+
+e The Application level, concerned with the application data passed across the
+interface.
+
+e The Technical level, concerned with the mechanisms by which the data is passed
+across the interface.
+
+e The operational level, covering manual procedures for maintaining the interface,
+for example resolution of network problems, access by to site for maintenance and
+key change.
+
+This document covers the specification of the technical mechanisms by which
+information is passed between Horizon and the MA for live operation only. Instances
+of the Technical Interface for Application Test scenarios are excluded from this
+document.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 8 of 1
+
+File: ptce43.doc
+
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+This document does not cover the description of the information in terms of
+record/field structure and the meaning ascribed to information by either party. This
+aspect is addressed in the Application Interface Specification [AIS].
+
+Operational aspects of the Interface are documented in [OLA].
+
+This document is concerned only with the specification of information that is both
+computer-generated and computer-consumed.
+
+1.2.2 Components and Interface description
+
+The Architectural description for the interface is documented in Chapters 3 through 5.
+
+This description contains all components that are concerned directly with the operation
+of the Interface being described in this document. The approach taken to determine if a
+component is directly concerned with the interface operation is based on the following:
+
+= The Transport protocol used across the interface is TCP
+
+= The Components directly concerned with the Interface are taken to be both those
+at each end of the TCP connection and all other components through which the
+Level 3 datagrams ’owned’ by the connection may flow. These may be Servers,
+Network links, Network devices such as Routers and Network Services.
+
+In order to structure the documentation of components, the OSI [OSI]Reference
+model is used.
+
+1.2.3 Architecture overview
+
+An overview of the architecture of the Horizon Electronic Top-Up system is given in
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 9 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+Figure 1.
+Individual Network Operators
+Operational
+Domain
+: U Acquirer:
+: Operational
+POL!
+Interface specified __yI : TID Reference Transaction Operational’
+in this document : I Processing I IData System] I processing Domain’
+
+Horizon
+
+Horizon Data Centres Operational
+Domain
+
+Outlet
+
+TTT
+
+Counters
+
+Outlet approx. 17,500 Outlets
+
+I I approx. 38,000 Counters
+Counters
+
+Counter transactions
+
+Figure 1 — ETS Architecture
+
+1.3 STRUCTURE
+
+This document is composed of the following chapters:
+
+= Chapter 2 provides a high level summary of the Application Interfaces in order to
+provide a context for the underlying technical interfaces. Additionally the
+Application Interfaces are mapped to Technical Interfaces.
+
+= Chapter 3 contains a description of the physical and network level interconnection
+arrangements between Horizon and e-pay.
+
+= Chapter 4 contains a detailed description of the Transaction Technical Interface.
+
+= Chapter 5 contains a detailed description of the DIF Batch Technical Interface.
+
+1.4 READERSHIP
+
+This document is intended for Technical Architects, application developers concerned
+with development of the ETS capability between Horizon and e-pay.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 10 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+1.5 RELATED DOCUMENTS
+See section 0.3 for a full list of referenced documents.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 11 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+Fujitsu
+Services
+
+FUJ00001812
+FUJ00001812
+
+ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Chapter 2 -
+Application Interfaces
+
+2.1
+
+2.2
+
+INTERFACE COMPONENTS
+
+The diagram following illustrates the Application data flows (message and file based)
+across the e-pay — Horizon interface.
+
+These higher-level Application Interfaces rely on the lower-level Technical Interfaces
+and provide a context for definition and description of these Technical Interfaces.
+
+ETS Acquirer
+
+Horizon
+
+a t ETS Management Server
+Auth, Conf FIP
+
+ETS Agent Server Post Office Lid
+
+Ca/D Agent
+
+ll
+
+Data Reconciliation Service
+
+SSS
+Confirmation
+Counter PC
+
+Figure 2 Horizon — e-pay message flows
+
+TECHNICAL INTERFACES
+
+To support the Application level data flows, 2 distinct Technical Level interfaces will
+be used. The following table summarises these Technical Interfaces.
+
+Technical level I Technology I Associated Application Interface Usage
+Interface name Application
+Interface name
+
+© 2003 Fujitsu Services
+
+File: ptce43.doc
+
+COMMERCIAL IN CONFIDENCE Page 12 of 1
+Printed on 14/4/2003 8:15:00 by A
+Fujitsu
+Services
+
+FUJ00001812
+FUJ00001812
+
+ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+Transactional I TCP/IP Authorisation To support the ETU service at the
+Interface counter, e-pay provide a real-time
+authorisation interface which
+supports the following message
+types:
+= Sale
+= Refund
+= Reversal
+Confirmation I FTP DTF Batch Once a day, e-pay generates a single
+Batch Interface Daily Transaction Feed (DTF) file
+
+that is retrieved by Horizon systems.
+The DTF records the outcome of
+cach transaction from e-pay’s
+perspective. It contains reconciliation
+information to be used by the
+Horizon Data Reconciliation Service.
+The file is generated and transferred
+every day of the year, weekends and
+bank holidays included.
+
+The DTF contains records for the
+transactions as specified in [AIS],
+with Sales and Refunds being treated
+as separate Transactions.
+
+Table 1 Technical Interfaces
+
+© 2003 Fujitsu Services
+
+File: ptce43.doc
+
+COMMERCIAL IN CONFIDENCE
+
+Page 13 of 1
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+Chapter 3 -
+Interface Architecture
+3.1 GENERAL
+
+This section provides an overview of the Physical and Network interconnection
+arrangements between Horizon and e-pay. The following diagram identifies the key
+
+components.
+Wie Data Gene ‘e-pay Kelting House
+TENERGIS > TENERGIS
+ang “The faowing Links Ipsec I
+
+are IPSEC protected ‘Trnsseen Serer
+
+{Boundary
+
+Rito R3, Ri to Ra
+
+Boundary ;
+R210 R3, R210 RS :
+
+‘e-pay SouthFields
+
+Agireseners ane Agents) ae
+‘nay stn res
+
+Bootle Data entre
+
+(cups \
+Sra sepras) ® Ass Ha May’ 2009 °
+Figure 3 Technical Interface Components
+3.2 CHARACTERISTICS OF INTERFACE LAYER 1 TO LAYER 3
+
+This section provides a summary of the main characteristics of the Technical Interface
+up to and including layer 3. Characteristics from layer 4 up to and including layer 6 are
+described in the sections documenting the individual Technical Interfaces.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 14 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+3.2.1 Layers 1 and 2 - Physical and Link
+
+Note that Fujitsu Services supply all the equipment to the left of the “Horizon — e-pay
+Interface” (as well as the switch) and will require rack provision etc. from e-pay as
+covered in [OLA].
+
+OSI Level Property Overview
+
+1-3 Network I The Energis IP Select service will be used to
+Service provide an IPv4 Layer 3 backbone service.
+This provides full connectivity between
+Horizon and e-pay locations.
+
+It should be noted that the service interface
+for the IP Select Service is a Router and this is
+shown in the above diagram.
+
+Fujitsu Services will procure the IP Select
+service from Energis.
+
+1 WAN At each e-pay location there will be one 64k
+Physical Kilo stream circuit terminating on an Energis
+circuits Router. These circuits are provided as part of
+the Energis IP Select service.
+
+At each Horizon location existing circuits will
+be used. Separation from other Horizon traffic
+will be achieved by using a different MPLS
+VPN.
+
+1/2 Ethernet The actual Interface between Horizon and e-
+pay is deemed to exist on the Ethernet
+connection between the Horizon Router’s at e-
+pay locations and the e-pay Routers. Horizon
+will provide a switch at cach location and this
+will be used to connect the Horizon and e-pay
+Routers.
+
+Interface
+
+e-pay will provide one Router at each e-pay
+location as shown in Figure 3
+
+Table 2 Physical Interface characteristics
+
+3.2.2 Layer 3 —- Network
+This section is concerned with the interface description at layer 3 that is IP. For
+purposes of description this section is split into 4 subsections; -
+= Control plane, concerned with IP Routing and ICMP
+= Data plane, concerned with actual flow of IP datagrams and any encapsulation
+= Virtual IP Addressing
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 15 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+= IP Address spaces, concerned with enumeration of IP address space and
+translation schemes
+
+SubSection Property Overview
+Control IP Routing
+Plane
+
+No IP Routing protocols are used across
+the interface.
+
+It should be noted there is no direct
+Network path from Kelting to
+SouthFields as far as this interface is
+concerned.
+
+Note that Horizon Agents will handle fail
+over between e-pay locations. Please refer
+to section 4.1.3 for an overview of how
+Agents handle fail over.
+
+Control Network Horizon Network Management station at
+Plane Management I Wigan issues ICMP Echo Request to
+Traffic Horizon facing Interface of Epayl and
+Epay2 Routers. These Routers reply with
+ICMP Echo Response. Similarly for
+Network Management station at Bootle.
+
+Data Plane I Protocol All Level 3 traffic between Horizon and e-
+pay will IPv4.
+
+Data Plane Encapsulation I IPSEC encryption (AES) will be employed
+for all traffic between Horizon and e-pay
+locations over the Wide Area Network
+links as show in the above diagram.
+
+The encryption will be applied between the
+Horizon Routers.
+
+Virtual The e-pay Routers will create virtual IP
+Addressing addresses for the e-pay servers. Please refer
+to section 4.1.2 for a description of this
+scheme.
+
+Note that a Virtual Address consists of the
+pair (Virtual IP address, port number).
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 16 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+IP Address I NAT The IP address Boundary is shown in
+space Addresses Figure 3. The Horizon Routers RI and R2
+will perform Network Address Translation
+to implement this IP address boundary.
+e-pay will need to allocate the following
+components IP addresses from their space;
+4 Agent Servers at Wigan
+4 Agent Servers at Bootle
+1 ftp client at Wigan
+1 ftp client at Bootle
+I Interface address for the Horizon Router
+R3
+1 Interface address for the Hsorizon Router
+R4
+1 Network Management Station at Wigan
+(2 IP addresses needed — I per interface)
+1 Network Management Station at Bootle
+(2 IP addresses needed — I per interface)
+The above IP addresses will be listed a
+future version of this document.
+Table 3 Interface Layer 3 characteristics
+3.2.3 Scalability
+Upgrading the 64k links will increase the capacity of the interface. For example scaling
+points are 128k, 256k. It may be necessary for Energis and Fujitsu to change the
+models of Routers they deploy to support such a link speed upgrade.
+3.2.4 Network management
+The Horizon Routers and Wide area network links will be managed by HP Openview
+as per the existing Horizon Network equipment.
+Additionally reachability of the e-pay Routers (show in Figure 3) will be monitored
+using HP Openview.
+3.2.5 Security
+Once the Interface is operational, all application data exchanged between the Routers
+RI and R2 located at the Horizon Data Centres and Routers R3 and R4 located at the
+e-pay Data centres will be protected by encryption. Specifically IPSEC tunnels will be
+used with the following characteristics:
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 17 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+= Payload encrypted using the AES Algorithm
+
+= Authentication header present
+
+= Session key lifetime (target 8 hours and no more than 24 hours)
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 18 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Chapter 4 -
+Transactional Interface
+
+41 LEVEL 4 TRANSPORT PROTOCOL LAYER CHARACTERISTICS
+
+The Transport protocol used across the Interface is TCP/IP and follows the Client
+Server model with Horizon Agents acting as client and e-pay servers acting as servers.
+This section summarises characteristics of the Transport layer protocol used across the
+interface.
+
+4.1.1 Message delimitation
+
+TCP provides a byte stream interface to the application. Breaking up this byte stream
+into messages is the responsibility of the application and defined in the [AIS].
+
+4.1.2 Endpoint Addressing
+e-pay will perform network Address translation in their Routers (Epayl and Epay2) to
+provide the following characteristics:
+
+e To avoid the Interface Specification containing Computer System specific IP
+addresses.
+
+e To provide for scaling the number of transaction servers transparently to
+Horizon.
+
+The following Virtual Addresses are defined
+
+Site: Kelting House, 8 Addresses named VT}, through VTsa
+
+Site: SouthFields, 8 Addresses named VTjx through VTss
+
+Note that a Virtual Address consists of the pair (Virtual IP address, port number).
+
+4.1.3 Endpoint Mapping
+The Collection of Horizon Agents is partitioned into 4 clusters. Each such cluster
+
+handles E-top up transactions for approximately 25% of the Post Office Outlets.
+
+The Following table defines how Agent processes within each Cluster will determine
+the collection of Virtual addresses (IP address and port number) of the e-pay
+Transaction server.
+
+Cluster Virtual Address Collection
+
+1 VTia . VToa, VTip . WT 28
+2 VT3a .VTaa, VT3n . VTap
+3 VTsa. VToa, VTsu . VT ox
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 19 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+4 VT1 . VTsa, VTr8 . VT sp.
+Table 4 Virtual Addressing
+Each Horizon Agent is associated with one Cluster. The Agent is partitioned into
+multiple work units or threads. Each such thread will be configured with 2 Virtual
+Addresses out of the possible collection for the Cluster subject to the criteria that each
+such Virtual address will be mapped to different physical data centre locations. So for
+example a valid pair would be {VTia ,VT2» }. As some Horizon Agents will have a
+natural bias towards running at Bootle, the Virtual Addresses used by Bootle Agents
+will predominate over those used by Wigan Agents.
+The algorithm used by an Agent thread to select the Virtual IP address from the pair to
+use is not specified in this document. This Algorithm will ensure that in the event of
+one Virtual address not functioning (in the sense of establishing TCP connections) then
+the other Virtual address in the pair will be used.
+4.1.4 Connection / session management
+The following list defines the key characteristics of Session management across the
+Interface.
+Property Session properties
+Connection Horizon Agent initiates a TCP connection to e-pay
+Initiation Transaction server. Endpoint is determined as
+described in Endpoint mapping section
+Connection Connection maintained long term (all day). So Idle
+maintenance I condition does not explicitly terminate connection.
+Connection Both the Horizon Agents and e-pay Servers can
+Termination I terminate Network connections.
+Maximum The maximum number of TCP connections per
+Connections I Cluster is specified at 24. This results in an overall
+maximum of 96 TCP connections.
+Connection I An Application end point will issue a TCP reset if it
+Reset cannot extract messages from the TCP byte stream
+due to a delineation problem. Either end can initiate
+a connection reset.
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 20 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+Fujitsu
+Services
+
+ETU Technical I
+
+FUJ00001812
+FUJ00001812
+
+interface Specification: Horizon to e-pay Ref.: ET/FS/003
+
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Use of TCP
+Keep Alives
+
+Both Horizon and e-pay will initiate and respond to
+TCP Keep Alives to maintain connections.
+
+Note the purpose of TCP Keep Alive’s is to detect
+disappearing endpoints and inform applications that
+a connection is broken. For example, in a client
+server environment, if a client fails then a listening
+server will not necessarily detect this. Over a period
+of time 100’s of such stale connections may result in
+the server running out of resource and having to be
+reloaded. TCP Keep Alive’s are only sent when the
+connection has been idle for a defined time interval
+and result in very little overhead (Network / Host
+CPU).
+
+The Horizon Keep Alive interval is 10 seconds.
+
+Application
+
+Requests
+
+mapping of
+
+a) Multiple Requests are interleaved on single TCP
+Connection
+
+b) Authorisation returned on same socket as
+Request
+
+c) Reversal can be sent on any TCP Connection
+
+Table 5 Connection Properties
+
+Level 6 Presentation
+
+ASCTI characters are used across this interface.
+
+The code set across
+bits).
+
+the interface must have a single byte Character encoding (i.e. 8
+
+The 7-bit ASCII code set is a proper subset of the code set used across the interface.
+Additionally the encoding of ASCII characters is achieved by setting the most
+significant bit (MSB) to zero. Specifically no parity bit is used.
+
+Note the Horizon Agent platforms use Code page 850 and this meets the above
+requirements. Within this Code page the ASCII characters are encoded with the most
+significant bit (MSB) zero in positions 0x20-0x7e.
+
+Specifically this meat
+page 850 it has enco
+
+ns that if character has ASCII 7 bit encoding xxxxxxx then in code
+ding Oxxxxxxx
+
+© 2003 Fujitsu Services
+
+File: ptce43.doc
+
+COMMERCIAL IN CONFIDENCE Page 21 of 1
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+4.2 RESILIENCE MECHANISMS
+
+This section provides a summary of the resilience and site disaster mechanism used
+
+across the interface.
+
+Property
+
+Overview
+
+Resilience to failure(s) of e-
+pay servers / e-pay data
+centre
+
+The Horizon Agent initiates and
+maintains TCP connections to e-pay
+servers at both e-pay data centres. It
+is sufficient (*) for the Agent to set
+up a functioning TCP connection
+with just one such server.
+
+Resilience to failure(s) of
+Horizon Agent / Horizon
+data centre / Network
+connection
+
+Each Horizon Agent exists in a
+Active / Standby configuration. In
+the event of the Active either failing
+or being unable to connect to any e-
+pay server then the Standby will
+take over as Active.
+
+The Standby Agent
+different Data Centre from
+Active Agent.
+
+runs at a
+the
+
+Application level ‘ping’.
+
+The Horizon agent uses a ping
+process to detect whether it can
+reach an e-pay server. This consists
+of a TCP connect, read with timeout
+and immediate disconnect.
+
+(*) In the sense that transaction flow can take place across the interface
+
+© 2003 Fujitsu Services
+File: ptce43.doc
+
+COMMERCIAL IN CONFIDENCE
+
+Page 22 of 1
+Printed on 14/4/2003 8:15:00 by A
+Fujitsu
+Services
+
+ETU Technical Interface Specification: Horizon to e-pay
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00001812
+FUJ00001812
+
+Ref.: ET/IFS/003
+Version 1.0
+
+Date: 21/07/2003
+
+Chapter 5 -
+
+DTF Batch Interface
+
+5.1
+
+Endpoint Addressing
+
+The following Virtual Addresses are defined.
+Site: Kelting House, 1 Addresses - VFi
+Site: SouthFields, 1 Addresses VF ip
+
+Note that a Virtual Address consists of the pair (Virtual IP address, port number).
+
+Connection / session management
+
+LEVEL 4 TRANSPORT PROTOCOL LAYER CHARACTERISTICS
+The Transport protocol used across the Interface is TCP/IP and follows the Client
+
+Server model with Horizon acting as the FTP client and e-pay providing the FTP
+server.
+
+e-pay will perform network Address translation in their Routers (Epayl and Epay2).
+
+The following list defined the key characteristics of Session management across the
+Interface.
+
+Property Session properties
+
+Session Initiation Horizon Agent initiates an FTP session (*) to e-pay
+Transaction server. The FTP client will try both Virtual
+IP addresses in the event that a connection attempt
+
+fails.
+
+from e-pay.
+
+(*) This maps to a TCP connection initiated from
+Horizon and a subsequent TCP connection initiated
+
+Session Termination I FTP Session terminates once transfer complete.
+
+Maximum Sessions I A maximum of I active FTP Session is specified.
+
+Use of TCP Keep I Both Horizon and e-pay will initiate and respond to
+Alives TCP keep alives to maintain connections.
+
+The Horizon Keep Alive interval is 10 seconds.
+
+Table 6 Session Properties
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE
+
+File: ptce43.doc
+
+Page 23 of 1
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+5.1.3 Level 6 Presentation
+
+This is the same as for Transactional interface (see 4.1.5).
+
+5.2 FILE TRANSFER CHARACTERISTICS
+
+Horizon will pull I file from the e-pay FTP servers on a daily basis. There will be one
+file produced by e-pay per calendar day.
+
+Property Overview
+File existence For a given calendar day, the name of the
+file to be pulled can be derived in an
+algorithmic manner. The visibility of this file
+on either e-pay FTP server means that the
+file is in a suitable state to be downloaded by
+Horizon. Please refer to [AIS] for details of
+the file name.
+
+The file is generated and transferred every
+day of the year, weekends and bank holidays
+included.
+
+If no transactions occur on any given day, e-
+pay will generate an ‘empty’ file at the end
+of day that contains only a header and footer
+record.
+
+Retention / Garbage Each file will be retained for n (TBD) days
+collection past its calendar date.
+
+e-pay will perform garbage collection of the
+files.
+
+File Integrity No external (to the file) measures will be
+employed. Therefore it is necessary for an
+application that relies on the contents of the
+file to perform any integrity checks based on
+file contents.
+
+Checkpoint / Restart These facilities will not be used
+FTP Mode The PASV command will not be used.
+
+Please refer to [FTP] for an overview of the
+PASV command.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 24 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+5.3 RESILIENCE MECHANISMS
+
+This section provides a summary of the resilience and site disaster mechanisms used
+across the interface.
+
+Property Overview
+
+Resilience to failure(s) of e-I The Horizon ftp client is configured
+ftp pay servers / e-pay data I with the address of two e-pay ftp
+centre servers, one at each e-pay data
+centre. In the event that the ftp
+client cannot establish an ftp session
+with its currently chosen ftp server it
+will attempt to establish a session
+with the other server.
+
+Resilience to failure(s) of I The Horizon ftp client can be run at
+Horizon FTP Client platform I either Horizon data Centre.
+/ Horizon data centre /
+Network connection
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 25 of 1
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+
+FUJ00001812
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+
+Appendix A IP Addressing across the Interface
+
+A1 OVERVIEW
+This section provides a summary of the IP address peering used across the interface.
+Note that all IP addresses stated are as seen from the e-pay side of the Horizon — e-pay
+Interface.
+The Horizon port numbers have no been shown since these are dynamic, specifically in
+the range 1024 - 5000.
+
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 26 of 1
+
+File: ptce43.doc
+
+Printed on 14/4/2003 8:15:00 by A
+FUJ00001812
+FUJ00001812
+
+Fujitsu ETU Technical Interface Specification: Horizon to e-pay Ref.: ET/FS/003
+Services
+Version 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 21/07/2003
+5 Wigan Data Centre e-pay Kelting House
+wriigz1 I Avent s connects a
+173102402 pots 4000040002 Pets 40002 teugh 40007 are OVSERVER1
+172.16.2406 pots 40000 $0002 proved for hte ranaacton savers, Tra t62402
+‘Agent 2 connects 0 = pone
+"72 162402 ors 40005,40007 % 40000 40002
+Agent? 172.16.2406 pots 40005 40007 B s0004 + apoos
+sete I AventSconnects to z
+172:18240 2 ports 4000%,40003, 2
+17246-2406 pot 40001 40003 Re i
+‘Agent connects to ee z
+Bee yo 240 2 pats 4000440000 sreteavoo 1 THNSERVER 2
+Agents S 172.16.2406 ports 40004 40006 8 rete 2402
+wetezs 8 Bons
+7 $001» 0009
+& = 40005 + 40007
+i
+agents
+wa1024 Horizon R1 Horizon R3- FTP SERVER:
+Few - tate2n4 "172.162402
+tp cent é
+124625
+enckcis
+sect Backbone
+8 Bootle Data Centre yx e-pay Southfields
+weer THVSERVER 9
+ra 162408
+bone
+= 40000 + 40002
+B foooes ap00e
+aoe? og g
+orizon R2 Horizon Ra 2
+2638 Seat 472462405 5
+STE comets: s72102404/39 F
+2 17248.2402 ports 40000 40002 @ TANSERVER 4
+g 172.16.2406 pots 40000 40002 F imse208
+Agent’ ‘Agent connects to z
+172.16.2.19 172.16.240.2 ports 40005 40007 J 40001 + 40003
+al 172.16.240 6 ports 40005,40007 3 40005 2 49007
+‘Agent connect to
+172182402 ports 40001 40003,
+CS 172:16.2408 pots 40001 4008, espey Re
+Agents ‘Agent connect ta sTat0.206
+snteas ‘rat 2a 2 pe 4004 4a008 “rase08
+172:18.240 8 pots 40008 40006, Ponts 40002 8 40008 proved fx Pott
+{utirewansacton sere,
+te cient
+sre te221
+© 2003 Fujitsu Services COMMERCIAL IN CONFIDENCE Page 27 of 1
+
+File: ptce43.doc Printed on 14/4/2003 8:15:00 by A

@@ -1,0 +1,1668 @@
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+Document Title: Network Banking MIS Report Design
+Document Type: Report Design
+Release S75
+Abstract: This Contract Controlled document details the design of
+Management Information Reports that are part of the
+Network Banking Service.
+Document Status: Approved
+Authors: Roger Barnes
+Contributors:
+Reviewed By: Jason Crellin (POL Design Gareth Jenkins
+Authority) Dave Johns
+. . John Moran
+Bob Booth (POL D Authorit .
+ob Booth ( esign Authority) Bill Reynolds
+Charles Leighton (POL Security) Donald Bell
+Nicola Wood (POL Service Richard Brunskill
+Management) Alan D’ Alvarez
+Comments To: Author, Roger Barnes
+Comments By:
+Distribution: Contributors, Reviewers and.
+Pete Jeram
+Liam Foley
+Fujitsu Services Library
+o1 Document Control
+01 Document History
+Version Date Reason for Issue Associated CP/
+PinICL Nos.
+0.1 12/09/2001 I First draft
+0.2 4/12/2001 Second draft. Pathway document
+boilerplate added. Changes arising from
+POL review of first draft incorporated.
+Reports re-designed to get most benefit
+from Business Objects
+0.3 14/12/2001 I Changes arising from comment from
+internal review.
+©c 2004 Fujitsu Services Contract Controlled Document Page: 1 of 32
+
+FUJ00232557
+FUJ00232557
+
+Fujitsu
+
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+Network Banking MIS Report Design
+
+Ref: NB/SDS/008
+
+Version: 3.0
+
+Date: 13/12/2004
+
+1.0 20/3/2002 I Un-approved baseline for first drop of code
+from development to System Test.
+Ll 12/4/2002 Changes arising from comment from CP3208
+external review. P3209
+. CP3221
+Changes due to changes in requirements
+introduced by CP.
+1.2 24/05/2002 I Removal of POL Organisational Analysis Removal of
+Report requirement for
+this Report
+from NOS
+2.0 12/07/2002 I Minor comments from POL applied and
+issued for approval.
+Initial definitions of Value Bands and
+applicable Product Types add to definition
+of the Bank Analysis report.
+2.1 20/10/2004 I Change to Bank analysis Report to include I CP3431
+sub-reports for DCS chargeable and
+network banking transactions
+2
+Addition of Outlet Opening and Outlet P3426
+Exceptions Report
+Exclusion of Electronic Top Up CP3480
+transactions from Multiple Transactions
+Report
+Addition of Transaction Response Time
+report
+2.2 16/11/2004 I Addition of Transactions Performed in
+Fallback and Transactions Performed by
+Method of Entry reports.
+3.0 13/12/2004 I Issued for Approval
+02 Approval Authorities
+Name Position Signature Date
+David Johns APDU Design Manager
+Fujitsu Services
+Torstein Godeseth I Design Authority
+Post Office Limited
+03 Associated Documents
+Ref. Doc. Vers. I Title Author
+REQ NB/SPE/001 Network Banking, Systems T.Hayward
+Requirements Specification
+NOS BP/CON/266 Codified Agreement Schedule NOS -
+© 2004 Fujitsu Services Contract Controlled Document Page: 2 of 32
+
+FUJ00232557
+FUJ00232557
+
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+NBS Service Management
+DES TD/SDS/001 System Design Specification for the I Gareth Jenkins
+Network Banking Application
+DAT NB/SDS/009 Network Banking MIS Data Model I Steve Newman.
+VOL NB/SRS/001 Systems Requirements Specification I James
+for Business Volumes Stinchcombe
+AIS NB/IFS/006 Pathway Data Warehouse to Post Steve Newman
+Office Ltd Application Interface
+Specification.
+OPS. CS/PRD/109 Delivery Procedure For Network John Moran
+Banking MIS Reports
+
+Unless stated otherwise the documents referred to above are the latest approved versions.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 3 of 32
+Fujitsu
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+0.4 Abbreviations & Defi
+
+Network Banking MIS Report Design
+
+Ref: NB/SDS/008
+
+Version: 3.0
+Date: 13/12/2004
+
+ns
+
+[Abbreviation
+
+Definition
+
+Accounting Day
+
+A day within an Accounting Week for POL.
+
+Accounting Week
+
+Period of approx. one calendar week (Thursday to Wednesday), defined by
+POL for accounting purposes. A collection of Accounting Days
+
+Authorising Source
+
+‘A body that authorises transactions, might be a Bank but more often an
+agent such as LINK.
+
+Bank
+
+Financial Institution that issues cards to its customers that can be used for
+NB Transactions. N.B. Bank is a specialisation of the POL Client entity.
+
+Confirmed Amount
+
+Amount confirmed in C2 message. Zero if transaction fails, is declined,
+or is balance enquiry
+
+DWh Data Warehouse.
+End Date Identifies the end of a period of time (Date and Time)
+FAD Code IA structured code to identify an outlet or a satellite as a cash accounting
+
+unit.
+
+Financial Institution
+
+A privately owned entity that collects funds from the public.
+
+Issuer Scheme
+
+Classification of a group of types of cards issued by a Bank
+
+Issuer Scheme ID
+
+Unique (POL) system generated code identifying an Issuer Scheme
+
+Money Laundering Threshold
+
+A cut off value below which 'Cash Deposit’ transactions are not likely to be
+of interest from a money laundering perspective.
+
+Month
+
+A calendar month
+
+INB
+
+Network Banking
+
+NB Transaction
+
+Record of an attempted Network Banking Transaction, regardless of its
+Outcome
+
+NBE Network Banking Engine
+NBS. Network Banking Service
+Outcome ‘Classification of the result of a NB Transaction
+
+Outcome Code
+
+Unique code indicating the Outcome of a Transaction.
+
+Transaction Result
+
+Classification of Outcome, e.g. ‘Transaction Completed OK’, ‘Abandoned
+by Clerk’, 'Decline Confirmed’, 'Transaction Failed’
+
+Transaction Result Code
+
+Unique code indicating the Transaction Result of a NB Transaction.
+
+Outlet
+
+Place where Horizon system is installed for conducting transactions with
+the general public
+
+PAN
+
+Primary Account Number
+
+Posting Date
+
+The date of the last complete POL Trading Day (ending at 19:00)
+preceding the harvesting run producing the Transmission Files in which
+the transactions were sent to TIP and the DWh.
+
+POL
+
+Post Office Limited
+
+Product
+
+Classification of NB Transaction identifying the combination of Product
+Type and Bank
+
+Product Code
+
+Identifies a POCL Product
+
+Product Type
+
+IA classification of Product, e.g. ‘Cash Withdrawal’, 'Cash Deposit’,
+‘Balance Enquiry’, etc. Equivalent to Item Type in POLs logical data
+model.
+
+Product Type ID
+
+Unique (POL) system generated code identifying an Product Type, e.g.
+‘Cash Withdrawal, Cash Deposit, etc.
+
+© 2004 Fujitsu Services
+
+Contract Controlled Document Page: 4 of 32
+
+FUJ00232557
+FUJ00232557
+
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+RDMC Reference Data Management Centre
+‘Settlement Date The date of a NB Transaction for settlement purposes, determined by
+IAuthorising Source
+Start Date Identifies the Start of a period of time (Date and Time)
+TPS Transaction Processing System. Fujitsu Services application that collects
+transaction data from Outlets and forwards it to POL.
+Trading Date Date identifying a period of approximately one calendar day that is the
+
+interval between two End of Day markers written at Outlets at a time
+determined by reference data.
+
+Receipt Date The local date and time of a transaction as recorded on the receipt.
+Transaction Value Measure (sum) of the confirmed value of transactions in a collection.
+Transaction Volume Measure (count) of volume of transactions in a collection
+
+User Name User Name entered by Clerk at logon
+
+0.5 Changes in This Version
+
+0.5.1 Changes Expected
+
+None
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 5 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+0.7 Table of Contents
+
+0. DOCUMENT CONTROL. 2
+0.1 DOCUMENT HISTORY. 2
+02 APPROVAL AUTHORITIES. 2
+0.3 ASSOCIATED DOCUMENTS. .....:scoosssosseossseessenestsnstisestneninnttnnnninnntinnstnnestnnenneetinensnnsennseeeeeD
+0.4 ABBREVIATIONS & DEFINITIONS....0.....::cccssosssossssnstssesssnsntensennstennsennneetnnetinstesneesnseesenes
+0.5. CHANGES IN THIS VERSION 5
+0.6 = CHANGES EXPECTED. 5
+0.7 TABLE OF CONTENTS......0.c.ccccosscesssoesssnsssnntennnnnnnntnnninnnnsnnnnnninaninnntsnnnsnntinsnnenetnsneeeneess 6
+
+1 INTRODUCTION
+
+2 REQUIREMENTS..
+
+3. METHOD OF DISTRIBUTION...
+
+41 PRINCIPLES
+
+42 DATES
+
+43 HIERARCHIES...
+
+4.4 REPORT DESIGN.
+4.4.1] Transaction Outcome Analysi:
+4.4.2 Bank Analysi:
+4.4.3 Outlet Opening Report.
+4.4.4 P.O.Qpening Exceptions Report.
+4.4.5 Transaction Response Time Report.
+4.4.6 Banking and DCS Transactions Performed in Fallba
+4.4.7 Card Account Transactions by Method of Entry.
+
+4.5 REPORT LAYOUTS.
+4.5.1 Transaction Outcome Analysis by Outle!
+4.5.2 Bank Analy
+4.5.3 Outlet Opening Report.
+4.5.4 P.O. Opening Exceptions Repor
+4.5.5 Transaction Response Time Report.
+4.5.6 Banking Transactions Performed in Fallbac!
+4.5.7 Card Account Transactions by Method of Entry
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 6 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+1 Introduction
+
+Fujitsu Services’s Data Warehouse (DWh) will be used to provide all Management
+Information reports. These are characterised by the use to which they are put and the
+timeliness in which they need to be produced. A management information report is used to
+inform strategic decision making rather than day-to-day operational decisions. Usually the
+reports are produced some time after the fact and report on events that took place over a
+period of days, weeks and months, or even years, rather than hours.
+
+2 Requirements
+
+These reports do not support contractual service levels but are provided for the use of POL to
+support the management of their business. This is a new service to POL.
+
+Five Trend Analysis reports are required:
+e Transaction Outcome by Outlet
+Bank Analysis
+
+Outlet Opening
+
+P.O. Opening Exceptions
+Transaction Response Time
+
+eeee
+
+3 Method of Distribution
+
+Pathway's Management Support Unit will refresh each report shortly after the period covered
+by the report has ended. This will create a new Business Objects report file for each report.
+These files will be made available to Post Office Limited , for example by CD-ROM or by
+placing them on a server to which they have access. The method of delivery will be specified
+in Delivery Procedure for Network Banking MIS Reports (CS/PRD/109) [OPS].
+
+Once a week the new Business Objects report files for the Transaction Outcome by Outlet and
+Bank Analysis will be delivered to POL.
+
+The Bank Analysis report will normally be delivered to POL on the working day following the
+end of the reporting period. Other reports will normally be delivered to POL within five
+working days after the end of the reporting period.
+
+Post Office Limited will need to provide one or more Windows NT Workstations running
+BusinessObjects 5.1 to view, print and manipulate the reports provided.
+
+4 Design
+
+This section describes the format and content of the Network Banking MIS reports as they
+will be delivered. It also shows some examples of how the reports can be customised by the
+user to meet his or her own individual requirements.
+
+This document follows BusinessObjects convention of considering attributes of objects as
+either Dimensions or Measures. Dimensions are attributes by which it is possible to specify
+what is being reported. They determine things like What happened, When something
+happened, Where something happened. It is not normal to perform arithmetic on dimensions.
+Measures are quantitive attributes like how many or how much. Arithmetic is routinely
+performed on Measures.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 7 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.1 Principles
+
+The following conventions will be applied to all reports unless there is a specific requirement
+otherwise. Reports will:
+
+© Cover a single instance of a period of time defined in either the Calendar or Accounting
+Calendar hierarchies.
+
+Be delivered as Business Objects report files.
+Use Arial font sized at 10 point or above.
+Be able to be printed full width on normal A4 paper either landscape or portrait.
+
+Column widths must, wherever possible be large enough to display the longest data item
+without truncation or text wrapping.
+
+e Have a repeating page header that contains the report title, date last refreshed, the period
+
+of time covered, and any text required to show the values of any selection criteria used.
+
+© Where the scope of a report is a Month the page header will display the Month Name
+and Year in a single field. e.g. August 2001.
+
+© Where the scope of a report is an Accounting Week the page header will display
+Accounting Week ID, Accounting Period Id, and Financial Year in a single field
+separated by" /". e.g. "4/5/2000" which represents the fourth Accounting Week in
+the Fifth Accounting Period in the Financial Year that began in Year 2000.
+
+e Have a repeating page footer that contains page number in Page n of nn format.
+
+© Object descriptions or names are displayed in preference to codes. N.B. The data
+providers must include codes so that they are available to users.
+
+Dates are displayed in DD-Mmm-YY format, left justified.
+Times of events are displayed in hh24:mm:ss format, left justified.
+
+e@ Times, which are measurements of intervals between events, are displayed in ss.mmm, i.e.
+seconds and milliseconds.
+
+© Currency amounts are displayed in £#,##0.00 format, right justified.
+e Transaction volumes are displayed in #,##0 format, right justified.
+
+4.2 Dates
+Requirements have been identified to use four dates:
+
+e Receipt Date - Calendar Date (and Local Time) when the transaction was recorded.
+Receipt Date will be used for any reports where the details of individual transactions are
+required.
+
+¢ Trading Date - Identifies Zrading Day. This is the unit by which the Transaction
+Processing Service packages transactions for delivery to both TIP and the Data
+Warehouse. The Data Warehouse will maintain aggregates with Trading Day granularity
+and this will be the default unit of aggregation for all MIS reports.
+
+¢ Settlement Date - The requirement for the Bank Analysis report explicitly states that
+Settlement Date, which is determined by the Authorising Source, is to be used. This
+attribute will be included in the data passed from TPS to DWh.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 8 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+© Posting Date - This is the date that transactions were posted to the Data Warehouse. It is
+the date of the Zrading Day that ended immediately prior to the transactions being
+harvested by TPS for delivery to TIP.
+
+4.3 Hierarchies
+
+Business Objects is a powerful user tool for manipulating data. A full description of the
+facilities it provides is beyond the scope of this document. Some features however depend on
+the end users use of them being anticipated and catered for by the designer. This is
+particularly true when considering the different levels of detail, or abstraction, that a user
+might require. There are two basic ways to do this:
+
+Drilling: This is where the user is interested in looking in more detail at a subset of data from
+areport. e.g. A user looking at a report showing volumes of transactions by Bank and wishes
+to see how a Bank's transactions are distributed by the Bank's Issuer Schemes. By selecting
+the 'Drill’ control, the Bank Dimension, and the ‘drill down’ option a new version of the report
+is displayed showing only the selected Bank's transactions broken down by it's /sswer Schemes.
+Both the scope and the level of abstraction of the report are changed. This facility depends on
+hierarchies being defined and made available in reports.
+
+Dimension Swapping: This is where a user is interested at looking at a report at a different
+level of abstraction. e.g. A user is looking at a report showing the volume of Network
+Banking Transactions by Territory and wishes to look at the same data by Head of Area. By
+‘dragging’ the Head of Area dimension from the Report Manager section of the report and
+‘dropping’ it over the 'Territory' dimension in the report body these dimensions are swapped
+The report will change to show the volume of Network Banking Transactions by Head of
+Area. Changing the dimensions used in a report only changes the level of abstraction and
+cannot be used to change the scope.
+
+Business Objects is a complex tool and it is possible to manipulate reports in many ways. It is
+not possible make reports foolproof without removing all the flexibility available. Drilling up
+and down predefined hierarchies, and swapping a reported dimension for another in the same
+hierarchy, will be supported.
+
+To support this a number hierarchies have been defined for Network Banking MIS reports. It
+should be noted that while hierarchies can add greatly to the usefulness of Business Objects
+reports they are not cost free. The cost comes in three forms 1) The length of time it takes to
+regenerate reports increases, 2) The size of delivered files increases, 3)The time taken to
+display the results of changes made to the report by the user increases, reducing its
+responsiveness. If it is found that any of these is unacceptable in use then consideration should
+be given to reducing the use of hierarchies.
+
+The convention used in this document for defining hierarchies is top (or most abstract, least
+detail) to bottom (or least abstract, most detail). Unless restricted by the scope of the report
+the user will be allowed to navigate both up and down hierarchies.
+
+The following hierarchies are defined:
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 9 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Hierarchy: Dimension
+
+SLA Calendar
+
+Level SLA Year
+Level 2. : ___I SLA Quarter
+
+Level 3. : _I Month
+
+Level4 I Trading Day
+
+Hierarchy: Dimension
+
+Accounting Calendar
+Levell Financial Year
+
+Level 2 ___I Accounting Period
+Level 3 t Accounting Week
+
+Level 4_ enue Accounting Day
+
+Hierarchy: Dimension
+
+Settlement Calendar
+
+Level 1 I _I Financial Year
+
+Level2 Accounting Period
+
+Level3 Accounting Week
+
+Level4 Settlement Date
+
+Hierarchy: Dimension
+
+Bank
+
+Levell Q Bank
+
+Level 2 Issuer Scheme
+
+Hierarchy: Dimension
+
+Product
+
+‘Leveld Product Type
+
+Level2 _I Product
+
+Hierarchy: Dimension
+
+Outcome
+
+Level 1 : _I Transaction Result
+
+Level2 I Outcome
+
+4.4 Report Design
+
+The design of each report will be expressed in terms of the entities and attributes in [DAT].
+For convenience brief descriptions of the entities and attributes employed are reproduced in
+Section 0.4 Abbreviations and Definitions.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 10 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.4.1 Transaction Outcome Analysis by Outlet
+
+This weekly report [R258] shows a summary of the Network Banking transactions performed
+in each Outlet. The scope of this report will be an Accounting Week.
+
+For each Outlet there will be one row, showing Transaction Volume and Transaction Value,
+for each combination of Product and Outcome. The sort sequence for this report will be
+ascending FAD Code, Product and Outcome. Page breaks will be inserted to ensure that each
+Outlet starts on a new page.
+
+Rules:
+1. Trading Date between Accounting Week.Start Date and Accounting Week.End Date.
+
+Measures:
+e = Transaction Volume
+
+e@ = Transaction Value
+
+Dimensions:
+
+Outlet
+
+FAD Code
+Accounting Week
+Product
+Outcome
+Method of Entry
+
+Other Details Available:
+e@ Outlet ID
+© Product Code
+
+¢ Outcome Code
+
+Hierarchies:
+
+e = This is a very large report that is required to show a great deal of detail. No drilling down
+is possible but drilling up in the Product and Outcome hierarchies will be supported.
+
+4.4.2. Bank Analysis
+
+A weekly report showing, for each Bank, the daily count and sum of Confirmed Amount of
+Network Banking system transactions. [R261]. Network Banking system transactions will
+include DCS and E-Top Up transactions
+
+Each page will, in addition to the standard page header items, show the date of latest Posting
+Date posted by the Data Warehouse at the time the report was produced (or refreshed). This
+is included to indicate to the user that the Data Warehouse had posted transactions for each
+Posting Date within the Accounting Week.
+
+The scope of this report a week will be an Accounting Week. A single report will be produced
+each week containing all Banks.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 11 of 32
+FUJ00232557
+
+FUJ00232557
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Each Bank will start on a new page, and within Bank there will be separate sections for each
+Issuer Scheme.
+
+Within /sswer Scheme there will be one row for each combination of Posting Date, Settlement
+Date, Product Type Value Band and Transaction Result recorded during the reporting period.
+
+The sort sequence for the report will ascending Bank, Issuer Scheme, Posting Date,
+Settlement Date, Product Type Value Band and Transaction Result.
+
+N.B. Value Bands and the Product Types that they apply to are soft configured. The initial
+configuration will be that specified in "Codified Agreement Schedule NOS - Service
+Management" [NOS], section 6.1.2. i.e. For each of the Product Types “Cash Withdrawal”,
+“Cash Withdrawal with Balance” and “Cash Deposit” there shall be three value bands. The
+three value bands will be: (i) zero value transactions; (ii) transactions of greater than zero that
+are less than or equal to £250; and (iii) greater than £250.
+
+Rules:
+1. Posting Date between Accounting Week.Start Date and Accounting Week.End Date.
+
+Additional sub-reports have been added to this report to report on:-
+
+Chargeable DCS Transactions - Showing only those DCS transactions defined to be
+chargeable on the basis of their outcome code as specified in CR 0339.
+
+Network Banking Transactions - Showing only NBS transactions
+
+These are filtered versions of the main report.
+
+Measures:
+e@ = Transaction Volume
+
+e = Transaction Value
+
+Dimensions:
+
+Bank
+
+Issuer Scheme
+
+Posting Date
+
+Settlement Date
+
+Product Type Value Band
+Transaction Result
+Method of Entry
+
+Other Details Available:
+e Bank ID
+
+e@ Issuer Scheme ID
+
+© Product Type ID
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 12 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Product Type
+
+Value Band
+
+Value Band ID
+Transaction Result Code
+Issuer Scheme
+
+Issuer Scheme ID
+Product
+
+Product Code
+
+Outcome
+
+Outcome Code
+
+Hierarchies:
+e Settlement Date (up only)
+e Bank
+
+Product
+
+Outcome
+
+4.4.3 Outlet Opening Report
+
+A report normally run monthly showing for each trading date in a selectable time period the
+count of outlets expected to be open, the count of outlets trading, the count of outlets
+
+expected to be open but not trading and the count of outlets expected to be closed but trading.
+
+Measures
+
+e Count of Outlets Expected to be Open
+
+¢ Count of Outlets Trading
+
+© Count of Outlets Expected to be open but NOT Trading
+© Count of Outlets Expected to be closed but Trading
+
+Dimensions
+
+e Trading Date
+e Day of Week or Bank Holiday
+
+Rules
+1. Trading Date between Start Trading Date and End Trading Date
+4.4.4 P.O.Opening Exceptions Report
+
+A report run for a selectable period, normally a month, showing for given days the outlets
+which were expected to be open but did not trade.
+
+The sort sequence will be by trading date and then by FAD Code
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 13 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Data
+e Trading date
+e FAD Code
+
+© Outlet Name
+
+Rule
+1. Trading Date between Start Trading Date and End Trading Date
+
+4.4.5 Transaction Response Time Report
+
+A report to be run monthly showing details for the peak hour only per FI per week within the
+month as follows:-
+
+1. The 90" percentile and mean transaction response time for the Financial Institution
+(FI) portion of the total transaction time. Additional or alternate percentages may be
+required on this report.
+
+2. Per branch connection type, the 90" percentile and mean transaction response time for
+the Horizon portion of the total transaction time. Additional or alternate percentages
+may be required on this report.
+
+3. Per branch connection type, the 90" percentile and mean transaction response time for
+the total transaction time. Additional or alternate percentages may be required on this
+report.
+
+4. Per branch connection type, the total transaction volumes within the hour specified
+
+Notes:
+
+1. The ‘peak hour’ will be a specified time period, and we will not need to run a query to
+find the hour with the highest number of transactions.
+
+2. There may be more than one hour specified for each FI for each week, and the hour
+specified may be different for the three different FI’s (Link, Alliance and Leicester, and
+CAPO).
+
+3. These time periods will be set and changed by a DCR. This would need to be done on
+a month boundary in order that the monthly report should contain consistent data.
+
+4. The ‘hour’ will be a specified elapsed hour, and these time periods may be longer or
+shorter than an hour.
+
+5. Only Network Banking transactions which are successful will be included. Successful
+is determined as specified in the outcome table as defined in NB/SDS/009 which
+represents full successful message transfer.
+
+6. No additional data (e.g. value) will be required in this report, only times and volumes
+as specified.
+
+7. The time taken as the time for the transaction will be the start time of the transaction.
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 14 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+8. The week reported on will be the standard reporting week of Sunday to Saturday. The
+actual report
+
+9. Maximum transaction volumes in a peak hour for all three FI’s is 700,000.
+
+10. POL might want to choose additional percentiles — e.g. 99%
+
+11. The mean is defined as the 50" percentile — i.e. the time for the transaction which
+represents the top of the first half of the transactions ordered by the relevant
+transaction response time.
+
+12. In order to allow for bank holidays it is likely that there will be a requirement to report
+peak hours for both Monday and Tuesday.
+
+4.4.6 Banking and DCS Transactions Performed in Fallback
+
+A new report “Banking and DCS Transactions Performed in Fallback” will be produced.
+
+1.
+
+The report will show details selected by trading date for a week and runable for any
+selectable week.
+
+The report will show, for each of NBS and DCS, the FAD Code and Post Office
+Name, the number of transactions performed in fallback (entry_method = 3) and the
+percentage of the total number of similar types of transactions (NBS or DCS) at that
+branch or for that issuer scheme as appropriate for the selected week.
+
+An additional sheet on each of NBS and DCS reports will show, Issuer Scheme and
+description, the number of transactions performed in fallback (entry_method = 3) and
+the percentage of the total number of similar types of transactions (NBS or DCS) at
+that branch for the selected week.
+
+A total of transactions and the percentage that represents of the total transactions of
+that type will appear at the bottom.
+
+There will be four tabs or separate sheets on the report, two for Network Banking
+transactions and two for DCS transactions. These will show the same transaction data
+by FAD code on one and by Issuer Scheme on the other.
+
+Approximate sample layouts of this report are attached hereunder.
+
+7. The file name for this report will be:
+
+4.4.7
+
+Banking_and_DCS_Transactions_Performed_in_Fallback_dd/mm/yy_Vx.rep
+where dd/mm/vyy represents the date and x the version number.
+
+This report will normally be delivered on Thursdays.
+
+Card Account Transactions by Method of Entry
+
+A new report “Card Account Transactions by Method of Entry” will be produced.
+
+1.
+
+The report will show details selected by trading date for a month and be runable for a
+selectable month.
+
+The report will have details of Card Account (CAPO) transactions as follows.
+
+The report will contain two sections
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 15 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4. Section 1 will show the total number of outlets which undertook at least one CAPO
+transaction using chip entry — i.e. Method of Entry 4 - ICC PIN Pad Read. - for each
+week in the period.
+
+5. Section 2 will show for all outlets which performed CAPO transactions but did not do
+any by chip entry, for each FAD the Post Office Name, the total number of
+transactions and the number of transactions for each method of entry. By definition
+the number performed by method of entry ICC PIN Pad Read (chip) will always be 0,
+but I am leaving this in as it was requested, and it might prove useful in the future.
+
+6. This will be sorted in FAD code order.
+
+7. The report name for this report will be:
+Card_Account_Transactions_by_Method_of_Entry_dd/mm/yy_Vx.rep
+where dd/mm/yy represents the date and x the version number.
+
+8. This report will normally be delivered on the fifth working day after the end of the
+month
+
+4.5 Report Layouts
+
+© 2004 Fujitsu Services Contract Controlled Document Page: 16 of 32
+FUJ00232557
+FUJ00232557
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.5.1 Transaction Outcome Analysis by Outlet
+Outcome Analysis Last Refreshed: 25-Aug-01 11:19:26
+FAD Code : FAD 38 Outlet 1
+Accounting Week: 3/6/
+2001
+Accounting Week End
+Date: 22-Aug-01
+
+Product Desc Outcome Method of Eni Apahesction I roneacton
+
+Volume Value
+Barclays Deposit Cash Completed OK Manual Entry 16 £685.00}
+Non ICC Magnetic
+
+Barclays Deposit Cash Completed OK Stripe Read
+Barclays Deposit Cash Completed OK ICC Swipe Fallback
+Barclays Deposit Cash Completed OK ICC PIN Pad Read
+Barclays Deposit Cash Decl - Usage Violation - amt ICC PIN Pad Read 2 £0.00}
+Barclays Deposit Cash Failed by Agent Inside ICL-P ICC PIN Pad Read 4 £0.00}
+Barclays Withdraw Cash Completed OK ICC PIN Pad Read 4 £180.00}
+Barclays Withdraw Cash Failed By NBE ICC PIN Pad Read 5 £0.00}
+NatWest Bank Balance Enquiry ICompleted OK ICC PIN Pad Read 4 £0.00}
+NatWest Bank Balance Enquiry IDecline - Impound Card ICC PIN Pad Read 6 £0.00}
+NatWest Bank Balance Enquiry IDec! - Trans not supported ICC PIN Pad Read 5 £0.00
+NatWest Bank Balance Enquiry IDecl - Usage Violation - amt ICC PIN Pad Read 9 £0.00}
+NatWest Bank Balance Enquiry IFailed by Agent Inside ICL-P ICC PIN Pad Read 5 £0.00}
+NatWest Bank Deposit Cash [Abandoned - APACS checks __IICC PIN Pad Read 9 £0.00}
+NatWest Bank Deposit Cash Decline - Impound Card ICC PIN Pad Read 8 £0.00}
+NatWest Bank Deposit Cash Failed by Agent Inside ICL-P ICC PIN Pad Read 5 £0.00}
+NatWest Bank Deposit Cash Failed by Agent Outside ICL-P IICC PIN Pad Read 6 £0.00}
+NatWest Bank Withdraw Cash —_IAbandoned - Clerk ICC PIN Pad Read 10 £0.00
+NatWest Bank Withdraw Cash — ICompleted OK ICC PIN Pad Read 9 £450.00}
+Unv. Bank Balance Enquiry Abandoned - Signature failed ICC PIN Pad Read 6 £0.00}
+Unv. Bank Balance Enquiry Decline - Insufficient Funds ICC PIN Pad Read 3 £0.00
+Unv Bank Take All Decline - Insufficient Funds ICC PIN Pad Read 9 £0.00}
+Unv Bank Take All Decl - Trans not supported ICC PIN Pad Read 7 £0.00}
+Unv Bank Take All With Balance IDec! - Usage Violation - freq ICC PIN Pad Read 2 £0.00}
+Unv Bank Take All With Balance IFailed by Agent Inside ICL-P ICC PIN Pad Read 9 £0.00}
+
+©c 2002 Fujitsu Services Limited © Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+
+Page: 17 of 32
+FUJ00232557
+FUJ00232557
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.5.2. Bank Analysis
+
+Bank Analysis Last Refreshed: 20-Aug-02 09:49:01
+Accounting Week: 3/6/2002 Last date posted: 22-Aug-02
+Bank: Barclays Bank Limited From: 15-Aug-02
+Scheme: Scheme A To: 21-Aug-02
+Posting Settlement Transaction
+pai Bias Product Type Transaction Result eancer Transaction Value
+Te:Aug-02] — 13-hug-02]Wihgraw Cash Transaction Completes OF a24 299,501,090
+15-Aug-02] 14-Aug-02 IWitharaw Cash [Transaction Compisted 01 2153 £537-747.00}
+15-Aug-02] 16-Aug-02 [Withdraw Cash Hransaction Completed OX 733.069 £13,088 700-00]
+T6-Aug-02] 06-Aug-02 IWitharaw Cash Hransaction Completed OX 7 £767.00
+Te-Aug-02I 14-Aug-02 IWitharaw Cash [Transaction Compieted OK 25 52,775.00
+18-Aug-02] 15-Aug-02 IWoitharaw Cash Hransaction Completed OK. 3,204 ze51.719.00]
+Te-Aug-02] 16-Aug-02 [Withdraw Cash iansaction Completed OK 732.927 £36, 630,053.00]
+Te-aug-02] —17-Aug-02IWithdvaw Cash <= £250 Transaction Compieied OK z £437.00
+[24-Aug-02] 24-aug-o2Iwitharaw Cash <= €250 [Transaction Completed OK. I 474,408) £11,049,805,00]
+t t 1 I Som 1 754.672] £195,525.951.00]
+Bank Analysis Last Retresned: 29-Aug-02 09:43:01
+Accounting Week: 3/6/2002 Last date postes: 22-Aug-02
+Bank: Barclays Bank Limited From: 18-Aug-02
+Scheme: Scheme B To: 21-Aug-02
+
+S:Aug-02IBalance Enquiy. Mransaction Completed OK 53,488] £0.00)
+18:Aug-02ICash Withdrawal -zero value [Decline Confirmed 4.362 £0.00]
+Y5-Aug-02ICash Withdrawal <= £250 Tansaction Campisied OK 102:223I £15,038,413.00]
+15-Aug-02ICash Withd/awal >» £250 [Transaction Compieted OK 618 £433,557.00I
+18:Aug-02]6. ran —firans: ae) a 2
+45-Aug-02ICash Withdrawal with Balance [Transaction Cam pleted OK EXEEE) £583,407.09]
+
+{S-Aug-02I 15-Aug-02 ICash Withdrawal with Balance > £250 ITransaction Completed OK 2208) 802,728.09]
+24-Aug-02) 21-Aug-02Iclash Withdrawal with’ Balance > £250 [Transaction completed OK 95 5651412100
+2i-Aug-02] 21-Aug-02[change PIN [Transaction Completed OK 33 720.00)
+ZicAug-02] 21-Aug-08 IWitharawal Limit [Transaction Completed OK EEE E155 232.84
+‘Som 380.244] $51, 167,231.82]
+Bank Analysis Last Refreshed: 23-Aug-02 09:43:01
+Accounting Week: 3/6/2002 Last date posted: 22-Aug-02
+Bank: Barclays Bank Limited From: 15-Aug-02,
+Scheme: Scheme C To: 21-Aug-02
+Settlement Transaction
+ome mee) Product Type Transaction Result aorees
+
+16-Aug-02] 16-Aug-02I8alance Engui [Transaction Completed OK
+[7 e-aug-02} 16-Aug-02] Balance Enquiry [Transaction Abandoned by Clem I 382] 0-00)
+24-Auig-02] 24-Auig-02IWitharawar Limit Signature Fal 26 0:00)
+2i-Aug-02] 21-Aug-02[Witharawal Limit Fee Declined 3 0.00]
+2i-Aug-02] 21-Aug-02 [Withdrawal Limit [Gard Check Failed i £0.00)
+Pickug-02]—21-Aug-02IWitharawal Limit [Decline Contiem ed 72] £0.00)
+21-Aug-02] 21-Aug-02[Withdrawal Limit fansaction Failed 16] 0.00]
+‘Sum 118.073) £0.09]
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 18 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Bank Analysis Chargeable DCS Transactions Only
+
+Ne 2 ie
+{ce oe ua :
+
+[ae
+
+Bank Analysis - Chargeable DCS Transactions Only Last Refreshed: tT-Ju-2000 1455422
+Accounting Week: 41672001 Las date posted: 18-Aug 2001
+Bank: Barclays Bank Pic. From: 16-Aug-2001
+Scheme: Barclays Connect To: tefug-2001 ig
+Posting Receipt Transaction
+ae ae Product Type onan’ ‘Transaction Val
+TeApa0o! I TeAna00t [OCS Payment (a Check Fated 1 200
+TeAap 2001 I To-Aagdad1 OCS Paymant cand Check Fad i wi
+TeAg- 2001 I Temps) [OCS Faymert ard Check Fated 7 a0
+Veep 2001 I Teg 200i IOCS Payment Decne Contimad i ai
+Tea aaa I Trap aO0T ation Compas OF a rx)
+TeAap 2001 I To. 2001 ransactin Failed i Era)
+Taig aoor I Tega ranean Falad i Ex)
+Se ee cand Check Fred i Ey)
+emg B0T I Teapot OCS Refund ranaaction Compited OF 7 Biz
+ET % EERE
+INote: OUTCOME_CODE fiter can be changed by the Filters option on the Format menu. Page: 2 0f 5
+
+NBS only _J
+
+175 I Last Exec: 17/7703 14:54
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 19 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+Bank Analysis Report — NBS Transactions Only
+
+inessObjects - Bank_Analysis_with Data.tep - [roger]
+
+I) Ele Edt View Insert Fomat Took Dota Anabsis Window Help
+
+See
+
+EE Hn ab HS
+
+Bank Analysis - NBS Transactions Only las Refreshed: fT-Ju-2009 1455422
+Accounting Week: 4/6/2001 Last date posted: 10.8u9-2001
+AN Other From: 1eug-2001
+
+‘AN Other Bank To: z-Aug-001
+
+sotel fiaemotade Product Type Transaction Result Transaction +;ansaction Valu
+Date Date Volume
+
+Ne-Apz00" I Ti-aug-2001" Joss Depost > £250 Fransacton Completed OF 1 215,000.00)
+TAROT I Ti Ag 2001 _Iwihdrawal Um ranaaction Fala i 05
+evap D001 I 11-Aug-2001 [Balanoe Engrg ion Competed OF i En
+TeAagO0T I Ta-Aag 2001 [Cash Depoat Zao Vale zadion Campled OF i wa)
+evap ROOT I Te-Mog-2001 [Cash Gepost Zare Vaiw ransaction Fated D Er
+TeAig toot I Te Aag-2001 [Caen Depost = HAD Comets OF g B00.
+TeAag ROOT I TEA 2001 feel Unie ransacton Completed OF 7 £166.75
+Teaag 2001 I Te Mog 2001 Rha Unie [rsnaction Fale 7 00
+Te-Aap 2001 I Te-Aag 2001 [Caan withdrawal Zero Vas [ransacion Compiaed OF i En
+‘TGAag-00T I Temp ZoOT [Cash Windrawal Zero Value [ranaastion Fed 3 En)
+1eAag 2001 I 18-Aag-2001 _[Baanoe Enaury rsneacten Compited OF 7 a0
+TeAig 01 I 16 Ag-2001 _[Balanoe Era raaction Falad 7 Er)
+TeAap TOOT I Te-Aog 2001 [Oazh Wihdrawal = EA [ransaction Completed OF 7 Eo
+Sm: Eg 6.75675
+
+Page: 1 of 5
+
+I 21NBs only I
+
+T7T8 1454
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 20 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+Fujitsu
+Services
+
+4.5.3 Outlet Opening Report
+
+Network Banking MIS Report Design
+
+COMMERCIAL IN CONFIDENCE
+
+OUTLET OPENING REPORT
+
+Report Date
+11/07/2003
+
+FUJ00232557
+FUJ00232557
+
+Ref: NB/SDS/008
+
+Version: 3.0
+Date: 13/12/2004
+
+Report Filename
+
+PO Openings
+
+Count of
+Count of Outlets
+: Day orBank Countof Outlets count of outlets expected to be ouee
+Trading Date expected to be i expected to be
+Holiday trading open but
+open : closed but
+NoTtrading :
+trading
+8/7/03 Tuesday 18132 16523 1698 89
+9/7103 Wednesday 17375 16298 1444 367
+40/7/03 Thursday 18390 0 18390 0
+
+©c 2002 Fujitsu Services Limited © Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+
+Page: 21 of 32
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.5.4 P.O. Opening Exceptions Report
+
+103 PO Exceptions
+Trading Date Fad Code Outlet Name
+30/4/03 1002001X Balham
+30/4/03 10020044 (Crouch End
+30/4/03 10020060 Acton
+30/4/03. 10020079 Abbey Wood
+30/4/03. 10020095, Albemarle Street
+30/4/03 10020109 Marchmont Street
+30/4/03 10020117 Eccleston Street
+30/4/03 10020125 Beckenham
+30/4/03 10020141 Dartford
+30/4/03 10021121 Thetford
+30/4/03. 1002113X Haverhill
+30/4/03 1002130X Felixstowe
+30/4/03 10022012 Acocks Green
+30/4/03 10022063 ‘Crewe Town
+30/4/03 10022071 ‘Alfreton
+0/A/N3% 10022268. Daventn
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 22 of 32
+
+‘Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+¥ 81 =I (== Ha %
+hace we els 7 fee = fd I Ge se
+[
+Transaction Response Run Date/Time 24/05/2004 I
+a for. Month March...
+nancial Institution Alliance & Leicester pic
+ia Peak Date/Time 15105104 12:30 To 3:29:59
+Financial instaution 30) Cal
+rear ay Ed 06
+orion pu 30 4.406
+orion Fx 30) Ea
+Horizon Po 20) Zi
+[Tota Bub 0) 5.546)
+otal pub 30) Ex
+frotar FXO Ey 3.076
+rai Fx 00 3.026
+(OL 42,220)
+Fx. 6.20
+38.440
+Fe Peak Date/ Time 15/05/04 14:30 To 5:29:59
+Financial instRution 60 348
+Financial tnstution 20) 3a
+[Hanson Bue Ey 06
+orion Bub. 0) 4.404)
+orzon FO Eg 7.184
+avizen Fo 30 iz
+[Feta Bua. Ed 3387
+rear BLO 20 Ex
+rota FXO Ed 3.076
+otal FO 30 2.20
+Sisiat
+Page 1 Lee 176 (LastExec: 976/04 1558 Sri i er ee
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 23 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+40 IlOeals (Bibra ew ha
+
+[Poteet et : ia
+I Ba :
+
+Run Date/Time 24/05/2004 -
+
+cose _.For. Month. March...
+Peak Date/Time 16105104 12:30 To 3:29:59
+
+Transaction Response Time Report
+
+Tire ed
+Financial Institution
+Financial Institution
+Herzen Lo
+Horizon pie
+Rerzon FXO
+Ronson FD
+[Fatal pte
+Fetal pte
+fFotar FXO
+Effect Fx
+
+eSTIET}
+
+=) Report I
+[Page2 Section: "POCL_CLIENT_DESC:A 2/6 I Last Exec: 9/6/04 1558 (NUM ff Zz
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 24 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+@ 2 ct
+Be) Ss Sen ob
+Transaction Response Time Report Run Date/Time 24/05/2004 cS
+cecceseeceneeeeeeeveneeeeneene Ler. Month March
+ir H
+Financial instaution o6r
+onon Cy 406
+Horizon BLO a6
+Fiorzon, Fo Zi
+arisen xo. ENE]
+[Tota BuO 3074
+rota pb 3.036
+[Tokar FXO. a7
+[Fetar Po. 4.580
+LI
+OLD 42,220
+Po 6.70
+36,440
+IS Peak Date/ Time 16105104 12:30 To
+Financial nstaution 0) Gal
+Financial instiarion 0) EU
+arisen Bub 20 a6
+neon jet. 30) 4.406
+Horzon. FXO Ed EXE]
+Honor FO. 0 2.120
+[Fotat pu 20 oar
+Fetal fou. 30) oar
+rtar Fx 20] tar
+30) or
+3
+Ba}
+Pages 3/6 I Last Exec: 9/6/04 15:58 InuM I ww
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 25 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+WW BusinessObjects - TR.rep - [roger] e
+[I RI fie Edt view Inset Fomat Tools Data Analysis Window Help
+
+Transaction Response Time Report Run Date/Time 24/05/2004 =
+oa - For Month. March...
+ie Peak 9
+I [Financial Instaution Ey
+I Financial institution 30 oar
+I [Ronen BLO 30 406
+2 Porson aco 00) 408
+: [Ronson FXO 50, 21
+2 [Ronson FO 0 Fie
+Tota joLo Ea 280
+: [Rota Cy 90 4350
+I [eer FXO. Ey 3086
+2 Fern FO Ey 30m
+a)
+4
+Fal
+Stsizt Je
+[Page 4 Section: "POCL_CLIENT_DESC:C 4/6. I Last Exec: 9/6/04 15:58 (NUM [ 4
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 26 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+
+Fujitsu Network Banking MIS Report Design
+
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+Version: 3.0
+
+Date: 13/12/2004
+
+Run Date/Time 24/05/2004 4
+For. Month. Masch.
+-
+} [Financial Institution ‘50 861 H
+I [Financial institution 0 Ea
+} [Horizon Lo 50, 2101
+5 [Rarzon po 90 204
+1 [Roraon FXO Ey 3.000
+1 orzo Po Ey 20a
+frotar foto i 300
+Fecal jpco 90 400
+eer FXO 30 400
+: Freear Ro 30 4260
+: [OLD
+FO
+re } Peak Date/ Time
+HE Tine Measured Time Taken (ms)
+I [Financia Insertion 20 1244]
+I [Financia instaation 30 $40
+: [Horizon ot Eg S567
+orzo ou 00) ia
+[Ronan ro Ed 408
+2 orton xo 30) Ta
+[Tera ay 20 4207
+5 FRotar ay 96 458
+) ar Fo Ey 4207
+ear Po Ey “4587
+LD 44220)
+cl 4220
+26.400)
+5
+Li PS
+Page 5 “5/6 I Last Exec: 9/6/04 15:58 NUM /  Eerepor
+
+©c 2002 Fujitsu Services Limited
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+
+Commercial In-Confidence Page: 27 of 32
+
+FUJ00232557
+FUJ00232557
+
+Ref: NB/SDS/008
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+BBkne #aQ
+
+Run Date/Time 24/05/2004 BI
+For Month Mareh
+
+Financial Institution
+Horizon pL
+Ronzon pte
+Horizon Po
+[Horizon xo.
+[Forat oto.
+Tota FXO
+[rota Fx
+
+8/2) 8) 8) 3) 8) 8! 8)
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 28 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+Fujitsu
+Services
+
+Network Banking MIS Report Design
+
+COMMERCIAL IN CONFIDENCE
+
+4.5.6 Banking Transactions Performed in Fallback
+
+FUJ00232557
+FUJ00232557
+
+Ref: NB/SDS/008
+
+Version: 3.0
+Date: 13/12/2004
+
+Banking Transactions Performed in Fallback Last Reffeshed: 12-Jan-2004 13:24:23
+From: 04-Jan-04
+Accounting Week: 10-Jan-04 To: 10-Jan-04
+Transactions in
+Issuer Scheme Fallback of Total
+IAbbey National BCA 19,940 13:
+[Alliance & Leicester 78.170 3
+IAlliance & Leicester Electron 8,870 13.
+[Bank of Ireland 6,725 3
+Barclays Cash Card 6,655. 2
+ILioyds TSB 4,850 5
+ILTSB Basic Bank Account 4,690 6
+69,900 EJ
+ome Page 1 of4
+
+©c 2002 Fujitsu Services Limited © Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+
+Page: 29 of 32
+Fujitsu Network Banking MIS Report Design
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232557
+FUJ00232557
+
+Ref: NB/SDS/008
+
+Version: 3.0
+Date: 13/12/2004
+
+Debit Card Transactions Performed in Fallback Last Refreshed: 13/01/2003 13:24:23
+
+Accounting Week: 10-Jan-04 From: o4io1
+
+To 10/01
+Fad Code Outlet ee % of Total
+3001369 Brockdish 5,255 6
+3002085 [Sheepy Magna 3,970 5
+3002071 [Stretton 4,800 é
+3002178 IWellinger Way 7,065 5
+3002276 Portland Road 6565 4
+3002306 [Somersham 6370 4
+3002381 Beverley Drive 6.725 3
+3002462 Londonderry 7,505 4
+'300306X Halifax Road 6,655 2
+3008205 [Lee Mount 5AT0 3
+3008213 Bodmin Road 4,850 3
+300823X Rawdon 4,690 6
+Sum: 69,900 3
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 30 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00
+FUJ00232557
+
+FUJ00232557
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 31 of 32
+
+st Updated: 13/12/2004 17:49:00
+
+Header t
+
+Dehit Card Teaneactinne Darfarmad im Eallkank Lact Rofrechad: 42INtT/9NN® 12-94-92 I
+FUJ00232557
+FUJ00232557
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 3.0
+COMMERCIAL IN CONFIDENCE Date: 13/12/2004
+
+4.5.7 Card Account Transactions by Method of Entry
+
+Last Refreshed: 40-Feb-04 12:36
+From: 01-Jan-04
+Accounting Period End Date: 28-Jan-04 To: 31-Jan-04
+
+Card Account Transactions by Method of Entry
+
+Accounting Week Ending 08-Jan-04
+
+Total Outlets Performing Chip Transactions 23,456
+
+Outlets with Card Account Transactions but No ICC transactions
+
+FAD Code PostOtice Name Transactions padea Fallback Stipemmrea_ My
+3001369 Brockdish 2,300 0 1,150 767 383
+3002055 Sheepy Magna 1,200 0 600 400 200
+3002071 Stretton 900 0 450 300 150
+3002179 IWellinger Way 1,105 0 553 368 184
+3002276 Portland Road 1,205 0 603, 402 200
+3002306 Somersham 50 ) 25 17 8
+3002381 Beverley Drive 30 ) 15, 10 5)
+3002462 Londonderry 700 ) 350 233 117
+'300306X Halifax Road 1,100 0 550 367 183
+3003205 Lee Mount 970 0 485 323 162
+3003213 Bodmin Road 890 0 445 297 148
+300323X Rawdon 1,200 0 600 400 200
+3003248 East Stockwith 2,300 0 1,150 767 383
+3003272 Catcote Road 1,200 0 600 400 200
+3003299 Newsham 900 0 450 300 150
+300340X Stocksbridge 1,105 0 553 368 184
+Accounting Week Ending 15-Jan-04
+
+Total Outlets Performing Chip Transactions 23,456
+
+Outlets with Card Account Transactions but No ICC transactions
+
+Total No.ICC PIN No. ICC No. Mag No. Manual
+Transactions Pad Read Fallback Stripe mread Entry
+
+FAD Code _Post Office Name
+
+3001369 Brockdish 2,300 0 1,150 767 383
+3002055 Sheepy Magna 4,200 0 600 400 200
+3002071 Stretton 900 0 450. 300 150
+3002179 IWellinger Way 1,105 0 553 368 184
+3002276 Portland Road 1,205 i} 603 402 200
+3002306 Somersham 50} i} 25 17 8
+3002381 Beverley Drive 30; it} 15 10 5
+3002462 Londonderry 700 0 350 233 117
+300306X Halifax Road 1,100 0 550 367 183
+
+©c 2002 Fujitsu Services Limited Commercial In-Confidence Page: 32 of 32
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 13/12/2004 17:49:00

@@ -1,0 +1,6478 @@
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0.2
+Company-in-Confidence Date: 16/06/2006
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Internal Distribution:
+
+External Distribution:
+
+Approval Authorities:
+
+Horizon Architecture Overview
+
+Architecture
+
+N/A
+
+This document provides an overview of the architecture for
+the Horizon solution.
+
+DRAFT
+
+None
+
+(See PA/PRO/010 for Approval roles)
+
+Name
+
+Role
+
+Signature Date
+
+Giacomo Piccinelli
+
+Chief Architect
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 1 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+0.0 Document Control
+0.1 Document History
+
+Version No. Date Reason for Issue Associated
+CP/PEAK/PPRR
+Reference
+0.1 31/01/06 1* Version
+0.2 16/06/06 2™ Version
+0.2 Review Details
+Review Comments by 29/06/06
+Review Comments to : Originator & Document Management
+Mandatory Review
+Role Name
+Agent Design Authority Rex Dixon
+Refdata Design Authority Duncan MacDonald
+Host Design Authority Roger Barnes
+Counter Design Authority Chris Bailey
+Crypto Design Authority Alex Robinson
+Networks Design Authority Mark Jarosz
+Systems Management Design Authority Glenn Stephens
+Estate Management Design Authority Colin Mills
+Platforms & Storage Design Authority Mario Stelzner
+Performance & Resilience Design Authority David Chapman
+Optional Review
+Role Name
+Application Design Team Manager Tom Northcott
+Agent Designer Andy Williams
+Host Designer Rahul Shah
+Nasser Siddiqi
+Counter Development Team Manager Mark Scardifield
+Host Development Team Manager David Harrison
+Agents Development Team Manager Peter Ambrose
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 2 of 96
+FUJITSU Horizon Architecture Overview
+
+FUJITSU SERVICES
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+Infrastructure Design Team Manager
+
+Nial Finnegan
+
+Network Designer
+
+Dave Tanner
+
+SSC Manager
+
+Mik Peach
+
+Operations Andrew Gibson
+Ed Ashford
+
+Customer Services Tony Wicks
+Brian Pinder
+
+Chief Architect
+
+Giacomo Piccinelli
+
+Infrastructure Designer
+
+lan Bowen
+
+Security Architect
+
+Jim Sweeting
+
+Service Architect Robert Baulk
+Issued for Information — Please restrict this
+
+distribution list to a minimum
+
+Position Name
+
+( * ) = Reviewers that returned comments
+
+0.3 Associated Documents
+
+Due to the number of references and to make it more readable, document References are
+embedded in the document, rather than being included in this table.
+
+Reference Version I Date
+
+Title
+
+Source
+
+TD/ARC/040 0.1
+
+Diagrams for Horizon
+Architecture Overview
+
+Unless a specific version is referred to above, reference should be made to the current
+
+approved versions of the documents.
+
+N.B. Printed versions of this document are not under change control.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 3 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview ; Ref TD/ARC/039
+Version: 0,2
+Peasy SERIES Company-in-Confidence Date: 16/06/2006
+0.4 Abbreviations/Definitions
+[DN: need to review and add/remove as necessary]
+Abbreviation Definition
+ACF ‘Autoconfig File — one file per outlet counter position.
+ACP Access Control Policy
+EACRR Enhanced Agent and correspondence server resilience and recovery
+ADSL Asynchronous Digital Subscriber Line. A new network method of connecting Post
+Office Ltd. Branches to the data centres.
+AP-ADC Automated Payment — Advanced Data Capture
+APS Automated Payments Service
+Athene Capacity Management Sofiware
+Aurora System that allows remote console access for Unix systems.
+BCV Business Continuity Volume: part of an EMC Disk Array
+Branch Post Office outlet identified by a unique FAD. Within the HNG model, a Branch is
+
+a logical entity that can be composed of several physical locations at which
+business is transacted.
+
+Bureau Bureau de Change
+
+Business Services Those services in the Horizon system that are directly supporting the Post Office
+business. For example the application running on the counter.
+
+CA Computer Associates
+
+Clerk Staff working in a Post Office Branch
+
+CLI Sewer that allows a customer to see the number of the caller before answering the
+call.
+
+C&W Cable and Wireless.
+
+DCS Debit Card System (also supports Credit Cards)
+
+DNS Domain Name System
+
+DRS Data Reconciliation Service - A service introduced as part of network banking. Its
+main component is a database running on the host.
+
+DVLA Driver and Vehicle Licensing Agency
+
+DWH Data Warehouse
+
+EDG External Data Gateway
+
+e-pay Company that interfaces to the mobile phone companies for ETU.
+
+ETU E-Top-Ups. Ability to credit money to a mobile phone account.
+
+EMV Europay and Master Card Visa - enhanced method of verification of credit/debit
+
+cards using “Chip and PIN”
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 4 of 96
+FUJ00098217
+
+FUJ00098217
+
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+
+Version: 0,2
+
+FUJITSU SERVICES .
+
+Company-in-Confidence Date: 16/06/2006
+
+FAD code Financial Accounting Division (a unique) identifier used to identify a Post Office
+branch
+
+FS Fujitsu Services
+
+FTMS. File Transfer Managed Service
+
+Generic Agent Server The agent servers used to support the Existing services that transfer data between
+Riposte and the operational databases. Also known as "Bulk Agent Servers"
+
+HSCSD High-Speed Circuit-Switched Data (HSCSD) is circuit-switched wireless data
+transmission for mobile users at data rates up to 38.4 Kbps, four times faster than
+the standard data rates of the Global System for Mobile (GSM) communication
+standard in 1999,
+
+HR SAP Post Office Lid Human Resources system based on SAP. Its function includes
+remuneration of branch franchisees for the business they have transacted in their
+Branch.
+
+ITIL IT Infrastructure Library. ITIL is an integrated set of best-practice
+recommendations with common definitions and terminology. ITIL covers areas
+such as Incident Management, Problem Management, Change Management,
+Release Management and the Service Desk
+
+ISDN ISDN, which stands for Integrated Services Digital Network, is a system of digital
+phone connections which has been available for over a decade
+
+KMA Key Management Application
+
+LFS Logistics Feeder Service
+
+LUC Look-Up Cluster
+
+MID Merchant Identifier issued by Streamline Merchant Services to identify the Branch
+from which a transaction originated
+
+MIS Management Information System
+
+MOT Ministry of Transportation (as in MOT Test).
+
+NBS Network Banking Service
+
+NPS. Network Banking Persistence Service
+
+OBC Organisation Business Change
+
+OMDB Operational Management Database.
+
+Operational Services Those services that are needed to run the Horizon system that are not directly
+supporting the Post Office business. Examples include software distribution, audit,
+security management etc.
+
+PAF Postal Address File. A service to allow post codes and addresses to be looked up.
+
+POL Post Office Limited
+
+POL FS SAP based system providing financial accounting for the branch based business
+This is the production system. There are other SAP systems in the data centre to
+support development and test.
+
+PSTN The public switched telephone network
+
+RAS. A server that is dedicated to handling users that are not on a LAN but need remote
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 5 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+
+Company-in-Confidence Date: 16/06/2006
+access to it. The remote access server allows users to gain access to files and print
+services on the LAN from a remote location
+
+RDDS Reference Data Distribution System
+
+RDMC Reference Data Management Centre
+
+RDS Post Office Reference Data System
+
+RMG Royal Mail Group
+
+SAP Integrated suite of applications providing financial accounting and other business
+functions.
+
+SAP ADS POL’ s Advanced Distribution System (based on the SAP package) that interfaces
+to LFS
+
+SAS Secure Access Server
+
+SFS Security Functional Specification
+
+Shared Services Those services that are used by both the Operational Services and Business
+Services. These are typically network components.
+
+smart post A service to allow mail rates to be looked up for parcels and letters.
+
+SOAP Simple Object Access Protocol
+
+SRDF Symmetrix Remote Data Facility; EMC technology used to replicate disk array data
+between two Campuses
+
+SSC Fujitsu’s System Support Centre. 3rd Line support
+
+Streamline Merchant Acquirer for DCS.
+
+SYSMAN2 The systems management environment on the Horizon environment.
+
+TID Terminal Identifier issued by Streamline Merchant Services to identify the terminal
+from which a transaction originated
+
+TPS Transaction Processing System
+
+0.5 Changes in this Version
+
+Version Changes
+
+0.1 1* Version
+
+0.2 Updated sections not included in version 0.1. Updated following feedback
+
+0.6 Changes Expected
+
+Changes
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 6 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+Any changes following review
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 7 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+0.7 Table of Contents
+
+1.2 JS) CONTEXT AND BACKGROUND.
+13 IT CONTEXT AND USERS...........-.
+
+2.0 LOGICAL ARCHITECTURE...
+
+2.1 BUSINESS APPLICATIONS
+2.2. PHYSICAL STRUCTURE.
+
+3.0 APPLICATION ARCHITECTURE...
+
+3.1 ONLINE AND NEAR REAL TIME.
+3.2. BATCH AND POL FS
+3.3. SUPPORTING SYSTEMS.
+3.4 COUNTER.
+3.5 INTERFACES. .
+3.6 OPERATIONAL SCHEDUL!
+
+4.0 PHYSICAL ARCHITECTURE
+
+41 DATA CENTRE
+4.1.1 Business System
+4.1.2 POLFS.....
+4.1.3 Storage and Au
+4.1.4 SYSMAN Platforms.
+4.1.5 Supporting Systems
+
+4.2 OTHER SITES.....
+
+4.3. BRANCH INFRASTRUCTURE
+
+5.0 INFORMATION MANAGEMENT.
+
+6.0 NETWORK SERVICES....
+
+6.1 DATA CENTRE LAN
+6.2 WAN CIRCUITS.
+6.3 BRANCH NETWORK.
+6.3.1 ISDN Branches.
+6.3.2 ADSL Branches.
+6.3.3. VSAT Branches.
+
+6.4 IP ADDRESSIN'
+6.5 I BRANCH NETWORK MONITORING.
+
+7.0 SYSTEMS MANAGEMENT.
+
+7.1. SOFTWARE DISTRIBUTION AND MANAGEMENT.
+7.2. DISTRIBUTED MONITORING.
+7.3. EVENT MANAGEMENT
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 8 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+7.4 REMOTE OPERATIONS AND SECURE ACCESS......
+7.5 ESTATE MANAGEMENT AND AUTO-CONFIGURATION,
+7.6 CAPACITY MONITORING.
+7.7 SCHEDULING
+7.8 TIME SYNCHRONISATION
+
+8.0 AVAILABILITY & DR
+
+9.0 PERFORMANCE AND SCALABILITY...
+
+9.1 VOLUMES.
+9.2 SCALABILI
+
+10.0 SECURITY.
+
+10.1 SECURITY FEATURES......
+10.1.1 Network Security Control:
+10.1.2 Infrastructure Security Cor
+10.1.3 Application Security Controls.
+
+10.2.» KEY MANAGEMENT....
+
+10.3. AUDIT & LITIGATION
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 9 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+1.0 Introduction
+
+1.1 Purpose
+
+This document provides an overview of the architecture for the Horizon solution. It assumes
+an $92 baseline. The document has 3 purposes:
+
+e To provide an introduction to Horizon that is accessible to people with no experience
+of the system or Post Office.
+
+e Provide sufficient detail to allow “architectural” impact analysis to take place for
+planned changes to the solution.
+
+© To act as a “root” document to Horizon with cross references to the next level of
+design documents.
+
+The document is not intended to provide a complete picture of every aspect of the solution,
+but is intended to cover the main areas to a reasonable degree.
+
+The diagrams in this document have been included as “pictures” to keep the document size
+manageable. The original source material can be found in TD/ARC/040.
+
+1.2 Business Context and Background
+
+Post Office Ltd is a combination of a retail organisation and a financial services organization
+and offers a diverse range of services to its customers. Traditionally its main channel to
+customers is through its extensive branch network (approximately 14,000 sites as of
+November 2005 attracting some 28M customers per week). In recent years other channels
+have been developed (i.e. web sites, call centres etc) to support Post Office’s entry into
+financial services products (e.g. insurance, credit cards loans etc). The vast majority of the
+branches operate on a franchisee basis with Post Office directly managing around 500 sites.
+
+The Horizon solution has two main roles:
+
+1. Provide the complete IT solution for the branch estate including applications,
+infrastructure, support and engineering.
+
+2. Provide accounting functionality for the whole of the Post Office by hosting a SAP
+solution (called POL FS). The application development of this is handled by a third
+party directly contracted to Post Office.
+
+The types of transaction that are supported in the branch include:
+e Selling of fixed price goods and services
+
+e Payment of Bills (utilities, local government etc) including where an online interaction
+is required (e.g. as in DVLA)
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 10 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+e Banking Services — deposits, withdraws, balance enquiries. There are two types
+supported — online requiring authorisation and offline which don’t (e.g. Girobank). The
+majority of business is moving to the online model.
+
+¢ Mobile phone electronic top-ups
+
+e Bureau de Change
+
+e Payment by Debit Card and Credit Card
+
+e Electronic Data Capture (e.g. fishing license application)
+¢ Parcels and Letters
+
+e Charging of Smart Cards for Gas Prepayment (Quantum)
+
+e Electronic Voucher Database Service to support the electronic voucher life cycle
+(known in Horizon as APOP Authorisation Service).
+
+Within the branch estate, the majority of the products that are sold by Post Office are on
+behalf of a third party (a “Client” in Post Office language) — for example payment of a British
+Gas or BT Bill. The fees paid by the Client for this service are typically related to the amount
+of manual work that needs to be undertaken by branch staff rather than the value of the
+transaction — resulting in very low margins (Post Office’s turnover is approximately 1% of the
+£110 billion worth of transactions it handles each year and its margin is a low percentage of
+this).
+
+One consequence of the low margins is that Post Office has to be extremely careful to
+minimise the impact of any errors or faults in the solution. One example of this is that for
+online authorisations every individual transaction is reconciled with the third parties view and
+all errors are investigated (typical retail organisations would just check that the total for the
+day is accurate to within an agreed error margin with the third party).
+
+The workload handled by the branch estate is large with peak transaction rates of around 800
+transactions per second and a peak day of around 25M transactions. The peak is determined
+by the number of counters (approximately 35,000) and the rate at which customers can be
+served. The average basket size is very low (an average of 1.7 products).
+
+1.3 IT Context and Users
+
+The diagram below shows the wider context of the Horizon Architecture and the users:
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 11 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+
+ranch oc uate
+
+Horizon BoundaryI
+
+< cals I >.
+
+aks
+(LINK, AgL, CAPO
+ning Cents
+
+(Epay, Strebmine, DVLA)
+
+NBSC Help Desk Horizon Help Desk
+
+¥
+
+‘nine Autherisaton + Reconliaton Data
+(Chine Autherisation + Reconcilation Data
+
+ash Logistics Data
+MI Dat
+
+Reconciliation
+
+anisetiemen I MS ] Dita fr Pot Maser enneraton 2
+/\\ —{ I areca
+HAL i and Marans Ne
+
+[Transaction
+Data
+
+POL FS ‘Quantum
+
+Data Fest Rate
+(GAP Aecounts) Rates ane Track and 5
+‘ustemner Trace
+- I ata ~
+" u >) Reval Mat
+Enger I eo
+Te
+Data 4 Branches
+
+r
+i
+
+(Ret Data) 1 nerData
+i
+
+U\\ Provng AP Clents
+Po Reference
+Data Keying
+id I ‘Siemens Metering
+pata Flow — u\\ UN UM MY UA
+Data Fi PO Reference Branch Branch guitar Emergency
+= Control Flow = Data Valaton (Clerk. Supervisor Manager Manager
+
+There are four main areas within the Horizon Architecture:
+1. POL-FS — financial accounting system based on SAP
+
+2. Reference Data Proving — environment in which changes to reference data are proved
+before releasing into live (reference data controls things such as which products are
+sold, their price and where in the menu hierarchy they are displayed).
+
+3. Branches — the branches themselves
+
+4. Core Horizon — the central systems that support Horizon
+
+Core Horizon communicates with the following systems:
+
+e Banks (LINK, A&L, CAPO) for online authorisation of banking transactions and
+transaction data used for reconciliation.
+
+e Online Clients (e-pay, Streamline, DVLA) for online authorisation of transactions and
+(for e-pay and Streamline) data used for reconciliation.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 12 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+e SAP ADS - A Post Office system that handles cash and Foreign Currency logistics.
+Data includes cash on hand statements from each branch, planned orders,
+replenishment deliveries and delivery/collection data.
+
+« HR SAP — A SAP system that handles remuneration to the branch franchisees and
+“multiples” such as Tesco.
+
+e POL MIS — An Oracle based system to provide MI reporting to Post Office.
+
+e First Rate — Provides bureau rate information. It is also passed all bureau transactions
+to allow First Rate to undertake MI.
+
+e Siemens Metering — Provides Rates and Customer data for Quantum gas pre-payment
+card.
+
+e AP Clients — Transaction information for Clients where payment information is
+collected by Post Office.
+
+© Royal Mail and Parcel Force Worldwide — track and trace information for parcels and
+letters taken in a branch.
+
+* RDS — Post Office system that provides reference data
+
+Some communication is via the Royal Mail EDG system as shown. Others have direct
+connections from Horizon.
+
+POL FS communicates with a number of external systems to transfer data. These are either
+directly or via EDG. These are not shown for clarity.
+
+The users of the solution within Horizon (i.e. Fujitsu controlled staff) include:
+
+© Operations and Support — 2™ and 3” line support and network and data centre
+operations.
+
+e Engineer — installation and swap faulty equipment in the branch. Has specific access to
+some functions in branch.
+
+e FJ Reference Data — validates and releases reference data (with Post Office)
+
+¢ Litigation Support — provides data from audit stream to Post Office. Data provided to
+Post Office out of band (e.g. email, CD).
+
+« Management Support Unit (MSU) — investigates reconciliation errors caused within
+Horizon.
+
+e FJ Service Management — service managers
+
+e Branch OBC Team — manages physical changes to branch (open, shut, relocation etc).
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 13 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+The Post Office users of the solution include:
+e Branch Clerk — normal user in branch, able to sell products ete
+
+e Branch Supervisor — branch user able to the majority of activities of the Branch
+Manger. Main exceptions are create users and stock units.
+
+e Branch Manager — branch super user able to create users, make account adjustments
+ete.
+
+e Branch Auditor — auditor that visits a branch
+
+e Branch Emergency Manager — manager that brought into a branch in emergency
+situations (e.g. normal manager is ill)
+
+© PO Reference Data Validation Team — Post Office team that validates reference data
+changes. Works with FJ Reference data
+
+e Finance — finance functions on POL-FS
+e APOP Admin — administration of data content of APOP database (electronic vouchers)
+
+e Audit & Fraud — investigates audit information. Also has access to online transaction
+enquiry service (TES) for banking transactions.
+
+© Reconciliation and Settlement — handles reconciliation and settlement with Clients.
+
+e PO Service Management — Post Office service management. Is provided status of
+system via a Portal.
+
+e Branch OBC — Post Office team responsible for branch physical changes
+
+* Customer Enquiries — answers customer enquires for banking using online transaction
+enquiry service (TES)
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 14 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ver “ TD/ARC/039
+sion: 0.2
+FUJITSU SERVICES ;
+Company-in-Confidence Date: 16/06/2006
+
+2.0 Logical Architecture
+
+This section describes the logical architecture to provide an introduction to the Horizon
+solution. It is split into two areas: Business Applications and physical structure
+
+2.1. Business Applications
+
+The diagram below shows a simplified view of the business applications for Horizon.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 15 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Reconeiliation
+Reconciliation
+Data
+Request’
+Authorisation
+Reconciliation
+And Enquiry Data
+Wide Area Network
+<+—
+Data Flow -
+single Direction
+<>
+va HN O Data Flow -
+I/ IN h nN Interactive
+u\\ I\\ Note: Not all
+Branch Staff Customer flows present for
+Post Office User all services
+The key systems are described below:
+#_I Name Description
+1 I Counter Application I The counter application is used by branch staff to sell products and to perform
+back office functions. Business data held in the counter in a Riposte messaging
+system — all counters in a branch have a copy of the complete data.
+2_I PIN Pad Allows customers to input smart card and PIN for banking and DCS transactions.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 16 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+3 I Message Server Handles messaging to/from Branches for batch data transfers using Riposte
+
+(specialist messaging system from Escher Group). Also handles online
+authorisations for legacy services (Banking, DCS, ETU) — new services connect
+directly via SOAP.
+
+4 I External Online Provides online authentication for counter transactions where a third party owns
+Services the system that authorises the transactions. Specific services supported are:
+
+¢ DCS for debit card and credit card authorisations
+
+e Banking for deposits, withdraws and balance enquiries
+
+e — ETU to allow electronic top-ups for mobile phones
+
+e DVLA for authorising car tax
+
+5 I Hosted Online Provides online authentication for counter transactions where the authorisation or
+
+Services information system is hosted by Horizon. Specific services supported are:
+
+e APOP databases - e.g. Postal orders
+
+«PAF to allow lookup of Postal Addresses
+
+.
+
+6 I Reconciliation and Provides Reconciliation and enquiry services for online authorisations. The
+
+Enquiry Services specific systems are:
+
+© DRS (data reconciliation service) to reconcile individual transactions for
+the DCS, ETU and Banking services.
+
+e TES (transaction enquiry service) to allow Post Office to query
+transactions status for banking (only)
+
+« DWH (data warehouse) contains banking, ETU and DCS data for SLT
+calculations.
+
+« APS (automated payment system) which reconciles transactions between
+itself and TPS (transaction processing system).
+
+7 I Batching Services Batches up data from branches to send to external systems — either all transactions
+or in summarised form. Also receives batch data from external systems for
+distribution to branches. The systems that pass data to external systems are:
+
+« TPS (transaction processing system) — provides daily data to other
+systems including POL-FS, POL-MIS and HR SAP. Also provides a feed
+to First rate for Bureau transactions.
+
+* APS (automated payment system) — provides daily data to AP clients
+(British Gas, BT etc).
+
+« LFS (logistic feeder service) — provides data on pouch collections and
+receipts at branches to SAP ADS on an hourly basis. Also nightly data on
+cash held in branches.
+
+The systems that receive data from external systems are:
+
+e APS - receives customer and tariff data for Quantum and Water Card
+service once per day.
+
+e LFS receives planned order data (once per day) and pouch contents
+information (potentially hourly).
+
+e _RDMC ~ receives Rates and Margins data for Bureau service
+
+8 I Near Real Time Transfers data in near real time to or from external systems. The systems are:
+
+Services
+
+« APS — receives emergency customer data from Quantum for immediate
+distribution to the branches.
+
+e Track and Trace — provides data on parcels etc received by branches to
+Royal Mail and Parcel Force Worldwide
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 17 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0.2
+Company-in-Confidence Date: 16/06/2006
+
+9 I Support Services
+
+Supports the business systems with reference data, security and SLT monitoring.
+The systems are:
+e RDMC and RDDS - reference data management and distribution
+systems.
+* KMA ~key management system for branch security keys
+« OMDB - provides SLT monitoring for outbound data distribution. Also
+monitors branch connectivity.
+e _DWH-~-SLT reporting for data file deliveries (inbound and outbound).
+
+10 I PO Ltd Accounts
+
+An SAP system (called POL FS) that holds the accounts for Post Office Ltd.. This
+has lots of input and output feeds to external systems.
+
+2.2 Physical Structure
+
+The diagram below shows a view of the physical structure of the branches, network and data
+
+centres.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 18 of 96
+oO
+FUJITSU
+
+Horizon Architecture Overview
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0,2
+
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Client Systems Post Office Systems Fujitsu Support Sites
+Crom) Support WAN
+
+Intercampus.
+WAN
+
+Live Data
+Centre 1
+
+Branch WAN
+
+Slave PC Slave PC
+Large Branch
+
+SSS
+NJ
+
+Cental LAN
+
+Live Data
+Centre 2
+
+Small Branch
+
+The key areas are described below:
+
+# I Name
+
+Description
+
+1 I Small Branch
+
+The network in Small Branches (1 or 2 counters) consist of a gateway PC which connects
+the branch to the network and a simple cross over cable to the 2" PC (if there is one)
+
+2 I Large Branch
+
+In larger branches (3+ counters) one or more hubs are also used to provide the LAN
+
+connections.
+
+3 I Branch WAN
+
+The gateway PC uses ADSL or ISDN as primary connections. ISDN and Dialled Mobile
+(using HSCSD) can be used in ADSL site for a backup connection.
+
+For a small number of branches that are out of distance from the nearest exchange, VSAT
+
+connections are used.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 19 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+Company-in-Confidence Date: 16/06/2006
+
+4 I Data Centres
+
+There are two data centres — in an active/active configuration with, under normal
+circumstances, both data centres supporting the branch workload.
+
+Within the data centre the LAN is split into a number of DMZ.
+
+ES
+
+Tntercampus
+WAN
+
+To link the two data centres a high speed (gigabit) resilient network is used to provide a
+virtual LAN spanning both data centres and to carry storage data between two EMC
+arrays.
+
+x
+
+Client WAN
+
+The Client WAN provides connections to a number of clients that the system uses. The
+following connections are provided by Fujitsu:
+
+¢ DVLA for online authentication of car tax.
+
+¢ Streamline for DCS transactions
+
+© EPAY for mobile phone top up (ETU) transactions
+
+e Alliance & Leicester for banking transactions
+
+The following connections are provided by third parties:
+e LINK for banking transactions
+© CAPO for banking transactions
+
+The connections are typically resilient fixed circuits of between 64kbits/s and 2Mbits/s,
+although Streamline uses X25 and ISDN. Most clients have a DR site that is also
+connected.
+
+8 I PO WAN
+
+This provides connections to Post Office for both batch file transfer to other systems and
+also allows Post Office users access to the enquiry and POL-FS systems. The connection is
+a 2Mbit/s resilient circuit. There is also a connection to Post Office’s DR site at Sunguard.
+
+Ss
+
+Support
+WAN
+
+This provides access for the Fujitsu support communities to the data centre including:
+Operations in Belfast
+
+1% and 2" line support in Stevenage
+
+3" line, Service Management, Litigation Support and MSU in Bracknell
+OBC Team in Crewe
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 20 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+
+3.0 Application Architecture
+
+The application architecture has been split into a number of areas to allow the solution to be
+described as follows:
+
+e Online and Near Real Time systems in the data centre. APOP Admin is included in this
+section for convenience.
+
+¢ Batch systems in the data centre that handle the main business data and POL-FS.
+
+e Supporting systems for reference data, SLT measurement Branch Monitoring and Key
+Management.
+
+e Counter
+
+This approach allows an understanding of all the elements that make up the different service.
+However some components do appear in multiple areas as a result.
+
+3.1. Online and Near Real Time
+
+The picture below shows the systems and flows within the data centre for online and near real
+time services. The batch aspects of the APOP service have also been included for convenience.
+
+Key
+<— Data Flow-
+
+single Direction
+> Data Flow
+Interactive
+
+Batch
+Upaates
+
+i Cont
+Roersas, TKS BTU ce on
+Trace
+
+Reques! Request) Lookup!
+th ‘auth Rests
+
+The components and their role are described in the table:
+
+# I Name Function Documentation
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 21 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+1 I Correspondence
+Servers
+
+Messaging Servers that pass messages to/from the
+branches. Data is held either as messages with a given
+expiry period or as “persistent objects” which are
+retained until updated or deleted. For performance
+reasons, the branch estate is split into 4 “clusters” each
+handling round 3,500 branches.
+
+None identified
+
+2 I Ping Agent
+
+Central
+Acknowledgement
+Agent (CAck)
+
+The Ping Agent responds to application level pings
+from the counter via the correspondence servers.
+
+The CAck agent is used for recording receipt of
+messages at the data centre (mainly used for SLT
+monitoring). It is also used to acknowledges requests
+from the counter Smart Cache used to police use of
+Smart card charging (see security).
+
+AD/DES/042 - CSR+
+Common Agents High
+Level Design
+
+AD/DES/020 -
+Automated Payment
+System Agents for
+Release 2+ High Level
+Design
+
+3 I Audit Agent
+
+Writes to text files all messages written or received by
+the correspondence servers for audit.
+
+AD/DES/042 - CSR+
+Common Agents
+
+4 I DVLA Web Service
+
+Allows branches to authorise car tax in an online
+transaction to DVLA. Interface between the counter
+and data centre is SOAP.
+
+DV/HLD/002 -DVLA
+Web Service
+
+5 I APOP Web Service
+APOP Database
+APOP Admin
+
+A hosted online service that handles electronic
+vouchers.
+
+Requests/Authorisations from the counter are handled
+using SOAP to a Web Service.
+
+Batch updates to the database arrive via the EDG and
+are controlled by a Maestro schedule.
+
+A web based admin service allows Post Office staff to
+update individual records.
+
+AP/HLD/008 -APOP
+Web Service
+
+AP/HLD/005 - APOP
+Voucher Host System
+High Level Design
+
+AP/HLD/009 - APOP.
+Maestro Schedule
+
+AP/HLD/010 - APOP
+Administration Service
+Application High Level
+Design
+
+6 I PAF Web Service
+
+Allows branches to look up postcodes and addresses.
+
+PF/HLD/002 - PAF
+
+Interface between the counter and data centre is SOAP. I Web Service
+7 I ETU Auth Agent Handles requests for authorisations to top up mobile AD/DES/073 - High
+ETU Rev Agent phones. Requests are received from a counter via the I Level Design
+© correspondence servers and the authorisations written I Specification for E-Top
+back the same way. Ups Agents
+
+A separate agent handles reversals to e-pay.
+
+8 I DCS Auth Agent
+
+Handles requests for authorisations for Debit and
+Credit Cards and also reversals. Requests are received
+from a counter via the correspondence servers and the
+authorisations written back the same way.
+
+AD/DES/069 - High
+Level Design
+Specification for Debit
+
+Card Service Agents
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 22 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+9 I NBX Routing Agent
+NBX GRev Agent
+
+LINK NBX Auth
+Agent
+
+A&L NBX Auth
+Agent
+
+CAPO NBX Auth
+Agent
+
+NPS Database
+
+Handles online authorisation requests for banking
+transactions. Requests are received via the
+correspondence server in the routing agent which
+routes the request to the LINK, A&L or CAPO
+authorisation agent (as required). The authorisation
+agents hold state and audit data in the NPS database.
+
+Reversals are handled both via the routing/auth agents
+and also via a guaranteed route into the NPS. These
+reversals are then processed by the relevant auth
+agents.
+
+NB/HLD/017 - High
+Level Design
+Specification for
+Agents for NBX, the
+NBE Replacement
+
+NB/HLD/013 - NBX
+Persistent Store High
+Level Design
+
+10 I Track & Trace
+Harvester
+
+Track & Trace
+Interface Agent
+
+NPS Database
+
+Track and trace data from the branches are processed
+in near real time, with data passed to Royal Mail and
+Parcel Force via EDG. The NPS database is used as a
+staging post to screen duplicates.
+
+DE/HLD/015 - High
+Level Design
+Specification for Track
+And Trace Agents
+
+NB/HLD/027 - NPS
+Track And Trace
+Changes HLD
+
+11 I NBS Harvester
+DCS Harvester
+DRS Database
+TES Database
+TES Enquiry
+
+DRS handles reconciliation for banking, ETU and
+DCS. The confirmations generated by the counters are
+harvested in near real time to ensure the reconciliation
+position is up to date. There are two harvesters — one
+for NBS and ETU and one for DCS.
+
+The banking confirmations, together with transaction
+parts from NPS are passed to TES. An enquiry service
+is provided to allow Post Office staff to query the status
+of transactions.
+
+DRS and TES are also involved in the batch flows and
+there is a workstation to support reconciliation updates
+(see next section).
+
+AD/DES/065 - High
+Level Design for
+Network Banking
+Agents
+
+NB/HLD/015 - $75
+High Level Design for
+DRS
+
+NB/HLD/003 - Data
+Reconciliation Service
+Host High Level Design
+
+NB/HLD/016 -
+Transaction Enquiry
+Service High Level
+Design
+
+NB/HLD/022 -
+Transaction Enquiry
+Service (TES) Query
+Application HLD.
+
+NB/HLD/023 -
+Transaction Enquiry
+Service (TES)
+Reporting High Level
+Design
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 23 of 96
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+Company-in-Confidence Date: 16/06/2006
+
+3.2 Batch and POL FS
+
+The picture below shows the systems and flows within the data centre for the main batch
+flows. The POL FS system is included for convenience.
+
+Payment
+Fie) EMS
+Fe
+: B Fe
+
+LREC
+File Ree
+
+AllCont &
+‘Non Polled
+
+APS Smart AlITxn Tin
+Tan “Ack Daily Sum Corrections
+
+single Direction
+<> Data Flow-
+
+Interact
+The components and their role are described in the table:
+# I Name Function Documentation
+1 I Correspondence Messaging Servers that pass messages to/from the None identified
+Servers branches. Data is held either as messages with a given
+expiry period or as “persistent objects” which are retained
+until updated or deleted. For performance reasons, the
+branch estate is split into 4 “clusters” each handling
+round 3,500 branches.
+2 I EOD Harvester The End of Day Harvester ensures that there is a AD/DES/042 - CSR+
+consistent set of data from the branch for the APS and Common Agents High
+TPS harvesters to use. Level Design
+3. I Cluster Lookup Cluster lookup is a generic service that tells other agents I AD/DES/036 - CSR+
+in which correspondence server cluster a particular Cluster Lookup Service
+branch resides and which branches are within a Design
+particular cluster.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 24 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+4 I LFS Harvester
+
+LFS Advice
+Notice Loader
+
+LFS Planned
+Orders Loader
+
+LFS
+Replenishment
+Delivery Notice
+Loader
+
+LFS Database
+
+LFS passes data between the counters and Post Office’s
+SAP ADS system for cash and currency handling. The
+database is used as a staging post to screen duplicates.
+
+Pouch Information (both collections and delivers for all
+pouches — not just cash and Foreign Currency), and Cash
+Declarations are passed to SAP ADS. Advice notices,
+planned orders and replenishment delivery notices are
+received from SAP ADS. Note that advice notices have
+never been used.
+
+AD/DES/015 -
+Logistics Feeder
+Service - Agents High
+Level Design for CSR+
+
+LF/DES/003 - Logistics
+Feeder Service - High
+Level Design
+
+5 I APS Harvester
+APS Database
+APS Workstation
+
+APS passes Automated Payment transactions to Clients —
+either directly, via Girobank or via the EDG.
+
+The harvester reads all APS transactions from the
+correspondence server to put into the database which
+then splits them by client. The database also provides a
+summary by client which is passed to Post Office Ltd’s
+CTS process via the TPS database as well as checking
+that all AP transactions were also harvested into TPS.
+
+The harvesting agent also acknowledges smart
+transactions to allow the counter smart cache to operate
+(see security).
+
+The APS workstation is used to allow new clients to be
+added to the solution.
+
+AD/DES/049 - APS
+High Level Design
+Addendum for Flexible
+Delivery Dates
+
+AP/DES/015 - APS
+Host High Level
+Physical Design
+
+AP/DES/004 — APS
+Design Specification
+(CSR+)
+
+AP/DES/010 - APS File
+Rejection Handling
+High Level Design
+
+SD/DES/073 - APS To
+TPS Reconciliation
+High Level Design
+Specification
+AD/DES/020 -
+Automated Payment
+System Agents for
+Release BI3 High Level
+Design
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 25 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+
+FUJ00098217
+Ref; TD/ARC/039
+Version: 0.2
+Date: 16/06/2006
+
+6
+
+TPS Harvester
+
+‘TPS takes all transactions from the counters and then
+passes them directly in either full or summary form to a
+
+AD/DES/041 - TPS
+Agents for BI3 High
+
+TPS Loader umber of other systems: Level Design
+e AP Transactions passed to APS to allow DE/HLD/019 - TPS
+reconciliation between APS and TPS. Host Changes At S90
+HLD
+¢ Bureau Transactions are passed to First rate via
+the EDG gateway. Horizon is responsible for EA/HLD/003 - TPS
+delivery of files into Huthwaite, but not for Host Changes At S60
+putting data onto EDG itself. High Level Design
+© AP Summaries are sent to CTS to allow Post EA/HLD/007 - Impact
+Office to settle with their clients. Also Release 3 - TPS Delta
+Transaction Corrections and Error files. High Level Design
+© Summaries are sent to HR SAP to allow EA/HLD/009 - TPS Hr
+remuneration to the branch franchisee for the SAP Summarisation &
+transactions they have done. This data is Transaction Corrections
+provided monthly, with TPS keeping a running I HLD
+total. NB/HLD/006 - TPS
+© Nearly all transactions are sent to POL MIS. Host Changes To Store
+(some ~ e.g. balancing transactions) are And Process Network
+suppressed. Banking Transactions
+HLD
+¢ All confirmations (Banking, ETU, DCS) are
+° es NB/HLD/011 - TPS
+sent to DRS for reconciliation. Host Changes At $50
+. Alt con timations are pent e the banking data TI/DES/002 - TPS
+arehouse 10) cateulauons. Release 2 High Level
+e A summary position of the transactions traded Design
+that day is sent to POL FS.
+There are also transactions corrections received from
+POL-FS that are fed to the counters via TPS.
+7 I Banking DWH Provides SLT calculations for banking. MSU are also DW/HLD/002 — BI3
+
+able to query the history (91 days) for ad-hoc reports via
+a workstation.
+
+Data Warehouse High
+Level Design
+Specification
+
+EF/HLD/007 - High
+Level Design - Debit
+Card MIS
+
+NB/HLD/001 -
+Network Banking MIS
+High Level Design
+
+22 Workstation ??
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 26 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+8 I DRS Database
+ETU Bulk Agent
+S Bulk Agent
+
+C2 Bulk Agent
+C4/D Bulk Agent
+DRS Workstation
+TES Database
+
+DRS reconciles transactions for Banking, ETU and DCS.
+with the clients.
+
+For ETU a payment file is received from e-pay and
+processed via the ETU bulk agent.
+
+For DCS a payment file is passed to Streamline via the
+C2 bulk agent. Once acknowledgement is received from
+Streamline that this has been received the S bulk agent
+puts the transactions back into DRS. Once Streamline
+have processed the payment file, they produce an EMIS
+file of the status for all transactions (i.e. whether settled
+or not) and this is loaded into DRS via the C4/D bulk
+agent.
+
+TES produces a banking reconciliation (REC) file for
+A&L and CAPO and receives one from LINK. All
+transactions are passed to DRS for reconciliation.
+
+For DRS there is also a workstation to allow MSU stalf to
+update the reconciliation states of transactions.
+
+NB/HLD/004 - Data
+Reconciliation Service
+Workstation High Level
+Design
+
+NB/HLD/026 - DRS
+Host Application And
+Workstation High Level
+Design Delta for Impact
+Release 3
+
+DE/HLD/012 - TES
+Reports Data Extract
+HLD
+
+NB/HLD/019 - TES
+Maestro Schedule
+Design
+
+AD/DES/069 - High
+Level Design
+Specification for Debit
+Card Service Agents
+
+9 I POLFS ‘An SAP sysiem that provides the accounts for the Post m
+Office. As well as the data from the branches it has a
+number of feeds to/from other systems.
+10 I APS FTMS These components are responsible for file transfer NB/HLD/O18 -
+TIP FTMS to/from remote systems. For clarity they are not shown on I Connectdirect Gateway
+the diagram. HLD
+GP FTMS APS FTMS is responsible for file transfers to/from APS I 22? for other elements
+NBX Clients.
+Gonnect-Direct TIP FTMS is responsible for file transfers to/from Post
+aleway Office systems
+DCSM
+
+EDG FTMS is responsible for file transfers to/from other
+systems via the EDG.
+
+GP FTMS is responsible for file transfers to other Fujitsu
+sites.
+
+NBX: Connect:Direct Gateway is responsible for file
+transfers to the banks.
+
+DCSM is responsible for file transfers to/from e-pay and
+Streamline.
+
+3.3. Supporting Systems
+
+The picture below shows the supporting systems and flows within the data centre that cover
+reference data, security key management and SLT monitoring.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 27 of 96
+FUJITSU Horizon Architecture Overview
+
+FUJITSU SERVICES .
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref: TD/ARC/039
+Version: 0,2
+
+Date: 16/06/2006
+
+(Out Bound Data File Delivery, Agents MID/TID Allocation:
+
+ranch Detals-m Sreemine
+Branch Det
+
+‘In Bound Dafa File Detvery
+
+I Torits& Tarts
+Customer Customer
+Data Data
+
+Branches &
+Financial Tan
+
+Rates & 7
+merge Customer
+Details
+
+Delete Obsolete Deleted
+Ret Da Objects
+
+=z
+
+Branch Detals (num counters network service type
+
+Branches
+
+Data Flow-
+
+poe] single Direction
+Data Flow
+
+Interactive
+
+The components and their role are described in the table:
+
+# I Name Function Documentation
+1 I Correspondence I Messaging Servers that pass messages to/from the branches. I None identified
+Servers Data is held either as messages with a given expiry period or
+
+as “persistent objects” which are retained until updated or
+deleted. for performance reasons, the branch estate is split
+into 4 “clusters” each handling round 3,500 branches.
+
+2 I RDMC Database I The reference data system is responsible for ensuring that
+RDDS Database reference data is delivered to counters and is house kept
+appropriately. The RDMC database receives reference data
+Bureau Loader changes from Post Office’s RDS system and then they are
+normally validated on the RDT rig (see infrastructure) by the
+
+Subscription Reference data team,
+
+Group Loader
+Once the reference data is validated it is released via the
+
+pon core RDMC workstation onto the RDDS database to allow it to be
+loaded into the correspondence servers.
+pore Ref ata Loading takes place in several ways depending on its type:
+Ref Files Loader I * honor (branch specific) is loaded directly into the
+Ref Data © Core (delivered to all branches) is loaded into a “dummy
+Replicator group” in the correspondence server. This is then copied
+Non DB Ref to the branches through the reference data replicator
+Loader agent. an woes
+e — Subscription Group data (which is written once each
+Ref Data correspondence server cluster but can be read by all
+
+AD/DES/020 -
+Automated Payment
+System Agents For
+Release 2+ High Level
+Design (for Memo
+loader)
+
+AD/DES/040 -
+Reference Data -
+Agents High Level
+Design for CSR+
+
+AD/DES/070 - High
+Level Design for
+Agents for Escher
+Mails
+
+AD/DES/072 - High
+Level Design for
+Agents for Bureau de
+Change
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 28 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Scavenger © branches) is loaded through either the Subscription ‘AD/DES/074 - Design
+Deleted Object group loader or the Core Ref Data Loader depending on I for ‘D’ Data Agents
+Monitor the data type. . RD/HLD/001 — Design
+¢ Help text (which also uses subscription groups) is loaded I for WebRiposte Data
+RDT Rig via the RDMC workstation into RDMC. Once released Agents
+RDMC into RDDS it is loaded via the file loader.
+Workstation © Other reference data that doesn’t have an automated NB/HLD/030 - Issuer
+
+route is loaded via the RDMC workstation in a similar
+way to the help text.
+
+« Bureau rate and margins data are received from First
+Rate and loaded via RDMC via a subscription group.
+RDDS is not used to minimise delays in processing the
+data.
+
+There are also two agents that are responsible for
+housekeeping — Scavenger deletes superseded or obsolete
+reference data and deleted object monitor checks that this
+deletion has occurred correctly (since the correspondence
+servers are distributed then deletions can take place at
+different times on different nodes, potentially causing
+issues).
+
+Messages for counters (memos) are loaded via the RDMC
+workstation into the RDMC database. These are then loaded
+into the correspondence servers.
+
+Branch information also flows from RDDS to the other
+databases to ensure there is a consistent view of which
+branches are open and shut as well as required reference
+data.
+
+Referrals, Counter,
+High Level Design
+Specification
+
+RD/DES/051 - *D’
+Data Distribution via
+RDMC/RDDS High
+Level Design
+
+RD/DES/054 -
+Reference Data High
+Level Design for S70
+(EMV and NBE
+Replacement)
+
+RD/DES/056 -
+Reference Data End To
+End High Level
+Design for S80
+
+RD/DES/062 -
+Reference Data High
+Level Design for $90
+Bureau Debit / Credit
+Card Payment
+
+RD/DES/046 - RDMC
+High Level Design
+
+RD/DES/049 - Escher
+Mails for RDMC /
+RDDS High Level
+Design
+
+RD/DES/057 - RDMC
+/ RDDS High Level
+Design for S80
+
+RD/DES/058 - RDMC
+/RDDS High Level
+Design for S80 + 1
+Sales
+
+RD/DES/047 - RDDS
+High Level Design
+
+AD/DES/072 - High
+Level Design
+Specification for
+Agents for Bureau De
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 29 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+Change
+
+RD/DES/050 -
+RDMC/RDDS Host
+HLD for Bureau Phase
+1
+
+RD/DES/062 -
+Reference Data High
+Level Design for $90
+Bureau Debit / Credit
+Card Payment
+
+3 I Banking DWH
+
+Used for measurement of file delivery to clients and data
+delivery to branches. Also produces some banking reports
+
+DW/HLD/007 -
+Datafile Delivery
+Performance
+Measurement High
+Level Design
+
+4 I APS Database
+
+Quantum Bulk
+Loader
+
+Quantum
+Emergency
+Loader
+
+Water Card
+Loader
+
+APS Ref Data
+Loader
+
+APS Ref Data
+Replicator
+
+For pre-payment Gas (Quantum) and Water Card customer
+and tariff information is loaded into the correspondence
+servers as core reference data.
+
+For Quantum, customer information is targeted at a specific
+branch. This is cither done overnight (bulk) or during the
+day (emergency).
+
+For Water Card customer information is sent to all branches
+and is only updated overnight.
+
+‘AP/DES/015 - APS
+Host High Level
+Physical Design
+
+AP/DES/004 — APS
+Design Specification
+(CSR+)
+
+AD/DES/020 -
+Automated Payment
+System Agents for
+Release BI3 High
+Level Design
+
+5 I OMDB Database
+
+Heartbeat
+Harvester
+
+OMDB
+Harvester
+
+Outlet Monitor
+SLA Harvester
+
+SMDB Database
+(not shown)
+
+The OMDB database collects status information for the
+branches and data centre agents. This is then used to trigger
+alerts etc (see systems management)
+
+The following information is collected about the branches:
+
+* Branch Status (WAN and LAN connection status
+generated by the gateway PC).
+
+e — End of Day Markers (EOD)
+
+* Connection Status to the correspondence servers
+(when the branch last connected)
+
+e Acknowledgements of data delivery to the branch
+(for SLT measurement).
+
+OMDB also collects information on agent heartbeats to
+monitor the agents either directly from NPS (for the banking
+authorisation agents) or via the correspondence servers for
+the other agents.
+
+AD/DES/062 - OMDB
+Agents High Level
+Design for CSR+
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 30 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+The branch SLT information is sent to the DWH.
+
+Most of the data on the OMDB is replicated to a separate
+SMDB (Service Management Database) that is sited within a
+DMZ. This allows support and operations staff access to that
+data from the Fujitsu Services intranet:
+
+6 I KMA Database I KMA manages the cryptography keys needed in the solution I AD/DES/023 - Key
+(see security), For asynchronous functions data is transferred I Management Agent
+
+Key Dhject to/from the counters (and other servers) via the Design for CSR+
+correspondence servers (loader and harvester). RSIDESIOI0 - Key
+
+Key Object For some operations branch staff need to be involved and I Management High
+
+Harvester . .
+they are informed through memos (memo loader) Level Design
+
+Key Memo
+
+Loader
+
+7 I MTAS MTAS (MID/TID Allocation Service) is responsible for TD/HLD/003 -
+
+allocating MID (Merchant ID) to branches and TID MID/TID Allocation
+
+OCMS Datab:
+
+‘ataase’ I (terminal ID) to counters. It takes feeds from RDDS and Service High Level
+
+OCMS (database that handles opening of new branches) to Design
+determine branch status and then feeds data to Streamline on
+what has been allocated and to the DCS agents so that
+MID/TID can be added to each transaction sent to
+Streamline.
+
+3.4 Counter
+
+The picture below shows the main components for the business application within the counter.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 31 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+PINPad M@—I Desktop GUI
+a ~ .
+Counter _ 44 o _ £
+Application - aps& G3 B eels
+Scheduler a) APOP I = a ees? 8
+= 2 2 Sa8> ie
+<I 3 o Ifs ge 2
+. 5 - 8 2 I2eP geoe uw
+Smart z\é I @ I 7 ge asos Ie
+Cache [¥~ sya — g = A
+ice I 2.15 oo Ey 3 28
+Service Ss!) PAF Zz =
+a
+CNIM g
+5
+y & EPOSS &
+Connection I
+Scheduling I — Gobal
+‘Agent <i Message Server 6 Objeds
+‘Ack Agent Support Services (e.g. peripheral management
+
+The components and their role are described in the table below. The framework for the
+counter application is based on the Riposte product from Escher.
+
+#_I Name Function Documentation
+1 Desktop GUI The presentation to the user is provided via a Desktop GUI I SD/SPE/016 — Horizon
+Internet within the Riposte product. Some reports and help text uses_ I OPS Menu Hierarchy
+Internet Explorer to display the information.
+Explorer
+The menu hierarchy displayed by the GUI is defined in
+Menu P. °
+reference data.
+2 I Message Messaging Servers that pass messages to/from the data m
+Server centre. Data is held cither as messages with a given expiry
+period or as “persistent objects” which are retained until
+Global Objects I tindated or deleted.
+The message server is used to store reference data and also
+to record transactions generated from the counter.
+Global objects is a file on the counter that holds reference
+data for report definitions. It is not held in the message
+server due to its size. This approach also makes it easier to
+co-ordinate code change with report definition change.
+3 I Back Office Back Office management is provided by the Riposte product I ???
+Management to provide facilities such as log on, user management, stock
+
+management and memo view.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 32 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+4 I EPOSS
+Reports
+
+EPOSS handles all the basic point of sale products (e.g.
+stamp sale). It also handles accounting functions such as
+stock unit declarations, rollovers and accounting
+summaries.
+
+Reports are handled through the reports module.
+
+Note that some of the documentation is out of date.
+
+EP/DES/016 - EPOSS -
+End Of Day Service
+High Level Design
+
+EP/DES/019 - EPOSS
+High Level Design
+
+EP/DES/020 - EPOSS.
+Reporting Service High
+Level Design
+
+EP/DES/021 - EPOSS
+Balancing Service High
+Level Design
+
+EP/DES/022 - EPOSS
+
+Transaction Service
+High Level Design
+
+EP/DES/025 - EPOSS
+End Of Day Service
+High Level Design
+
+5 I APS
+Smart AP
+
+Smart Cache
+
+APS handles all automated payment products. Within this
+there is a specialist module for Smart AP (with an
+associated Smart Card Cache Service to allow secure offline
+working — see security).
+
+AP/DES/012 - APS
+Counter High Level
+Design Specification
+
+AP/HLD/006 - APOP
+
+Service DVLA also has a specialised service, including an online I Counter High Level
+DVLA lookup via a SOAP request. Design
+APOP APOP provides a generic online lookup of data viaa SOAP I DV/HLD/001 - DVLA
+request. It is used, for example, to handle allocation, Counter High Level
+printing and redeeming of Postal Orders. Design Specification
+AP/DES/017 -
+Protecting Smart Card
+Payment HLD
+Specification
+6 I PAF PAF provides an address lookup service for use by APS and I PF/HLD/001 - High
+MAILS. Level Design - Counter
+PAF Module
+7 I MAILS MAILS (known as “Smart Post” by users) provides postal DE/HLD/014 - High
+
+services facilities such as pricing based on weight,
+destination, type and insurance needs.
+
+Help for MAILS is provided using local web content
+displayed via Internet Explorer.
+
+Level Design
+Specification for Track
+and Trace: Counter
+
+DE/HLD/020 - $90
+Smartpost
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 33 of 96
+oO
+FUJITSU
+
+Horizon Architecture Overview
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+8 I Bureau Bureau provides Bureau de Change services DE/HLD/008 - Bureau
+de Change Counter High
+Level Design
+9 I LFS LFS provides facilities for stock and cash management (e.g. _I LF/DES/003 - Logistics
+
+pouch collection and delivery, including automated
+remittances for Cash and Foreign Currency, daily cash on
+hand details).
+
+Feeder Service - High
+Level Design
+
+EA/HLD/011 - LFS
+Counter Foreign
+Currency Auto Rems -
+Delta HLD
+
+10 I Banking
+PIN Pad
+
+The banking module provides services for Banking, ETU
+(mobile phone top up) and Debit/Credit cards. For Banking
+and Debit/Credit cards the PIN Pad is used to allow
+customers to enter their PIN.
+
+NB/HLD/002 - Network
+Banking Counter High
+Level Design
+
+ET/HLD/001 -
+Electronic Top-Up,
+Counter High Level
+Design Specification
+
+NB/HLD/008 - Debit
+Card System Counter
+High Level Design
+Specification
+
+NB/HLD/012 - EMV,
+Counter, High-Level
+Design Specification
+
+NB/HLD/029 - Bureau
+Plastic, Counter, High
+Level Design
+Specification
+
+NB/HLD/030 - Issuer
+Referrals, Counter, High
+Level Design
+Specification
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 34 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+11 I Support The support services provide support for the business TD/DES/109 - Counter
+Services applications including peripheral management. Application Scheduler
+Connection The connection scheduling agent (aka Counter Call High Level Design
+Scheduling Scheduler) is responsible for scheduling connections AD/DES/042 - CSR+
+Agent between the local message store and the data centre Common Agents High
+CNIM messagestore. It is configured to optimise the need for Level Design
+timely delivery of data to the data centre and the need to
+‘Ack Agent minimise phone calls across the ISDN network. TD/SDS/002 - Counter
+” Network Infrastructure
+Counter CNIM (counter network infrastructure manager), while not I Manager (CNIM)
+Application I strictly a business application, is included for completeness. } 5
+Scheduler CNIM has two main roles — to control which phone “
+numbers are used in ISDN sites (see Network) and to inform I EP/HLD/002 - High
+connection scheduling agent on the status of the network Level Design - Branch
+connection to the data centre. This status is then used by the I Network Resilience —
+counter applications to inform the user of network failures Engineer's Counter
+and prohibit some transaction types if the network isn’t Application
+available.
+The Ack agent acknowledges delivery of data from the data
+centres to allow SLT to be measured.
+The Counter Application scheduler is responsible for
+scheduling batch operations within the counter applications
+(e.g. End of Day processing).
+3.5 Interfaces
+
+Each external interface to Horizon has an Application Interface Specification (AIS) and a
+Technical Interface Specification (TIS). The table below details these documents:
+
+[DN: Sure some of these are no longer relevant; also I’ve probably missed some]
+
+# I Area AIS TIS
+
+1 I APOP AP/IFS/063 - POL EDG To Voucher Host TI/IFS/008 - Horizon to Post Office
+System - Application Interface Specification Technical Interface Specification
+AP/IFS/065 - APOP Host System Reporting
+To EDG Application Interface Specification
+
+2 I APS AP/IFS/003 - AP:Severn Trent Water Smart AP/IFS/030 - Pathway To Client
+
+Key Interface Specification
+
+AP/IFS/004 - AP: Welsh Water Interface
+Specification
+
+AP/IFS/005 - AP:Girobank Interface
+Specification
+
+AP/IFS/006 - AP:Hampshire County Council
+Interface Specification
+
+AP/IFS/008 - AP:Eastern Electricity Smart
+Key Interface Specification
+
+Generic Technical Interface
+Specification
+
+AP/IFS/046 - Pathway To CQO
+Technical Interface Specification
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 35 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+AP/IFS/009 - AP:Oxfordshire County Council
+Interface Specification
+
+AP/IFS/010 - AP:Anglian Water Interface
+Specification
+
+AP/IFS/011 - AP:Mid Kent Water Interface
+Specification
+
+AP/IFS/012 - AP:North West Water Interface
+Specification
+
+AP/IFS/013 - AP: Wessex Water Interface
+Specification
+
+AP/IFS/014 - AP: Yorkshire Water Interface
+Specification
+
+AP/IFS/015 - AP:Cambridge Water Interface
+Specification
+
+AP/IFS/016 - AP:United Kingdom Passport
+Authority Interface Specification
+
+AP/IFS/017 - AP:Three Valleys Water
+Interface Specification
+
+AP/IFS/018 - AP:Sun Alliance Interface
+Specification
+
+AP/IFS/019 - AP:Legal And Trade Interface
+Specification
+
+AP/IFS/020 - AP:South West Water Interface
+Specification
+
+AP/IFS/021 - AP: Yorkshire Electricity Giro
+Interface Specification
+
+AP/IFS/022 - AP: Vodafone Interface
+Specification
+
+AP/IFS/023 - AP: Yorkshire Electricity
+Interface Specification
+
+AP/IFS/024 - AP:Northern Ireland Electricity
+Host-Pe Interface Specification
+
+AP/IFS/028 - AP:British Telecom Interface
+Specification
+
+AP/IFS/032 - AP: Swalec Interface
+Specification
+
+AP/IFS/033 - AP:Scottishpower Interface
+Specification
+
+AP/IFS/036 - AP:Northumbrian Water
+Interface Specification
+
+AP/IFS/037 - AP:Knowsley Borough Council
+Interface Specification
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 36 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+AP/IFS/038 - Automated Payments Scottish
+Southern Energy Pocl Host/Client Interface
+Specification
+
+AP/IFS/040 - AP: North Surrey Water
+Interface Specification
+
+AP/IFS/042 - Pathway To Centeral Quantum
+Operations Application Interface Specification
+
+AP/IFS/043 - AP : Northern Ireland
+Electricity Interface Specification
+AP/IFS/044 - AP : British Gas Northern
+Interface Specification
+
+AP/IFS/045 - AP : Manweb Ple Interface
+Specification
+
+AP/IFS/047 - AP: Automated Payments Pocl
+
+Host/Client Systems Gee Watercard Interface
+Specification
+
+AP/IFS/053 - Pathway To Client Standard
+Watercard AIS
+
+AP/IFS/055 - APS DVL Northern Ireland Pocl
+Host/Client Interface Specification
+
+AP/IFS/056 - Pathway To Client Type 'G'
+Standard Magcard/Barcode Application
+Interface Specification
+
+AP/IFS/059 - Pathway To Client Type T
+Application Interface Spec
+
+AP/IFS/060 - Pathway To Client Bt
+Application Interface Specification
+
+AP/IFS/061 - Horizon To Client Type
+Magcard/Barcode Application Interface
+Specification
+
+AP/IFS/062 - Horizon To Client Type 'Xo'
+Application Interface Specification
+
+CR/IFS/002 - Automated Payments Interface
+Specification - EDG/Des
+
+4 I Bureau (First
+
+NB/IFS/012 - Bureau De Change - TPS To
+
+TI/IFS/008 - Horizon to Post Office
+
+Rate) FRTS AIS Technical Interface Specification
+RD/IFS/033 - Post Office to Fujitsu Services
+Application Interface Specification for Bureau
+de Change Rates
+5 I CTS (AP EA/IFS/005 - Horizon To POL Client TI/IFS/008 - Horizon to Post Office
+Summaries) Transaction Summaries AIS Technical Interface Specification
+6 I DCS EF/IFS/002 - Horizon - Streamline EF/IFS/001 - Horizon - Streamline
+
+(Streamline)
+
+Application Interface Specification
+
+Technical Interface Specification
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 37 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+7 I DVLA DV/IFS/001 - Horizon To DVLA - DV/IFS/002 - Horizon To DVLA -
+
+Application Interface Specification Technical Interface Specification
+8 I ETU (e-pay) ET/IFS/001 - Application Interface ET/IFS/003 - Technical Interface
+
+Specification: Horizon To e-pay Specification: Horizon To e-pay
+9 I LFS(SAP ADS) I BP/DES/023 - LFS to SAP ADS and SAP TI/IFS/008 - Horizon to Post Office
+
+ADS to LFS Application Interface
+Specification
+
+BP/DES/022 — LFS Barcode Definitions
+
+Technical Interface Specification
+
+10 I NBS (Link, NB/IFS/024 - NBX - Link Application NB/IFS/028 - NBX - Link
+A&L, Card Interface Specification (AIS) Technical Interface Specification
+Account) NB/IFS/025 - NBX - Capo Application (als)
+Interface Specification (AIS) NB/IFS/029 - NBX - A&L
+NBVIFS/026 - NBX - A&L Application Technical Interface Specification
+i Nx (TIS)
+Interface Specification
+NB/IFS/027 — EMV — Banking
+NBX — POCA TIS
+11 I POLFS EA/IFS/001 - Horizon To Post Office Ltd AS/IFS/003 - Horizon To Post
+
+Financial Systems Application Interface
+Specification
+
+EA/IFS/002 - POL Finance Systems to
+TMS/Horizon Transaction Corrections
+Interface Specification
+
+EA/IFS/028 - Horizon To POL FS Interface
+Functional Specification
+
+The following are included for completeness,
+
+but are no longer relevant (either migration or
+Fujitsu is not responsible for the application)
+
+EA/IFS/007 - NRDS Vendor Master Data to
+POLFS Interface Specification
+
+EA/IFS/008 - POLFS General Ledger Master
+Data to NRDS Interface Specification
+
+EA/IFS/009 - NRDS Customer Master Data
+To POLFS Interface Specification
+
+EA/IFS/010 - NRDS Product Master Data To
+POL FS Interface Specification
+
+EA/IFS/014 - Error Notice (Tc) From CBDB.
+To POLFS Interface Specification
+
+EA/IFS/016 - SAP ADS To POL FS
+Application Interface Specification
+
+EA/IFS/017 - Impact Programme Horizon To
+MI (S70) Application Interface Specification
+
+EA/IFS/018 - Impact Programme Client
+Reported Errors Girobank To MI Application
+
+Office Limited Finance System
+Technical Interface Specification
+
+EA/IFS/029 - Impact Programme
+Management Information System
+$80 Technical Interface
+Specifications
+
+EA/IFS/030 - Impact Programme -
+POL Financial System S80
+Technical Interface Specifications
+
+EA/IFS/032 - POL Finance Systems
+From Camelot Client Actuals
+Interface Specification
+
+EA/IFS/035 - Impact Programme
+Reference Data System S80
+Technical Interface Specifications
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 38 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+Interface Specification
+
+EA/IFS/023 - NRDS Client Master Data To
+POLFS Vendor Interface Specification
+
+EA/IFS/024 - Impact Programme POL FS To
+SAP ADS Application Interface Specification
+
+EA/IFS/025 - Impact Programme: POL FS to
+A&L - Application Interface Specification
+
+EA/IFS/026 - POL FS to NS & I Application
+Interface Specification
+
+BP/DES/030 — SAP ADS to POL FS
+Application Interface Specification
+
+12 I POL MIS
+
+EA/IFS/006 - Horizon To POL MIS AIS
+
+TI/IFS/008 - Horizon to Post Office
+Technical Interface Specification
+
+13 I Reference Data
+
+BP/IFS/008 - Application Interface
+Specification Reference Data To Pathway Non-
+Automated Type B Data
+
+BP/IFS/010 - Application Interface
+Specification Reference Data To Pathway
+
+BP/IFS/011 - Application Interface
+Specification Reference Data To Pathway
+Type B Data
+
+BP/IFS/012 - Application Interface
+Specification Reference Data To Pathway
+Type B Data
+
+TI/IFS/008 - Horizon to Post Office
+Technical Interface Specification
+
+14 I HR SAP
+
+EA/IFS/015 - Horizon To HR SAP System
+SPSO Counter Transaction Interface
+Specification
+
+TI/IFS/008 - Horizon to Post Office
+Technical Interface Specification
+
+15 I TES Enquiry
+Service
+
+NB/IFS/039 - Technical Interface
+Specification TES To POL
+
+16 I Track and Trace
+
+AS/IFS/001 - Horizon To EDG AIS For Track
+And Trace
+
+AS/IFS/002 - Horizon To EDG TIS
+For Track And Trace
+
+3.6 Operational Schedule
+
+The operational schedule is geared around the processing of data from the branches and
+delivery of that to the Post Office and Client systems. In addition there is data destined for the
+branches that needs to be delivered to the counter.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 39 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+The actual schedule is quite complex due to the many different processes. The rough outline
+for the critical tasks is given below:
+
+e 08:00 — Start of Branch Core Day (Monday to Saturday)
+
+© 08:00 to 18:00 — Regular harvesting of LFS pouch delivery and collections for delivery
+to SAP ADS.
+
+e 13:00 — End of Branch Core Day (Saturday)
+e 18:00 —End of Branch Core Day (Monday to Friday)
+
+e 19:00 — Branches declare “End of Day”. Data is transferred from branches to the data
+centre over the next 30 minutes (randomised connections across the estate to avoid
+overloading the network).
+
+e 19:00 to 20:30 — TPS and APS harvest data from the correspondence servers into their
+databases.
+
+e 20:30 to 23:00 — TPS and APS host processing to produce files
+22:00 to 23:00 — TES produces REC file for A&L and CAPO. REC Files delivered.
+© 23:00 to 23:59 — Delivery of TPS and APS files to relevant systems
+
+e 23:00 to 04:00 — TES Processing of LREC file from LINK. DWH and DRS
+processing.
+
+23:00 to 08:00 — Backup of main databases once their overnight processing complete
+© 20:30 to 21:30 — Backup of Correspondence Servers
+
+e 20:30 to 02:00 — Processing and loading of reference data, APS tariff data and APS
+customer data into the correspondence servers (loading starts once correspondence
+server backup complete).
+
+« 02:00 to 03:00 — Branches connect to the data centre to download any reference data
+required (randomised connections across the estate to avoid overloading the system).
+
+e 03:00 to 03:15 — Branches reload the counter application through a process called
+“Clear Desk”. This picks up any new reference data that is not dynamic.
+
+* 06:00 — Processing of LFS Planned orders received from SAP ADS and loaded into
+correspondence server.
+
+e 07:00 — Branches connect to the data centre to check for any LFS data or late
+reference data.
+
+Full details of the operational schedule can be found in:
+e¢ AP/HLD/009 - APOP Maestro Schedule
+
+e CS/HLD/003 - RDT Maestro Schedule High Level Design
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 40 of 96
+
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+e DW/LLD/027 - Data Warehouse Maestro Schedule - Solaris Systems
+¢ LF/LLD/068 - LFS Host Maestro Schedule
+
+¢ TD/DES/080 - Audit Server & Maestro Interface
+
+« NB/HLD/019 - TES Maestro Schedule Design
+
+e TD/DES/109 - Counter Application Scheduler High Level Design
+
+e TD/HLD/001 - Pathway Maestro Schedule
+
+e TD/HLD/002 - Horizon Maestro Schedule
+
+e TD/HLD/002 - Horizon Maestro Schedule
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 41 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+4.0 Physical Architecture
+
+This section describes the physical architecture of the solution excluding the network (which is
+covered under network services). It is split into data centres, other sites and branch
+infrastructure.
+
+4.1 Data Centre
+
+There are two data centres (Wigan and Bootle) to provide disaster tolerance with both sites
+handling business traffic. For some systems (typically those with databases) one site is used for
+normal operation with the 2™ site providing both resilience and DR.
+
+This section splits the data centre into a number of areas: business systems, POL-FS,
+SYSMAN, Storage and Audit and Support Systems. For cach a brief description of the
+hardware, software and number of servers is provided.
+
+All servers have the following software installed:
+e Tivoli is included on all platforms for management. This is made up of the following
+products: IBM Tivoli Monitoring, IBM Tivoli Enterprise Console, IBM Tivoli Config
+Manager and IBM Remote Control [DN: Need to confirm this with Glenn].
+
+4.1.1 Business Systems
+
+The diagram shows the platforms for the business systems at one data centre (for location of
+VPN servers see LAN network diagram). The table gives details of these and the quantity at
+both sites (B=Bootle, W=Wigan).
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 42 of 96
+FUJ00098217
+FUJ00098217
+
+roo) Horizon Architecture Overview Refi TD/ARC/039
+FUJITSU Version: 0,2
+FUJITSU SERVICES .
+
+Company-in-Confidence Date: 16/06/2006
+/ Streamline & ZA Huthwate
+A Epay of <
+Banks ~~ =OCS Access LAN ‘=DVLA Access LAN: Huthwvaite Access LAN
+—eovess LANs
+
+DCS External Lat
+
+=Veb External LAN SAP External LANaam
+
+NEX Banking
+Agents
+
+DOSETU
+Servers
+
+[[ es
+
+[oma I [Par][ Aer I [Se]
+
+Server
+
+JNBS Internal LAI
+
+=068 Internal LAN
+
+Neb Internal LAN —=SAP Internal LAN
+
+NEX Routing
+‘Agents
+
+Servers mee KMA LAI
+
+—Nms A
+
+Newore Chant LA Noo
+‘Components Clent Solhut
+‘Connections “7
+#_I Name Function Qty Specification & S/W.
+1 I APOP Branch online 1B Ie Fujitsu Siemens RX200 S2, 2 cpu, 2G memory
+Application APOP service 1W e Windows 2000
+Web Server e — Interstage App Server
+© Tivoli Client
+« —APOP Web Service
+SD/DES/269 - APOP Web Service Platform Physical
+Design
+2 I Correspondence I Messaging 8B © Compaq DL360 (4 per site) and DL380 (4 per site),
+Servers Server to pass sw 2 cpu, 2G memory, Fibre channel connection on
+
+messages to/from.
+counters.
+
+DL380 to EMC array
+
+NT4
+
+Riposte Message Server
+Tivoli Client
+
+Maestro Client
+
+Brightstor Client (Windows)
+Audit Agent
+
+Deleted Object Monitor
+Cluster Lookup Agent
+
+SD/DES/145 - Physical Design For Correspondence
+Server CSR+ (very out of date)
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 43 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+3 I pcs Runs DCS batch [1B I Fujitsu Siemens F200, 2 cpu, 1G memory, Fibre
+Management file jobs for 1W Channel connection to EMC array
+Server payment files e NT4
+to/from © = Team Crypto
+Streamline and © Tivoli Client
+ETU and MTAS © Maestro Client
+Disk is encrypted : S Bulk Avon
+using Team © C2 Bulk Agent
+crypto to protect
+payment files and © C4 Bulk Agent
+EMIS e MTAS
+SD/DES/218 - Platform Physical Design for the DCS.
+Management Server
+4 I DCS/ETU ETU and DCS 4B © — Fujitsu Siemens F200, 2 cpu, 512M memory
+Servers Online Services 4w e NT4
+© — Tivoli Client
+e DCS Auth Agent
+© ETU Auth Agent
+« ETU Rev Agent
+SD/DES/217 - Platform Physical Design for the DCS
+Agent Server
+5 I DVLA Branch online 1B ¢ — Fujitsu Siemens, RX200, 2 cpu, 2G memory
+Application service for 1W e Windows 2000
+Server DVLA e — Interstage App Server
+© — Tivoli Client
+« DVLA Web Service
+SD/DES/239 - DVLA Web Service Platform Physical
+Design
+6 I FTMS APS File transfer to 1B © Compaq Proliant 5000, 4 cpu, ??? memory
+Local AP Clients 1W ° NT4
+© — Tivoli Client
+e FTMS
+SD/DES/163 - Physical Design for Pocl Aps Gateway
+Server - Local CSR+
+7 I FTMSGP/EDG I General purpose I 1B e Fujitsu Siemens, RX200, 1 cpu, 1G memory
+Local File Transfer and I 1 W Windows 2000
+
+EDG connection
+for track and
+trace
+
+Tivoli Client
+FTMS
+Track and Trace Interface Agent
+
+SD/DES/262 - Edg (Gp) Ftms Local Gateway Physical
+Platform Design
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 44 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+8 I FTMS TIP File transferto. I 1B I Compaq Proliant 5000 NT 4 cpu 512M memory
+Local Post Office 1W ° NT4
+
+systems and «Tivoli Client
+
+BPOCL/WPOCL * FTMS
+
+domain
+
+controller SD/DES/165 - Physical Design for Pocl Tip Gateway
+
+Server - Local CSR+
+
+9 I Generic Agents I Runsagents that [4B Ie Compaq DL360 G2, 2 cpu, 2G memory
+
+move data 4w NT4
+
+between Tivoli Client
+databases and Maestro Schedule S/W
+correspondence Riposte
+
+servers. Ping Agent
+
+CAck Agent (including Smart Ping)
+NBS Harvester
+
+DCS Harvester
+
+LFS Harvester
+
+LFS Advice Loader
+
+LFS Orders Loader
+
+LFS Replenishment Delivery Notices Loader
+APS Harvester
+
+TPS Harvester
+
+TPS Loader
+
+EOD Harvester
+
+Cluster Lookup Agent
+
+Bureau Loader
+
+Sub Group Loader
+
+Non Core Loader
+
+Memo Loader
+
+Core Ref Data Loader
+
+Ref Data Replicator
+
+Ref Files Loader
+
+Reference Data Scavenger
+
+Quantum Bulk Loader
+
+Quantum Emergency Loader
+
+Water Loader
+
+APS Ref Data Loader (same as Non Core Loader —
+configured to load from APS rather than RDDS)
+Heartbeat Harvester
+
+OMDB Harvester
+
+Outlet Monitor
+
+SLA Harvester
+
+Key Object Loader
+
+Key Object Harvester
+
+Key Memo Loader
+
+Also some stand
+alone online
+services that use
+the
+correspondence
+servers.
+
+SD/DES/138 - Physical Design for Agent Server CSR+
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 45 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+10
+
+Server that runs
+the Oracle
+databases for the
+business
+applications
+
+Host database
+server
+
+ao
+
+© Fujitsu Siemens Prime Power 650, 8 cpu, 8G
+memory, Fibre channel connection to EMC array
+Solaris
+
+Oracle 8 and Oracle 9
+
+BMC Patrol (Oracle + Solaris KM)
+
+Maestro Schedule $/W (Master)
+
+Tivoli Client
+
+Veritas Foundation Suite
+
+Brightstor Client (UNIX)
+
+APOP DB
+
+DRS DB
+
+TES DB
+
+LFS DB
+
+APS DB
+
+TPS DB
+
+RDMC DB
+
+RDDS DB
+
+Banking DWH DB
+
+SD/DES/234 - Solaris Host Infrastructure Design
+
+Authorisation
+Agents for
+Banking
+
+NBX Banking
+Agents
+
+4B
+4w
+
+© Fujitsu Siemens R450, 2 cpu, 1G memory, Atalla
+Crypto Card
+
+Windows 2000
+
+Atalla Load Balancing S/W
+
+Riposte
+
+Tivoli Client
+
+Maestro Client
+
+NBX Authorisation Agents (LINK, A&L, CAPO)
+
+NB/DES/007 - Platform Physical Design for the NBX
+Agent Server
+
+12 I NBX
+ConnectDirect
+Gateway
+
+File transfer
+to/from banks 1W
+
+« — Fujitsu Siemens RX100, 1
+Windows 2000
+
+Tivoli Client
+
+SQL*Server
+Connect:Direct
+
+cpu, 1G memory
+
+SD/DES/256 - Connect Direct Gateway Physical
+Platform Design Specification
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 46 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+13 I NBX NPS RAC I Database server 2B © Fujitsu Siemens Prime Power 650, 2 cpu 4G
+
+DB Server for NBX online 2W memory, Fibre channel connection to EMC array
+application. Solaris
+
+Oracle 9 RAC
+
+BMC Patrol (Oracle + Solaris KM)
+
+Maestro Schedule client)
+
+Tivoli Client
+
+Veritas Foundation Suite
+
+Veritas Cluster S/W
+
+Maestro Schedule S/W
+
+NB/DES/009 - Platform Physical Design Specification
+for Network Banking Oracle Real Application Cluster
+
+14 I NBX Routing Routes online 2B e — Fujitsu Siemens RX200, 2 cpu, 1G memory
+Agents traffic from 2W ¢ Windows 2000
+correspondence © Tivoli Client
+servers to NBX * NBX Routing Agent
+authorisation * NBX GREV Agent
+agents Track and Trace Harvester ???
+NB/DES/008 - Platform Physical Design for the Nbx
+Routing Agent Server
+15 I PAF Branch online 2B e — Fujitsu Siemens RX200, 2 cpu, 2G memory
+Application PAF service 2W e Windows 2000
+Server © — Tivoli Client
+© Interstage App Server
+© PAF Web Service
+e QAS Address Database
+SD/DES/238 - Paf Web Service Platform Physical Design
+16 I TES Query Application layer [1B I — Fujitsu Siemens Prime Power 250, 2 cpu, 2G
+Application for Post office to I 1 W memory
+(QA) Server access TES and Solaris
+APOP databases
+
+Oracle App Server
+
+Tivoli Client
+
+TES Query Application
+APOP Admin Application
+
+SD/DES/257 - Transaction Enquiry Service Query
+Application Platform Physical Design
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 47 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+) Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+17 I VPN Loopback, I Provides VPN 3B I Compaq Deskpro 6600, 1 cpu, 128 memory
+Exception, management for 3W e NT4
+Policy VPN layer to Tivoli Client
+Management branches *  Utimaco VPN
+SD/DES/125 - Physical Design for VPN Exception
+Server;
+SD/DES/126 - Physical Design for VPN Diagnostic
+Workstation CSR+;
+SD/DES/127 - Physical Design for VPN Policy File
+Manager Server CSR+
+18 I VPN Servers Handles VPN 12B I Compaq DL360 NT 2 cpu, memory ???,
+connections from I 12W Ie NT4
+Branches © — Tivoli Client
+¢ — Utimarco VPN Server
+SD/DES/124 - Physical Design for VPN Server CSR+
+(note this is not up to date)
+4.1.2 POL FS
+
+The table below shows the platforms for POL-FS — the SAP system for the Post Office
+accounts. They are hosted in the Post Office DMZ except for the Centera array which is on
+the main LAN. The systems at Wigan are used for Testing. They also provide a half sized DR
+
+system in case of disaster at Bootle.
+
+#_I Name Function Qty Specification
+1 I SAP User access to SB © — Fujitsu Siemens Prime Power 450, 4 cpu, 8G
+Application SAP system 3W memory
+Server © Solaris
+SD/DES/260 — Platform Physical Design Specification
+for POL FS Sap App Server
+2 I SAP Archive Archive of 1B e¢ EMC Centera EMC
+Centera Array _I historical data LW
+3 I SAP Archive Archive of 1B © — Fujitsu Siemens Prime Power 450, 2 cpu, 8G
+Server historical data 1W memory
+© Solaris
+SD/DES/261 — Platform Physical Design Specification
+for POL FS Sap Archive Server
+4 I SAP Host SAP 1B © — Fujitsu Siemens Prime Power 450, 2 cpu, 4G
+Development database for memory, fibre channel connection to EMC array
+Host Server development e = Solaris
+
+° Oracle
+
+SD/DES/254 — Platform Physical Design Specification
+for POL FS Sap Host
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 48 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+) Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+5 I SAP Development 2B ¢ Fujitsu Siemens FSC Prime Power 450, 2 cpu, 16G
+Middleware Support loading memory
+Development of batch data into © Solaris
+SAP
+SD/DES/264 — Platform Physical Design Specification
+for the POL FS Sap Middleware Server
+6 I SAP Support loading 2B ¢ Fujitsu Siemens FSC Prime Power 450, 4 cpu 16G
+Middleware of batch data into I 2 W memory
+Server SAP «= Solaris
+
+SD/DES/264 — Platform Physical Design Specification
+for the POL FS Sap Middleware Server
+
+7 I SAP Production I Database server 1W Ie — Fujitsu Siemens FSC Prime Power 1500, 8 cpu, 16G
+
+DR/QATest at DR site — used memory, fibre channel connection to EMC array
+Server for QATest e = Solaris
+© = Oracle
+
+SD/DES/254 — Platform Physical Design Specification
+for POL FS Sap Host
+
+8 I SAP Production I Database Server 1B * Fujitsu Siemens FSC Prime Power 1500,16 cpu, 40G
+
+Server for main site memory, fibre channel connection to EMC array
+© Solaris
+© = Oracle
+
+SD/DES/254 — Platform Physical Design Specification
+for POL FS Sap Host
+
+9 I SAP Production I ??? 1B © — Fujitsu Siemens FSC Prime Power 450, 4 cpu, 8G
+Support Server memory
+© Solaris
+
+SD/DES/254 — Platform Physical Design Specification
+for POL FS Sap Host
+
+10 I SAP SMC Support server for I 2B e Sun UltraAX-e2, 1 cpu, memory ???
+Console for PW1500 * = Solaris
+PW1500
+
+72? Documentation ???
+
+Notes:
+1. Need to check on #1 at DR site - EA/DPR/005 has 2 at DR site
+2. What is #9 — can’t find in EA/DPR/005
+3. Need to add other s/w onto list
+
+4.1.3 Storage and Audit
+
+The diagram shows the SAN for storage and backup. In addition there are a number of
+platforms used for archiving which are attached to the central network which are not shown.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 49 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Company-in-Confidence
+
+Horizon Architecture Overview
+
+FUJ00098217
+
+FUJ00098217
+Ref; TD/ARC/039
+Version: 0.2
+Date: 16/06/2006
+
+T
+‘StorageTek ! StorageTek
+!
+OOOO}! IjOO000
+© I I i I I 2
+‘OMDB Solaris Windows I ! I Windows Solaris OMDB
+Archive Backup Backup i Backup Backup Archive
+Server Server Server i Server Server Server
+i
+ret ata i o pat
+cH _ ! ‘
+i
+Correspondence Servers I_I ! [J Correspondence Servers
+(No SRDF) i (No SRDF)
+‘SYSMAN Database Server — ‘SYSMAN Database Server
+KMA Server {! KMA Server
+EMC i EMC
+NPS Servers 8830 i 8830 NPS Servers
+i =
+ECC Server ! 3 ECC Server
+! 8
+Bootle ! Wigan
+1
+# I Name Function Qty Specification
+T I Audit Centera 7 year archive I1B I EMC Centera array
+Array — Live of data 1W
+(not in diagram) produced by
+Horizon
+2 I Audit Server Server that B © Compaq Proliant 7000, 4 cpu, 256M memory, local
+(not in diagram) archives the 1W disk storage
+
+data into the .
+Centera and
+
+NT4
+
+© — Tivoli Client
+
+supports © SQL*server
+retrieval.
+SD/DES/139 - Physical Design for Audit Server CSR+
+3 I Backup server - Backs up 1B © Fujitsu Siemens Prime Power 200, 2 cpu, 2G
+Solaris Solaris 1W memory, fibre channel connection to EMC array
+platforms via © Solaris
+EMC BCV for ¢ = Tivoli Client
+main systems e — Brightstor backup sofiware
+
+smaller
+systems.
+
+and over the
+network for
+
+Backup Server
+
+SD/DES/259 - Platform Physical Design for Solaris
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 50 of 96
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+Company-in-Confidence Date: 16/06/2006
+
+4 I Backup sever - Backs up TB I — Fujitsu Siemens RX300, 2 cpu, 2G memory, fibre
+Windows (aka Windows 1W channel connection to EMC array
+Correspondence platforms via « Windows 2000
+Server Backup) EMC BCV for * = Solaris
+
+main systems © Tivoli Client
+
+and over the © — Brightstor backup software
+
+network for
+
+smaller SD/DES/251 - Windows Backup Server Physical
+systems. Platform Design
+
+5 I Backup Controller for 1B e Sun Sunfire v100, 1 cpu, memory ???
+StorageTek the tape library I1W I — Solaris
+ACSLS Server to allow
+
+multiple
+platforms to
+share
+
+6 I Backup Tape Library shared I 1B © StorageTek Tape Library
+Library by the backup 1W
+
+servers
+
+7 I EMC Array Main storage 1B « EMC 8830 EMC
+
+array LW
+
+8 I EMC ECC Server I Control 1B © — Fujitsu Siemens RX300 2 cpu 4G memory, fibre
+
+software for the I 1 W channel connection to EMC array
+EMC array «© Windows 2000
+
+SD/DES/271 - Ecc Server Platform Physical Design
+Specification
+
+4.1.4 SYSMAN Platforms
+
+The following platforms are used to support Systems management
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 51 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+7 Sreamine & 7, DVLA tthwake
+
+<> pay co <S
+Banks 7 “=a05 Access LAN =DVLA Access LAN: ‘=Huthwaite Access LAN
+——<Acvess LANs: ¢ ie ee
+
+“A ! f :
+
+IDCS External LANem eee External LANemm SAP External LANemm
+
+I Campus GW [ campus a I mpus GW
+tenes internat Lat 068 internal LAN Internal AN SA? internal LAN
+
+KA LAN
+
+Core
+Routing
+
+Host LAN
+Campus To —-
+
+aw ——
+
+poet A
+Boot Loader &
+kane
+
+To Branch
+Componerts ebaClent Atm
+\)\ ren oot conmedions £7
+v* [_ xine _I
+# I Name Function Qty Specification
+1 I Core Services Insignt I Provides hardware 1B . 27? Specification
+Manager Server monitoring for servers 1W
+22? Documentation
+2 I Network Alarm Point I Raises Alerts on network 1B * Fujitsu Siemens RX100, 1 cpu,
+Server failures 1W memory ?
+* Windows 2000
+22? Documentation
+3 I Network CISCO. Network configuration 1B e Sun Sunfire 280R, 1 cpu, memory
+Works Server 1W ™m
+* CISCO Works
+? Documentation
+4_I Network Staging platform for TB I Fujitsu Siemens Scenic E600, 1
+Management Server I configurations to ISDN 1W cpu, 1G memory
+(NMS) routers and Radius servers © Windows 2000°
+(Is this correct??)
+22? Documentation
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 52 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+5 I Network Network Monitoring 1B * Sun Sunfire V890, 4 cpu, 16G
+Management System 1W memory
+(HP Openview) © Solaris
+© HP Openview
+22? Documentation
+6 I SYSMAN Delivery Acts as gateway between 1B Compaq Proliant 1600R, 1 cpu,
+Server PVCS and live system for 1W 256M memory
+code delivery. Also used for e NT4
+immediate fixes before ¢ = Tivoli Client
+counter is taken on by Tivoli
+framework SY/DES/022 - Platform Physical
+Design Specification for the SYSMAN
+Delivery Server
+7 I SYSMAN Campus Tivoli Gateways within DMZ I 9B e Sun Sunfire v100, 1 cpu, 1G
+Gateway Banking DMZ - 2 per site ow memory
+DCS DMZ - 2 per site © = Solaris
+PAF DMZ - 2 per site
+EDG DMZ - 2 per site 72? Documentation
+Boot Loader DMZ - I per site
+8 I SYSMAN Campus Tivoli TEC for campus events I 3 B e Sun Sunfire v100, 1 cpu, 512M.
+TEC 3W memory
+¢ — Solaris
+22? Documentation
+9 I SYSMAN Expedited I Tivoli TEC for expedited 2B e Sun Sunfire v100, 1 cpu, 512M.
+TEC events 2W memory
+° = Solaris
+SY/DES/023 - Platform Physical
+Design Specification for the SYSMAN
+Expedited TEC
+10 I SYSMAN Master Master TEC 1B e Sun SunFire 250, 1 cpu, 500M.
+TEC 1w memory
+¢ Solaris
+SY/DES/026 - Platform Physical
+Design Specification for the SYSMAN
+Master TEC
+11 I SYSMAN Master Master TMR 1B ¢ Sun SunFire 280R, I cpu, 1.5G
+TMR 1W memory
+Solaris
+SY/DES/031 - Platform Physical
+Design Specification for the SYSMAN
+Master TMR
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 53 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+12 I SYSMAN Main Database for Tivoli. 1B * Compaq DL580, 4 cpu, 2G
+Operational Contains event archive, 1W memory, fibre channel connection
+Management Data inventory and other data. to EMC array
+Base (OMDB) ° NT4
+¢ Oracle
+SY/DES/027 - Platform Physical
+Design Specification for the
+Operational Management Data Base
+13 I SYSMAN Backs up OMDB via EMC 1B © Compaq Proliant 5000, 4 cpu 1G
+Operational BCV (sce storage) 1W memory, fibre channel connection
+Management to EMC array
+Database Archive « NT4
+Server
+SY/DES/028 - Platform Physical
+Design Specification for the SYSMAN
+Operational Management Database
+Archive Server
+14 I SYSMAN Post Gateway for counters on 1B e Sun Netra, 1 cpu, 256M memory
+Office Gateway installation before they are 1W Ie Solaris
+fully taken on
+SY/DES/029 - Platform Physical
+Design Specification for the SYSMAN
+Post Office Gateway
+15 I SYSMAN Secure Gateway for counters once 11B Ie Sun Netra, 1 cpu, 256M memory
+Post Office Gateway I they have been taken on. 11W I Solaris
+Estate split over 10 servers.
+11" acts as a hot standby SY/DES/030 - Platform Physical
+Design Specification for the SYSMAN
+Secure Post Office Gateway
+16 I SYSMAN Secure Secure TEC 2B « Sun Sunfire v100, 1 cpu, 512M.
+TEC 2W memory
+© Solaris
+SY/DES/025 - Platform Physical
+Design Specification for the SYSMAN
+TEC
+17 I SYSMAN SNMP SNMP gateway 1B e Sun Sunfire v100, 1 cpu, 512M
+TEC 1W memory
+¢ Solaris
+SY/DES/033 - Platform Physical
+Design Specification for the SYSMAN
+SNMP TEC
+18 I Core Services Staging of sofiware for 1B ¢ Compaq Proliant 1600 NT 1 cpu
+Staging Server manual s/w distribution 1W 128M memory
+SD/DES/185 - Physical Design for
+Staging Server CSR+
+
+[DN: Not sure that the NMS (where radius configs/ISDN
+
+the platform above or whether a different one]
+
+router configs) are delivered to is
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 54 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+4.1.5 Supporting Systems
+
+The diagram below how other supporting platforms fit into the solution (boot loader and boot
+server not shown — see LAN diagram).
+
+Huthwaite
+
+SHuthwaite Access. “T
+I. External LANeme
+
+Domain
+Controller
+
+id
+
+Domain Controller Controller
+
+iy
+
+—=06 Internal Lat
+
+7 Streamline & /_ DVLA
+“> Epay ZL
+Banks ~~ —=008 Acvess LANamm =DVLA Access LAN:
+< My
+Access LANS {
+NEX Network v
+G4] loc eiternal.ae emit Eternal Late
+PaYPUE—] DCSSERV DVSERV Domain
+
+Web Interna! AN
+A
+
+—=S4P Internal LAN
+
+Campus LAN
+MALAI Network
+Server
+NIMS LA
+ADSL Test Server ‘Seourty Logging
+—)
+—mc
+‘utocontig Signing [=<]
+: PWENS Domain
+eorrs Kors bone comer I Ly
+PWYDCS & ~ /
+PWYSAS Domain LJ Controker
+Controlers ent LA Noc
+7 Solu
+Client [i
+Connections “~/
+#_I Name Function Qty _I Specification
+1 I ACDB Server Autoconfiguration database server 1B Ie Fujitsu Siemens RX200, 2
+1 cpu, 2G memory
+W I Windows 2000
+
+¢ — Tivoli Client
+© =SQL*Server
+
+SD/DES/142 - Physical Design
+for Auto Configuration Database
+Server CSR+
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 55 of 96
+
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+2 I ACE Server Provides Secureld access 1B Ie Sun Ultra5_10, 1 cpu, 128M
+1 memory
+W Ie Solaris
+¢ — Tivoli Client
+¢ ACE Software
+SD/DES/203 - Physical Design
+for Secureld Ace Server CSR+
+3 I ADSL Test Server Allows a test to be conducted 1B Ie Fujitsu Siemens RX100, 1
+(movement of large file) on 1 cpu, 2G memory
+activation of ADSL in the branch to I W I ¢ Windows 2000
+confirm working okay * Tivoli Client
+SD/DES/255 - Platform Physical
+Design Specification for the
+ADSL Test Server
+4 I Aurora Console Console access to Solaris servers 1B} Sun ???, 1 cpu, memory ???
+Tower (Solaris
+Console Server) W__I 2?? Documentation
+3 I Autoconfig Signing I Digitally signs autoconfig filesto I 1B Ie Fujitsu Siemens RX200, 2
+Server allow tamper check tobe made on I 1 cpu, 2G memory
+counter. W_ Ie Windows 2000
+¢ — Tivoli Client
+SD/DES/180 - Physical Design
+for Auto Configuration Signing
+Server CSR+
+6 I Boot Loader Provides Boot access for gateway 1B Ie — Fujitsu Siemens RX100, 1
+PC for ISDN and ADSL network 1 cpu, 1G memory
+types. W Ie Windows 2000
+e Radius S/W
+© Tivoli Client
+SD/DES/232 - Bootloader
+Physical Platform Design
+7 I Boot Server Provides boot access for VSAT 1B I Compaq ???, 1 cpu???
+network types. 1 memory ???
+W Ie Windows NT
+Also BBOOT/WBOOT domain © Tivoli Client
+controller
+SD/DES/027 - Physical Design
+for Boot Server (note: out of
+date)
+8 I BTI Print Server Raises paging alerts on Host errors I 1B Ie Sun Ultra5, Solaris, 1 cpu
+1 memory ???
+W Ie Solaris
+22? Documentation
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 56 of 96
+FUJ00098217
+
+FUJ00098217
+ined Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+9] Checkpoint Firewall- I Firewall (sce network section for I 2B] Sun Ultra5_10, I cpu,
+I Firewall where used) 2 memory ???
+
+W Ie Solaris
+Checkpoint
+
+227? Documentation.
+
+10 I Domain Controllers - I Domain controllers for main 2B I Compaq Deskpro 6000, 1
+BOPSS/WOPSS, campus severs (e.g. correspondence I 2 cpu, 32M memory
+servers). Separate domains for W Ie NT4
+Wigan and Bootle © — Tivoli Client
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+11 I Domain Controllers - I Domain Controllers for VPN 2B I Compaq Deskpro 6000, 1
+BVPN/WVPN domain. Separate domains for 2 cpu, 32M memory
+Wigan and Bootle W Ie NT4
+© — Tivoli Client
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+12 I Domain Controllers — I Domain Controllers for DCS DMZ. I 1B I ¢ Compaq Deskpro 6000, 1
+DCSSERV Single domain across Wigan and 1 cpu, 32M memory
+Bootle W Ie NT4
+© Tivoli Client
+277 Is the platform correct ???
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+13 I Domain Controllers — I Domain Controllers for DVLA 1B] Fujitsu Siemens RX100, 1
+DVSERV DMZ (including APOP and PAF). 1 cpu, 512M memory ???
+Single domain across Wigan and W Ie NT4
+Bootle © Tivoli Client
+Documentation
+14 I Domain Controllers — I Domain controllers for Compaq Deskpro 6000, 1
+PWYDCS Master/Account domain (contains 1 cpu, 32M memory
+all users) Wie nT4
+
+© = Tivoli Client
+
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+
+15 I Domain Controllers — I Domain controllers for APS and 1B I ¢ Compaq Deskpro 6000, 1
+PWYFTMS EDG/GP FTMS Servers 1 cpu, 32M memory
+
+W Ie NT4
+
+© — Tivoli Client
+
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 57 of 96
+oO
+FUJITSU
+
+Horizon Architecture Overview
+
+FUJ00098217
+FUJ00098217
+
+Ref: TD/ARC/039
+
+Version: 0.2
+
+UJITSU SERVICES
+" Company-in-Confidence Date: 16/06/2006
+16 I Domain Controllers — I Domain controllers for KMA 2B Ie Compaq Deskpro 6000, 1
+PWYKMS 2 cpu, 32M memory
+W Ie NT4
+¢ — Tivoli Client
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+17 I Domain Controllers — I Domain controllers for Banking 2B Ie Fujitsu Siemens FSC RX100
+PWYPUB DMZ. Single domain across Wigan I 2 NT 1 cpu 512M memory
+and Bootle. W Ie NT4
+© = Tivoli Client
+22? Is the platform correct ???
+18 I Domain Controllers — I Domain Controllers for Radius 1B Ie Compaq Deskpro 6000, 1
+PWYRAD Servers. Single domain across 1 cpu, 32M memory
+Wigan and Bootle. W Ie NT4
+© — Tivoli Client
+‘227 Is the platform correct ???
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+19 I Domain Controllers — I Domain controllers for SAS 1B Ie Compaq Deskpro 6000, 1
+PWYSAS servers. Single Domain across 1 cpu, 32M memory
+Wigan and Bootle. W Ie NT4
+¢ — Tivoli Client
+.
+227 Is the platform correct ???
+SD/DES/148 - Physical Design
+for Domain Controller CSR+
+20 I KMA Server Database Server for KMA key 1B I Compaq Proliant 5500, 2
+management 1 cpu, 256M memory, fibre
+WwW channel connection to EMC
+array.
+© NT4
+© SQL*Server
+¢ — Tivoli Client
+SD/DES/133 - Physical Design
+for KMA Server CSR+
+21 I NBX Network Pulls network traces from Network I 1B I e Fujitsu Siemens RX100, 1
+Observer Server Probe server to present to support 1 cpu, 1G memory
+user W Ie Windows 2000
+
+(in Network Management LAN)
+
+¢ — Tivoli Client
+
+SD/DES/267 - Platform Physical
+Design Specification for the
+Network Observer
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 58 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+
+FUJ00098217
+
+Ref: TD/ARC/039
+
+Version: 0.2
+Date: 16/06/2006
+
+22
+
+NBX Network Probe
+Server
+
+Allows network traces to be taken
+between Horizon and banks
+
+o
+
+© Fujitsu Siemens RX100, 1
+cpu, 2G memory
+
+« Windows 2000
+
+¢ — Tivoli Client
+
+SD/DES/266 - Platform Physical
+Design Specification for the
+Network Probes
+
+23
+
+OCMS Server
+
+Operation Change Management 1B
+System database server
+
+© Compaq Proliant 1850R, 1
+cpu, 256M memory
+
+° NT4
+
+© Tivoli Client
+
+© =SQL*Server
+
+SD/DES/197 - Physical Design
+for OCMS Server CSR+
+
+Radius Servers
+(Accounting,
+Management)
+
+wv
+o
+
+Accounting and Management
+records for radius connections
+
+2
+
+Fujitsu Siemens RX100, 1
+cpu, 1G memory
+
+«© Windows 2000
+
+© — Tivoli Client
+
+° Radius S/W
+
+SD/DES/240 - Platform Physical
+Design Specification for the S60
+Accounting Radius Server
+
+Radius Servers
+(Dialledx3, ADSL)
+
+Radius Servers to authenticate 4B
+network access 4
+
+© Compaq DL360 G2, 1 cpu.
+256M memory
+
+¢ Windows 2000
+
+© — Tivoli Client
+
+e Radius S/W
+
+SD/DES/252 - Platform Physical
+Design Specification for the S60
+Radius Dial (Authentication)
+Server:
+
+SD/DES/253 - Platform Physical
+Design Specification for the S60
+Radius ADSL (Authentication)
+Server
+
+26
+
+SAS Server
+
+o
+
+Support access service. Terminal
+server to allow access to the data
+centre platforms for support. WwW
+
+¢ — Fujitsu Siemens FSC R250
+Windows 2000 1 cpu 2G
+memory
+
+SD/DES/224 - Platform Physical
+Design Specification for the
+Secure Access Server
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 59 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+27 I Security Logging Pulls security logs together for 1B Ie — Fujitsu Siemens FSC RX100
+
+Analysis Server
+
+analysis
+
+1 Windows 2000 1 cpu 2G
+WwW memory
+
+SD/DES/272 - Platform Physical
+Design Specification for the
+Security Logging Server
+
+28 I Softek Servers Provides analysis of network 2B Ie Fujitsu Siemens RX100, 1
+Radius records 2 cpu, 2G memory
+W I Windows 2000
+
+© — Tivoli Client
+© — Softek software
+SD/DES/250 - Platform Physical
+Design Specification for the
+Softek Reporter Software
+
+29 I SSC Support Server Data storage and work area used by I 1B I © Compaq Proliant 1850R, 1
+
+3" line support.
+
+1 cpu, 256M memory, local
+w disk storage
+° NT4
+
+© = Tivoli Client
+
+SD/DES/194 - Physical Design
+for SSC Support Server for
+CSR+
+
+4.2 Other sites
+
+There are a number of other sites that have servers and workstations. These are summarised
+by the table below:
+
+#
+
+Name
+
+Function / Site
+
+Specification
+
+1
+
+SSC Workstation
+
+3* Line Support Workstation.
+BRAOL
+
+SD/DES/172 - Physical Design For SSC
+Support Workstation Csr+
+
+2 I MIS Workstation MSU Workstation SD/DES/222 - Platform Physical Design
+BRAOL Specification For The MIS _ Client
+Workstation
+SD/DES/223 - Platform Physical Design
+Specification For The MIS Support
+Workstation
+3. I RDT Rig Validation of Reference Data A number of systems including Solaris Host,
+
+RDMC Workstation
+
+changes before release into live
+BRAOL
+
+Correspondence Servers, Agents and
+counters.
+
+SD/DES/167 - Physical Design For RDMC
+Administrator Workstation Csr+
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 60 of 96
+FUJ00098217
+FUJ00098217
+
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+4 I Systems 2°" Line support (STE04) and SD/DES/196 - Physical Design For Systems
+Management Release Management (BRAO1) Management Access Workstation
+Workstations SY/DES/035 - Platform Physical Design
+Specification For Smc Workstation
+5 I PIN Pad generation I Management of PIN Pads Keys SD/DES/211 - Platform Physical Design
+
+Workstation
+
+BRAOI secure room
+
+Specification For The Pin
+
+Generation Workstation
+
+SD/DES/213 - Platform Physical Design
+Specification For The Pinpad Proving
+Workstation
+
+Pad Key
+
+6
+
+Audit Workstations
+
+Audit and litigation support
+access.
+BRAOL
+
+SD/DES/077 - Physical Design For Audit
+Workstation
+
+SD/DES/140 - Physical Design For Audit
+Workstation Csr+
+
+7 I KMA Workstation Management of Keys SD/DES/134 - Physical Design For KMA
+BRAOI secure room Workstation Csr+
+SD/DES/135 - Physical Design For KMA
+Administration Workstation Csr+
+8 I Certificate Root Production of root certificates. SD/DES/136 - Physical Design For Ca
+Server BRAOI secure room Workstation Csr+
+9 I Atalla Card Loading I Loading of secure keys into Atalla I SD/DES/214 - Platform Physical Design
+Workstation cards. Specification For The Atalla Key Loading
+BRAOI secure room Workstation
+10 I Remote FTMS Remote server for handling file SD/DES/164 - Physical Design For POCL
+Servers transfers. APS Gateway Server - Remote CSR+
+Huthwaite SD/DES/166 - Physical Design For POCL
+AP Clients Tip Gateway Server - Remote CSR+
+SD/DES/263 - EDG (GP) FTMS Remote
+Gateway Physical Platform Design
+11 I One shot Password Generation of one shot passwords I SD/DES/162 - Physical Design For One
+for the branch by the help desk. Time Password Workstation Csr+
+STE04
+12 I SecureID Management of Secure ID for the I SD/DES/171 - Platform Physical Design
+Workstation data centres, Specification For Securid Workstation
+BRAOL
+13 I Anti Virus Management of Anti Virus. SD/DES/212 - Platform Physical Design
+Workstation BRAOL Specification For The Antivirus Workstation
+14 I KMS Help Desk ‘Access to key management system I SD/DES/230 - Platform Physical Design
+Workstation for some help desk functions. Specification For KMS _ Help Desk
+STE04 Workstation
+15 I Network Network Management. Wigan SD/DES/274 - Platform Physical Design For
+Management Network Management Workstations
+Workstation
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 61 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+) Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+16 I Security workstation ] Analysis of security issues. SD/DES/273 - Platform Physical Design
+BRAOL Specification For The Security Workstation
+
+4.3 Branch Infrastructure
+
+A Post Office branch consists of I or more PCs with each PC having a number of peripheral
+devices attached. In branches with more than 2 positions un-managed 1OMbit/s hubs are used
+to connect the PC together.
+
+The normal configuration for a Counter position is:
+
+* PC Base Unit (400MHz Pentium II with 256Mbytes of memory and a PCI card
+providing multiple serial connections)
+
+e Touch Screen (touch element connected via a serial connection to PC)
+
+e LIFT Keyboard incorporating a Magnetic Swipe and Smart Card reader (serial
+connection for card reader)
+
+e BAR Code Scanner (Serial Connection)
+e Slip and Tally Roll Printer (Serial Connection)
+
+e Weigh Scales (serial connection — normally shared between two counters with both
+counters having a separate serial connection).
+
+e PIN Pad (Serial Connection)
+
+e Optionally a Bureau de Change Rates Board (serial connection)
+
+One PC in each branch acts as the “gateway PC” which provides network connectivity to the
+data centre and also acts as a server for a parallel port connected back office printer. There are
+two types of gateway PC:
+
+e RAS which supports ISDN, ADSL and serial connected modems. This ISDN and
+ADSL connectivity is provided through internal PCI cards.
+
+e VSAT which uses a LAN connection to plug into a PES (Personal Earth Station).
+
+In single counter branches, the gateway PC has a second (removable) hard disk to protect data
+against hard disk failure. This is achieved through the use of a second Riposte instance which
+replicates data from the instance that is using the internal hard disk.
+
+In addition, there is a mobile variant (nicknamed the “luggable”) that is used in multiple
+locations.
+
+These combinations lead to the following hardware types:
+1. RAS Gateway — Single Counter
+2. RAS Gateway — Multi Counter
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 62 of 96
+
+oO
+FUJITSU
+
+Horizon Architecture Overview
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0,2
+
+FOUTS SERVICES Company-in-Confidence Date: 16/06/2006
+3. VSAT Gateway — Single Counter
+4. VSAT Gateway — Multi Counter
+5. Mobile RAS
+6. Mobile VSAT
+7. Slave
+
+Details of the Horizon configurations can be found in [BP/DES/003] and [CE/SPE/025].
+
+5.0 Information Management
+
+The table below summarises the data stored in each of the key systems in the solution:
+
+# I Database/System Function/Data Storage Period
+
+1 I TPS Full transaction details sent nightly to other Up to I month for
+systems. summary, full details 2
+Summary of some data once per month. days
+
+2 I APS APS Transactions sent nightly to AP Clients. Up to 7 days, most 2 days
+Some data sent 5 days per week or once per
+week.
+
+3_I LFS Transmission of data to/from SAP ADS 2 days
+
+4 I DRS NBS, DCS and ETU reconciliation 3 months
+
+5_I TES NBS Queries 6 months
+
+6 I DWH NBS, DCS and ETU MIS Queries 3 months
+
+7_I RDMC & RDDS Reference data Permanent
+
+8 I Correspondence Servers I All transactions undertaken at counters. 42 days
+
+and Counters
+
+9_I OCMS & ACDB Estate Management Data Permanent
+
+10 I MTAS MID/TID Allocation for branches Permanent
+
+11 I KMS Key management for branches Permanent
+
+12 I OMDB & SMDB Systems management for system Permanent
+
+13 I NPS Banking Persistent Data required to support 5 days
+online transactions
+
+14 I Audit (Centera) Audit trail of solution Tyears
+
+6.0 Network Services
+
+This section covers the Network Services required for Horizon. It is
+
+LAN, Main WAN circuits, Branch network and other circuits.
+
+6.1 Data Centre LAN
+
+The diagram below shows a logical view of the LAN within a single data centre.
+
+split into Data Centre
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 63 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+EPAY DVLA ‘Huthwaite
+CO
+I iA I
+4 £ I WA
+I seeped !
+
+I I
+I baronet
+
+lun access “ T
+sevens I]
+
+ig
+
+ae Access LAN.
+
+NBS Internal Lh
+
+=DVLA Access “T
+
+fo. aetna Ne Je External LAN
+I
+
+\
+Huthwvaite Aovess “TP
+I. External LANaam
+
+I
+
+[seners I] [seners ]]
+
+[severe ]]
+
+068 ternal LAN
+
+Web Internal LAN
+
+——=S"P Interna! LAN
+
+rE
+
+‘ampus LAN
+
+Radius
+
+Dialled Radius
+
+Servers
+[ warner I
+Rodis LAN
+
+> Summ
+
+Network
+
+Boot Traffio
+
+Honagererompe
+LAN
+
+Summary LANE!
+
+pvPn crypt Ll
+Se eerie
+es
+ADSL Radius
+Servers
+nary ADSL Handoff LA
+
+Routers
+
+VEN I
+Servers
+
+Girobank
+
+© pp Brpnch Access LAN @ ewe Frame nee Fixed Link NOC
+ol LNs soll
+SSS Routers
+Energis Data Key
+Network Firewall Types
+Single Ste LAN Al 6
+) I
+Relay NW & PIX ce
+branch Eridged Cross FWSM PIX Check
+ox ‘Campus LAN point
+Components Note Network Management LAN not shown
+
+[DN: Need to add the context switches to the picture]. The Context switches are to provide
+load balancing across the multiple servers for the applications (see Resilience section for more
+
+detail).
+
+[DN: Need to add Boot Server to the picture — where does it go?]
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 64 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+
+6.2. WAN Circuits
+
+The data centres need to be connected to other sites to either carry business traffic or support
+traffic. The list below shows the connections and how they are provided. For most remote
+sites, Fujitsu has networking equipment required to provide the service (e.g. routers).
+
+Type Trem Data Centre Site ] Other Site
+Supplier Supplier
+Support Access There are fixed circuits from the data centres tothe I C&W—1,2,4 I C&W-I,2
+following sites: BT-3 BT-3,4
+
+1. Bracknell
+2. Stevenage
+3. Belfast
+
+In addition there is an ISDN connection into Crewe
+for OBC team
+
+4. Crewe
+Streamline for debit I 1. Online Payment over X25 1. TNS 1. TNS
+card 2. Batch Files, Bonded ISDN 2. C&W 2. Third
+Part)
+E-Pay for ETU Twin 2 Mbits/s circuits with diverse routing into C&W C&W
+each site:
+1, E-Pay Site 1
+2. E-Pay Site 2
+The E-Pay circuits are provided by C&W using IP
+Select.
+DVLA for Car Tax I Twin 256 Kbit/s circuits with diverse routing into C&W C&W
+each site:
+1. DVLA Site 1
+2. DVLA Site 2
+The DVLA circuits are provided by C&W using IP
+Select.
+A&L for Banking Twin 128 Kbit/s with diverse routing into each site: I C&W C&W
+1. A&L Main Site
+2. A&L DR Site
+EDS Card Account I Connections to the main and DR sites. These Third party N/A
+for Banking circuits are not part of the Fujitsu Service.
+LINK for Banking I Connections to the main and DR sites. These Third party N/A
+circuits are not part of the Fujitsu Service
+Post Office Ltd Access from Huthwaite for Back Office access is via I C&W C&W
+
+twin 2 Mbits/s with diverse routing. There are also
+connections into the DR site at Sunguard,
+These circuits are provided by C&W using IP Select.
+
+Also Frame relay connections for legacy
+connections. These are expected to be discontinued
+shortly.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 65 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES
+Company-in-Confidence Date: 16/06/2006
+
+Branch Main All data from the branches for the main network is C&W C&W
+Access carried into the data centres through IP Select
+
+connections from the branch network provider.
+
+There will be twin (diversely routed) 15SMbit/s
+
+connections into each data centre to provide
+
+resilience.
+Branch Direct Dial I To direct dial the branches from the data centres C&W N/A
+Access ISDN PRI are required.
+Intercampus The network between the data centres is use twin C&W C&W
+
+1Gbit/s connections (diversely routed) to provide
+
+resilience.
+VSAT Access Frame Relay links from Hughes C&W C&W
+
+6.3 Branch network
+
+The diagram below shows a simplified version of the networks that make up the branch
+
+Data Cente
+Servers
+
+network:
+=
+Dairven Orange
+an oder 2
+‘uses Kingston
+De Telecom i
+Sera pa ISDN Direct Dial to Data Centres (Voice) i
+TSH
+RAS ASL '
+canny r '
+Si (TP
+cu '
+BT DLE !
+(1 of 700) {
+BT 4 H
+(1 of foo) ee C&W 1
+'
+t
+1
+ft] ‘
+Se ee
+AOS —Fujtsu Sewiees [um
+IP Stream STEAS is
+Fujitsu
+Services
+Var
+cateay PC
+PESeDn tn Saton
+
+Core Routers
+
+Aagregaton
+Routers
+VPN Servers
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 66 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+There are two types of branches — the majority use a RAS Gateway PC, with a very small
+number (around 150) using a VSAT connection. VSAT is used where distance limits from the
+exchange prohibit the use of ADSL or ISDN.
+
+RAS branches operate in one of two primary configurations: ISDN or ADSL. ADSL is the
+favoured configuration as it is lower costs and easier to manage, although there are some
+exchanges that BT has yet to enable.
+
+Branches in Hull have a network service from Kingston telecom (rather than BT) and this uses
+ISDN connections. Investigations are underway by Core Services into how to provide ADSL
+for these sites.
+
+All branches have VPN between the gateway PC and the data centre (see RS/DES/046 - VPN
+High Level Design]
+
+6.3.1 ISDN Branches
+For ISDN Branches, there are three possible routes to the data centre:
+
+e Direct Dial (so called “Voice”) in which one of the data centres is dialled directly by
+the branch. Resilience is achieved through having different numbers for each data
+centre. This route is bi-directional with the data centre also able to dial the branch. Call
+charges are billed by time.
+
+e ISDN Metered in which a call is placed to the C&W CVX. The CVX answers the call
+and delivers IP (tunnelled as L2TP) to one of the data centres. Resilience is achieved
+through the tunnel connecting to an alternate data centre on failure. Call charges are
+billed by time.
+
+e ISDN FRIACO which logically behaves the same way as ISDN metered, except for
+billing where a fixed cost per port is made irrespective of usage. Within C&W and BT
+the routing is also different with a fixed circuit between each DLE and C&W to handle
+these types of calls (for ISDN metered, normal call routing is applied between BT and
+C&W). Note that FRIACO is not available for Kingston Telecom branches. The
+FRIACO service purchased from C&W is only available during the day (01:00 to
+17:30 Monday to Friday, 01:00 to 13:00 Saturday and 01:00 to 08:00 Sunday)
+
+These routes are combined to provide different services as follows
+e Voice Dial On Demand — Branches always dial the data centre directly.
+
+e Bronze Dial On Demand — Branches use a Metered connection if working with direct
+dial to the data centre as a second choice. This used to be much cheaper than the
+Voice Dial on Demand solution, but recent tariff changes mean that both services have
+similar running costs.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 67 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+e Silver Daytime FRIACO - Branches hold open a FRIACO connection during the day,
+using a metered connection if this is not available. Out of hours they behave as bronze
+sites. This is used for larger sites.
+
+e Silver Daytime Metered - Branches hold open a metered connection during the day.
+Out of hours they behave as bronze sites. This is very expensive and is therefore only
+used for a handful of large sites that cannot get FRIACO.
+
+Details of how these behave can be found in TD/SDS/002 - Counter Network Infrastrucutre
+Manager (CNIM).
+
+In addition, a “data recovery (Day J)” connection is possible using either PSTN or Mobile
+(HSCSD) that uses a metered connection. This is used when a phone line is broken for many
+days and data needs to be retrieved from the PC in the branch.
+
+6.3.2 ADSL Branches
+
+There are two types of ADSL in the solution - C&W Data Stream and Fujitsu Services IP
+Stream. Initially it was expected that all branches would use the Data Stream version, but this
+has proved to be expensive to rollout to the whole estate — particularly where only a few
+branches are connected to a BT local exchange. Therefore Fujitsu Services [PStream will be
+used for all low density exchanges (typically rural ones - estimated at 7,000 branches) with
+C&W data stream being used for the urban ones. [DN: rollout expected summer 06]
+
+Two variants of IPStream are used depending on the size of the branch (larger branches need
+more guaranteed bandwidth to ensure good response times for online transactions):
+
+e IP Stream Home for I to 3 counters — notionally a 50:1 connection ratio
+e IP Stream Office for 4+ counters — notionally a 20:1 connection ratio.
+ADSL branches can also use other connection types:
+
+e Initial configuration is downloaded via PSTN (see estate management) via a metered
+called.
+
+e Approximately 2000 branches are able to use ISDN as a backup (when in backup
+mode ISDN is held open permanently on a metered connection).
+
+e Where an Orange signal is available an “on demand” backup service is available to
+allow the branch to operate using HSCSD via a modem carried by the engineer.
+
+Further details can be found in:
+« TD/SDS/004 - ADSL - High Level Design
+e AS/DPR/025 — IPStream Design Proposal
+e EP/HLD/002 - High Level Design - Branch Network Resilience
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 68 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+6.3.3 VSAT Branches
+
+Where distance limits from the local exchange prohibit the use of ADSL or ISDN, then a
+VSAT connection is used.
+
+For these a PES (personal earth station) is plugged into a VSAT gateway PC (which has a
+WAN network card as well as the LAN network card.
+
+The use of VSAT is problematic in terms of reliability and planning permission for the dish.
+Once all branches than can be are moved to ADSL, it is planned to migrate the remaining
+VSAT branches to fixed circuits.
+
+6.4 IP Addressing
+
+This can be split into two areas, consisting of a Private Internet space termed the Horizon
+Private Internet Address space (PAS) and the Horizon Boundary Address space (BAS).
+
+All PAS members are allocated from the IPv4 Address Space according to RFC 1918. PAS is
+a strict subset of RFC 1918 with well defined boundaries.
+
+For each 3" party with which Horizon exchanges IP data grams a Peering IP address island is
+defined. The collection of all such Peering IP address islands is orthogonal from each other
+and their union is the BAS.
+
+It is intended that all members of the BAS are RFC1918 addresses however exceptions to fit
+in with 3° party requirements will be considered.
+
+The table below shows how IP addressing is managed within the PAS:
+
+Address Space I Assignment Scope Constant Outgoing Routing
+5 : Next time is _ I Connections to
+the same endpoint?
+
+RAS Gateway I Dynamicby I Unique within I Yes Yes m
+PC WAN - PPP from PAS
+ADSL, Dialled I Horizon
+RAS Radius Server
+RAS Gateway Static — Unique within I Yes since Yes m
+PC WAN — allocated via PAS static
+ISDN autoconfig,
+
+process
+VSAT Gateway I Static — Unique within I Yes since Yes m
+PC WAN allocated via PAS static
+
+autoconfig
+
+process
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 69 of 96
+oO
+FUJITSU
+
+Horizon Architecture Overview
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+Branch LAN Static — Unique within I Yes since Yes m
+workstations allocated via PAS since static
+
+autoconfig Subnet is
+
+process unique per
+
+Branch.
+
+Devices on Data I Static Unique within I Yes since Yes
+Centre LANS PAS static
+Loop back Static Unique within I Yes follows I Yes
+devices PAS trivially since
+(ie. addresses static
+not associated
+with real
+interfaces bit
+associated with
+a device)
+Virtual Devices I Static Unique within I Yes follows Yes
+
+LE. Load
+balancer and
+NAT
+projections
+
+PAS
+
+trivially since
+static
+
+6.5 Branch Network Monitoring
+
+Monitoring of the branch network is complex due to the size and type of networks used. As a
+result there are a number of ways that the network is monitored as shown by the diagram
+
+below.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 70 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Data Centre D
+Platforms ~
++4 SMDB I
+Bi a Data Replcated
+2 jine 83% Branch Da eplicate
+Tine support G08 Data Data
+OMDB Oo
+Rach, aeitaton
+1 Logs *’I Radius Servers Connection / gener Connection
+Disconnection eeop Status
+fan Events (hourly
+~ 4 &Q0S8 Update)
+L/\\ i Poll Data Centre I I
+Network i Systems = —f Correspondence
+Management - Servers
+Team HP Openview. HP Openview
+: Reports
+View Route T
+Tables
+i I WAN/LAN
+ate VPN Servers Problems
+ \ i) Poll Gateway Daily & Hourly
+mn Aggregation PC ifon ADSL QoS Data
+/ Routers I every5 minutes (sent once per day)
+3" line (uses VPN tunnel)
+support" I
+i Poll VPN Servers. I
+i Every 30 seconds to I
+4 ' 5 minutes (depends
+Detect ' ‘on network type)
+PPP Failures 1 I t
+1
+i QoS Data
+Connection RAS State——t>} cNIM Qos Message
+Manager A. PPP Black Records™ I Server
+{ Hole Detection T 1
+WAN Network cas
+Problems
+Diagnostic BNR WAN/LAN
+Traces Management I Counter Call Problems.
+Scheduler __ Poll Slave counters every 10
+‘Seconds (using Message server) I >”
+BNR] EPOSS WAN/LAN Network
+Options I Watchdog Problems
+/ Business Application
+Branch Staff Branch GW PC
+
+The key characteristics are:
+
+Le [Name [Function
+
+[ Documentation ]
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 71 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+Date: 16/06/2006
+
+1 I Connection
+
+Connection Manager is responsible for management of
+
+RS/DES/091 - Branch
+
+Manager any RAS based connections (ADSL, BNR ISDN and Connection Manager
+BNR Mobile) including PPP failures. It writes diagnostics I Detailed Design
+traces available for 3 line support.
+2 I CNIM CNIM Monitors the network at the IP level polling the TD/SDS/002 - Counter
+CASQOS data centres every 30 seconds to 5 minutes depending on I Network Infrastructure
+
+the network type. If it detects a PPP black hole it tells
+Connection Manager so that the connection can be reset.
+
+CNIM writes Quality of Service (QoS) and diagnostic
+data on a regular basis to the local disk. Once per day
+CASQOS reads the QoS Data and writes it to the
+message server for transmission to the data centre.
+
+CNIM is also responsible for BNR management.
+
+Manager (CNIM)
+
+SY/SOD/007 - Network
+Banking - Outlet Network
+Quality Of Service
+Reporting System Outline
+Design
+
+3 I Counter Call
+Scheduler
+
+The Counter Call Scheduler takes information from
+CNIM and the message server to detect WAN and LAN
+issues respectively. This information is written to the
+message server for transmission to the data centre and
+also for the counter business application.
+
+See Application Section
+
+4 I Business
+Application
+
+BNR Options
+
+EPOSS
+Watchdog
+
+The business application provides feedback to the Branch
+staff and also allows BNR options to be invoked.
+
+See Application Section
+
+5 I HP Openview
+Radius Servers
+
+Aggregation
+Routers
+
+HP Openview is used to Poll the branches that aren’t dial
+on demand (i.e. ADSL and VSAT) to detect connection
+issues from the data centre. It is also used to poll the data
+centre platforms and network devices.
+Connection/Disconnection events are fed to the OMDB.
+
+The Network Management team have access to HP
+Openview reports together with Radius logs and the
+Aggregation routers to allow them to understand the
+status of the network.
+
+m
+
+6 I Correspondence
+Servers
+
+OMDB
+SMDB
+
+QoS and EOD data is Data is harvested from the
+Correspondence servers into the OMDB (and replicated
+to the SMDB) to provide information to 2™ and 3" line
+support on the Branch status and QoS data.
+
+In addition, the connection status (checking when each
+gateway PC message server last connected to the
+correspondence servers) is checked once per hour.
+
+See Application Section
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 72 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+7.0 Systems Management
+
+The size and topology of the POL branch estate requires proactive and comprehensive system
+management such that every branch and individual counter position is under management and
+is being supported in successfully performing business transactions.
+
+Similar considerations apply to the applications running in the data centres. Any anomaly can
+potentially have effects over large parts of the branch estate
+
+The system management solution can be decomposed into a group of component services
+which focus on individual functional areas. The component services inter work to deliver the
+required functionality and to achieve re-use of individual capabilities.
+
+The following sections look at each of these individual components in turn.
+
+7.1 Software Distribution and Management
+Software distribution works in two modes of operation:
+1. A software payload is pushed to the end system from the central management system.
+
+2. A software payload is pulled by management agent software on the end system from a
+nominated depot. The depot may be co-located with the end system (such as another Counter
+in the Branch) or remote (i.e. within the data centre).
+
+The software is installed and a permanent record is kept of its installation against the end
+system in the central system management inventory (the OMDB). All end systems in the data
+centre and the Branch estate can be updated through this service, however only some data
+centre platforms use this method due to cost of packaging — others are upgraded manually.
+
+Peripheral devices that provide an API to update their firmware from the end system to which
+they are attached are also supported on this solution. Pin Pad’s are example of this class of
+device
+
+Both methods of distribution have an associated scheduling and targeting criteria. The
+targeting criteria is the statement of what end systems need to be updated and will allow such
+groups as single end systems, nominated sets of Branches (for pilot roll out of new facilities);
+and generic rules (such as all end systems who do not have the software already installed ).
+
+The scheduling criterion is the time at which the installation on the end system is actioned.
+Most software installations are invasive to the business and hence their schedules are chosen
+to be out of business hours. In the push mode the scheduling criteria is implemented by the
+central management systems. This scheduling takes account of the branch WAN network
+characteristics (e.g. maximum concurrency, maximum dial rate for ISDN etc).
+
+The pull operation is driven by a local schedule on the end system which is only used for end
+system swap out. This is the automatic upgrade of a new end system from the software
+baseline present on that end system (i.e. at cold build) to the baseline of the live end system it
+replaces.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 73 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+There are updates that require Branch wide installations (that is changes that need to be made
+to all Counters in a physical Branch at the same time) — for example updates to the Riposte
+desktop. The distribution facility includes the ability to co-ordinate updates across the whole
+branch with all counters having the software installed or (if there is an issue on one or more
+counters) for all counters to regress to the starting position.
+
+To minimise the disruption to branch staff if a counter reboot is required during software a
+facility called “unattended reboot” is used. This allows the counter to be recovered to its post
+POLO (see security section) state in a secure way.
+
+Further details can be found in:
+e SY/SOD/005 - System Management - Software Distribution For FRIACO Networks
+e SY/SOD/006 - Network Banking - Tivoli Based Supportability Tasks
+
+e SY/SOD/007 - Network Banking - Outlet Network Quality of Service Reporting
+System Outline Design
+
+e TD/SOD/002 - Unattended Reboot System Outline Design
+e TD/SOD/007 - Outline Design For Remote Updating of PIN Pads
+
+7.2 Distributed Monitoring
+
+The Horizon solution relies on a number of platforms and applications working together to
+provide a business service. It is important that the operators can understand the state of the
+system from a service perspective so that issues can be prioritised and dealt with
+appropriately.
+
+The central management system receives feeds (including application heartbeats) from the
+various platforms and applications and uses these to provide a summarised view of the
+following information:
+
+1. Whether each business service is working fully, partially or not at all
+
+2. The state of resilience features that make up that service — for example resilience may
+be currently reduced due to an earlier failure.
+
+3. Indicators that the service may have problems — for example higher business error rates
+than expected or volumes being processed are lower.
+
+4. Indicators that the components that make up the service may have an issue — for
+example processor usage is much higher than expected.
+
+Further details can be found in:
+e SY/DAT/003 - SYSMAN Service Monitor Configuration
+e SY/DES/018 - Online Transaction Monitoring System Outline Design
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 74 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+7.3 Event Management
+
+Applications and operating systems within the solution can generate information that has
+operational significance and therefore needs to be dealt with cither automatically or through
+operator intervention. The source of the events may be in the counter estate, data centre or
+network management component domains and these domains are linked to give an enterprise
+wide view for the operational support community. Individual domains may be solely managed
+through this enterprise view while other domains may have local management views. Any
+domain will always have a gateway though to the enterprise management domain.
+
+Facilities exist to configure rules for the forwarding of events both at the originating end
+system, at a domain gateway or at reception in the central event management system. Certain
+domains will also provide tailoring at the user interface.
+
+Details can be found in:
+
+e SY/ION/006 - System Management - Counter Event Forwarding and Software
+Distribution
+
+e SY/ION/007 - System Management - Advanced Event Archives Search Function
+e SY/MAN/005 - Event Management Support Guide
+
+7.4 Remote Operations and Secure Access
+To support Horizon a number of support roles need access to the data centre systems.
+
+For 2nd line support is via tasks that have predetermined functionality and whose access is
+role based.
+
+For 3rd line support a support framework is provided that includes:-
+
+1. Access to data centre resident Secure Access servers from Fujitsu Services locations
+during business hours or from support staff home locations out of business hours using
+secure workstation or lap top builds and encrypted communications
+
+2. Two factor authentication at the Secure Access servers
+
+3. Onward access from the Secure Access Servers to data centre platforms and counters
+using 3rd party COTS product management interfaces and audited client access to all
+Windows, Unix and Network platforms direct via IP or proxies.
+
+5. Role based privileges for support access on platforms operating systems, hosted
+applications and database schemas.
+
+Further details can be found in:
+e SB/DES/008 — Secureld
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 75 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+e SY/SOD/009 - Secure Support For Network Banking
+e SY/DPR/001 - Out Of Hours Remote Support
+
+7.5 Estate Management and Auto-Configuration
+
+The policy for estate management is to de-skill as much as possible any engineering activities
+in the branch estate and to minimise the time taken for rollout of new branches and spares
+replacement. To this end, installation of new branches or replacement of failed equipment in
+existing branches is almost completely automatic — the engineers just have to plug in the
+equipment, scan a bar code and then wait for the system to be fully configured. This
+configuration includes the personalisation of network endpoints, branch router, counter
+positions, distribution of any sensitive key material (in a secure way) and any software fixes
+not included in the spare.
+
+The diagram below shows the a simplified view of the systems and data flows involved in
+creating a new branch:
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 76 of 96
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+Company-in-Confidence Date: 16/06/2006
+
+Data Flows In Horizon For Branch Physical Changes (OBC)
+(Simplified — Ignores Systems that Transport Data )
+
+IN
+
+(OBC 20)
+
+‘a
+
+ope
+
+Branch
+Change Request, Request
+
+Enter Change
+‘Schedule
+
+‘and Status
+
+Record
+
+(Order Circuit—C&aW Branch Reference Data
+ADSL, ISDN, VSAT
+
+Order Circuit IPStreat
+
+‘Schedule Vist
+
+Reference Data
+Branch Details
+
+Dispatch
+Engineer
+
+1 Key Material
+
+t
+Authenticate
+'
+
+t
+
+Monitor Network Config
+
+1
+!
+fi
+'
+'
+!
+1
+
+‘oftware Updates + Configurator
+
+== Connects to =:
+
+a ye
+I Eujteus
+cen, I I
+rN Reference Ebene
+Data
+— I
+ina
+OBC Database
+= = <— _ Data Flow
+== Control
+‘Change Request ~ Flow
+Change Details Pa iaraa!
+
+Number of
+‘Counters
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 77 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+FUJ00098217
+
+Ref; TD/ARC/039
+Version: 0.2
+
+Date: 16/06/2006
+
+The key characteristics are:
+
+# I Name Function Documentation
+1 I Post Office Post Office make a request via email to open a new branch. I n/a
+RDS The reference data for that branch is also entered into Post
+Office’s RDS system.
+2 I OBC Team The Fujitsu OBC team have a Post Office laptop with TD/DES/106 - OCMS
+
+OBC Database
+
+Change Request
+Archive
+
+Energis Online
+
+access to the Post Office email system. They use this to
+retrieve the branch change request (OBC 20).
+
+This change is entered in the OBC database and the
+change request archive.
+
+The branch network service is ordered via either Energis
+
+High Level Design
+
+Telepurchase online (for C&W services) or Fujitsu Telepurchase (for
+ocms Fujitsu supplied services)
+The details are entered into OCMS (operational change
+management system) to schedule the changes in the
+solution.
+3 I RDMC The reference data changes are received from RDS and See Application Section
+RDDS passed to RDMC to process them. RDMS provides this to
+Sysman and RDDS.
+MTAS
+
+DCS Agents
+
+Host Databases
+
+RDDS distributes the reference data to the host databases
+and MTAS (MID/TID Allocation Systsem).
+
+MTAS also receives a feed from OCMS. Between the two
+feeds there is sufficient data to allocate a MID and TID
+and send that information to Streamline.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 78 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+4 I ACDB ACDB receives the change from OCMS and allocates TD/SOD/006 — BI3
+KMS network configuration to the branch and counter Estate Management
+
+Radius Servers
+/ISDN Routers
+
+Boot Service
+
+configuration for each counter position. The configuration
+data is feed to a number of systems including:
+
+e Radius Servers and ISDN Routers to allow
+network access
+
+System Outline Design
+
+TD/SOD/010 - ADSL -
+Estate Management
+System Outline Design
+
+VPN Servers © KMS toallocate key material for the branch DE/DES/015 - Pathway
+Autoconfig Bootserver
+SYSMAN © HP Openview to monitor the branch Implementation CSR+
+Correspondence © Boot Service to allow network config to be See also application
+Servers distributed on installation section
+© VPN Servers to enable a new VPN config
+e — Sysman to allocate sofiware baselines and
+configurations
+© Correspondence server and host databases (via
+SYSMAN) to open the branch.
+e RDDS (via SYSMAN) for the number of counter
+positions in the branch.
+5 I Power Help The OBC Team also schedule engineer visits to install the I n/a
+
+Dispatch 1
+
+branch via Power Help (the Incident desk).
+
+Romec (a Royal Mail group company) are requested to
+
+Romec physically installed the new branch (wiring, physical
+Engineer machines etc).
+Gateway PC Dispatch I is requested to schedule a Fujitsu engineer visit
+to complete the installation (connection to the network,
+ensure it works etc). To enable this the door on KMS needs
+to be “unlocked” to allow the installation and this is
+triggered by Power Help.
+6 I NSAT NSAT (Network Service type Allocation Tool) is used if TD/DES/159 - Network
+ARMS the ISDN network type needs to be changed between Dial _I Service Allocation Tool
+
+On Demand, Bronze Dial On Demand, Silver Daytime
+FRIACO and Silver Daytime Metered (see Network
+Section)
+
+ARMS (ADSL Rollout Management System) is used if the
+Branch needs to be migrated from ISDN to ADSL.
+
+Design
+
+SY/SOD/020 - ADSL
+ARMS To Horizon
+Interface System
+Outline Design
+
+7.6 Capacity Monitoring
+
+In order to the system there is a comprehensive capacity monitoring
+
+Athene product from Metron. This consists of three elements:
+
+system based on the
+
+e Immediate alerting on performance issues that could jeopardise the live service. These
+events are carried through the event framework to the monitoring system.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 79 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+On a daily basis performance data is collected from critical platforms an loaded into a
+“short term performance database” to allow problems to be investigated.
+
+On a monthly basis performance data is loaded into a “long term performance
+database” to support medium and long term trending.
+
+More details can be found in
+
+77
+
+TD/STR/002 - Athene Deployment Strategy
+
+Scheduling
+
+There are a number of scheduling methods used in Horizon. For the business applications in
+the data centre, Maestro is used. The master is run on the host systems, with clients running
+on each platform that requires scheduling services.
+
+For the OMDB, the scheduling capabilities of the Oracle management suite are used [DN:
+need to check this]
+
+For the counter business applications, a bespoke product called the “Counter Application
+Scheduler” is used (see the application scheduler). Other scheduling required is managed
+through the NT4 scheduler.
+
+Details can be found in:
+
+7.8
+
+TD/HLD/002 - Horizon Maestro Schedule
+
+Time Synchronisation
+
+Time synchronisation is achieved through the following components:
+
+.
+
+GPS based Time synchronisation server(s) within the data centre as the master source.
+This avoids the need for an internet connection from the data centres.
+
+The data centre platforms (including the correspondence servers) use Network Time
+Protocol (NTP) to synchronise with the GPS receivers.
+
+The gateway PC in each branch synchronises with the correspondence servers. This is
+a feature of the Riposte messaging software.
+
+The slave PC in each branch synchronise with the gateway PC using Riposte.
+
+All platforms generate events that are collected by the event management system. This
+is a requirement of litigation support so that it can be demonstrated that the clocks
+have been kept in synch.
+
+Further details can be found in:
+
+TD/ARC/005 - Time Service
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 80 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+Horizon Architecture Overview
+
+Company-in-Confidence
+
+FUJ00098217
+
+FUJ00098217
+Ref; TD/ARC/039
+Version: 0.2
+Date: 16/06/2006
+
+8.0 Availability & DR
+
+For the majority of the Horizon solution, resilience and DR are provided by the same
+mechanism, with a single data centre in its own right having very little resilience. This
+approach minimises the capital hardware costs in the solution. For a few components where
+rapid recovery is required, local resilience is provided (e.g. NPS database).
+
+The diagram below shows a simplified view of the resilience and DR of the solution.
+
+Clients Providing
+Online Authorisations
+
+Streamline
+
+Bootle
+
+S S
+
+Wigan
+
+Correspondence
+
+Servers
+
+—~’
+
+[ss I
+
+VPN Servers,
+
+I
+
+Actives
+SOAP Connections
+‘Messaging Standby
+VPN = = Connections _
+
+‘Counter
+
+Branches
+
+The main characteristics are that:
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 81 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+« The Branches have network connections that can use either data centre. The exact
+method used depends on the network type. Either both data centres are connected (as
+with ADSL or VSAT) or one data centre is connected normally with the branch able to
+use the other data centre if there is an issue (as with ISDN).
+
+e The VPN software in the counter connects to multiple VPN servers at both sites to
+provide resilient encrypted tunnels.
+
+e The Riposte message server at the counter is able to connect to 4 correspondence
+servers (2 at each site). At any one time only one connection will be used for normal
+traffic.
+
+e Online Transactions Banking, ETU and Debit/Credit Card are picked up from the
+correspondence servers by the Routing Agents, ETU Agents and DCS Agents
+respectively. These are able to connect to both correspondence servers on the same
+site (one connection normally used). In the event of an issue at the main site, standby
+service will run at the other site.
+
+e The Banking Authorisation agents receive transactions from the Routing Agents.
+These need the NPS database to hold state information for the online transactions. The
+NPS uses Oracle RAC to provide local resilience. In the event of site disaster, the NPS
+service is brought up at the other data centre. Data is replicated between the two sites
+using EMC SRDF technology.
+
+e The DVLA service uses an active/active configuration where the service is live in both
+data centres.
+
+e The Host service (used for batch processing) is live at one data centre. There is a
+standby server at the other data centre that is used for both DR and resilience. Data is
+replicated between the two sites using EMC SRDF technology.
+
+e Data is transferred between the host at the data centre through generic agents. These
+run at both data centres.
+
+The diagrams below show in more detail the two methods used between the branch and data
+centre to achieve resilience and DR for online services.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 82 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Bootle I Wigan
+Active / Standby
+--—— “Heart Beats Sent via NPS ——
+NBS Auth Agent 4 ~ ' ‘® NBS Auth Agent
+. Routing Agent
+Connects to both
+Auth agents.
+= --------I — Auth agent tells,
+Ya routing agent
+I a which one is
+active:
+NBS Routing NBS Routing
+. Active / Standby _
+Agent Heart Beats Sent via Cor Servers Agent
+Routing Agent
+Method Also used by ETU and DCS Auth Agents Connects to both
+. Correspondence
+__ Servers on its
+I site. Failover
+between
+ce de aa CC d connections
+orrespondence > jorrespondence I Fandled by agent
+Server v AY Server
+\
+Correspondence is Correspondence
+Server ‘ Server
+7 ~sS
+N Correspondence Servers
+. ~. connect to all other
+
+VPN Layer I VPN Layer
+
+instances
+I (Active /Active Cluster) (Active /Active Cluster
+
+Request packet sent to all 4
+correspondence severs
+
+1* Server to respond
+Riposte on Gateway I establishes working connection
+
+PC in branch
+
+correspondence servers.
+Messages to/from branch
+passed between all
+
+Resilience for online transactions using Riposte
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 83 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+Bootle I Wigan
+1
+Both Services Active
+_ Method Also used for, __
+DVLA Web --7" PAF and APOP ~~~ DVLA Web
+Server I Server
+CSM probes
+: Servers to see
+\ which are
+Context Switch . Context Switch —7 Requests from
+Module (CSM Module (CSM) round robin
+across active
+servers
+X.
+VPN Layer I VPN tayer CSM injects/
+(Active /Active Cluster) (Active/Activ® Cluster I femoves network
+. XN route if web service
+N available/
+NC. unavailable. (Route
+Health Injection)
+VPN layer routes to
+local CSM in
+preference to
+remote CSM
+a Branch application targets
+- Virtual address.
+NL. Gateway PC VPN software
+forwards request to CSM in one
+VPN en Gateway PC I ata centre based on VPN
+Cross Campus Cluster
+
+Resilience for online transactions using Web Services
+
+Other areas of resilience are shown in the table below. In general there are resilient LAN in the
+data centre and the table highlights how this is used.
+
+#_I Area Resilience Model How Selection Made by User of Service
+
+1
+
+Service: Active/Active
+Platform: Both Live
+
+LAN: Single IP Address —
+active/standby connections
+
+TES Application
+APOP Admin
+
+User has different IP addresses for the
+different servers
+LAN failover automatic
+
+vv
+
+Banking File Service: Active/Standby
+Transfer Platform: Both live
+APS File Transfer I LAN
+
+PO File Transfer
+
+Manual failover
+
+Service: Active/Active
+Platform: All Live
+
+Correspondence
+Servers
+
+As described above
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 84 of 96
+
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+LAN: Single LAN used in each server
+
+for Branch traffic; other traffic spread
+
+over both LAN
+4 I DVLA Sever Service: Active/Active As described above
+
+PAF Server Platform: Both Live
+
+APOP Web Server
+
+LAN: Single IP Address —
+active/standby connections
+
+5 I Host Server Service: Active/Standby Manual Failover for Service & Platform.
+KMA Server Platform: Active/Standby
+OCMS Server Database: SRDF Replication LAN failover automatic
+DCSM Server LAN: Single IP Address —
+active/standby connections
+6 I ACDB Server Service: Active/Standby Manual Failover
+OCMS Server Platform: Active/Standby
+Database: Log shipping
+LAN: ??
+7 I VPN Servers Service: Active/Active Counters automatically select working
+Platform: All live servers
+LAN
+8 I Generic Agents Service: Either Active/Active or Automatic failover via Maestro schedules
+Active/Standby (depends on agent (for batch agents) and SYSMAN (for
+type) continuously running agents).
+Platform: All Live
+LAN: Single LAN used for connection
+to correspondence servers
+9 I ETU/DCS Agents I Service: Active/Standby ‘Automatic through agent code (see above)
+NBS Routing Platform: Both Live
+Agents LAN: Single IP Address —
+NBS Authorisation I active/standby connections
+Agents
+10 I NPS Service: Active/Active within Data Automatic failover for local resilience.
+
+centre; Active/Standby across data
+centres
+
+Platform: All Live within data centre.
+LAN: Single IP Address —
+active/standby connections
+
+Manual failover if other data centre used
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 85 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+
+FUJITSU SERVICES .
+
+Company-in-Confidence Date: 16/06/2006
+9.0 Performance and Scalability
+This section outlines the volumes that the solution needs to be support
+9.1 Volumes
+The table below summarises the product volumes that need to be supported by the solution
+Volume EPOSS APS NBS DC EIU DVLA PAF Settlement Total
+
+Online
+
+Peak 105,205,37 40,641,69 41,847,56 4,210,00 1,422.41 3,603,876 11,969,80 119,631,43 328,532.16
+Month 6 4 0o oO 7 6 6 5
+Peak 35,319,442 I 11,511.88 I 10,960.03 I 1,264,76 I 462,075 I 2,080,110 I 4,002,430 I 36,112,618 I 101,713.36
+Week 8 2 8 3
+Peak 2 15,620,323 5,626,222 5,656,759 565,949 213,783 1,026,146 1,883,664 17,188,486 47,781,332
+Days
+Peak 8,602,518 3,031,573 3,264,181 288,425 121,200 670,704 1,100,788 9,565,842 26,645,231
+Day
+Peak 1,230,160 560,841 694,976 79,368 17,254 92,724 162,246 1,730,259 4,567,828
+Hour
+Peak Sec 344 179 222 22 5 27 46 532 1,377
+
+a2 179 222 22 5 27 0 293 790
+
+The peak second numbers are the average rate over the peak 5 minutes. Two Peak second
+numbers are provided — one to give the peak for each service (although the peaks do not co-
+inside) and the actual number which is the highest workload possible given the throughput that
+can be achieved by the counters.
+
+Full volumes can be found in PA/PER/033 - Horizon Capacity Management and Business
+Volumes.
+
+9.2 Scalability
+
+There are two broad approaches to scalability:
+
+Scale Wide — Where multiple instances of a particular component and be run in parallel
+and therefore additional resource can be added by increasing the number. An example
+would be adding more servers to the SM Application layer.
+
+e Scale High — Where multiple instances cannot be run in parallel and therefore the
+capability of the component needs to be improved. An example would be a banking
+agent where the platform is upgraded to provide more processing agent.
+
+There are two types of Scale Wide — those that require application or other change and those
+that can be achieved with no change.
+
+The table below describes the possible scaling strategies for the key, performance critial
+components of the system:
+
+# I Area Scaling Approach
+
+Banking Agents Primary approach is to Scale High providing more processing power for the agent
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 86 of 96
+oO
+FUJITSU
+
+FUJITSU SERVICES
+
+FUJ00098217
+
+FUJ00098217
+Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+Company-in-Confidence Date: 16/06/2006
+
+DCS Agents
+ETU Agents
+DVLA Agents
+
+platforms or where a number of agents share a platform to split this across multiple
+platforms
+
+It would be possible to Scale Wide if the number of instances is increased although
+this is likely to require other changes in the system (e.g. to increase number of PRI
+for banking).
+
+2 I PAF Agents
+APOP Agents
+Generic Agents
+Routing Agents
+
+There are two options for this:
+1) Make platform more powerful
+2) Add additional platforms and instances
+
+It is likely to be most cost effective to make the platform more powerful.
+
+4 I Host
+
+The host capacity is dominated by the need to support the overnight batch process.
+There are two ways to provide additional capacity:
+1. Provide a more powerfull host system (cither faster processors or more
+processors)
+2. Split the workload across multiple platforms (e.g. TPS database on one
+platform and DRS on a different platform.
+
+It is likely to be most cost effective to replace the host by a more powerful system
+with the same number of faster processors due to the way Oracle licensing works,
+
+5 I NPS
+
+The NPS database is spread over two systems in normal operation. If one of these
+fails then the other takes over the whole workload. There are two ways to scale this
+platform:
+1. Provide a more powerful host system (either faster processors or more
+processors).
+2. Add an additional platform to provide resilience to the two other platforms
+— hence ensuring no one platform has to take the full workload.
+
+Given the type of hardware deployed (2 processors used in an 8 processor capable
+platform) the most cost effective approach is likely to be adding additional
+processors.
+
+EN
+
+Correspondence
+Server
+
+Given the structure of the correspondence sever clusters (i.e. a branch is a member of
+one of the 4 clusters) the only practical way to scale is to have faster processors.
+Given the way that Riposte works it is better to have a fast 2 processor system rather
+than a slower 4 processor system.
+
+a
+
+Data Centre LAN
+
+The data centre LAN is composed of high speed switches (with 32Gbit/s backplanes)
+connected to servers via LO0Mbit/s LAN.
+If this proves to the insufficient then there are three options for scaling:
+1. Split the workload over more servers (each with 100Mbit/s LAN)
+2. Upgrade the LAN to IGbit/s for selected servers
+3. Reduce the bandwidth needed through application change (e.g.
+compression).
+
+Given the nature of the system, the most cost effective approach is likely to be
+reducing the bandwidth unless a small number of servers need to be changed.
+
+oo
+
+Branch WAN
+
+The Branch WAN has two bottlenecks — the individual bandwidth into each branch
+and the aggregate bandwidth across all branches.
+
+For individual branches it would be possible to add additional bandwidth through
+changing network technology (¢.g. a high speed fixed circuit). However this is likely
+to be prohibitively expensive unless used in a very small number of branches. In
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 87 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+) Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+practice it is preferable to keep the bandwidth usage to that that can be supported by
+the network technology.
+For the aggregate bandwidth, it is possible to purchase additional bandwidth from
+the network supplier. However this is likely to be relatively expensive. In practise
+therefore it is better to keep the bandwidth usage within the current design capability
+through application change.
+9 I Other WAN Other WAN connections (e.g. Banks, e-pay, Post Office etc) can be scaled through
+Connections buying more capacity from the network supplier.
+10.0 Security
+
+This section covers the key security features, key management and audit.
+
+Other aspects of security can be found in:
+
+.
+
+.
+
+RS/POL/002 - Horizon Security Policy
+
+RS/POL/003 - Access Control Process
+
+RS/POL/004 - Computer Virus Policy
+
+RS/DES/080 - NT Domain Structure Design For Post Office Account
+RS/FSP/001 - Security Functional Specification
+
+10.1 Security Features
+
+The diagram below shows the main security features of the solution:
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 88 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+. -~ mee 8 Is
+os a> Users Ie
+g2 Be Le S
+roo 25 Iii, 5 és a
+! os ee oreann 5 g oo 16
+g! a I, oe 18 a abo og
+z! gr 7 eel 18 2 paws prs] 25 (sar pes
+H a ' BS = & I Local Local I $2 I Servers II Server
+1 : of es
+! =o eu
+Hl zankng 2] ~ APS I DRS 3
+— agents I2I Harv I Harv 1
+; Ea {1 Fies diatally signed
+El gs Y by FTMS for integrity
+2) between local and
+i c remote
+a1 le T
+Ei ga
+a! #8 wenI YPN Radius ‘Other
+1 £@ 21 I servers} I servers I =, Host
+Bl Be By I strong cHaP — I Agents DVLA
+El g8 21 {Password for Server
+Bi Sgr eo {sever Lege No encryption .
+sul c& Branch WAN on intercampus / §
+get fet Nebo) $SmiChsed User natok z
+3 et Group connections 5
+fer 2a 1 3
+Sg! ag! ' Branch Gateway PC =
+Es am T
+aa I noisas I un 4 VPN for
+go ! authentication
+af = VPN integrity and encryptior
+Es arty vp DVLA
+83
+Ag
+3B
+3
+
+PIN Blocks Hardware Encryption, MAC of Transaction det
+
+iP between counters
+‘Smart Cache,
+Key Store]
+Slave PC
+\
+
+Message Server I POLO \ ‘Smart Cache stops
+ea Sgraures I unlimited smart card
+
+‘Counter Application eee charging when
+
+branch offine
+(maximum value of
+vocals I transactions
+cal User
+
+on unacknowledged by
+
+. en] Authentication POLO the data centre)
+
+(username and Card on Reboot
+
+password)
+
+Branch access to the data centre is controlled as follows:
+
+e Closed user group in the network ensures only registered end points can get access to
+the data centre for ADSL and VSAT connections. For ISDN the closed user group is
+implemented on Voice access only.
+
+e The gateway PC has to log into the network using CHAP authentication to the radius
+servers.
+
+« VPN is used between the branches and the data centres and also between the branches.
+The key material for this on the branch PC is “unlocked” using a PMMC (Post Master
+Memory Card) and the POLO process. The PMMC is kept securely in the branch (e.g.
+kept in the safe).
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 89 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES
+
+Company-in-Confidence
+
+Date: 16/06/2006
+
+© Where specific data needs to be protected from being read (confidentiality) or
+tampered with (integrity) then this is done by the application.
+
+The POLO process is also used to unlock key material used to encrypt the hard drive and
+provide the keys used for digital signatures.
+
+The closed user group in the network will be handled through:
+
+The Radius Servers are split into two logical groups:
+
+1. ADSL- Implemented by network supplier
+2. ISDN — Implemented by the network supplier for voice access. Not implemented on
+
+data access.
+
+3. VSAT — Implemented by network suppler
+
+1. Dialled ISDN/PSTN
+2. ADSL
+
+Network links to third parties are encrypted where possible and this is shown in the diagram.
+
+For banking, PIN Blocks are used to transport PINs from the PIN Pad to the Bank. The HSM
+(Hardware Security Modules) used by the banking agents decrypt the PIN Blocks from the
+PIN Pads and then encrypt them using a key shared with the bank. This is done as a single
+atomic operation to ensure that the PIN itself is never exposed.
+
+To protect against re-play attacks on banking, all banking requests (with the exception of
+deposits) are protected by a MAC generated by the PIN Pad, using a key unique to the
+transaction.
+
+Many transactions are digitally signed to check that they have not been tampered with during
+transmission as shown in the table below:
+
+# I Data Type with Signature Generated by Checked By
+1 I AP Transactions Counter APS Harvester
+2 Banking and ETU confirmation Counter DRS Harvester
+transactions
+3 I DCS Confirmation transactions Counter C2 Bulk Agent
+(produces payment file for Streamline)
+4 I Banking Requests and Reversals Counter NBS Authorisation Agent
+
+(except for Card Account withdrawal
+requests)
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 90 of 96
+FUJ00098217
+
+FUJ00098217
+rod Horizon Architecture Overview Ref: TD/ARC/039
+FUJITSU Version: 0.2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+NBS Authorisation Counter
+
+Agent
+
+5 I Banking Authorisations
+
+6 I ETU Requests and Reversals ETU Authorisation Agent
+
+7 (I ETU Authorisations ETU Authorisation Counter
+Agent
+8 I DCS Requests and Reversals Counter DCS Authorisation Agent
+9 I DCS Authorisations DCS Authorisation Counter
+Agent
+10 I APS Smart Transaction APS Harvester Counter
+
+acknowledgements
+
+The APS Smart Transaction Acknowledgements are used by the Smart Cache to limit the
+maximum amount that can be charged by the counter without acknowledgement from the data
+centre. This is to limit the exposure if a PC is stolen.
+
+The tables below list these and the other security controls in the solution. They are split into
+network, infrastructure and applications.
+
+10.1.1. Network Security Controls
+# Control Name Risk(s) Addressed
+N1_ I DMZ Firewalls Hacking attempts from client connections (banks, DVLA,
+streamline, e-pay)
+N2 I No direct internet access to/from data I Limit risk of hacking
+centres
+N3__I No wireless LAN access (Wi-Fi) allowed in I Limit risk of hacking
+solution
+N4 I Post Office DMZ Firewalls Hacking attempts from Royal Mail intranet network.
+NS I Closed user Group on most of branch I Exposure to non-counter stafi/kit. Limits number of end
+network points that can attack the solution.
+N6 I Strong CHAP Password for branch network I Exposure to non-counter staff/kit. Network end point
+authentication requires valid username and password to attach to
+network
+N7_ I VPN from branch to data centre Confidentiality and integrity from branch to data centre.
+Also stops alien devices connecting to the data centre.
+N8_ I VPN between counters in branch Confidentiality and integrity from between counter
+positions. Also stops alien devices connecting to counter
+PC.
+N9 I Support DMZ Firewalls Hacking attempts from Fujitsu support community. .
+N10 I Network encryption to banks and e-pay Confidentiality and integrity of data while in transit.
+N11 I Network encryption to support sites Confidentiality and integrity of data while in transit.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 91 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+N12 I Network encryption to Royal Mail sites Confidentiality and integrity of data while in transit.
+N13I MPPE (Microsoft Point to Point I Confidentiality and integrity of bulk data while in transit
+Encryption) protection of files to/from I to/from streamline.
+streamline
+N14 I Radius servers segregated by logical I Security breach of one network type does not compromise
+network type other network types.
+NIS5 I Uses Private IP addresses which are not I Limit risk of hacking
+exposed across the system boundary
+10.1.2 Infrastructure Security Controls
+#~ I Control Name Risk(s) Addressed
+Il__I No plug and play, floppy disk, CD etc in counter Prevent alien code being loaded.
+12. I Physical Controls on data centre access Intrusion by non-authorised staff
+13. I Access controls for support/operational staff - SAS, I Exposure of system to non-authorised users
+secure logon etc.
+14 I Counter locked down (no access by branch staff to I Prevent staff hacking data centre
+underlying OS)
+5 I Degauss disks /tapes before leave data centre Stop sensitive data being exposed
+16 I Anti Virus for at risk data centre platforms Virus infection
+17 I Secure Builds for servers Reduce implications of hacking attacks — turn
+off unused features, make sure access controls
+correct etc.
+I8 I Physical Controls on access to key mgt functions and I Access to keys by non-authorised stafT
+key handling
+19 I Two-person controls on access to key material ‘Access to full keys by Fujitsu staf
+T10 I Patching of data centre platform operating systems Address vulnerabilities in OS to stop hacking
+and viruses
+I11 I BIOS is locked down and only bootable from primary I Prevent system being booted into a
+storage on counter uncontrolled operating system
+112 I Auditing of all support staff actions related to change I Fraud by Fujitsu staff
+of business data
+113 I Pagefile & critical files (e.g. messagestore) encrypted I Stop any data that is retained on the hard disk
+on counters from being readable.
+114 I Code signing Prevent unauthorised code from being
+installed
+115 I Signing of configuration files for counters Prevent unauthorised configuration data from
+being installed.
+116 I Patching of counter OS ‘Address vulnerabilities in OS to stop hacking
+and viruses
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence
+
+Page: 92 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+Version: 0,2
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+117 I Physical Controls on access to support workstations Access by non-authorised staff to support
+functions
+T18 I Counter Application runs in non-privileged user Tf application is bypassed in someway, user
+hasn’t got sufficient privilege to hack
+machine.
+119 I Counters have to be configured before can be used by I Stop unauthorised counters being added
+the application
+120 I Counters are configured to only allow login to a given I Stop users spoofing a branch to access its
+branch. accounts from remote location.
+121 I Counter Key material protected by PMMC and POLO I Stop system working unless have rebooted
+Process — system will not work following reboot unless I using the PMMC.
+unlocked.
+10.1.3. Application Security Controls
+# Control Name Risk(s) Addressed
+Al_I PAN not printed in full on receipis Prevent exposure of PAN
+‘A2_ I Auditing of branch staff transactions and events I Fraud — used for litigation support, FSA
+requirement.
+A3_ I Hardware encryption of PIN at counter and data I Exposure of customer’s PINs — PINs are always held
+centre, using Pinpads and Atalla HSMs encrypted except when within tamper-resistant
+physical devices
+A4 I Logon/Logoff of branch staff to application Exposure of system to non-authorised users
+AS I Authentication of transactions to/from counter Authentication of transactions to/from counter
+A6 I High Risk Transactions digitally signed Transactions tampered with during transmission.
+A7 I Smart Cache in Counter stops unlimited I Stops unlimited charging of Smart Cards if a PC and
+charging of Smart cards without a connection to I the PMMC are stolen together.
+the data centre.
+A8 I No email access for branch staff Minimise risk of malware.
+A9 I No internet browsing capability for branch staff I Minimise risk of malware.
+A10 I CA for certifying counter/app server keys Exposure of system to non-authorised users
+All I MAC of banking transactions Replay of banking transactions
+Al2 I Auditing of data passed across interfaces to I Proof of data in case of dispute or fraud
+external systems (¢.g. banks) investigations.
+A13 I Users of Branch application are allocated role(s) I Higher privilege functions not provided to low
+to determine the functions to which they have I privilege users.
+access,
+Al4 I Branch Application provides facility to “lock I Allows staff to lock screen while away from the
+screen” counter to stop unauthorised users from using the
+application.
+
+©Copyright Fujitsu Services Ltd 2006
+
+Company-in-Confidence Page: 93 of 96
+FUJ00098217
+
+FUJ00098217
+
+FUJITSU Horizon Architecture Overview Ref: TD/ARC/039
+
+) Version: 0,2
+FUJITSU SERVICES .
+
+Company-in-Confidence Date: 16/06/2006
+
+A15 I Branch Application provides facility for user to I Allows staff to logout quickly if threatened
+
+quickly and simply logout in a clean manner.
+A16 I Track 2 data encrypted when stored Exposure of Track 2 data to unauthorised
+
+individuals.
+
+10.2 Key Management
+
+There are a large number of keys used by Horizon to protect the system with each branch
+having their own set of keys. The keys managed in Horizon are:
+
+Audit Server (AUDS)
+
+Software Issue (SI)
+
+Client services Automated Payment service (AP)
+
+Post Office Filestore Encryption Key (FEK)
+
+Post Office Counters Ltd (POCL) Transaction Information Processing (TIP)
+
+POCL Reference Data (RD)
+
+Automated Payment service bulk Client transaction records (AP Client)
+
+Landis & Gyr 3rd party code and data protection (L&G Code)
+
+Landis & Gyr transaction-enabling functions (L&G Enabling)
+
+Smarts Acknowledgments (SA)
+
+Utimaco Virtual Private Network (VPN)
+
+Network banking PIN encryption by counter PCs(NBPO)
+
+Encryption of sensitive network banking transaction data within Horizon (NBTDO)
+Digital signing of network banking transaction data in the PO outlets (NBOC)
+Digital signing of network banking transaction data by Horizon agent servers (NBCO)
+Network banking PIN encryption by Horizon agent servers (NBPC)
+
+Encryption on the data links connecting the Horizon NBX systems to the FIs
+Rambutan encryption of data links (Rambutan)
+
+Network CHAP Secrets
+
+All high volume keys (including all Branch keys) are automated through the KMA Server.
+There are a small number of keys that require manual management.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 94 of 96
+FUJITSU Horizon Architecture Overview
+
+FUJITSU SERVICES .
+Company-in-Confidence
+
+Ref:
+Version:
+
+Date:
+
+FUJ00098217
+FUJ00098217
+
+TD/ARC/039
+0.2
+16/06/2006
+
+Details can be found in:
+
+« RS/DES/010 - Key Management High Level Design
+
+e SD/DES/093 - High Level Design for CHAP Password Handling.
+
+10.3 Audit & Litigation Support
+
+The diagram below shows the key elements of the Audit and Litigation support system.
+
+Audit Data
+
+Request
+& Investigate
+
+Messagestore
+Data
+
+The Audit server is responsible for gathering Audit Tracks generated from a wide range of
+components of the Horizon system. The majority of data comes from the correspondence
+
+servers which includes all business data associated with the Branches.
+
+As well as gathering and storing audit data on EMC Centera all of the Audit Tracks, the Audit
+
+Server provides facilities to retrieve data from the Audit Archive.
+
+Tools to extract and prepare data for analysis are provided together with basic facilities to
+support internal Fujitsu Services data retrieval activities. Access, by Fujitsu Services staff, to
+the retrieval and extraction facilities is via the user interface provided on the Audit
+
+Workstation.
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence
+
+Page: 95 of 96
+FUJ00098217
+
+FUJ00098217
+FUJITSU Horizon Architecture Overview TOPARCI099
+FUJITSU SERVICES .
+Company-in-Confidence Date: 16/06/2006
+
+Details can be found in:
+e SD/HLD/001 - Audit Data Collection & Storage High Level Design
+e SD/HLD/002 - Audit Data Retrieval High Level Design
+
+©Copyright Fujitsu Services Ltd 2006 Company-in-Confidence Page: 96 of 96

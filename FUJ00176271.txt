@@ -1,0 +1,1815 @@
+Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Audit Extraction Support Guide
+
+Ref:
+
+Version:
+
+Date:
+
+TD/MAN/018
+2.0
+21-MAY-2003
+
+FUJ00176271
+FUJ00176271
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Contributors:
+
+Internal Distribution:
+
+External Distribution:
+
+Audit Extraction Support Guide
+
+Support Guide
+
+BI3
+
+Support guide for the Audit Extraction mechanism
+
+APPROVED
+
+Keith Hibberd
+
+Bryan S. Muir
+
+Richard Laking, Alan Holmes & Chris Billings
+
+None
+
+Approval Authorities:
+
+Name
+
+Position
+
+Signature
+
+Date
+
+Bryan Muir
+
+Audit Development
+
+Chris Billings
+
+Audit Security
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE
+
+lof 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+0.0 Document Control
+0.1 Document History
+Version No. I Date Reason for Issue Associated
+CP/PinICL
+0.1 02/07/2000 Initial Draft
+0.2 26/07/2000 Ready for Review
+1.0 21/08/2000 APPROVED
+Ll 01/10/2002 2nd draft
+1.2 17/10/2002 For Review
+2.0 21/05/2003 APPROVED
+0.2 Review Details
+Review Comments by: I /7//0/2002
+Review Comments to: I Originator
+Mandatory Review Authority Name
+Pathway Infrastructure Development Bryan S. Muir*
+Pathway Infrastructure Development Richard Laking
+Pathway Audit Security Chris Billings
+Optional Review / Issued for Information
+Pathway Infrastructure Development Alan Holmes
+(*) = Reviewers that returned comments
+0.3 Associated Documents
+Reference Version I Date Title Source
+SD/DES/076 30/09/1999 Physical Design for Audit I PCMS
+Server
+SD/DES/072 25/06/1999 Audit Data Storage & I PCMS
+Retrieval: High Level Design
+SD/DES/115 25/07/2000 Audit Data Storage & I PCMS
+Retrieval: High Level Design
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE
+
+2 of 40
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+
+SD/DES/116 25/07/2000 Audit Data Extraction & I PCMS
+Filtering: High Level Design
+
+TD/LLD/O13 Oct 2002 Audit Extractor Low Level I PVCS
+Design
+
+TSC/AGT/038 20/04/1999 High Level Design of Common I PCMS
+Agents for Release 2
+
+P/N 22-1877 -01 March 1998 Legato Networker Paper
+Administrator’s Guide
+
+TD/MAN/017 1/07/2002 Audit Server Support Guide PVCS
+
+Unless a specific version is referred to above, reference should be made to the current
+
+approved versions of the documents.
+
+0.4 Abbreviations/Definitions
+
+Abbreviation Definition
+
+AEC Audit Extractor Client
+HLD High Level Design
+
+LLD Low Level Design
+
+DLT Digital Linear Tape
+ATG Audit track gatherer
+ATS Audit track sealer
+
+ATH Audit track hoarder
+ATD Audit track deleter
+
+ATR Audit track retriever
+DLL Dynamic Link Library.
+UNC Universal Naming Convention.
+AT Audit Track
+
+RFI Request For Information
+ARQ Audit Record Query
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE
+
+3 of 40
+
+FUJ00176271
+FUJ00176271
+
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+
+0.5 Changes in this Version
+
+Changes
+
+Review comments incorporated.
+
+The abbreviation, “RFI” has been replaced by ‘ARQ’. All user visible screens and messages have had
+this change implemented, but where it is used in code elements it has not been replaced
+
+0.6 Changes Expected
+
+Changes
+
+None
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE 4 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+0.7 Table of Contents
+1.0 INTRODUCTION ... 7
+1.1 SCOPE 7
+2.0 OUTLINE OF PURPOSE OF PRODUCT .7
+2.1 PERFORMING THE FUNCTIONS ........::0sssesseseeseers
+2.1.1 Overview 7
+2.2 AE component............:cccceeeeeeeeeee
+2.2.1 Client side . 8
+2.2.1.1 AEC forms 10
+2.2L AMADOUL... oe ecceeereenee soceesnsttnentnantnsennnnennsenisatnnsentnsenaeennsetneees 10
+2.2.1.1.2 fimClose 11
+2.2.1.1.3 fimDualVolume . 12
+2.2.1.1.4 fimPilesPound ......ccccesseetssennsnnanntmenstnenntnnnennnenanenenenenenenens — 13
+2.2.1.1.4.1 fimPilesFound buttons .
+2.2.1.1.4.2 fimPilesFound menu-bar items 18
+QQAAS  fAMLOON.....cecssssssssssssssssssssesesessesecececececessssnsnnnssninmnmnnensessseeeeeeeeeeeeenanansnsssnseees 22
+2201.6 FrmMent ccc 23
+2.2.1.1.7  fimNew
+2.2.1.1.8  fimOpen ..
+DQAAAO fiMSelect cc ssssssisesssntstssisisnieisuseintseietsteistseetsuetsiseiseseisenese 29
+2.2.1.L.11 fimSetAuditPoints 30
+2.2.1.2. Server based components 33
+2.2.1.2.1 Executables 33
+2.2.1.2.2 Databases ...cucuistutnitnininiieiniuiiinnn 3S
+
+3.0 STANDARDS AND LANGUAGES ....
+
+© 2002 Fujitsu
+
+ServicesCOMMERCIAL IN CONFIDENCE 5 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+
+3.1 VISUALSOUCESAFE (VSS)
+
+35
+
+3.1.1 AEC ....
+
+3.1.2 Server based executables .....
+
+3.1.3 Databases
+
+4.0 CODE PATHBG............
+
+4.2 Server based executables ....
+
+4.2.1 AEC generating records ....
+
+4.2.2 System scheduled executables
+
+5.0 ERRORS
+
+5.1 Exit and Event Codes ...
+
+5.1.1 AEC ....
+
+38
+
+5.1.2 Server based executables
+
+5.2 Deficiencies
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE 6 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 21-MAY-2003
+5.3. Clearance Dates 39
+5.4 Work Rounds 39
+
+6.0 MESSAGES ....
+
+6.1 INTERNAL MESSAGE COMMUNICATIONS
+
+6.2. RUN TIME COMMUNICATIONS
+
+7.0 API ...
+
+© 2002 Fujitsu ServicesCOMMERCIAL IN CONFIDENCE 7 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+1.0 Introduction
+This document is the support guide for the AuditExtractor (AE) application, which is the
+mechanism with which Fujitsu Services (Post Office Account) Internal Auditors can audit
+
+and track data.
+
+1.1 Scope
+This document aims to provide a support guide for the AE mechanism. An associated
+element of the ‘Audit’ solution is the 'Audit Server’ facility that, as fully covered in
+TD/MAN/017, is not covered in this document.
+
+In addition, this support guide does not cover the following integral elements of the
+
+‘Audit’ solution:
+
+eLegato Networker. This is a commercial product that is used by the ‘Audit’, (and
+
+“Archiving’) applications for the long term storage of audit data,
+¢ Maintenance of the ‘Legato Networker’ run time configuration,
+¢ Maintenance of the ‘Audit’ configuration file, i.e. the run time parameters,
+
+¢ The standalone graphical configuration tool, ‘Configurer.exe’.
+
+2.0 Outline of Purpose of Product
+The main function of this application is to provide Fujitsu Services (Post Office Account)
+Internal Auditors a mechanism to provide extracts of the audit data from the Audit
+Archive in response to information requests from external auditors. The mechanism
+
+interfaces with the 'Audit Server’ facility.
+
+2.1 Performing the functions
+
+2.1.1 Overview
+The AE mechanism consists of both a client-side GUI running on a WindowsNT
+
+workstation (the AuditExtractorClient or AEC), and server based elements.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 8 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+The functionality of the application is split so that a forms-based executable on
+the client handles presentation, and SQLServer2000 running on the server
+performs the Access/Networker operations. The two communicate via system
+
+DNS using NT ‘pass-through’ authentication.
+
+An insert ‘trigger’ within SQLServer200 detects records added via client calls
+and depending on values passed by the client determines which server side
+
+executable is to run.
+
+The server side executables record progress by changing ‘State’ values within a
+table in SQLServer2000. Changes in ‘State’ are monitored by the client, via a
+timer and upon successful completion or otherwise, present the results to the
+
+user.
+
+The application is structured in a way that supports dynamic selection of the
+
+server to connect to and additionally runs under user system.
+
+The Client connects to both the RFISQL and SEALERSQL databases using Remote Data
+
+Object (RDO) to create and manipulate components of a remote ODBC database system
+
+2.2. AE components
+
+2.2.1 Client side
+The current version of AEC, numbered 8.4.0, consists of the components:
+e = AuditExtractClient.exe (8.4.0)
+e = ExtractorClientControls.ocx (8.4.0)
+The AEC is a GUI executable running on a workstation PC, extracting audit data from a
+
+server on the basis of criteria supplied by the user.
+
+The AEC has been developed as a VB project group consisting of two VB projects one a
+“standard .EXE” project and the other is an “ActiveX Control” project which supplies
+
+custom controls for the .EXE.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 9 of 40
+FUJ00176271
+FUJ00176271
+
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+The AEC has been designed to provide multi-user functionality irrespective of whether
+the 'use' is from users on different workstations and/or one user running many instances of
+
+AEC on one workstation.
+
+AEC consists of thirteen forms navigable as follows:
+
+User [)——————I__ fimLogon frmAbout
+frmNew frmMenus
+frmOpen frmClose
+frmSelect frmDetails
+frmSetAuditPoints frmFilesFound
+frmShowStatus frmDualVolume frmRestoreTMS
+
+NB. Restrictions on navigation exist and relate to user activity and/or file selection on an
+
+ARQ, these will be discussed within this document.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 10 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+2.2.11 AEC forms
+
+2.2.1.1.1  frmAbout
+
+About AuditE xtractorClient
+
+AuditE xtractorClient
+
+Version 8.1.0
+Audit Extractor Client GUI
+
+Copyright © 1999 ICL PATHWAY LTD
+
+The form is displayed once the user selects ‘About’ from the menu bar on frmLogon (see
+2.2.1.1.5 frmLogon) and being modal in nature, requires the user to click the ‘OK’ button
+
+before the user can proceed.
+
+The form displays the major, minor and revision version numbers.
+
+2.2.1.1.2 frmClose
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 11 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref TD/MAN/018
+ctor - Close Request 0.
+emir Z 01-0CT-2002
+Access Reason Ie1 roca [ese seeeeryeon ayes poo
+FELovOoaW
+I [Fiename [stews [Voie “TGrtine [8s
+
+2.2.1.1.3
+
+This form is displayed by selecting the ‘Close’ option from the main menu on the form
+
+frmMenus
+
+An ARQ that is available for selection is accessed by way of a drop-down list box from
+which the user makes a selection. With an ARQ selected the user may use the ‘Show
+Details’ button on the form to see details of the request. The last known status value for
+
+each of the files associated with the ARQ is displayed.
+
+The form allows the user to close an ARQ within the database. Closing is NOT the
+opposite of opening a record. It really means freezing the record. The user will no longer
+be able to update details associated with the ARQ. Having selected an ARQ, closure is
+
+implemented by the user clicking the ‘Close Request’ button.
+
+Closure removes the ARQ from the drop-down list box and disables the ‘Close Request’
+button, which remains disabled until a further ARQ is selected. Navigation back to the
+
+main menu is via the ‘Return to Menu’ button.
+
+Whilst the ‘CLOSE’ action is running the user is prevented from using the Client
+interface. Progress or Error messages are output to the status line at the bottom of the
+
+form.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 12 of 40
+Fujitsu Services
+
+Audit Extraction Support Guide
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00176271
+FUJ00176271
+
+Ref: TD/MAN/018
+Version: 0.1
+Date: 01-OCT-2002
+
+When a user chooses to ‘CLOSE’ an ARQ then the Username and WorkstationID values
+are recorded with the closed ARQ details within the RFISQL database. A server-based
+
+executable, triggered by the ‘CLOSE’ action, moves all records associated with the ARQ
+
+from ‘working’ tables to ‘archiving’ tables in the RFISQL database.
+
+Upon successful closure a Log detailing all user actions and listing all files utilised is
+generated on the server at D:\ARCHIVESERVER\USERAREA and the user is advised
+
+via a message box. Failure to successfully close an ARQ is similarly notified to the user.
+
+2.2.1.1.4 frmDualVolume
+
+This form is opened by the user double clicking upon a filename in the list view control on
+
+form frmFilesFound when the value in column 'Volume' is displaying ' * ' (an asterisk).
+
+K FileName Template i]
+
+«Files Names for FI Reference OTH30048
+
+Filename.
+
+Size I
+
+Status] Volume [=]
+
+NSO1_BOAP4_ASBOAPASP4,
+NSO1_BOAP4_ASBOAP4SP4
+NSO1_BOAP4_ASBOAPASP4,
+NSO1_BOAP4_ASBOAPASP4,
+NSO1_BOAP4_ASBOAPASP4
+NSO1_BOAP4_ASBOAPASPA,
+NSO1_BOAP4_ASBOAPASP4
+NSO1_BOAP4_ASBOAPASPA,
+NSO1_BOAP4_ASBOAPASP4
+
+20020426_1008.
+200204261008...
+20020426_1008.
+20020426_1008.
+20020426_1008.
+20020426_1008.
+20020426_1008.
+200204261008.
+~"20020426_1008.
+FNOI BOAPS ASBOAP4SP4 B FELOIOO1BVOLU
+
+Restoring
+Restoring I
+Restoring
+
+Restoring
+Restoring
+
+Restoring
+Displayed
+Displayed
+
+Pisa’ of
+
+59 Files Found
+
+{
+I
+I
+I
+I
+1
+Restoring . I
+I
+I
+I
+
+Upon double clicking, the form ‘firmDua ‘olume opens providing the user “with both
+
+volume details for the selected file.
+
+It is a limitation of the system that the situation would not occur whereby a file would
+
+span in excess of two volumes, that is in excess of 70Gb.
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 13 of 40
+FUJ00176271
+FUJ00176271
+
+ie
+
+Fae
+
+NSO1_BOAP4 ASBOAP4SP4_@_~ 70020426_1008.
+FNOT BOAPS ASBOAPASP4 B FELOIODIBVOL
+
+Form frmDualVolume is modal, requiring the user to click the command button 'Return'
+before any further actions can be performed. Clicking 'Return' results in form
+
+JrmDualVolume closing.
+
+2.2.1.1.5  frmFilesFound
+All user actions necessary to identify and obtain Audit data files are invoked from this
+form, frmFilesFound. Accordingly all user facilities are centred on the user’s need to
+build a list of files, as a first step, and to restore all, or a nominated selection of, the files
+in the file list.
+
+There are two routes that the user can use to arrive at this form. The first route involves
+working with an existing ARQ and frmFilesFound is accessed via frmOpen, whilst the
+second requires starting a new ARQ using frmNew and then accessing frmFilesFound
+via frmSelect. In both cases the current selection criteria will have been saved in the
+RFISQL database, but the file list may contain a list of files, or be empty.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 14 of 40
+FUJ00176271
+
+FUJ00176271
+
+‘=. RFI: OTH3006B - Status: New:FileList Cid
+‘Ble Actions IMS
+
+Selection Cites for RFI Reference OTH30058 : New Fllebist <=
+(Time Peiod Recuied — oe
+I From Date [22704702
+
+ToDate [2704702
+
+Feriaceriee DELETE Fibs
+
+i
+20020422_150,
+20020422145, Unknown
+20020422_145. Unknown I
+20020422145,
+
+SOTUME Statue FE retus
+
+(> File Information ——
+I No of fies Selected:
+0
+
+the
+
+lower right quarter of the form. The user manipulates the list of files by the use of the
+
+From a user’s point of view the main focus is the list of files that are displayed in
+
+buttons on the left-hand side of the form. The data relating to the users search criteria,
+shown in the top right hand quarter of the form, is there for reference only and cannot be
+
+changed, at least directly, by the user.
+
+2.2.1.1.5.1 frmFilesFound buttons
+There are eight command buttons:
+
+‘AMEND Criteria’ "RESTORE Files' "REPLACE Files’ ‘DELETE Files'
+"VOLUME Status! ‘FILE Status’ ‘List UPDATE' ‘File SIZES'
+Upon frmFilesFound opening, only button 'List UPDATE ' is available to the user. The
+remaining seven buttons are not enabled until the user has selected at least one file from
+
+the list of files.
+
+Users are able to ‘Select’ one or more files from the existing file by the normal windows
+object selection facilities, i.e. ‘CTRL / click’ for non-consecutive selections, or ‘SHIFT /
+
+click’ (or dragging) for consecutive selections.
+
+AMEND Criteria
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 15 of 40
+
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+This causes the list of files (if any) associated with the to be destroyed. The form
+frmFilesFound is closed and the user is returned to the form frmSelect (see 2.2.1.1.10
+frmSelect).
+
+However if any files in the file list have been retrieved, meaning that the 'Status' value is
+other than 'Displayed' the action fails, frmFilesFound remains open and a message box is
+displayed containing:
+
+“Further criteria changes can not be implemented after files have been ‘Restored’.
+This action will not be invoked.”
+
+DELETE Files
+
+This button enables users to remove one or more files from the file-list. This is achieved
+by the user selecting, (highlighting) the files to be removed from the list and clicking this
+
+button.
+
+The number of files due to be deleted is notified to the user and confirmation sought
+
+before the deletion takes place.
+
+However if files from within the file-list have been retrieved, meaning that the 'Status'
+
+value is other than 'Displayed a message box is displayed containing:
+
+“The unwanted file(s) contained n file(s) that could not be deleted. Only files with a
+‘status' value of ‘Displayed’ can be deleted."
+
+(Where 'n' relates to the total of files that can not be deleted).
+
+File SIZES
+
+This action returns for each selected file the size in bytes.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 16 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+After selecting one or more files from the file-list and clicking this button the cursor is
+temporarily replaced with an hourglass and the user is locked from further interaction
+
+with AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. The
+progress of the action, to completion, can be viewed in frmShowStatus (see 2.2.1.1.13
+frmShowStatus) opened through the menu-item ‘Check Actions’ within the forms' menu
+
+bar option ‘Actions’.
+
+Upon completion the file size(s) of the selected file(s) are displayed in the file-list once the
+user clicks on the ‘List UPDATE’ button. The cumulative total for the selected file(s)
+
+additionally appears on the form expressing the total in terms of bytes, Kb, Mb or Gb.
+FILE Status
+
+This action returns the seal status for each selected file. The action is only available where
+at least one selected file has a 'Status' value other than 'Displayed'. Clicking the button
+having selected a single file (or all files) having a 'Displayed’ status results in a message
+
+box being displayed containing:
+
+“All selected files have ‘Displayed’ status. No actions have been implemented at this
+time."
+
+Subject to the above, after selecting one or more files from the file-list and clicking this
+button the cursor is temporarily replaced with an hourglass and the user is locked from
+
+further interaction with AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. The
+progress of the action, to completion, can be viewed in frmShowStatus (see 2.2.1.1.13
+frmShowStatus), opened through the menu-item ‘Check Actions’ within the forms' menu
+
+bar option ‘Actions’.
+
+Upon completion the 'Status' for the selected file(s) are displayed in the file-list once the
+user clicks on the ‘List UPDATE’ button.
+
+List UPDATE
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 17 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+This button enables the user to deselect any file(s) previously selected in the file-list.
+
+Additionally all columns within the file-list are repopulated.
+
+REPLACE Files
+Whilst the ‘DELETE Files’ button removes only the user selected files from the file-list,
+
+this button /eaves only the user selected files in the file-list.
+
+The number of files due to be deleted is notified to the user and confirmation sought
+
+before the deletion takes place.
+
+However only files in the file-list that have not previously been retrieved, meaning that the
+‘Status' value is other than 'Displayed', can be removed. For any file having previously
+been retrieved a message box is displayed containing:
+
+“The unwanted file(s) contained n file(s) that could not be deleted. Only files with a
+‘status’ value of ‘Displayed’ can be deleted."
+
+(Where 'n' relates to the total of files that can not be deleted).
+and the file(s) remains in the file-list. Upon completion the file-list is refreshed.
+
+RESTORE Files
+This facility implements a users request to obtain named files, selected from the file-list,
+
+from storage to the servers file store area.
+
+Upon selection, the values within the ‘Status’ column of the file-list, for the selected
+file(s) is updated to ‘Requested’. After selecting one or more files from the file-list and
+clicking this button the cursor is temporarily replaced with an hourglass and the user is
+
+locked from further interaction with AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. The
+progress of the action, to completion, can be viewed in frmShowStatus (see 2.2.1.1.13
+frmShowStatus), opened through the menu-item ‘Check Actions’ within the forms' menu
+
+bar option ‘Actions’.
+
+On completion, the updated values of the selected file(s) can be displayed in the file list
+when the user clicks the ‘List UPDATE’ button.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 18 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+VOLUME Status
+
+This facility implements a users request to obtain details of the 'tape' media for named files
+
+selected from the file-list that the user wishes to restore.
+
+After selecting one or more files from the file-list and clicking this button the cursor is
+temporarily replaced with an hourglass and the user is locked from further interaction
+
+with AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. The
+progress of the action, to completion, can be viewed in frmShowStatus (see 2.2.1.1.13
+frmShowStatus), opened through the menu-item ‘Check Actions’ within the forms’ menu
+
+bar option ‘Actions’.
+
+Upon completion the ‘Volume’ values of the selected file(s) are displayed in the file-list
+
+upon the user clicking the ‘List UPDATE’ button.
+
+2.2.1.1.5.2 firmFilesFound menu-bar items
+
+A further range of user actions can be instigated from the drop down menu items held in
+
+the menu-bar.
+' File’
+The drop down menu is displayed as the user hold's the cursor over 'File’ contains one sub-
+
+menu item 'Close'.
+
+Upon clicking 'Close', form frmFileFound is closed and the previously ‘open’ ARQ is
+
+freed and becomes available for reselection by any user. The user is returned to frmMenu.
+
+‘ Actions'
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 19 of 40
+Fujitsu Services
+
+FUJ00176271
+
+FUJ00176271
+Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+The drop down menu is displayed as the user hold's the cursor over 'Actions' contains one
+
+sub-menu item ' Check Actions '.
+
+Upon clicking 'Check Actions’, form frmShowStatus (see 2.2.1.1.13 frmShowStatus). This
+
+enables the user to determine the current state of a previously instigated action.
+
+'TMS'
+
+The drop down menu is displayed as the user hold's the cursor over 'TMS' contains three
+
+sub-menu items, 'Clear Message Store ', ' Generate Message Store’ and 'Server MS Build’.
+
+(a) Clear MessageStore
+Upon clicking this menu option AEC undertakes a checks to determine where
+the Message Store associated with the current ARQ was generated, that is,
+
+whether on the users workstation or on the server.
+
+Whilst the ‘Clear MessageStore’ action is running, the cursor is temporarily
+replaced with an hourglass and the user is locked from further interaction with
+
+AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the
+AEC. The progress of the action, to completion, can be in frmShowStatus (see
+2.2.1.1.13 frmShowStatus), opened through the menu-item “Check Actions’.
+
+This is located within the forms’ menu bar option ‘Actions’
+
+(b) Generate Message Store
+A Message Store is normally generated on the workstation upon which the user
+is running the current instance of an ARQ, but exceptionally, a user can request
+
+that the Message Store is to be generated on the Server.
+
+However only one instance of a Message Store is allowed on any one Audit
+platform, (Workstation or Server), and if an ARQ client is using a specific
+Audit platform to build a Message Store then no other ARQ/User can build or
+
+use another Message Store on the same platform.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 20 of 40
+FUJ00176271
+FUJ00176271
+
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+A user upon clicking this menu item causes the AEC to undertake checks to
+evaluate the above restrictions. Providing it is in order to do so, form
+
+frmRestoreTMS is opened. (see 2.2.1.1.9 frmRestoreTMS).
+
+Whilst the ‘Generate Message Store’ action is running, the cursor is
+temporarily replaced with an hourglass and the user is locked from further
+
+interaction with AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the
+AEC. The progress of the action, to completion, can be in frmShowStatus (see
+2.2.1.1.13 frmShowStatus), opened through the menu-item “Check Actions’
+
+within the forms' menu bar option ‘Actions’.
+
+(c) Server MS Build
+
+As only one instance of a Message Store is allowed on any one server this
+action may be disabled preventing user selection. Upon clicking this menu item,
+the user receives the following message requiring a further confirmation before
+they can proceed:
+
+"Please note that by selecting this option you will have exclusive use of the
+server Message Store while this ARQ remains ‘Open’. Also, selecting this option
+
+will lock out all other users from building a Message Store on the server until it is
+finally closed. Please confirm that you wish to build this ARQ's Message on the
+server and not on your workstation."
+
+The user will be unable to use this facility if another user has 'simultaneously'
+been successful in running the action as only one instance of a Message Store is
+allowed on any one Audit server. A message box informs the user of failure
+
+displaying the message:
+"Server build is not possible at this time. This facility is being used by x."
+
+(where x is the ARQ that is using the server Message Store.)
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 21 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+Whilst the ‘Server MS Build' action is running, the cursor is temporarily
+replaced with an hourglass and the user is locked from further interaction with
+
+AEC. The status-bar informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the
+AEC. The progress of the action, to completion, can be in frmShowStatus (see
+2.2.1.1.13 frmShowStatus), opened through the menu-item ‘Check Actions’
+
+within the forms' menu bar option ‘Actions’.
+‘Oracle’
+
+The drop down menu, displayed as the user hold's the cursor over ‘Oracle! contains one
+
+sub-menu item "Build Table '.
+
+This facility implements a users request to call details from an ORACLE database for a
+single named file selected from the file-list. The action is only available for a selected file
+
+having a 'Status' value of 'SealOK'.
+
+Clicking 'Build Table’ prior to file selection results in a message box opening displaying
+
+the message:
+
+"This action is only available for a Selected file with a Status value of: 'SealOk’.
+Please make your selection."
+Clicking 'Build Table’ having selected multiple files having a 'Status' value of 'SealOK'
+
+results in a message box opening displaying the message:
+"This action requires that only one file is selected from the file list. Please amend
+your selection."
+
+Whilst the 'Build Table’ action is running, the cursor is temporarily replaced with an
+hourglass and the user is locked from further interaction with AEC. The status-bar
+
+informs the user.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. The
+
+progress of the action, to completion, can be viewed in frmShowStatus (see 2.2.1.1.13
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 22 of 40
+FUJ00176271
+FUJ00176271
+
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+frmShowStatus), opened through the menu-item ‘Check Actions’ within the forms’ menu
+
+bar option ‘Actions’.
+Failure of the Build Table’ action in a message box opening displaying the message:
+
+" The request to build an Oracle table has failed. Please contact your administrator."
+
+2.2.1.1.6 frmLogon
+
+“3 Audit Extractor - Select Data Centre
+About
+Data Centre:
+
+UserName: — LAuditors
+Workstation: =AUDIT_7?
+
+OK Cancel
+
+Upon opening the application the user is presented with the above screen. The choice of
+server the user wishes to connect to is made from selection from the drop down list.
+Alternatively the user is able to enter a server name.
+
+The user is able to continue via the ‘OK’ button or abort using ‘Cancel’. Alternatively
+users can access the ‘About’ screen via the ‘About’ menu option. (see 2.2.1.1.1
+
+frmAbout).
+
+Clicking 'Ok' prior to selecting or entering a server results in a message box opening
+
+displaying the message:
+" A server name must be supplied. This application is aborting."
+
+Ifa connection can not be established, a message box displaying the message:
+
+"Database connection or access failure using server: X on connecting to the
+databases. Please contact your Administrator."
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 23 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+opens and the application closes.
+
+The ‘User Name’, namely the users NT Logon name together with the workstation
+name/ID, is prominently displayed on the form. The status bar at the foot of the form
+
+informs the user of progress.
+
+2.2.1.1.7 FrmMenu
+
+“Audit Extractor
+
+Qpen RFI I Close RFI I
+
+You are logged in as
+
+HibberdkK2
+at the
+
+Bootle
+data centre
+
+This form is displayed immediately after the form frmLogon and shows, which username
+
+is active and to which data centre the user has connected.
+
+The form provides the means of navigation for: Opening, Closing and creating New
+ARQ's via the 'OpenARQ', CloseARQ' and 'NewARQ' command buttons. The 'Exit'
+
+button closes the application.
+
+The user must return to this screen to start a new function, for example open a different
+
+ARQ. Error / progress messages are output to the status line at the bottom of the form.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 24 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+2.2.1.1.8  frmNew
+
+“Audit Extractor - Raise New Request
+
+ne
+Requester
+
+Catalogue Entry
+
+Receipt Reference
+
+Access Reason
+
+Save Request Return to Menu I
+
+This form is displayed by selecting the ‘New’ option from the Request menu on the form
+frmMenus. Using this form the user is able to create an ARQ. All fields are mandatory
+
+except for 'Catalogue Entry’.
+
+The command buttons provide the user with three options
+- ‘Return to Menu’ which cancels the creation of the new ARQ.
+- ‘Save Request’. That is, to save the new ARQ details
+
+- ‘Specify Selection Criteria’. This option causes the new ARQ to be saved
+followed by form fimNew closing and frmSelect opening.
+
+Error / progress messages are output to the status line at the bottom of the form.
+
+In the example below a new record has been created by completing the required fields and
+clicking the ‘Save Request’ button. A confirmatory ‘** Save completed **’ message has
+
+been returned in the forms status bar.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 25 of 40
+FUJ00176271
+FUJ00176271
+
+User input restrictions:
+
+Requester Choice limited to contents of drop down list
+Catalogue Entry: Limited to 50 characters
+Receipt Reference: Limited to 50 characters
+
+Date Received: Must pre-date the current date. Date format dd/mm/yy or
+dd/mm/yyyy
+
+Date Required: Date format dd/mm/yy or dd/mm/yyyy
+
+Access reason: Limited to 255 characters
+
+2.2.1.1.9 frmOpen
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 26 of 40
+FUJ00176271
+FUJ00176271
+
+Fujitsu Serge
+
+=e — eiobal’"*
+
+002
+
+Show Details
+
+Retur to Menu I
+
+This form is displayed by selecting the ‘Open’ option from the Request menu on the form
+frmMenus. Form frmOpen allows the user to open an existing ARQ. The command
+button 'Open Request’ is not available for the user to 'click' until an ARQ has been
+selected. Any contents displayed in 'Access Reason’ are not available for editing by the
+
+user.
+
+The user is able to select an ARQ to open from the list of available ARQ's from the drop
+down list box control. ARQ's that are currently opened by other users or have previously
+
+been 'Closed' are not included in the list as available for selection
+
+When the user presses the ‘Open Request’ button an appropriate form will be displayed.
+For example, if only Request details have been supplied so far then the form frmSelect
+will be displayed so the user can supply selection criteria. Alternatively, if files have
+already been restored for this Request then the form frmFilesFound form will be
+
+displayed.
+Clicking the ‘Show Details’ button causes the form frmDerails to be displayed. (see 0 ).
+
+Error / progress messages are output to the status line at the bottom of the form.
+
+2.2.1.1.10 frmRestoreTMS
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 27 of 40
+FUJ00176271
+
+FUJ00176271
+. . 1 tau ruin 1 uu ouU rum 7
+EAS -! Audit Extractor - Generate Riposte MessageStore on Server AN/OIB
+Data centre: Bootle RFI: FELO1006B
+; : PT-2002
+Start Date I End Date I
+tor for
+messages messages
+List of FAD Codes
+Post Office FAD Code [ALL Add->
+<- Delete
+Generate MessageStore LogonDataCentre
+di
+
+This form is displayed by the user selecting the ‘Generate MessageStore’ choice from the
+
+TMS menu option on the menu-bar within form frmFilesFound.
+
+The user can specify the inclusive start and end dates for messages and also the Post
+
+Offices for which information is to be selected.
+
+The ‘Add’ and ‘Delete’ buttons add or delete a Post Office FAD Code to or from the list
+A default value of ‘ALL’ within the ‘Post OfficeFAD code’ input box is also valid. The
+‘Add’ button adds the value on its left, to the list on its right. The ‘Delete’ button
+
+removes the selected value from the list on its right.
+
+The user is able to enter a FAD code into the ‘Post Office FAD code’ input box enabling
+the entered value to be added to the ‘List of FAD codes’ through clicking the ‘Add’
+
+button.
+
+The user has the option to create a new Riposte Message Store on the Archive Server
+(‘Generate Message Store’) or return to close the form without updating the Riposte
+
+Message Store (‘LogonDataCentre').
+
+As the user may have several instances of the application running at any one time, the
+Data centre and ARQ reference appear prominently on the form to act as an ‘Aide
+
+memoire' for the user.
+
+Error / progress messages are output to the status line at the bottom of the form.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 28 of 40
+FUJ00176271
+FUJ00176271
+
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+
+Version: 0.1
+
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+User input restrictions:
+
+Start Date:
+End Date:
+
+Date format dd/mm/yy or dd/mm/yyyy
+Date format dd/mmi/yy or dd/mm/yyyy
+Must post-date 'Start Date!
+Must pre-date current date
+
+Post Office FAD code: Must contain exactly 6 numeric characters
+
+2.2.1.1.11 frmSelect
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 29 of 40
+FUJ00176271
+FUJ00176271
+
+pecify Selection Criteria for Request
+
+Fujitsu Sc
+
+j- Selection Citeria for FFI Reference FELOIO2W
+
+[Audit Sub Point
+
+The form frmSelect may be displayed by one of three methods:
+- Selecting the ‘New’ option from the Request menu on the form frmMenus
+- Selecting the ‘Open’ button on the form fimOpen.
+- Selecting the ‘Amend Search Criteria’ button on the form frmFilesFound.
+
+Form frmSelect allows the user to specify the criteria that will be used to determine which
+file names will be presented to the user as possibly useful audit files. The dates given in
+
+“Time Period’ are inclusive
+
+Details within the 'Audit Point Selection Criteria’ region cannot be directly edited on this
+form. Fine tuning of search criteria e.g. to declare the Audit Points and Sub Points to be
+associated with the current request, the user can press the ‘Update’ button to the right of
+
+the region.
+This will display the form frmSetAuditPoints. (see 2.2.1.1.11 ).
+The command buttons functionality below enables the user to:
+
+‘Return to Menu’ Cancels the creation or update of selection criteria. If fields
+have been updated the user is prompted to confirm the deletion and loss prior to
+
+closure.
+
+‘Save Selection Criteria’ Save the selection criteria for the ARQ.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 30 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+‘Search for Files’ This option causes the AEC generate a list of files that satisfy
+the selection criteria supplied. When the list of files is available the form
+
+SimFilesFound is displayed.
+Error / progress messages are output to the status line at the bottom of the form.
+
+User input restrictions:
+From Date: Date format dd/mm/yy or dd/mm/yyyy
+
+Must pre-date 'To Date!
+
+To Date: Date format dd/mmi/yy or dd/mm/yyyy
+
+Must post-date or equal 'From Date’
+
+Must pre-date equal current date
+
+2.2.1.1.12 frmSetAuditPoints
+
+‘=, Audit Extractor - Update Audit Points
+
+-[obd
+
+List of current Audit Point Selection Criteria
+‘Audit Point [Audit Sub Point
+
+[FAD Code
+
+ae “ 14
+
+Form frmSetAuditPoints is displayed when the user presses the ‘Update’ button
+on form frmSelect. (see 2.2.1.1.10 frmSelect).
+
+Using this form the user is able to supply Audit Points and Audit Sub Points as selection
+criteria. They may be supplied directly by entering values in the ‘Audit Point’ and ‘Sub
+Point’ fields. The user clicks the ‘Add’ button after input to populate the user-defined list
+
+on the right hand side of the form.
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE Page: 31 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+Additionally the user can add criteria indirectly by entering a Post Office FAD Code.
+After entering a numerical six digit FAD code and clicking the ‘Add’ button the cursor is
+temporarily replaced with an hourglass and the user is locked from further interaction
+
+with AEC whilst the addition runs. The status-bar informs the user of progress.
+
+When the 'normal' pointer returns, the user is once more able to operate the AEC. At this
+point either the ClusterID values will have been extracted and added within the ‘List of
+
+current Audit Point Selection’ region, or a message box opened displaying:
+"No cluster id's have been found specified criteria, on host: X "
+
+Values may be deleted from the List View control by highlighting the relevant entries and
+
+pressing the ‘Delete’ button.
+
+The ‘Post Office FAD Code’ is used to determine which Clusters should be used
+as an Audit Sub Point, up to 9 Clusters are allowed, each duplicated at the
+Wigan and Bootle servers. The Sub Point generated is dependant on the Data
+Centre specified at logon (Wigan or Bootle) so that if user is logged on to
+Wigan, a Sub Point of say ‘Cluster1B’ cannot be generated, only ‘Cluster1W’.
+
+The drop down list for Audit Sub Point is dependent on the value in Audit Point.
+
+Duplicate values are allowed in the ‘List of current Audit Point Selection’ region. This
+allows several Post Office FAD codes to be added all of which relate to the same Cluster
+
+and thus to the same Audit Sub Point.
+
+When all required Audit Points have been specified the user presses the ‘Return’ button to
+
+return to the Criteria control on the frmSelect form.
+
+2.2.1.1.13 frmDetails
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 32 of 40
+FUJ00176271
+FUJ00176271
+
+it Extractor - Details of Current Request
+
+[STARTUP REQUEST =]
+
+Fujitsu Services
+
+This form is displayed to the user when clicking the 'Show Details! command button on
+either form frmOpen, or form frmClose. All data displayed on the form is unable to be
+edited by the user.
+
+The ‘Close’ button returns the user to form originating the ‘Show Details’ request, which
+will be either frmOpen or frmClose.
+
+Error / progress messages are output to the status line at the bottom of the form.
+
+2.2.1.1.14 frmShowStatus
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 33 of 40
+FUJ00176271
+FUJ00176271
+
+Fu,
+request Reference I 11
+
+Start date [End date [Gormand [instance _[ State [Response message a
+— 15/07/02 14:12:22 15/07/02 14:12:26 — Recover files 4 Processing _—
+
+09/05/02 15:54:30 09/05/02 15:55:46 Recover files 33 ProcessOK
+
+09/05/02 15:48:37 09/05/02 15:49:25 File sizes B ProcessOK )
+
+09/06/02 15.1050 09/05/02 15:11:01 File Status 7 ProcessOK
+
+09/05/02 15:09:33 09/05/02 15:09:54 File Status 6 ProcessOK
+
+09/05/02 15:07:41 09/05/02 15:09:05 Recover files 6 ProcessOK
+
+09/05/02 15:07:20 09/05/02 15:07:23 File Status cy ProcessOK
+
+09/06/02 1458.17 09/05/02 14:58:34 File Status 3 ProcessOK
+
+09/05/02 14:55:34 09/05/02 14:56:21 Recover files 32 ProcessOK
+
+sim 14:53:27 09/05/02 14:53:27 _ File Status a ProcessOK fl of
+
+4 »
+
+This form is displayed by selecting the ‘Check Requests’ choice from the Requests menu
+option on the menu-bar within form frmFilesFound. Closure and return to the
+
+frmFileFound is via the “Exit” button. All form does not allow any user editing of content.
+The form provides a ‘snapshot’ of the level of progression an action on an ARQ has
+achieved combined with details of the requested action. Upon clicking the 'Refresh' button
+values on the form are updated.
+
+In the above example for ARQ ‘OTH3006B’ for instance 41 the user requested recovery
+of files at 14:12:22 on 15" July 2002 for which status of the required action, 'Processing’,
+
+indicates the process had started and was still running at the time the form was opened or
+
+refreshed.
+
+2.2.1.2 Server based components
+
+2.2.1.2.1 Executables
+
+Name. Level: ** Called by: Language
+AgentGetID.exe D NWB.Get_ClusterID C/C++
+AgentLoadAuditData.exe D NWB _Legato_TMS_Generate.exe C/C++
+Build_Oracle_Table.exe Cc BuildOracle.exe C/C++
+CenteraDelete.exe B Maestro scheduling VB
+CloseTidyLog.exe B ExtractorLink.exe * VB
+ClusterID.exe B ExtractorLink.exe * VB
+CreateDir .exe B ExtractorLink.exe * VB
+ExtractorLink.exe A form frmFilesFound VB
+FileSizes.exe B ExtractorLink.exe * VB
+LegatoBarcode.exe D LegatoVolumeCmd.exe C/C++
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 34 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+LegatoFileSizeCmd.exe Cc FileSizes.exe C/C++
+LegatoRecoverCmd.exe Cc Recover.exe C/C++
+LegatoVolumeCmd.exe Cc Volume.exe C/C++
+LogFailure.exe B ExtractorLink.exe * VB
+NWB Centera_Delete.exe Cc CenteraDelete.exe C/C++
+NWB_Get_ClusterID Cc ClusterID.exe C/C++
+NWB Legato_FileSize.exe D LegatoFileSizeCmd.exe C/C++
+NWB_Legato_Recover.exe D LegatoRecoverCmd.exe C/C++
+NWB _Legato_TMS_Clear.exe Cc TMSClear.exe C/C++
+NWB Legato_TMS Generate.exe C TMSGenerate.exe C/C++
+NWB Legato Volume Status.exe D LegatoVolumeCmd.exe CICH+
+BuildOracle.exe B ExtractorLink.exe * VB
+Recover.exe B ExtractorLink.exe * VB
+ResetRiposte.exe D NWB_Legato_TMS_Clear.exe C/C++
+TMSClear.exe B ExtractorLink.exe * VB
+TMSGenerate.exe B ExtractorLink.exe * VB
+UpdatAP.exe B Maestro scheduling VB
+Volume.exe B ExtractorLink.exe * VB
+XplorerGetID.exe D NWB._Get_ClusterID C/C++
+
+*originated by user action on form frmFilesFound
+
+** relates to the hierarchy of called executables e.g.
+
+ExtractorLink Volume LegatoVolumeCmd ] NWB_Legato_Volume_Status
+
+(level A) (level B) (level C) (level D)
+calls calls calls
+
+2.1.1.1.2 Databases
+Two MS SQLServer2000 databases 'RFISQL', 'SEALERSQL' are referenced by AEC
+
+and the server based executables above.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 35 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+3.0 Standards and Languages
+The Visual Basic (VB) components were developed using Microsoft Visual Basic for 32-
+bit Windows Development, release 6.0 Enterprise Edition. The C and C++ elements of the
+application are developed using Microsoft Visual C++, release 6.0 Enterprise Edition
+
+from Microsoft Developer Studio 97.
+All client-side code has been developed in VB. the choice of language for the
+
+development of the server-based executables are indicated by 'VB' and 'C/C++' in
+
+2.2.1.2. 1Executables above.
+
+3.1 VisualSouceSafe (VSS)
+
+Modules are held under the path:
+\\CMServer\VSS-InfDom\Infrastructure\Audit\AuditExtraction_CenteraPhase2
+
+3.1.1 AEC
+The code modules are held as follows, under the path above (see 3.1 VisualSouceSafe
+
+(VSS)).
+\ClientServer\Client\
+3.1.2 Server based executables
+
+The code modules are held as follows, under the path above (see 3.1 VisualSouceSafe
+
+(VSS)).
+
+Name: Sub-path
+
+AgentGetID.exe \MSAgentGetID\Release
+AgentLoadAuditData.exe \MSAgentLoadAuditData\Release
+Build_Oracle_Table.exe \Build_Oracle_Table\Release
+BuildOracle.exe \ExtractorLink\OracleBuild
+CenteraDelete.exe \ExtractorLink\CenteraDelete
+CloseTidyLog.exe \ExtractorLink\CloseLogTidy
+ClusterID.exe \ExtractorLink\GetClusterID
+CreateDir.exe \ExtractorLink\CreateDir
+ExtractorLink.exe \ExtractorLink
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 36 of 40
+Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Audit Extraction Support Guide Ref:
+
+Version:
+
+Date:
+
+FUJ00176271
+FUJ00176271
+
+TD/MAN/018
+01
+01-OCT-2002
+
+3.1.3
+
+4.0
+
+FileSizes.exe
+
+LegatoBarcode.exe
+LegatoFileSizeCmd.exe
+LegatoRecoverCmd.exe
+LegatoVolumeCmd.exe
+LogFailure.exe
+NWB_Centera_Delete.exe
+NWB_Get_ClusterID
+
+NWB Legato_FileSize.exe
+
+NWB Legato_Recover.exe
+NWB_Legato_TMS_Clear.exe
+NWB_Legato_TMS_Generate.exe
+NWB Legato _Volume_Status.exe
+Recover.exe
+
+ResetRiposte.exe
+
+TMSClear.exe
+
+TMSGenerate.cxe
+
+UpdatAP.exe
+
+Volume.exe
+
+XplorerGetID.exe
+
+Databases
+
+\ExtractorLink\FileSizes
+\LegatoBarcodeCmd\Release
+\LegatoFileSizeCmd\Release
+\LegatoRecoverCmd\Release
+\LegatoVolumeCmd\Release
+\ExtractorLink\ LogFailure
+\NWB_Centera_Delete\Release
+\NWB._Get_ClusterID
+
+\NWB _Legato_FileSize\Release
+\NWB _Legato_Recover\Release
+
+\NWB_Legato_TMS_Clear\Release
+\NWB_Legato_TMS_Generate\Release
+\NWB_Legato_Volume_Status\Release
+
+\ExtractorLink\Recover
+
+\MS ResetRiposte\Release
+
+\ExtractorLink\ClearMessageStore
+\ExtractorLink\GenerateMsgStore
+\ExtractorLink\UpdateAuditPoints
+
+\ExtractorLink\VolumeStatus
+\ XplorerGetID\Release
+
+The databases are held as follows, under the path above (see 3.1 VisualSouceSafe (VSS)).
+
+Name:
+RFISQL
+SEALERSQL
+
+Code Paths
+
+AEC
+See 2.2.1 Client side
+
+Sub-path
+\RFISQL
+
+\SEALERSQL
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 37 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+4.2 Server based executables
+A trigger mechanism held within the table FilesFoundConsole in the SQLServer2000
+database fires upon when a new record is added to the table. The trigger causes the server
+
+based executable 'ExtractorLink.exe' to start.
+
+‘ExtractorLink.exe' in turn calls lower a level executable depending on field values of the
+
+new record being added.
+
+4.2.1 AEC generating records
+When the AEC adds a record to the table FilesFoundConsole, 'ExtractorLink.exe' is
+started and in turn calls a lower level executable (level B) dependant upon the value of the
+
+field 'CmdUsedID' for the AEC added record.
+
+CmdUsedID Called 'exe' (Level B)
+
+FileStatus.exe
+Volume.exe
+FileSizes.exe
+TMSClear.exe
+TMSGenerate.exe
+ClusterID.exe
+CreateDir.exe
+BuildOracle.exe
+
+BoeridxAnawn
+
+1
+
+The called 'exe's' above, in turn call further executables (Level C) detailed in 2.2./.2./
+
+Executables. ExtractorLink.exe, level B and level C executables run asynchronously.
+
+4.2.2 System scheduled executables
+System fired executables are started through scheduled jobs within the RFISQL database
+adding a record to the table Fi/esFoundConsole. 'ExtractorLink.exe' is started and in turn
+calls a lower level executable (level B) dependant upon the value of the field 'CmdUsedID'
+
+for the system added record.
+
+CmdUsedID Called 'exe' (Level B)
+
+10 UpdatAP.exe
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 38 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+13 CenteraDelete.exe
+
+ExtractorLink.exe and level B executables run asynchronously. Job scheduling is
+
+undertaken via Maestro.
+5.0 Errors
+
+5.1 Exit and Event Codes
+5.1.1 AEC
+
+Errors in the executables instigated indirectly through AEC are visible to the user by way
+of form frmShowStatus (see 2.2.1.1.13 frmShowStatus) located via the menu-bar item
+
+‘Actions’ sub-menu item ' Check Actions ' on form frmFilesF ound.
+
+Errors generated by AEC are advised to the user via message boxes and WindowsNT
+
+Event Log entries are created on the user workstation.
+
+5.1.2 Server based executables
+
+All errors generated cause WindowsNT Event Log entries to be created.
+
+5.2 Deficiencies
+The AuditExtractor mechanism uses a 'flag' system within the RFISQL database to mark
+ARQ's as active (in use) or otherwise (free). Any problem with this ‘flag’ system may
+arise if, say, a link crashes and leaves a specific ARQ marked as active. It would no longer
+
+accessible to any user.
+
+Additionally, there was no mechanism for adding, deleting or modifying the ‘ARQ
+
+Requester ID’ value in the Requesters table.
+
+To redress these deficiencies an Administrative 'Toolkit' has been developed.
+
+(PC0080034).
+
+5.3. Clearance Dates
+6th January 2003
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 39 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+5.4 Work Rounds
+
+Record addition or amendment through manual access to the RFISQL database will in
+
+addition to the 'Administrators Toolkit’ circumvent the deficiencies above
+
+6.0 Messages
+
+6.1 Internal Message Communications
+
+The AEC and all executables run as standalone asynchronous processes.
+
+6.2 Run Time Communications
+Communication between AEC and the server-based executables is via records and/or field
+
+values being created or amended in the RFISQL database.
+
+The server-based executables communicate between themselves by use of text-files. These
+are first written to a specified location that a subsequently called executable then
+references and amends. The calling executable then uses the changes made to the text-file
+(see TD/LLD/013)
+
+Whilst the executables are running asynchronously use is made of the Windows
+'ProcessId' and ‘handle’ facilities, allowing monitoring of called executables to be
+
+performed.
+
+7.0 API
+
+The server based executable 'Build_Oracle_Table.exe' interfaces to STDC001.exe located
+
+at: D:\Archiveserver.
+
+The 'Legato Networker’ command line interface is used to invoke Recover’.
+
+8.0 Support Route
+1“ line support to ISD BELFAST
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 40 of 40
+FUJ00176271
+
+FUJ00176271
+Fujitsu Services Audit Extraction Support Guide Ref: TD/MAN/018
+Version: 0.1
+COMMERCIAL IN CONFIDENCE Date: 01-OCT-2002
+
+2nd to 4th line support-line route direct to Audit team at FELO1 using POST OFFICE
+ACCOUNT's PINICL system.
+
+© 2002 Fujitsu Services COMMERCIAL IN CONFIDENCE Page: 41 of 40

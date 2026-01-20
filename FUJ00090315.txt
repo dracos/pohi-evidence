@@ -1,0 +1,237 @@
+FUJ00090315
+FUJ00090315
+
+Fujitsu Services Ref: PA/TEM/092
+Version: 2.0
+COMMERCIAL IN-CONFIDENCE Date: 08/04/03
+Fujitsu Services Ltd CWP NO: 0290
+
+CHANGE WORK PACKAGE
+
+CWP TITLE: IMPACT Release 3: Counter and Host changes
+
+CWP RAISED BY: S. Parkinson RAISED DATE: 3" November 2004
+
+Change Work Package/Change-WerkPackage Element of CWP:
+
+(Delete as applicable)
+
+CHANGE WORK PACKAGE DESCRIPTION:
+
+This Change Work Package provides for Fujitsu Services to implement a quantity of twelve
+changes to the Host and Counter software as requested by Post Office Ltd and defined below.
+
+Fujitsu Services has not yet formally received the CRs listed below and the requirements to
+which the work will be conducted are as described below for each of the twelve CRs. The
+terms under which the work will proceed is defined in a letter from Mr. Bill Reynolds (Fujitsu
+Services) to Ms.Sue Harding (Post Office Ltd) Ref S80/CRs dated 21 October 2004, that was
+responded to by letter from Mr. Steve Grayston (Post Office Ltd) to Mr. Bill Reynolds (Fujitsu
+Services) dated 26 October 2004.
+
+(CR 268) Move Point 30 Migration changes to Point 50.
+
+A number of changes are currently defined as taking place at Point 30. These are primarily
+associated with changes to the Housekeeping menu.
+
+All these changes should now occur at Point 50. This change should be purely a case of
+changing the Soft Launch Reference Data
+
+(CR 271) Use week number instead of TP in Giro Bank reports
+
+Changes are needed in the headers on a number of reports produced by Horizon. In
+particular these changes need to be made to GiroBank reports. The precise list of reports
+affected by this change is not currently available, but should be assumed to be about 6
+reports for costing purposes. The list will be specified before the CP is implemented
+
+The change is to include “Wk nn” in the header instead of the current “CAP cc” or the
+proposed “TP tt”. The Week number should be the current ISO week number starting with
+Wk 1 in January. The Week should go from Monday to Sunday (ie the week number
+changes on a Monday morning).
+
+This change needs to occur at Point 30 in the migration, ie any reports produced after the
+rollover of the Point 30 CAP should be in the new format.
+
+(CR 278) Trading Periods should be allowed to increase up to 99
+
+The Trading Period calendar will define 12 Trading Periods for a year. However should a
+branch rollover Trading Periods too frequently, there is a danger that they will run out of
+Trading Periods before the next year’s calendar is available. In this case artificial Trading
+Period numbers should be used to allow the branch to continue. Warnings should be given
+as at present when a branch is attempting to rollover into a Trading Period that is too far
+ahead.
+
+(CR 280) Remove Training Mode
+
+The Training Mode button should be removed from the Desktop at a suitable point.
+This will remove the need to validate Training Mode.
+
+(CR 263) Change the format of Article from Number (10) to Char (10) in all cases.
+
+CWP No: 0290 COMMERCIAL IN-CONFIDENCE Page I of 4
+Fujitsu Services Ref: PA/TEM/092
+Version: 2.0
+COMMERCIAL IN-CONFIDENCE Date: 08/04/03
+
+FUJ00090315
+FUJ00090315
+
+Article is used in a number of tables in the RDMC. RDDS and TPS databases. It has been
+decided that it needs to be alphabetic rather than numeric and so its format needs to be
+changed.
+
+This change also requires amended versions of the following AISs:
+BP/IFS/010 “Application Interface Specification Reference Data to Fujitsu Services Limited” v6.5
+(POL ref RDP/AIS/014)
+
+EA/IFS/003 “Horizon to POL Finance Systems Interface Specification” v1.2 (POL ref EA/IFS/R3901)
+
+EA/IFS/002 “POL Finance Systems to TMS / Horizon ‘Transaction Corrections Interface Specification” v1.7
+(POL ref EA/FS/002).
+
+(CR 272) Change to the interface to POL MIS.
+This change affects TPS Host only.
+
+A number of changes are required for this interface:
+
+§ Remove ‘PURCHASED QUANTITY’ from the bureau additional data in
+section B.5
+
+§ Allow positive and negative values to be populated in the Amount field and the
+Quantity field on the Transaction Detail record
+
+§ Populate the Amount field with the sign recorded within Horizon, i.e. remove
+processing that converts negative signs to positive.
+
+§__ To indicate the presence of ‘Additional Data’ for a transaction detail record, it is
+proposed that the Record Type Identifier is used.
+
+S Remove references to maintaining the list of additional data attributes using the
+POL Reference Data System
+
+This change also requires amended versions of the AIS:
+EA/IFS/006 “Horizon to POL MIS AIS” v1.1.
+
+(CR 275) Change to the interface to HR SAP
+This change affects TPS Host only.
+
+Changes are required to the way in which signs are handled on the interface.
+
+In essence the bulk of the data to be passed to HRSAP should be positive regardless of
+whether the transactions were for in-payments or out-payments, This can be achieved by
+considering the accounting sense of each product as part of the HR SAP summarisation
+process and converting the sign of out-pay transactions. Accounting sense is already
+available as part of the PRODUCT_TRANS_MODE_HISTORIES Reference Data available
+to the TPS host.
+
+This change also requires amended versions of the AIS:
+EA/IFS/015 “Horizon To HR SAP System - Applications Interface Specification” v2.0 (POL ref EA/HR/001)
+
+(CR 276) Changes to Error handling on the Transaction Correction Interface
+This change affects TPS Host and also CS operational procedures.
+Horizon needs to monitor the delivery of files across this interface and raise operational
+alerts should the files not be delivered when expected. Such alerts should not result in
+
+callouts but should be processed on the next working day using techniques similar to those
+used for the POL FS interface introduced by CP 3775.
+
+The list of permissible errors in the AIS is to be amended to reflect the HLD. This aspect is
+a documentation only change to the AIS.
+
+This change also requires amended versions of the AIS:
+
+CWP No: 0290 COMMERCIAL IN-CONFIDENCE Page 2 of 4
+Fujitsu Services Ref: PA/TEM/092
+Version: 2.0
+COMMERCIAL IN-CONFIDENCE Date: 08/04/03
+
+EA/IFS/002 “POL Finance Systems to TMS / Horizon Transaction Corrections Interface Spec
+(POL ref EA/IFS/002).
+
+tion” V1.7
+
+(CR 277) Introduce a new value for Quantity on the POL FS Article table.
+
+In order to support stock by Value products (such as “Other stamps”) correctly a new value
+(“QV”) is required for the Quantity field. This may impact RDMC / RDDS if they validate
+the permissible values in this field. It will impact TPS since if an Article Mode is
+configured with Quantity = QV, then the Quantity field in the POL FS interface details
+record should be set to the value (in pence).
+
+This change also requires amended versions of the following AISs:
+
+BP/IFS/010 “Apy ition Interface Specification Reference Data to Fujitsu Services Limited” v6.5
+
+(POL ref RDP/AIS/014).
+
+Note: The ‘QV* change has been omitted from v6.5 of this AIS. Fujitsu Services is progressing this Change
+Request on the basis that the ‘QV’ value will be added to the Quantity Field for future issues of this AIS.
+
+EA/IFS/003 “Horizon to POL Finance Systems Interface Specification” v1.2 (POL ref EA/IFS/R3901)
+
+(CR 264) Change to the POL FS to Horizon TC Functional Specification and AIS
+
+This change affects TPS Host only.
+Make Good should be a Permitted Mode when Allowed Modes is set to 51 or 52
+This change also requires amended versions of the AIS:
+
+EA/IFS/002 “POL Finance Systems to TMS / Horizon Transaction
+(POL ref EA/IES/002)..
+
+‘rections Interface Specification” v1.7
+
+(CR 287) Add Site to the RDS to Horizon AIS & Horizon to POL FS AIS
+
+This change affects TPS Host and RDMC / RDDS Hosts.
+
+POL FS uses two identifiers for the branch. A profit centre and a site. The profit centre
+uses the 6 character FAD code, but the site is a 4 character field and hence can not use the
+FAD code. Site is an attribute of Branch/Outlet organisation unit on the S80 RDS design.
+The site code is used particularly for the Horizon to POL FS interface as part of the POS
+inbound processing. In order to maximise the efficiency and speed of this interface the site
+should be included in the interface file from Horizon to POL FS. In order to achieve this
+efficiency the site should be included in the interface from RDS to Horizon.
+
+This change also requires amended versions of the following AISs:
+
+BP/IFS/010 “Application Interface Specification Reference Data to Fujitsu Services Limited” v6.5
+(POL ref RDP/AIS/014)
+
+EA/IFS/003 “Horizon to POL Finance Systems Interface Specification” v1.2 (POL ref EA/IFS/R3901)
+
+(CR 289) Change the name, format and relevant values for the field Dummy in POL FS Article
+entity in the RDS to Horizon interface.
+
+This change affects TPS Host and RDMC / RDDS Hosts.
+
+The current field Dummy in the POL FS Article entity that has two allowed values D&R. It
+has been established that this is not sufficient to allow the Horizon to POL FS interface to
+run efficiently. There is a field on RDS against article called Article Type. This is a two
+character field with a range of values allowed. The field Article Type should replace the
+field Dummy in the AIS RDS to Horizon and AIS Horizon to POL FS (Branch Ledger), and
+in Horizon system.
+
+This change also requires amended versions of the following AISs:
+
+FUJ00090315
+FUJ00090315
+
+CWP No: 0290 COMMERCIAL IN-CONFIDENCE Page 3 of 4
+FUJ00090315
+FUJ00090315
+
+Fujitsu Services Ref: PA/TEM/092
+Version: 2.0
+COMMERCIAL IN-CONFIDENCE Date: 08/04/03
+
+BP/IFS/010 “Application Interface Specification Reference Data to Fujitsu Services Limited” v6.5,
+(POL ref RDP/AIS/014)
+EA/IFS/003 “Horizon to POL Finance Systems Interface Specification” v1.2 (POL ref EA/IFS/R3901)
+
+CWP OUTPUTS:
+
+Fujitsu Services will amend and deliver the software in order to incorporate the
+changes as requested by Post Office Ltd and defined above.
+
+Amended AIS document entitled Horizon to POL MIS AIS (FS ref: EA/IFS/006).
+
+CWP No: 0290 COMMERCIAL IN-CONFIDENCE Page 4 of 4

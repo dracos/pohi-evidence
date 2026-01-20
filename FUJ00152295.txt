@@ -1,0 +1,113 @@
+FUJ00152295
+FUJ00152295
+
+Initial Comments on Marine Drive letter 17th August 2006
+
+Paragraph 8
+
+I checked this first, as the suggestion that the transaction log contains incomplete transactions would
+indeed be a serious issue.
+
+I found that the sum of SaleValue over the entire transaction spreadsheet (covering 1 — 31% Jan
+2004) came to -£2.47. I had expected it to sum to zero.
+
+Using a pivot table, I summed SaleValue by Sessionld. All but 2 sessions sum to zero (though Excel
+rounding has given some miniscule non-zero totals). The two non-zero sessions are
+
+44-213337-2-1163818-2 -0.92 12" Jan (Week 42)
+44-213337-1-880853-2 £-1.55 15" Jan (Week 43)
+
+Looking in the full messagestore at the first of these, I found the missing transaction was a stamp sale
+within a Smartpost session, and the Start information had not been included in the message. This was
+a not uncommon problem at the time. The transaction was included in all the accounts (otherwise
+there would have been a receipts and payments mismatch), and did not cause any discrepancy at the
+branch, but has not been retrieved from the archive by the data retrieval, since that requires Start
+date to be present (see the query at the beginning of the transaction log spreadsheet).
+
+Possible further action:
+
+a) confirm second instance is the same (so far only have CAP42 complete messages)
+
+b) retrieve the TPSC253 report for the days (Counter Exceptions), which should show the
+problem was noticed at the time. MSU and SSC no longer have this report but maybe we can
+get it back through the Audit team?
+
+c) confirm in some way that no complete sessions are missing for the same reason. I have done
+an informal check for CAP42 and am happy that this is the case, but maybe we need to
+present better proof? A check for ( Exists ( EPOSSTransaction.ProductNo)) AND ( Exists (
+TxnData.SessionlId) ) will find the extra transactions.
+
+Mr Castleton is not however querying this, but makes a more general statement that a number of
+transactions are incomplete (no examples given). My only suggestion is that he has not realised that,
+since the data is sorted on transaction start time, transactions from the two counters are sometimes
+interleaved. Also, there are in some instances transactions done in sessions which were suspended
+and resumed later, so even when done on the same counter they may not all be together (for
+example 44-213337-2-1157883-1 on 6" Jan).
+
+See the spreadsheet MissingTxnCheck.xis — the first two sheets are the transaction log as disclosed,
+with the problem sessions highlighted. The third sheet is the summary by session and the fourth
+contains the first of the two omitted transactions.
+
+Paragraph 2
+
+I have also carried out a semi-manual reconciliation of all transactions recorded in the log for Week
+42 - spreadsheet CAP42_CA. xls.
+
+Transactions in CAP42 are those from 8" Jan 2004 08:59:11 to 15" Jan 07:36:14. The stock unit and
+office rollover times can be confirmed in the spreadsheet of events already disclosed.
+
+I have included the one extra transaction line for -0.92, but otherwise the transactions are just as
+already disclosed.
+
+To recreate the cash account, I obtained the cash account mappings in use at the time. These are the
+same for all branches, and the set I used were from an archive taken at another branch in January
+FUJ00152295
+FUJ00152295
+
+2004 (I would have liked to get them off the RDDS as a more official source, but the year 12 data has
+been deleted).
+
+Using ProductNo and Mode from the transaction spreadsheet, I looked up the appropriate mapping
+(amount mappings only; I ignored those that sum the quantities). This resulted in totals for each of the
+cash account lines which are not derived from other lines.
+
+Note that for some modes, namely ER, SAP, SAN, DDN, DDP, the SC mode mapping is used (this
+needs explaining but I don’t know how).
+
+There are some transactions which do not map to a product line. These are
+a) products which have zero value and just the quantity is used, e.g. milk tokens (I haven't
+calculated the quantity lines)
+b) products which are non-accounting data or parcel traffic (modes NAD, PT)
+c) products which are the settlements for Remit in or Remit out transactions
+
+The mappings used are in the spreadsheet CA_Mappings.xis. I can provide the raw objects from
+which these were derived if necessary.
+
+I also summarised the data by table, and in the same worksheet, attempted to complete the cash
+account.
+
+I managed to produce the right numbers, but I got completely bogged down with the stock on hand
+figures - I can see intuitively how to get them, but I don't see how this is achieved using the mappings
+for table 5X and 5B. Rems obviously affect the stock on hand but map to something other than table
+5X/ 5B. AllI can think of is that is there is a table 5 mapping for a product, this is always applied, in
+addition to any required for a specific mode?
+
+I haven't properly included or explained the mappings for lines which are accumulations of other lines.
+
+Going back to the letter...
+
+Paragraph 3
+The receipts are confirmed as £122,120.66, not £125,013.90 as calculated by Mr Castleton. When
+added to the Balance Brought Forward of £54,170.49, this gives the Total Receipts of £176,291.15.
+
+Paragraph 4
+
+The figure from stock carried over from week 41 was £54,170.02, not £92,374.74 as stated - this is
+the stock figure at the end of week 42. This latter figure, plus payments made during week 42
+(£83,915.81, not £83,707.07 as calculated by Mr Castleton), plus an accumulated shortage of £0.60,
+gives a Total Payments figure of £176,291.15.
+
+Paragraph 5
+222? since we disagree with his totals, I think this becomes irrelevant.
+
+Anne Chambers.

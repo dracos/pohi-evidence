@@ -1,0 +1,879 @@
+POL00038907
+POL00038907
+
+Impact Programme: <>
+POL FS to SAPADS Cexansa
+
+IMPACT PROGRAMME:
+POL FS To SAPADS
+
+APPLICATION INTERFACE SPECIFICATION
+
+©Xansa ple 2004 / 16 August 2004 Page 1 of 17 / Issue No: 0.2
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+Document Contro!
+
+Authorisations
+
+POL00038907
+POL00038907
+
+.
+
+ré
+Impact Programme: re Js
+POL FS to SAPADS (xansa
+
+!
+
+Role Name
+
+Signed Date
+
+Programme Manager Tony Brain
+
+Reviewers
+
+Name Reviewer(s)
+
+Role & Review Responsibilities
+
+Torstein Godeseth
+
+PO Ltd Design Authority
+
+Peter Jones
+
+PO Ltd Test Manager
+
+Jacqui Cave
+
+PO Ltd Test Team
+
+Distribution List
+
+Name
+
+Organisation
+
+Jill Hollindale (for Prism distribution)
+
+Prism IMPACT Programme Office
+
+Debbie Shirley (for PO Ltd distribution)
+
+Post Office Ltd IMPACT Programme Office
+
+©Xansa ple 2004 / 16 August 2004
+File Name: AIS POLFS to ADS VO2.doc
+
+Page 2 of 17 / Issue No: 0.2
+Status: Draft
+POL00038907
+POL00038907
+
+.
+SS
+
+. ¢ e
+< Abe » Impact Programme: <xansa
+
+!
+
+POL FS to SAPADS
+
+Table of Contents
+
+1. Change Control
+1.1 Change Process
+
+1.2 Change History...
+2. Introduction...
+
+2.1 Purpose ...
+
+2.3 Background ...
+2.4 Terms & Abbreviations ....
+2.5 Field Formats.
+
+2.6 Reference Documentation,
+
+2.7 Contacts
+2.8 Audience.
+3. Interface Details
+
+3.1 Interface Diagram.
+3.2 Data Flow ....
+
+3.3 POLFS to SAPADS Cash Account Payments Mapping
+
+3.4 Data Overview...
+
+3.5 File Structure Overview ...
+3.6 File Format...
+3.7 File Types...
+
+3.8 Delivery Details . 15
+3.9 Volumes Anticipated. 15
+
+3.10 Interface Availability
+3.11 File Transfer ....
+
+3.12 Fallback & Exception Processing...
+
+3.13 Interface Security ...
+3.14 Extract Rules ...
+
+3.15 Load Rules ..
+
+3.16 Issues ....
+
+©Xansa ple 2004 / 16 August 2004 Page 3 of 17 / Issue No: 0.2
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+POL00038907
+POL00038907
+
+x ¢
+& Impact Programme: re Jsxansa
+abc.) POL FS to SAPADS So
+
+List of Figures
+
+Figure 1 Interface Diagram
+Figure 2 Data Flow Diagram .
+
+List of Tables
+
+Table 1 Change History.
+Table 2 Terms and Abbreviations
+
+Table 3 Field Formats
+Table 4 Reference Docum
+Table 5 Contacts and Contributors
+
+Table 6 POLFS to SAPADS Cash Accounts Payments Mapping
+
+©Xansa ple 2004 / 16 August 2004 Page 4 of 17 / Issue No: 0.2
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+< Impact Programme:
+abc 7 POL FS to SAPADS
+
+1. Change Control
+
+1.1 Change Process
+
+POL00038907
+POL00038907
+
+<Qxa nsa
+
+Any changes to the draft version of this document will be made, controlled and distributed by:
+
+Steve Greenaway
+Consultant
+Xansa
+
+Barker Lane
+Chesterfield
+S40 1DY
+
+1.2 Change History
+
+Issue Author Date History
+0.1 (draft) I Steve Greenaway 11" August 2004 Initial draft of document
+0.2 Steve Greenaway 16! August 2004 Updated to reflect:
+
+= File format changed to match
+existing interfaces.
+
+= Clarification of required data
+records.
+
+©Xansa ple 2004 / 16 August 2004
+File Name: AIS POLFS to ADS VO2.doc
+
+Table 1 Change History
+
+Page 5 of 17 / Issue No: 0.2
+Status: Draft
+POL00038907
+POL00038907
+
+<
+Impact Programme: ro Js xKxansa
+cabc J POL FS to SAPADS G
+
+2. Introduction
+
+2.1 Purpose
+
+The purpose of this document is to define the Cash Account Payments interface required from the
+POL Finance System (POLFS) to the SAP Advanced Distribution System (SAPADS). This interface
+handles the transfer of Cash Account Payment information from POLFS for subsequent upload into
+SAPADS.
+
+2.2 Scope
+
+The scope of this document is restricted to electronic data, which is both computer-generated and
+computer-consumed and relates specifically to the transfer of data from the POL Finance System to
+the SAP Advanced Distribution System.
+
+The specification describes the format and volumes of the data files to be passed across the interface.
+The data to be interfaced will be described and backed up with diagrams and appendices when
+thought necessary. The structure of the interface in terms of file and record layouts is also given.
+
+This document, once signed off, will be subject to change control procedures.
+
+2.3 Background
+
+Flexible planning uses Payment information as part of the calculation for outward remittances. The
+Payments information it uses is Pension & Allowance, Green Giros, Giro Payments and Working
+Family Tax Credits. "Universal Bank" payments are also used. Universal Bank data is considered to
+be made up of Card Account withdrawals, Card Account emergency payments, Alliance and Leicester
+withdrawals and Link withdrawals.
+
+Currently, SAPADS receives the Payment information on a weekly basis from CBDB in a flat file
+format. The CBDB system is due to be replaced by the new POL Finance System, POLFS. Therefore
+a new interface is required to obtain the Cash Account Payment information from POLFS.
+
+The required data will be extracted daily from POLFS in a flat file format and will be placed onto a
+UNIX directory from where it will be interfaced into SAPADS via FTP.
+
+The file will contain Payment information for the following Cash Account lines:
+
+¢ 1028 Alliance and Leicester Withdrawals
+e 1031 Working Family Tax Credit
+
+¢ = 1033 Link Withdrawals
+
+¢ 1034 Card Account Withdrawal
+
+e 1040 Card Account Emergency Payments
+e 1066 Pensions and Allowances.
+
+¢ 1071 Green Giros
+
+e 1072 Giro Payments
+
+©Xansa ple 2004 / 16 August 2004 Page 6 of 17 / Issue No: 0.2
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+POL00038907
+POL00038907
+
+: Impact Programme:
+abc.) POL FS to SAPADS
+
+2.4 Terms & Abbreviations
+
+ppl pe
+CBDB Counters Business Database
+FAD Financial Accounting Description — a code which identifies the PO branch
+FTP File Transfer Protocol
+IMPACT Improved Accounting programme, a PO Ltd initiative to rationalise back-end
+systems and processes.
+POL Post Office Limited
+POLFS POL Finance System
+SAPADS. SAP Advanced Distribution System
+SAP R/3 SAP applications, built around their latest R/3 system, provide the capability to
+
+manage financial, asset, and cost accounting, production operations and materials,
+personnel, plants, and archived documents.
+
+Table 2 Terms and Abbreviations
+
+2.5 Field Formats
+
+Numeric digit
+
+xI
+
+Alphanumeric character
+
+: Floating minus sign
+
+Digit of year
+
+Digit of month
+Digit of day
+
+ol ZI <
+
+Explicit decimal point
+
+Table 3 Field Formats
+
+2.6 Reference Documentation
+
+A PO Ltd Financial Systems Release 3 1.0 01/06/2004
+Conceptual Design
+
+Table 4 Reference Documentation
+
+©Xansa ple 2004 / 16 August 2004 Page 7 of 17 / Issue No: 0.2
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+POL00038907
+POL00038907
+
+.
+
+ré
+Impact Programme: re Js
+POL FS to SAPADS So xansa
+
+2.7 Contacts
+
+Xansa Philip Godden
+
+Xansa Lee Sherwood '
+Xansa Catherine Pierce
+csc Robin Marsh
+
+Table 5 Contacts and Contributors
+
+2.8 Audience
+e POLtd IMPACT Programme Design Authority and Test Team
+
+e Prism Alliance
+
+3. interface Details
+
+3.1 Interface Diagram
+The diagram shows the high level systems infrastructure involved with the interface.
+
+The extracted data is initially dropped onto the POLFS server and an automated FTP pulls it across to
+the SAPADS server whereby the data is uploaded into the system.
+
+[0 ee ee ~  aliedieeieeiaaiainaliael _
+I { FTP Pull by SAPADS: \
+I from the POLFS Server I
+Extract File dropped
+I onto POLFS Server I
+I
+\ POLFS (externally hosted), Ne Northen Data Centre
+POLFS to SAPADS interface
+Figure 1 Interface Diagram
+©Xansa ple 2004 / 16 August 2004 Page 8 of 17 / Issue No: 0.2
+
+File Name: AIS POLFS to ADS VO2.doc Status: Draft
+POL00038907
+POL00038907
+
+x .
+< ‘ Impact Programme:
+
+abc, J POL FS to SAPADS
+3.2 Data Flow
+
+The following schematic illustrates the data flow from POLFS to SAPADS.
+
+~
+~~ Cash Account Payment me,
+from POLFS
+1628 Alkan and Lsicosiar Withdraws!
+oa \
+a
+I aN
+/ Cash Account Payment Line
+A from POLFS \
+~__ 108 Wosting Ferty Tax Cet _ \
+ee
+Jeraocedy,
+a \
+/ ~~ Gash Account Payment Line 7. \
+/ from POLFS n \
+4092 Link Withers
+/~ aN \\
+i/ / Jano
+4
+If, 7 Cash Account Payment Line 7 »~ y
+UA from POLFS Sn 4
+1104 Care Accouns Withdeanwat A
+ta!
+BFAD Cale SAP ADS
+
+—_— _
+Cash Account Payment Line
+from POLFS:
+sa Ga Aa Ene ar
+S FAD Cade
+\ YY /,
+
+“Seah Account Paymen Account Payment Line a a /
+from POLFS Y Jo
+\ 1068 Benen Neer a
+
+eo aa Cash Account Payment Line ”
+from POLES.
+~ 1071 Green Girne
+ey ca real “
+77 Gash Account Payment Line” 7
+from POLFS
+1072 Giro Payments
+—
+Data Flow
+Figure 2 Data Flow Diagram
+©Xansa ple 2004 / 11 August 2004 Page 9 of 17/ Issue No: 0.1
+
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+POL00038907
+POL00038907
+
+By . ‘5
+Impact Programme: CYoOKaNnsa
+< <%.
+abc » POL FS to SAPADS So
+
+3.3 POLFS to SAPADS Cash Account Payments Mapping
+
+The following table identifies the POLFS source of data mapped to the SAPADS Cash Account
+Payment lines.
+
+POLFS POLFS Item Description SAPADS SAPADS Cash Account Line
+Itemid I . CashA/C I Description
+Line Type
+Code
+4908 A&L Commercial Account Cash 1028 Alliance & Leicester Withdrawal
+Withdrawal
+5563 A&L BBA Cash Withdrawal 1028 Alliance & Leicester Withdrawal
+5568 A&L Savings Account Cash Withdrawal 1028 Alliance & Leicester Withdrawal
+5001 Inland Revenue Child Benefit - Order 1031 Working Family Tax Credit
+Book System (OBCS)
+4911 Abbey National BBA Cash Withdrawal 1033 Link Withdrawals
+4913 Bank of Ireland BBA Cash Withdrawal 1033 Link Withdrawals
+4915 First Trust Bank BBA Cash Withdrawal 1033 Link Withdrawals
+4917 Barclays Bank Plc BBA Cash Withdrawal I 1033 Link Withdrawals
+4918 Lloyds TSB BBA Cash Withdrawal With 1033 Link Withdrawals
+Balance
+4920 Nationwide Building Society BBA Cash 1033 Link Withdrawals
+Withdrawal
+4922 HSBC BBA Cash Withdrawal With 1033 Link Withdrawals
+Balance
+4923 The Co-Operative Bank BBA Cash 1033 Link Withdrawals
+Withdrawal
+5032 Clydesdale Bank Plc BBA Cash 1033 Link Withdrawals
+Withdrawal
+5033 Halifax BBA Cash Withdrawal 1033 Link Withdrawals
+5035 NatWest BBA Cash Withdrawal 1033 Link Withdrawals
+5037 Northem Bank BBA Cash Withdrawal 1033 Link Withdrawals
+5039 Royal Bank of Scotland BBA Cash 1033 Link Withdrawals
+Withdrawal
+5041 Ulster Bank BBA Cash Withdrawal 1033 Link Withdrawals.
+5043 Yorkshire Bank Plc BBA Cash 1033 Link Withdrawals
+Withdrawal
+5054 Barclays Bank Plc Commercial Accounts I 1033 Link Withdrawals
+Cash Withdrawal
+5055 Lloyds TSB Commercial Account Cash 1033 Link Withdrawals
+Withdrawal
+5393 Bank of Scotland BBA Cash Withdrawal 1033 Link Withdrawals
+©Xansa ple 2004 / 11 August 2004 Page 10 of 17/ issue No: 0.1
+
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+POL00038907
+POL00038907
+
+Si . é
+Impact Programme: 4 oox¥Aa nse
+€ <%.
+abc » POL FS to SAPADS So
+
+POLFS I POLFSItem Description == ==—(I SAPADS___I SAPADS Cash Account Line
+Item Id Cash A/C Description
+Code
+
+5585 : NS&l EASA Cash Withdrawal : : 1033 ] Link Withdrawals
+
+5789 smile Debit Card Cash Withdrawal 1033 Link Withdrawals
+
+5790 The Co-operative Bank Current Account 1033 Link Withdrawals
+Cash Withdrawal
+
+4925 card account at Post Office Cash 1034 Card Account Withdrawal
+Withdrawal
+
+4927 card account at Post Office Withdraw 1034 Card Account Withdrawal
+Limit
+
+4907 Card account at Post Office emergency I 1040 Card Account Emergency Payments
+payments
+
+177 P&A Group 5 Child Benefit - Order Book 1066 Pensions and Allowances
+System (OBCS)
+
+178 P&A Group 6 War Pension - Order Book I 1066 Pensions and Allowances
+System (OBCS)
+
+179 P&A Group 7 Disability - Order Book 1066 Pensions and Allowances
+System (OBCS)
+
+181 P&A Group 10 Comb Benefit - Order 1066 Pensions and Allowances
+Book System (OBCS)
+
+182 P&A Group 11 Income Sup - Order Book I 1066 Pensions and Allowances
+System (OBCS)
+
+183 P&A Group 12 Industrial Injury - Order 1066 Pensions and Allowances
+Book System (OBCS)
+
+184 P&A Group 13 Retirement Pension - 1066 Pensions and Allowances
+Order Book System (OBCS)
+
+185 P&A Group 14 Invalidity Benefit - Order 1066 Pensions and Allowances
+Book System (OBCS)
+
+291 Grp 05 - Child Benefit - (NI ) 1066 Pensions and Allowances
+
+292 Grp 06 - War Pens/Mobility Allowance (I 1066 Pensions and Allowances
+NI)
+
+293 Grp 11 - Income Support ( NI ) 1066 Pensions and Allowances
+
+294 Grp 12 - Industrial Injury/Death Benefit (I 1066 Pensions and Allowances
+NI)
+
+295 Grp 13 - Retirement Pension (NI ) 1066 Pensions and Allowances
+
+296 Grp 14 - Invalidity Pension ( NI ) 1066 Pensions and Allowances
+
+297 Grp 09 - Prescrip. Refund ( NI) 1066 Pensions and Allowances
+
+299 Grp 07 - Disability Allowance ( NI ) 1066 Pensions and Allowances
+
+306 Grp 09 - Prescription Refund 1066 Pensions and Allowances
+
+©Xansa ple 2004 / 11 August 2004 Page 11 of 17/ Issue No: 0.1
+
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+kabc 3
+
+Impact Programme:
+
+POL00038907
+POL00038907
+
+<oxansa
+
+POL FS to SAPADS Vv
+
+POLFS POLES Item Description SAPADS SAPADS Cash Account Line
+Item Id Cash A/C Description
+
+Line Type
+
+Code
+192 Green Girocheque 1074 Green Giros
+300 Violet Girocheque Cashed ( NI ) 1071 Green Giros
+235 Giro Personal Withdrawal 1072 Giro Payments
+237 Giro Linksave Withdrawal 1072 Giro Payments
+240 Giro Business Withdrawal > oe 1000 1072 Giro Payments
+4565 Girobank Business Withdrawals Less 1072 Giro Payments
+
+Than 021000
+
+Table 6 POLFS to SAPADS Cash Accounts Payments Mapping
+
+3.4 Data Overview
+
+The interface will be in flat file, fixed length format. All data will be transferred in one or more files and
+each file has a header record, content records and a trailer record.
+
+The interface file will contain the following:
+
+3.4.4 Header Record
+
+Identifier Source System Date
+
+File Name
+
+3.4.2 Content Record(s}
+
+Identifier Date Branch Id
+
+Item Id
+
+Cash Account Line I Value
+Type Code
+
+3.4.3 Trailer Record
+
+Identifier Record Count
+
+3.4.4 Delimiters
+
+Fields will be fixed length.
+
+If a Character field is empty it will be populated by spaces.
+
+If a Numeric field is empty it will be populated by zeros.
+
+Each line will be ended with the character return of ASCII 10.
+
+©Xansa ple 2004 / 11 August 2004
+File Name: AIS POLFS to ADS V01.doc
+
+Page 12 of 17 / Issue No: 0.1
+Status: Draft
+POL00038907
+POL00038907
+
+‘ y
+Impact Programme: ro Js xKxansa
+cabc J POL FS to SAPADS G
+
+3.4.5 Data Types
+The format of each of the data types is defined using the Oracle SQL Server convention.
+The character set used is ASCII.
+
+Type Size & Description
+
+CHAR(n) Fixed length character string of n bytes. Left justified and space filled
+
+VARCHAR(n) Variable length character string of n bytes. Left justified
+
+NUMBER(n) An integer with a total of n ASCII digits (this is not binary). Right
+justified and zero filled.
+
+DATETIME Fixed length character string with the format ccyymmdd999999 where
+the time uses the GMT 24 hour clock and includes seconds. Leading
+zeros will be used. Time format = HHMMSS.
+
+DATE Fixed length character string with the format ccyymmyy. Leading
+zeros will be used
+
+3.5 File Structure Overview
+
+The file structure for Cash Payments is CSV, as illustrated below:
+“Identifier”"20040804”"123456""1234""1234567890""99999999999.99”
+For example:
+
+PAYHRPOLFS20040804pf20040804001 pay
+PAYCR200408040049254908 10282230.00
+PAYCR20040804004925556310281510.00
+PAYCR20040804004925556810282231.07
+PAYCR200408040049255001 10316914.25
+PAYCR20040804004925491 110331202.20
+
+PAYTROO0000028
+
+3.6 File Format
+
+POLFS will provide a single original file per day (so the number reference will be 001). However, if
+subsequent files are sent on the same day then the number will increase sequentially. Given that the
+fact that the file will be always be generated for the day before, the filename date (and the trading date
+on content records) will be “yesterday” i.e. relate to the day of trading within the Branch.
+
+e POLFS will provide a flat fixed length file.
+e All fields are fixed and will include leading zeroes where necessary.
+
+e All values are positive (no signs).
+
+©Xansa ple 2004 / 11 August 2004 Page 13 of 17 / Issue No: 0.1
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+3.64
+
+Name
+
+Impact Programme:
+POL FS to SAPADS
+
+POL00038907
+POL00038907
+
+.
+
+<Q>xansa
+
+!
+
+The transfer filename structure is based upon the header record details:
+
+xxyyyymmddnnn.pay
+
+Where xx is the identifier for the source system and is fixed, yyyymmdd is the current date and
+mn is the unique incremental number for the file.
+
+File Type (Logical Name)
+
+File Name
+
+Cash Account Payments
+
+pf20040804001.pay
+
+3.6.2 Header Record File Format
+
+The format of the header record is specified as follows:
+
+Field name Description Format I Comments oF
+
+Identifier A unique identifier for the I CHAR(S) The Header Record type. Value =
+header “PAYHR”
+
+Source System I The name of the system CHAR@®) @g. POLFS
+sourcing the data
+
+Date The current date CHAR(8) e.g. 20040804
+
+File Name A unique file name for that VARCHAR(17) Must be the same as the terminal
+day name of the Physical file. e.g.
+
+pf20040804001 pay
+
+3.6.3 Content Record File Format
+
+The format of the content record is specified as follows:
+
+Field name Description Format Comments
+
+Identifier A unique identifier for the CHAR(5) The Content Record type. Value =
+content records “PAYCR”
+
+Date The date of trading day DATE(8) @.g. 20040804
+
+Branch The unique branch CHAR(6) Six digit (FAD) code excluding the check
+identification number digit
+
+Group Code The Horizon Item Id CHAR() I e.g. 4908
+
+Article The Cash Account Line Type I CHAR(10) I eg. 1028
+Code
+
+Value The value for the item CURR(13) e.g. 99999999999.99
+
+©Xansa ple 2004 / 11 August 2004
+File Name: AIS POLFS to ADS V01.doc
+
+Page 14 of 17 / Issue No: 0.1
+Status: Draft
+
+POL00038907
+POL00038907
+
+y
+Impact Programme: ro Js
+POL FS to SAPADS ~ xansa
+
+3.6.4 Trailer Record File Format
+
+The format of the trailer record is specified as follows:
+
+Field name Description Format Comments i
+Identifier A unique identifier for the CHAR(14) The Trailer Record type. Value =
+trailer “PAYTR”
+Record Count The number of records in the NUM(10) The count of all data records i.e. the
+file count of all header, content and trailer
+records in the file e.g. 0000000028.
+
+3.7 File Types
+e All fields are mandatory unless otherwise stated.
+« Records should be sorted as follows
+
+— Detail records in Branch Identifier order
+
+3.8 Delivery Details
+The proposed file transmission window is advised as follows:
+
+The data must be available to SAPADS by 8.00am on Day B, where day A = trading day. A file is
+expected every day, Monday to Saturday.
+
+3.9 Volumes Anticipated
+POLFS will supply 1 file per day.
+
+All current Cash Account Payment lines will be included in the file (currently 8, but will be reduced by 1
+at some point in the future).
+
+If each branch sends details for all current Cash Account Payment lines, then the total number of
+records would be approximately 128,000 records.
+
+3.10 Interface Availability
+
+The interface will be provided on a daily basis, overnight. A file is expected each day and all daily files
+should be received by SAPADS prior to 01:00 on the Sunday ready for the SAP ADS Weekly Planning
+run.
+
+3.11 File Transfer
+FTMS should be used in line with the existing file transfer mechanism.
+Acknowledgement processing in line with the current file transmissions should also be used.
+
+©Xansa ple 2004 / 11 August 2004 Page 15 of 17 / Issue No: 0.1
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+POL00038907
+POL00038907
+
+Impact Programme: ro Xa nsa
+sabc 7 POL FS to SAPADS eS
+
+3.12 Fallback & Exception Processing
+
+SAPADS is to poll for the interface file on a daily basis. In the event that a file is not located, the
+system is to assume that there is a fault and consequently an alert will be raised to systems
+management.
+
+In the event of a file being detected but upload or processing fails, an error is also logged and an alert
+should be raised through systems management. It is assumed that any faults will be resolved in
+accordance with agreed service level agreements. File generation is the responsibility of POLFS.
+
+Standard Error Messaging will also be used.
+
+3.13 Interface Security
+
+File transfer from the POLFS server to SAPADS is though an FTP Pull by the SAPADS system using
+standard FTP account and passwords.
+
+3.14 Extract Rules
+3.14.1 Data Validation
+The following main data validation rules should be used.
+Header Data:
+= Ensure the Identifier is correct
+= Ensure Source System is valid
+= Ensure Date is valid
+= Ensure File Name is valid
+Content Records:
+= Ensure the Identifier is correct
+
+= Trading Date should be valid (i.e. a valid date that is not after the date when the file is
+created)
+
+= Branch FAD is valid
+= — Item Id is valid
+= Cash Account Line Type is correct
+= The Item Value is correct
+Trailer Data:
+= Ensure the Identifier is correct
+= Ensure the Record Count is correct
+
+3.14.2 Transmission Validation
+
+There should be 1 file to be sent per transmission and a file is expected each day.
+
+©Xansa ple 2004 / 11 August 2004 Page 16 of 17 / Issue No: 0.1
+File Name: AIS POLFS to ADS V01.doc Status: Draft
+POL00038907
+POL00038907
+
+, ,
+Impact Programme: Ssxansa
+& 4 “
+cabc J POL FS to SAPADS ood
+
+3.15 Load Rules
+
+A file is to be completely rejected if any of the above is found not to be correct. In all cases of
+exceptions, the reason for failure should be captured, an alert raised and all contained within a report
+for systems management and end user use where applicable.
+
+In addition, the following rules apply:
+e When the data is received into SAPADS:
+— It will be processed.
+— The SAPADS flexible planning calculations should be applied per individual outlet.
+e Leading zeros (0) on the Branch Id is the norm.
+
+e Re-sends should be accommodated.
+
+3.16 issues
+
+001 Grouping of Products in the I Decision to be made if POLFS
+extract file by relevant Products are to be
+Payment Line grouped or not
+©Xansa ple 2004 / 11 August 2004 Page 17 of 17 / issue No: 0.1
+
+File Name: AIS POLFS to ADS V01.doc Status: Draft
