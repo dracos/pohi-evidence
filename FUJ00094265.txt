@@ -1,0 +1,147 @@
+FUJ00094265
+FUJ00094265
+
+Prevost Jean-Pierre (
+
+FTS)}}
+R
+OINGTOT CHS!
+jenkins Gareth Gf
+
+; Cochrane
+Richardson Debbie
+; Welsh
+
+i]
+XCHANGE/OU=ADMINGROUP1/CN=RECIPIENTS/CN=BUTTSG]
+Sat 27/02/2010 12:10:08 AM (UTC)
+
+Subject: Branch Trading Statement Issue on HNG-X Release 1 Pilot
+FW: FW: Workaround for the Final Balance Report for BTS
+
+J-P,
+
+Can you review this draft response to an email from Post Office (enclosed) about Fujitsu's approach to resolution and interim
+management of a software defect relating to the Final Balance Report for Branch Trading Statements, and let me know if any
+changes are required before it is sent. I've copied the HNG-X Leadership Team in for information. This issue has been flagged as
+critical to fix before the start of rollout.
+
+Debbie — let me know if there is anything that needs to be added relating to test coverage of BTS Reports.
+Thanks.
+Regards,
+Geoff
+Phil,
+
+Please find enclosed a consolidated response to your requests for further information with regard to the Final Balance
+Report for the Branch Trading Statement.
+
+Background
+During Branch Trading Statement (BTS) Production the report is produced twice in the form of:-
+
+e A Trial Report to allow the Postmaster to check that the data is correct.
+
+e A Final Report which is produced after the Trial Report has been confirmed. This indicates that the Branch has
+rolled over in the next Trading Period.
+
+The BTS consist of two parts:-
+
+1. A Summary of Stock Unit and Suspense Account activities (relating to Cash and Cash movements) over the
+Trading Period.
+2. Consolidated Stock Levels for all Volume Stock Items.
+
+Problem Description
+On the Final Report, the Stock Holding figures in the second section of the Report are incorrect on the final balance.
+
+Points to Note
+
+e The first section of the Final Report (relating to Cash and Cash movements) is correct.
+
+e The figures that are stored as Opening figures for the new Trading Period are correct. To expand on this slightly, at the
+time the Final BTS Report is produced some Opening Figures for the Suspense Account are stored back in the BRDB
+and these figures are from the first part of the report and so are not corrupted by the Bug and therefore are correct.
+
+« The figures on both sections of the Trial Report, (which the Postmaster is asked to check) are correct.
+
+Cause
+
+The root cause of the issue is that the code that re-prints the report makes incorrect use of the cache of data held at the
+counter for generating the report as it is printing the report.
+
+To expand on this a bit further:-
+
+1. When the BTS is being produced, it is done based on data written to the Branch Database (BRDB) whenever a
+Stock Unit Rolls over.
+
+2. BTS Production retrieves this data from BRDB to the counter.
+
+3. The counter then uses it to generate the Trial BTS
+
+4. There is a bug in the way that the report is produced such that some of the in-memory copy of the data is
+overwritten when the Trial BTS is produced.
+FUJ00094265
+FUJ00094265
+
+A consequence of this is that when the final BTS is produced it is using incorrect data.
+
+The problem has been fixed by ensuring that the final BTS uses the original data retrieved by the counter at step 2
+
+rather than the data left over after step 4.
+
+7. The problem was first reported by Warwick and they pointed out that the trial Balance figures were correct and the
+Final Balance figures were incorrect.
+
+8. Comparing the Trial and Final balance figures with the corresponding Stock Unit Balance Reports shows easily that
+the Trial Balance is correct and the final Balance is incorrect.
+
+9. None of the incorrect data is stored to BRDB so there is no possibility of ongoing corruption of stock levels.
+
+On
+
+Key Questions
+
+Can Fujitsu provide a complete and comprehensive list of all products where the volumes on the Final Balance
+Report differ to those on the Trial Balance Report?
+
+All figures relating to the Volume Stock Holdings can be corrupted by the bug, but not necessarily all the figures will be
+incorrect.
+
+How Has the Defect Arisen?
+The defect is a software issue that was not detected in application testing by the Joint Test Team.
+
+What are the Impacts of this Defect — detailing all stock items affected?
+All the Volume Stock items in this section of the report could be affected.
+
+What is Fujitsu doing to resolve this defect?
+
+Fujitsu has developed a software fix that resolves the issue by ensuring that the Final Report uses the original data
+retrieved by the counter at Step 2 described above rather than using the data left after Step 4. This is a counter fix that is
+currently scheduled to be delivered within the next Maintenance Release for HNG-X — 01.08. In the short-term, before the
+fix is deployed into live, Fujitsu has written a KEL which includes instructions to the HSD to give advice to Postmasters.
+The advice is to use the Trial Report, which is correct, and to discard the Final Report.
+
+Can Fujitsu Provide a Statement Proving the Integrity of the Data is not compromised in any way, and the only
+impact is incorrectly reported data?
+
+Fujitsu confirms that this defect relates specifically to the printing of Report data, and is not related in any way to the
+underlying branch data held in the operational HNG-X system.
+
+Can Fujitsu provide a commitment to support POL in proving the integrity of the system in any subsequent legal
+action (specifically where the difference in the two reports is used as a means to challenge the integrity of the
+system)?
+
+Yes, Fujitsu is willing to provide commitment to prove the integrity of the system in any subsequent legal action.
+
+Geoff Butts,
+Programme Manager, HNG-X Release 1,
+Royal Mail Account
+
+Practitioner, P&PM Academy
+
+FUJITSU
+
+Fujitsu Services Limited, Registered in England no 96056, Registered Office 22 Baker Street, London, W1U 3BW
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be privileged. Fujitsu Services does
+not guarantee that this e-mail has not been intercepted and amended or that it is virus-free.
+FUJ00094265
+FUJ00094265

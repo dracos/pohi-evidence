@@ -1,0 +1,1092 @@
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+Analysis of Audit timeouts
+
+1 Background
+
+This paper contains the working notes from examination of the timeout events extracted from
+the Horizon system between December 07 and June 08.
+
+The Riposte message journal is used as one of the sources of diagnostic information concerning
+activities that take place at the branch.
+
+Whilst in general, applications writing to the Riposte message journal will normally be able to
+write a record, there are potential cases where a write can fail. It is up to the application
+software to handle the error and report this to the user.’
+
+A recent question has been raised as to whether there may be any circumstances where records
+might have been lost before being written to the journal.
+
+Riposte has a timeout of 10 seconds on how long it will queue a write request before returning
+a failure response to the calling application. Examples circumstances where a failure could
+occur are as follows: An application may chose to take a lock out and write a number of
+records within a single commit unit; The system may be busy performing other I/O functions
+and the write cannot be completed within the timeout period.
+
+In cases where a failure occurs, Riposte writes a “Timeout” event to the NT event log. In some
+
+cases, the calling application also writes its own “Timeout” event. These events are forwarded
+via Tivoli to the central Horizon systems management system.
+
+Events are only forwarded by Tivoli to the audit system where they are categorised as “Error”.
+Local filtering can also take place where an event has been categorised as “harmless” to
+prevent large volumes swamping the central systems.
+
+An extract of the timeout events for a 6 month period has been provided for analysis, and is the
+subject of the rest of this paper
+
+"A separate analysis of the counter application behaviour is being undertaken and is covered by a separate
+paper.
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page I of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+2 Event texts and volumes
+The events recorded cover the period 31 December 2007 and 30" June 2008. 31°
+
+These events are filtered to those which include the string “timeout” in the message description.
+[There may also be some further filtering — check with Alan Holmes.]
+
+There were a total of 27993 events recorded, split as shown below
+
+Source Text Total
+<TMSPOAcknowledge>Error Message: ‘RiposteCreateMsgEx for LocalTrigger fails. Timeout
+
+C_HV_POACK I occurred waiting for lock. (0xC 1090003) Trigger message could not be processed. Data for
+msg=<Application:BDC><Data:<TranType:LocalTrigger><Groupld:111111111>><MsqVer 142
+
+C_HV_POSCH I <TMSPOCallSched>Error Message: RiposteCreateMessageEx failed in ReportOfflineMemo Trying to
+report counter offline memo - Timeout occurred waiting for lock. (0xC1090003) 4
+
+Riposte ,
+A cluster allocation operation failed. Timeout occurred waiting for lock. (0xC1090003). 1
+‘An error occurred while attempting fo commit a message run. Timeout occurred waiting for lock
+
+Riposte (0xC1090003) 249
+‘An unexpected error occurred while attempting to insert a message. Timeout occurred waiting for
+
+Riposte lock. (0xC 1090003). 19
+
+- ‘An unexpected error occurred while attempting to modify an entry in the run map. Timeout occurred
+
+Riposte waiting for lock. (0xC1090003) 19537
+KMRX: Riposte Error 3238502515. Timeout occurred waiting for lock. (OxC 1090003)
+
+KMRX RiposteCheckpointMessagePort 8032
+KMRX: Riposte Error 3238592515. Timeout occurred waiting for lock. (OxC1090003)
+
+KMRX RiposteGetMessage 2
+The VB Application identified by the event source logged this Application Desktop: Thread ID: 360
+
+VBRuntime Logged: Logging user JWVI001 off from Riposte failed: Timeout occurred waiting for lock.
+(xC 1090003) UserLogof failed. (C1090003) 1
+
+Riposte ‘Timeout occurred waiting for lock. 6
+Grand Total 27993
+
+In the cases where an application rather other Riposte logs the error, there is in general an
+associated Riposte error event. (There are a two of cases for KMRX, where there is no
+associated Riposte event — these are the 2 “RiposteGetMessage” events above and relate to reading
+rather than writing, and hence no Riposte error has been logged for these.)
+
+The KMRX, C_HV_POACK and C_HVPOSCH applications are background applications
+which monitor the messages received in the counter and generate responses to be returned to
+the central system. KMRX also uses Riposte to hold checkpoints of message runs. These
+applications handle the errors and recover from the failure, hence these can be removed from
+the analysis.
+
+By removing these background applications and the associated Riposte events , these reduce to
+a total of 11633 events recorded, split as shown below
+
+Riposte Only Events
+
+Source Text Total
+
+Riposte . , ,
+A cluster allocation operation failed. Timeout occurred waiting for lock. (0xC1090003), 1
+‘An error occurred while attempting to commit a message run. Timeout occurred waiting for lock
+
+Riposte (Ox 1090003) 249
+‘An unexpected error occurred while attempting fo insert a message. Timeout ocourred waiting for
+
+Riposte look. (0xC 1090003). 19
+‘An unexpected error occurred while attempting fo modify an entry in the run map. Timeout occurred
+
+Riposte waiting for lock. (0xC1090003) 11358
+
+Riposte Timeout occurred waiting for look. 6
+Grand Total 11633
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 2 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+3 Spread of events over the 6 month period
+
+The spread of events across the 6 month period for All Riposte Timeout events is shown
+below:
+
+All Riposte Timeouts by Date
+
+31/12/2007
+
+PHL
+
+By eliminating the Riposte events where there an associated application timeout event, we
+restrict these events to the cases where there is a Riposte Only Timeout event as shown below:
+
+Riposte Only Timeouts by Date
+
+1500
+
+1000
+
+07/01/2008
+14/01/2008
+21/01/2008
+28/01/2008
+11/02/2008
+18/02/2008
+25/02/2008
+03/03/2008
+10/03/2008
+17/03/2008
+24/03/2008
+31/03/2008
+07/04/2008
+14/04/2008
+21/04/2008
+28/04/2008
+05/05/2008
+12/05/2008
+19/05/2008
+26/05/2008
+02/06/2008
+09/06/2008
+16/06/2008
+23/06/2008
+30/06/2008
+
+04/02/2008
+
+31/12/2007
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 3 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+Reducing the scale to show normal activity and ignore the peaks shows:
+
+Riposte Only Timeouts by Date
+
+31/12/2007
+
+It can be seen that there are several days where there are significant peaks in the events raised.
+Specifically there were > 200 events raised on each of the following 12 days:
+
+Date Number of Events
+08/02/2008 894
+18/02/2008 241
+19/02/2008 312
+28/03/2008 2128
+29/03/2008 601
+07/05/2008 375
+27/05/2008 219
+28/05/2008 1324
+30/05/2008 294
+31/05/2008 217
+02/06/2008 1280
+03/06/2008 636
+
+Total 8521
+
+This represents 73% of the Riposte Only Timeout events.
+
+It was conjectured that the peaks may be related to Software Distribution. The attached
+response from Release Management covers what was released to the counters in this period.
+
+8/Feb/2008
+T80_MULTI 41_1 (distributed and committed estate wide 29/01/08)
+APS_COUNTER 41_3 (unsure of distribution date but committed estate wide
+05/02/08)
+
+29-30/Mar/2008
+COUNTER_EPOSS 41_4 (distributed 14/03/08 and committed estate wide 18/03/08)
+
+28/May/2008
+APS_COUNTER 42_2 (distributed and committed estate wide 20/05/08)
+UK_MAILS 42_2 (distributed 28/05/08, committed 29/05/08, however this was actually
+regressed in the end from 992 Counters)
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 4 of 22
+FUJ00155256
+
+FUJ00155256
+
+Working paper
+COMMERCIAL IN-CONFIDENCE
+
+03/09/08
+
+but are not a precise match. The times of
+
+Draft 0.3
+
+Initial indications are that the above dates are related,
+
+19/02/2008
+
+29/03/2008
+
+08/05/2008
+
+the events on these dates (plus some adjacent dates) is shown below. Note that scales are
+
+different for the 28" — 29" graphs, all other graphs have the same scale.
+
+18/02/2008
+
+07/05/2008
+
+Page 5 of 22
+
+FUJITSU EYES ONLY
+
+© Fujitsu Services, 2008
+FUJ00155256
+
+FUJ00155256
+
+Working paper
+COMMERCIAL IN-CONFIDENCE
+
+03/09/08
+
+Draft 0.3
+
+The period from 27" May to 3" June is shown in full below:
+
+28/05/2008
+
+30/05/2008
+
+01/06/2008
+
+27/05/2008
+
+31/05/2008
+
+[Further analysis needed to identify the reason for these higher volumes of events on these
+
+specific dates.]
+
+Page 6 of 22
+
+FUJITSU EYES ONLY
+
+© Fujitsu Services, 2008
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+4 Spread of events by time of day
+
+The spread of events by time of day across the 6 month period for All Riposte Timeout events
+is shown below:
+
+All Riposte timeouts by Time of Day
+
+By eliminating the Riposte events where there an associated application timeout event, we
+restrict these events to the cases where there is a Riposte Only Timeout event is shown below:
+
+Riposte Only Timeouts by Time of Day
+
+Reducing the scale to show normal activity and ignore the peaks shows:
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 7 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+Riposte Only Timeouts by Time of Day
+
+By eliminating the events for the peak days, we see the normal spread of events by time of day
+as follows:
+
+Riposte Only Timeouts by Time of Day (excluding peak days)
+
+[This shows that the End of Day peak is significant and generates a significant proportion of
+the normal daily Riposte Only events once the Peak days have been excluded.]
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 8 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+5 Analysis by counter
+
+The Riposte only timeout events for this 6 month period were generated on 5179 separate
+counters. That means that over 5/6" of the counters had no events in this period.
+
+For each counter the following graph shows the numbers that had 1 or more events.
+
+Number of counters generating Riposte Timeout events
+3600 ps — — — ee
+3000 +}
+2500 +4
+3 2000 +4
+8
+.
+8 1500 +4
+£
+5
+2 an
+1000 I} :
+500 +4
+o Ea see] Poa jrsrail
+1 2 3 4 5 6 7 8 9 >9
+Number of events
+
+Viewed another way,
+
+Number of events Number of counters Total events Percentage of events
+1 event 3346 3346 29
+2 events 1174 2348 20
+3 events 316 948 8
+4 events 122 488 4
+5+ events 221 4503 39
+Total 5179 11633 100
+
+Hence approximately 40% of the events were generated from 221 counters, and over 50% of
+the events were generated from 659 counters (221+122+316).
+
+There were 19 counters (in separate branches) which experienced 40 or more events in this
+period. The events recorded by these counters accounted for over 20% of the events raised.
+
+Counter hostname Number of events Percentage of events
+h17402600101 492 4.23
+h40020700101 349 3.00
+h16530900103 220 1.89
+15082400103 167 1.44
+h05500300102 161 1.38
+h59161400102 134 1.15
+h40032900104 111 0.95
+h10593700103 105 0.90
+25252300102 80 0.69
+34551100101 67 0.58
+14092500101 61 0.52
+h25442400103 59 0.51
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 9 of 22
+FUJ00155256
+
+FUJ00155256
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+h03042000103 53 0.46
+10002500101 53 0.46
+h23521700103 52 0.45
+30661100101 51 0.44
+39432900102 50 0.43
+h27320800109 43 0.37
+h09002600102 40 0.34
+
+Number of counters 19
+Total Events 2348
+
+Percentage events 20
+
+The final 2 characters of the hostname are the counter position, and this shows that these are
+spread across different counter positions (e.g. not all gateway PCs).
+
+6 Analysis by Branch
+
+The Riposte only timeout events for this 6 month period were generated on 3583 separate
+branches. That means that approx 75% of the branches had no events in this period.
+
+For each branch the following graph shows the numbers that had I or more events.
+
+3500
+
+2000
+
+Numers ofbranches generating Rinoste timeout events
+
+2500
+
+2000
+
+1500
+
+Number of counters
+
+1000
+
+cca
+
+[Se Se
+
+6 7
+
+Number of events
+
+Viewed another way,
+
+Number of events_I Number of branches Total events Percentage of events
+1 event 1738 1738 15
+2 events 860 1720 15
+3 events 362 1086 9
+4 events 190 760 7
+5+ events 433 6329 54
+Total 3583 11633 100
+
+Hence over 50% of the events were generated from 433branches.
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+Page 10 of 22
+Draft 0.3
+
+Working paper
+
+COMMERCIAL IN-CONFIDENCE
+
+There were 20 branches which experienced 40 or more events in this period. The events
+recorded by these branches accounted for over 22% of the events raised.
+
+Branch Number of events Percentage of events
+h174026 494 4.58
+h400207 349 3.23
+h165309 220 2.04
+h055003 203 1.88
+150824 167 1.55,
+h591614 134 1.24
+h400329 111 1.03
+h105937 105 0.97
+h252523 81 0.75
+h345511 67 0.62
+h140925 61 0.57
+h235217 61 0.57
+h030420 60 0.56
+h254424 59 0.55
+h100025 54 0.50
+h306611 51 0.47
+h394329 51 0.47
+h273208 45 0.42
+hog90026 42 0.39
+h126137 40 0.37
+Number of branches 20
+Total Events 2455
+Percentage events 23
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+It can be seen that the top 3 branches accounted for 10% of the events raised in this period
+
+There is some correlation between the Branch top 20 list and the counter top 20 list, but there
+
+are a few differences.
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+Page 11 of 22
+FUJ00155256
+
+FUJ00155256
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+7 Analysis by Counter position
+The spread by counter position is shown in the following graph.
+Number of events by Counter poston
+4500 I
+4000 I
+3500 I
+ooo I
+2500 HY
+2000 H} I
+seo Hf} eer POU ES Ree Tee
+1000 EF = < I
+soo H [4 HI
+° Oo ean I
+Or 02 03 OF 5 OOF ww kT
+The data and percentages for this are as follows:
+Counter position Number of events Percentage of events
+01 4550 39.11
+02 3008 25.86
+03 2055 17.67
+04 754 6.48
+05 318 2.73
+06 270 2.32
+07, 149 1.28
+08 114 0.98
+09 153 1.32
+10 78 0.67
+11 44 0.38
+12 37 0.32
+13 22 0.19
+14 13 0.11
+15 9 0.08
+16 3 0.03
+17 18 0.15
+18 21 0.18
+19 7 0.06
+20 5 0.04
+21 2 0.02
+22 2 0.02
+23 1 0.01
+Total 11633 100.00
+
+The distribution is not far off the distribution of the number of counters within the live estate,
+and no specific conclusions can be reached from this aspect.
+
+8 Events during the day
+
+Reducing the analysis to events raised between 08:00 and 20:00, shows that in total, there were
+4768 events. This is the period when users are most likely to be logged on.
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 12 of 22
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE
+The distribution across the 6 month period showed the following:
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+Riposte Only Timeouts by date
+
+HL
+
+21/04/2008
+42/05/2008
+19/08/2008
+
+ae
+5%
+
+17/03/2008
+31/03/2008
+
+TIT
+aE SEES
+
+31/12/2007
+o7/01
+
+g
+
+é
+é
+
+16106/2008,
+23/06/2008
+30/06/2008
+
+ee
+a
+
+Reducing the scale to show normal activity and ignore the peaks shows:
+
+Riposte Only Timeouts by date
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY
+
+Page 13 of 22
+FUJ00155256
+
+FUJ00155256
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+Looking at these by time of day (truncating the 1900 peak) shows:
+Riposte only timeouts by Time of Day
+200 —— =
+180 I
+160
+140 +-I
+120 I }—+
+100 ee 4 La
+80 eee 1 Poa
+60 + LI
+40 I] ‘eal
+20 4 ——— fh
+; MaMa toat tala mT
+or oe, SF FFP PipK Pooh pF pF ip oho oho pho?
+Oe on FPP PPP FF FOF SOL HP
+There were a total of 1201 counters that generated these Riposte timeout events.
+Number of events _I Number of counters Total events Percentage of events
+1 event 654 654 14
+2 events 220 440 9
+3 events 99 297 6
+4 events 56 224 5
+5+ events 172 3153 66
+Total 1201 4768 100
+In this case 66 counters are responsible for 50% of the events. [Details available on request].
+These were spread across 980 branches as follows:
+Number of events I Number of branches __I Total events Percentage of events
+1 event 436 436 9
+2 events 210 420 9
+3 events 97 291 6
+4 events 42 168 4
+5+ events 195 3453 72
+Total 980 4768 100
+
+The top 20 counter are responsible for 29% of the events:
+
+Counter hostname Number of events Percentage of events
+h17402600101 172 3.61
+h16530900103 115 2.41
+h10593700103 105 2.20
+h40020700101 98 2.06
+h05500300102 86 1.80
+h25252300102 80 1.68
+34551100101 67 1.41
+h15082400103 63 1.32
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+Page 14 of 22
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE
+
+h14092500101 61 1.28
+h25442400103 59 1.24
+h10002500101 53 1.11
+h40032900104 52 1.09
+h23521700103 52 1.09
+h03042000103 52 1.09
+h30661100101 51 1.07
+h27320800109 43 0.90
+h59161400102 41 0.86
+h09002600102 40 0.84
+h12613700103 38 0.80
+h38064100101 35, 0.73
+
+Number of counters 20
+Total Events 1363
+
+Percentage events 29
+
+The top 20 branches are responsible for 30% of the events.
+
+Number of Percentage of
+Branch events events
+h174026 172 3.61
+h055003 127 2.66
+h165309 115 2.41
+h105937 105 2.20
+h400207 98 2.06
+252523 81 1.70
+345511 67 1.41
+h150824 63 1.32
+h140925 61 1.28
+h254424 59 1.24
+h030420 53 1.114
+100025 53 4.114
+235217 $3 4.114
+h400329 52 1.09
+h306611 51 1.07
+h273208 43 0.90
+h591614 41 0.86
+ho90026 40 0.84
+hoo6009 38 0.80
+126137 38 0.80
+Number of branches 20
+Total Events 1410
+Percentage events 30
+
+However, the branch list is slightly different (by 3) to the top 20 counter list.
+
+Looking at the split across counter positions we see:
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+Page 15 of 22
+Working paper
+
+COMMERCIAL IN-CONFIDENCE
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+Number of events by Counter postion
+
+O1 02 03 04 «(05 «8 SCOTS BC tat
+
+Counter position I Number of events I Percentage of events
+01 2873 60.26
+02 457 9.58
+03 723 15.16
+04 200 4.19
+05 76 1.59
+06 115 2.41
+07 47 0.99
+08 48 1.01
+09 103 2.16
+10 36 0.76
+11 19 0.40
+12 17 0.36
+13 6 0.13
+14 2 0.04
+15 4 0.08
+16 2 0.04
+17 10 0.21
+18 21 0.44
+19 4 0.08
+20 3 0.06
+21 1 0.02
+22 1 0.02
+
+Total 4768
+
+This shows a much greater percentage related to the gateway PC, but only covers
+approximately 60% of the events generated. /It may be useful to eliminate the SCO branches
+to obtain a more accurate picture.]
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+Page 16 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+9 The 1900 EOD period
+There were 927 events in the EOD (1900 — 2000) period. Split by date these show:
+
+EOD Timeouts by date
+
+14/01/2008
+
+21/01/2008
+28/01/2008
+
+04/02/2008
+18/02/2008
+25/02/2008
+03/03/2008
+10/03/2008
+17/03/2008
+24/03/2008
+14/04/2008
+21/04/2008
+28/04/2008
+12/05/2008
+19/05/2008
+26/05/2008
+02/06/2008
+16/06/2008
+23/06/2008
+
+11/02/2008
+
+31/12/2007
+07/01/2008
+31/03/2008
+07/04/2008
+06/05/2008
+09/06/2008
+
+Split by day of the week:
+
+EOD Timeouts by Day of the Week
+
+‘Sunday Monday Tuesday Wednesday Thursday Friday ‘Saturday
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 17 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+Split by time in the period from 19:00 to 20:00.
+
+EOD timeouts by Time of Day
+
+By time, for the critical 2 minute period just after 1900, these show:
+
+EOD timeouts by Time of Day
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 18 of 22
+Working paper
+
+Draft 0.3 COMMERCIAL IN-CONFIDENCE
+These are spread across 456 counters.
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+350 —
+
+Numers of counter generating Riposte timeout events
+
+8
+
+FE
+
+Number of counters
+
+3
+
+Ey
+
+o [mal (ann) ica
+1 2 3 4 5 6 7 8 9 >
+Number of events
+
+Number of Number of Percentage of
+
+events counters Total events events
+
+1 event 315 315 17
+
+2 events 81 162 9
+3 events 25 75 4
+4 events 13 52 3
+5+ events 22 1250 67
+Total 456 1854 100
+
+The top 20 counters cover 17% of these events.
+
+Counter hostname Number of events Percentage of events
+17402600101 51 2.75
+h16530900103 41 2.21
+h05500300102 35 1.89
+h40020700101 31 1.67
+h40032900104 28 1.51
+h15082400103 21 1.13
+h05500300108 19 1.02
+h02000500101 18 0.97
+11102600101 8 0.43
+h20042000101 7 0.38
+27131100101 7 0.38
+59161400102 7 0.38
+00534300101 6 0.32
+h00901300101 6 0.32
+h00910900101 6 0.32
+h01501000101 6 0.32
+39432900102 6 0.32
+h00342200101 5 0.27
+h23354600101 5 0.27
+h41722700101 5 0.27
+
+Number of counters 20
+Total Events 318
+Percentage events 17
+
+Note that not all of these are Gateway PCs as shown in bold. //s this expected?]
+
+Analysis by counter position shows that over 80% of these are from the Gateway PC.
+
+© Fujitsu Services, 2008
+
+FUJITSU EYES ONLY
+
+Page 19 of 22
+Draft 0.3
+
+Working paper
+
+COMMERCIAL IN-CONFIDENCE
+
+FUJ00155256
+FUJ00155256
+
+03/09/08
+
+‘Number of events by Counter pistion
+
+01 @ 03 os
+Counter position Number of events Percentage of events
+01 768 82.85
+02 50 5.39
+03 62 6.69
+04 28 3.02
+08 19 2.05
+Grand Total 927 100.00
+© Fujitsu Services, 2008 FUJITSU EYES ONLY
+
+Page 20 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+10 Conclusion & Recommendations
+This analysis work has shown the following:
+
+e The Riposte Timeouts can occur at any point and impact any application that is running
+on the counter.
+
+o Some Counter Applications handle the failure response in an appropriate way
+and indicate the error has occurred via their own event message.
+
+= Over this period we have been able to eliminate as a problem well over
+half of the Timeout events (down to 11633 from 27993)
+
+o Where other Counter Applications generate an event, it does not include the
+word “Timeout” within the event text.
+
+= We need to include the results from the further analysis that has been
+request from Live monitoring of these events by the SSC.
+
+e The Riposte timeout events can occur at any times of the day or night
+
+o There are some significant peaks on certain dates, indeed this represents 73% of
+the Riposte Only Timeout events over the 6 month period!
+
+= Further analysis needed to identify the reason for these higher volumes
+
+of events on these specific dates, but it is unlikely that we will be able to
+eliminate these.
+
+o Even after elimination of the peak days, the profile of events is still spread
+across the whole 24 hours, but more closely follows the working day.
+
+* Hence it is likely that EPOSS transactions are being impacted and this
+area needs further investigation.
+
+© The events are seen across all counter positions, not just the Gateway PC.
+
+= The distribution is roughly in line with the distribution of the number of
+counters within the live estate.
+
+= However, when looking purely at the events between 08:00 and 20:00,
+there may be a higher impact on the Gateway PC.
+
+e This analysis shows that the End of Day peak is significant and generates a major
+
+proportion of the normal daily Riposte Only events once the Peak days have been
+excluded.
+
+o. The main impact is within 2 minutes of 19:00.
+
+o. The number of events varies with the day of the week, both Monday and
+Wednesday being of similar proportions.
+
+© Over 80% of these are on the gateway PC.
+
+= This links to the known case where the EOD process on the gateway PC
+can lock other applications out for a short period from writing
+messages to the Riposte journal.
+
+e Anevent is always generated by Riposte when the timeout occurs
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 21 of 22
+FUJ00155256
+FUJ00155256
+
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+
+o There may be some events which are discarded during “event storms” — and
+these conditions need to be tracked manually — unless some other event can be
+detected that relates to this situation.
+
+o The Audit query process must examine the event log to see what events have
+been generated at the branch in the period covered by the ARQ. This applies to
+all events, but the Riposte timeout events must be reviewed in detail.
+
+e There are some apparent “hot spots” in individual counters and branches:
+o 19 counters accounted for over 20% of the events.
+© The top 20 branches accounted for 30% of the events
+
+o Between 08:00 and 20:00, the top 20 counter are responsible for 29% of the
+events.
+
+© Between 08:00 and 20:00, the top 20 branches are responsible for 30% of the
+events — but the branch list is slightly different from the top 20 counter list.
+
+o Atend of day, the top 20 counters cover 17% of the events — though these were
+not all gateway PCs.
+
+However, this picture needs to be put into perspective!
+
+e Even though a large number of these events are being generated, they only affect a
+small percentage of the branch estate.
+
+o For example, assuming that there are 13,000 branches and 30,000 counters, we
+can calculate the potential impact on an individual branch or counter over a 6
+month period as follows:
+
+= After elimination of known other application timeout events:
+
+Percentage for Branches Counters
+No Events 72.4 82.7
+Up to 1 Event 85.8 93.9
+Up to 2 Events 92.4 97.8
+Up to 3 Events 95.2 98.9
+Up to 4 Events 96.7 99.3
+5 or more Events 3.3 0.7
+
+= During the hours Of 08:00 to 20:00, the percentages are:
+
+Percentage for Branches Counters
+No Events 92.5 96.0
+Up to 1 Event 95.8 98.2
+Up to 2 Events 97.4 98.9
+Up to 3 Events 98.2 99.2
+Up to 4 Events 98.5 99.4
+5 or more Events 1.5 0.6
+
+The analysis work, though comprehensive, is not yet complete.
+e A number of areas for further investigation still need to be considered.
+
+e A number of questions in italics within this document need to be followed up.
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 22 of 22
+FUJ00155256
+
+FUJ00155256
+Working paper
+Draft 0.3 COMMERCIAL IN-CONFIDENCE 03/09/08
+e The set of conclusions needs to be reviewed, and potential follow up actions needs to
+
+be produced.
+
+e The resources needed to complete this exercise need to be estimated and a plan agreed.
+
+© Fujitsu Services, 2008 FUJITSU EYES ONLY Page 23 of 22

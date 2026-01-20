@@ -1,0 +1,72 @@
+POL00029380
+
+POL00029380
+Warning: This information has been deleted and is valueless to the support or understanding of the system
+SSC DELETED KELs
+Monday 5 Nov
+HNG-X KEL PorterS199P
+KEL type: Unresolved
+Title: Error code 0784 / 0783 whilst doing EOD stock balancing
+Summary: User unable to perform roll-over due to Counter error message with error code 0784 and/or 0783
+Raised: by Steven Porter on 18/04/2010
+Last updated: by Steven Porter on 21/04/2010
+Release: HNGX
+System product: CounterBusinessapplications
+Keywords: ClassCastException 0784 0783 ReportingService CutO
+Status: Authorised
+Visibility: High
+Peak: PC0197409
+Version: 2
+Symptoms
+
+Whilst performing EOD balance, user is unable to do so due to seeing MSG90025 with error code 0784 and/or 0783.
+
+The PostOfficeCounter.log will contain the following entry at about the same time the user saw the error message on the
+screen:
+
+2010-04-07 13:28:56,593 UTC [Thread worker#:4] com.fujitsu.poa.nic.RequestExecutor WARN - [] []- Runtime exception
+occurred while accessing service at URL: \\https://vbal001:9000/StockUnitRolloverBPService-@@-
+java.lang.ClassCastException
+
+at com.fujitsu.poa.nic.shared.Communications.parseNormalResponse(Communications.java: 126)
+
+The URL is not important - but what is important is the ClassCastException that follow it.
+
+Problem
+
+This may occur when user is doing EOD stock balancing, but it could also relate to other operations as well such as CutOffs.
+The BAL returns an XML message which the Counter cannot parse.
+
+The response message, from the message.log will contain a message that starts like:
+
+2010-04-07 16:01:31,294 UTC [Thread worker#:5] message_logger INFO - [] []- Response Received, Status OK, service
+url= [ https://vbal001:9000/StockUnitRolloverBPService ] request_id= [ 353217-1-67-0716-6 ] content size= [ 190 ]
+<com.fujitsu.poa.dto.accounting.RolISUBPResponseDTO
+
+Notice that "com.fujitsu.poa.dto.accounting.RollSUBPResponseDTO" is present and this is incorrect. Normally this part of
+the message should normally just say "RolISUBPResponseDTO", with no "com. fujitsu..." prefix.
+
+Solution - ATOS
+
+SSC/SMC should trace the response Counter message id to a particular BAL/OSR instance, and raise an OCP to restart that
+OSR instance. It is preferable to have multiple occurrences of this to validate which OSR instance is faulty.
+
+It is vital that the evidence matches.
+
+However, this solution may also apply for other XML messages, such as
+POL00029380
+POL00029380
+
+2010-04-07 15:53:34,784 UTC [Thread worker#:1] message_logger INFO - [] []- Response Received, Status OK, service
+url= [ https://vbal001:9000/ReportingService ] request_id= [ 353217-1-67-0715-17 ] content size= [ 65655 ]
+<com.fujitsu.poa.dto.reporting.GetReportDataResponseDTO
+
+again, it should actually NOT contain the "com.fujitsu.poa..." part.
+
+A BAL code fix is required to address the underlying issue. The solution above is a workaround only.
+
+There are various other KELs covering different manifestations of this problem.
+
+Evidence
+
+message.log, PostOfficeCounter.log, osr message.log

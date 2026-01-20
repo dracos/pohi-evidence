@@ -1,0 +1,1022 @@
+FUJ00153035
+FUJ00153035
+
+Thomas Penny
+
+—
+From: Jenkins Gareth GI
+
+Sent: 08 March 2010 09:54
+
+To: charles.mclachlan;,
+
+Ce: Thomas Penny
+
+Subject: Horizon Architecture Diagrams
+Attachments: © Horizon Arch Overview.doc
+Charles,
+
+As discussed, on Friday, I've extracted some high level Architecture diagrams and also a summary of the message
+flows for processing Debit Card transactions.
+
+Horizon Arch
+Dverview.doc-(859...
+
+Hopefully it is the sort of thing you were after and they make some sort of sense. I’m happy to talk you through them.
+.egards
+
+Gareth
+
+Gareth Jenkins
+Distinguished Engineer .
+Applications Architect
+
+Royal Mail Group Account
+
+FUJITSU
+2 BSN -
+Internal: §
+
+(Note new external number -
+rk after 31/12/2009).
+
+Mobile:
+email:
+Web:
+
+1 Please consider the environment - do you really need to print this email?
+
+Fujitsu Services-Limited, Registered in England.no 96056, Registered Office 22 Baker Sireet, London, W1U 3BW
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be pr
+Services does not guarantee that this.e-mail has not been intercepted and amended or that it is virus-free.
+
+FUJ00153035
+
+FUJ00153035
+
+Horizon Architecture Diagrams
+
+Ref: _ g:\gij documents\poa\horizon\other\9c07.west byfleet\horizon arch overview.doc
+Author: Gareth I Jenkins
+
+Date: 08/03/2010 09:41:00
+1. Introduction
+
+The purpose of this note is to pull together some high level architectural diagrams of
+the Horizon System.
+
+It is based on extracts from informal document TD/ARC/039 v0.2 and NB/IFS/004 v
+4.3, neither of which is in an approved state.
+
+This is intended.to provide a summary for Prof Charles McLachlan an Expert Witness
+for the Defence in the case Regina v Seema Misra.
+
+2. Overall Context
+
+2.1 IT Context and Users
+
+The diagram below shows the wider context of the Horizon Architecture and the users:
+
+or ia ose ates
+Horizon Boundary]
+ey cats} >, Si
+
+2
+Banks: ‘SAP ADS.
+He He ‘
+nescTem ben I Herzonrapoon UNI tronchose I :
+PT . Mapasemene — nine Authorzaton + Reconiaten 0 R
+nine Authorisation + Reconliaton Oat 2
+I J ash Lois 0 = pods
+4 i at
+Reconcation tS Data or Pos Mast
+etme ——— L
+\ — ]
+8 Frac}
+
+>
+Noein Finance
+
+ROS
+(Ret Data)
+
+PO Reterence
+Data Keying
+
+key
+
+‘Siemens Metering
+Data Flow— PO Reference
+
+Data Vatisation
+
+I Bfareh ranch eraneh
+‘Clem Supervisor Manager Staneoer”
+
+~--Contrl Flow ‘rite
+
+‘There are four main areas within the Horizon Architecture:
+1. POL-FS — financial accounting system based on SAP
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+on 9/3/2010 Page 1 of 13
+3.
+4.
+
+FUJ00153035
+
+FUJ00153035
+
+Reference Data.Proving — environment in which changes to reference data are proved before releasing
+into live (reference data controls things such as which products are sold, their price and where in the
+menu hierarchy they are displayed). -
+
+Branches — the branches themselves
+
+Core Horizon — the central systems that support Horizon
+
+Core Horizon communicates with the following systems:
+
+3.
+
+Banks (LINK, A&L, CAPO) for online authorisation of banking transactions and transaction data used
+for reconciliation:
+
+Online Clients (e-pay, Streamline, DVLA) for online authorisation of transactions and (for e-pay and
+Streamline) data used for reconciliation.
+
+SAP ADS ~ A Post Office system that handles cash ahd Foreign Currency logistics. Data includes cash
+on hand statements from each branch, planned orders, replenishment deliveries and delivery/collection
+data. .
+
+HR SAP - A SAP system that handles remuneration to the branch franchisees and “multiples” such as
+Tesco.
+
+POL MIS — An Oracle based system to provide MI reporting to Post Office.
+
+First Rate — Provides bureau rate information. It is also passed all bureau transactions to allow First
+Rate to undertake MI. we
+
+Siemens Metering — Provides Rates-and Customer data for Quantum gas pre-payment card,
+
+AP Clients — Transaction information for Clients where payment information. is collected by Post
+Office.
+
+Royal Mail and Parcel Force Worldwide — track and trace information for parcels and letters taken in.a
+branch.
+
+RDS — Post Office system that provides reference data
+
+Logical Architecture
+
+This section describes the logical architecture to provide an introduction to the Horizon solution. It is split into
+two areas: Business Applications and physical structure
+
+3.1
+
+Business Applications
+
+The diagram below shows a simplified view of the business applications for Horizon.
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+on 9/3/2010 Page 2 of 13
+FUJ00153035
+
+FUJ00153035
+
+win
+
+Branch Staff
+
+Post Office Ltd -<+#—}
+a eccounts Extemal Systems
+a
+‘Systems
+" Reconciliation
+Data I
+, sation ai Batching
+Reconciliation Reconaliation and Sewices Near Real Time
+Data Enquiry Services [I (daily or houry) Services
+Request/
+Authorisation , 7
+i
+Reconciliation
+And Enquiry Data
+External Hosted
+Online Services Online Services
+‘ Message Server — ry
+I Legacy
+Services "I
+(______I Supporting
+New Services Services
+
+Wide Area Network
+
+Counter
+Application
+
+Admin
+Key
+Horizon Systems —
+Data Flow -
+single Direction
+External
+Systems ‘—»
+PAD
+ML Data Flow -
+Interactive
+Note: Not all
+Customer flows present for
+Post Office User all services
+
+The key systems are described below:
+
+# I Name
+
+Description
+
+1 I Counter Application
+
+The counter application is used by branch staff to sell products and to perform back
+office functions. Business data held in the counter in a Riposte messaging system —
+all counters in a branch have a copy of the complete data.
+
+2 I PIN Pad
+
+Allows customers to input smart card and PIN for banking and DCS transactions.
+
+3 I Message-Server
+
+Handles messaging to/from Branches for batch data transfers using Riposte
+(specialist messaging system from Escher Group). Also handles online
+authorisations for legacy services (Banking, DCS, ETU) — new services connect
+directly via SOAP.
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon.arch overview.doc Printed at 06:48:05
+
+on 9/3/2010
+
+Page 3 of 13
+FUJ00153035
+
+FUJ00153035
+
+4 I External Online I Provides online authentication for counter transactions where a third party owns the
+Services system that authorises the transactions. Specific services supported are:
+¢ DCS for debit card and credit card authorisations
+¢ Banking for deposits, withdraws and balance enquiries
+e —ETU to allow electronic.top-ups for mobile phones
+* DVLA for authorising car tax
+5 I Hosted Online I Provides online authentication for counter transactions where the authorisation or
+Services information system is hosted by Horizon. Specific services supported-are:
+
+e APOP databases - e.g. Postal orders
+° PAF to allow lookup of Postal Addresses
+
+6 I Reconciliation and
+Enquiry Services
+
+Provides Reconciliation and enquiry services for online authorisations. The specific
+systems are:
+
+© DRS (data reconciliation service) to reconcile individual transactions for
+the DCS, ETU and Banking services.
+
+e TES (transaction enquiry service) to allow Post Office to query
+«transactions status for banking (only)
+
+e DWH (data warehouse) contains banking, ETU and DCS data for SLT
+calculations.
+
+© APS (automated payment system) which reconciles transactions between
+itself and TPS (transaction processing system).
+
+7 I Batching Services
+
+‘Batches up data from branches to send to external systems ~ either all transactions
+or in summarised form. Also receives batch data from external systems for
+distribution to branches. The systems that pass data'to external systems are:
+
+e — TPS (transaction processing system) — provides daily data to other systems
+including POL-FS, POL-MIS and HR SAP. Also provides a feed to First
+rate for Bureau transactions.
+
+e APS (automated payment system) — provides daily data to AP clients
+(British Gas, BT etc).
+
+© LFS (logistic feeder service) - provides data on pouch collections and
+receipts at branches to SAP ADS on an hourly. basis. Also nightly data on
+cash held in branches.
+
+The systems that receive data from external systems are:
+
+«APS - receives customer and tariff data for Quantum and Water Card
+service once per day.
+
+© LFS — receives planned order data (once per day) and pouch contents
+information (potentially hourly).
+
+« RDMC ~ receives Rates and Margins data for Bureau service
+
+8 I Near Real Time
+Services
+
+Transfers data in near real time-to or from external systems. The systems are:
+
+e APS ~.receives emergency customer data from Quantum for immediate
+distribution to the branches.
+
+e . Track and Trace — provides data on parcels etc received by branches to
+Royal Mail and Parcel Force Worldwide
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+
+on 9/3/2010
+
+Page 4 of 13,
+FUJ00153035
+
+FUJ00153035
+
+&
+
+9 I Support Services I Supports the business systems with reference data, security and SLT monitoring.
+The systems are:
+
+e° RDMC and RDDS - reference data management and distribution systems.
+
+e KMA-~key management system for branch security keys
+
+e OMDB - provides SLT monitoring for outbound data distribution. Also
+monitors branch connectivity.
+
+© DWH-SLT reporting for data file deliveries (inbound and outbound).
+
+10 I PO Ltd Accounts An SAP system (called POL FS) that holds the accounts for Post Office Ltd.. This
+has lots of input and output feeds to external systems.
+
+4. Application Architecture
+
+The application architecture has been split into a number of areas to allow the solution to be described as
+follows:
+
+Online and Near Real Time systems in the data centre. APOP Admin is included in this section for
+convenience.
+
+e Batch systems in the data centre that handle the main business data and POL-FS.
+
+Supporting systems for reference data, SLT measurement Branch Monitoring and Key Management.
+e Counter
+
+This approach allows an understanding of all the elements that make up the different service. However some
+components do appear in multiple areas as a result.
+
+41 Online and Near Real Time
+
+The picture below shows the systems and flows within the data centre for online and near real time services. The
+batch aspects of the APOP service have also been included for convenience.
+
+Reale
+aa Telcos eee une I [aa [ caro I 52128)
+Systems:
+—=— Data Flow- __I v Ly Enguiry
+le Drec 7 Ne I [ero] [ners
+ee dante I I env sreamine nox I {*8NOx) I Sx “ace
+interactive eaten man I I Am I I ttn I I tease I tn
+Updates T Keene ce Agen_I I "Aeon IPars?Ires ©)
+>
+_ 4 Pt ec
+pop] MOP I Regse — Reauest Lig: con
+ova I jaror he) Amn I Aamn I um Ai Traneacion tae} we OH Te B
+Reversal Request
+inane a
+atx] [rote] [Be Rovers t
+ee I [Azone I I Seb un I [acs Taro] [wexcne] [Tae] [ws] [oes
+Service : Service ‘Agents: ‘Agent Agents ‘Agent Hee, Harv Harv
+. . ener
+cuncaniees Rg Banking 08
+Revers Tacks STU Con Cont
+4 L : i
+aguas Requesy Lookup!
+caus Rae Remte conespondenee senes
+Chek
+
+The components and their role are described in the table:
+# I Name Function
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+on 9/3/2010 Page 5 of 13
+FU,
+
+FUJ00153035
+1J00153035
+
+T_] Correspondence
+Servers
+
+Messaging Servers that’ pass messages to/from the branches. Data is held either
+as messages with a given expiry period or as “persistent objects” which are
+retained until updated or deleted. For performance reasons, the branch estate is
+split into 4 “clusters” each handling round 3,500 branches.
+
+2 I Ping Agent
+
+Central
+Acknowledgement
+Agent (CAck)
+
+The Ping Agent responds to application level pings from the counter via the
+correspondence servers.
+
+The CAck agent is used for recording receipt of messages at the data centre
+(mainly used for SLT monitoring). It is also used to acknowledges requests from
+the counter Smart Cache used to police use of Smart card charging (see
+security).
+
+13 [Audit Agent
+
+Writes to text files all messages written or received by the correspondence
+servers for audit.
+
+4 I DVLA Web Service
+
+Allows branches to authorise car tax in an online transaction to DVLA. Interface
+between the counter and data centre is SOAP.
+
+5 I APOP Web Service
+APOP Database
+APOP Admin
+
+A hosted online service that handles electronic vouchers.
+
+Requests/Authorisations from the counter are handled using SOAP to a Web
+Service,
+
+Batch updates to the database arrive via the EDG and are controlled by a
+Maestro schedule.
+
+A web based admin service allows Post Office staff to update individual records.
+
+6 I PAF Web Service
+
+Allows branches to look up postcodes and addresses. Interface between the
+counter and data centre is SOAP.
+
+7 I ETU Auth Agent
+ETU Rev Agent
+
+Handles requests for authorisations to top up mobile phones. Requests are
+received from a counter via the correspondence servers and the authorisations
+written back the same way.
+
+A separate agent handles reversals to e-pay.
+
+8 I DCS Auth Agent
+
+Handles requests for authorisations for Debit and Credit Cards and also
+reversals. Requests are received from a counter via the correspondence servers
+and the authorisations written back the same way.
+
+9 I NBX Routing Agent
+
+NBX GRev Agent
+LINK NBX = Auth
+Agent
+
+A&L NBX Auth Agent
+
+CAPO. NBX Auth
+Agent
+
+NPS Database
+
+Handles online authorisation requests for banking transactions. Requests are
+received via the correspondence server in the routing agent which routes the
+request to the LINK, A&L or CAPO authorisation agent (as required). The
+authorisation agents hold state and audit data in the NPS database.
+
+Reversals are handled both via the routing/auth agents and also via a ‘guaranteed
+route into the NPS. These reversals are then processed by the relevant auth
+agents.
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+
+on 9/3/2010 .
+
+Page 6 of 13
+FUJ00153035
+FUJ00153035
+
+10 I Track & Trace I Track and trace data from the branches are processed in near real time, with data
+Harvester passed to Royal Mail and Parcel Force via EDG. The NPS database is used as a
+Track & Trace staging post to screen duplicates.
+
+Interface Agent
+
+NPS Database
+
+11 I NBS Harvester DRS handles reconciliation for banking, ETU and DCS. The confirmations
+DCS Harvester generated by the counters are harvested in near real time to ensure the
+
+reconciliation position is up to date. There are two harvesters — one for NBS and.
+DRS Database ETU and one for DCS.
+
+TES Database
+
+TES Enquiry The banking confirmations, together with transaction parts from NPS are passed
+to TES. An enquiry service is provided to allow Post Office: staff to query the
+status of transactions.
+
+DRS and TES are also involved in the batch flows and there is a workstation to
+support reconciliation updates (see next section).
+
+42
+
+atch and POL FS
+
+The picture below shows the systems and flows within the data centre for the main batch flows. The POL FS
+system is included for convenience.
+
+I cows
+SAP etu Ly
+y File EMIS
+s
+‘Sumj CTT Y
+‘Sum, C2 CAD
+c
+7 OD wewa tis Olen
+FE TF TFS Re aconty
+‘Advice I I Orders Det aestav I I [eS Tes I I Banna)
+Pouch info I repleniat Ly T Ly T
+Caeroce Advice — Pranneg R*PIENEIMEN APs Satin Tin
+I Notices Orders Robes, Tan Ack Daily Sum Corrections
+2
+y ¥ v I
+[ Correspondence Servers _]
+re EOD Ha tone alten
+. ‘single Direction
+—_ ~~ e
+
+The components and their role are described in the table:
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+on 9/3/2010 Page 7 of 13
+FUJ00153035
+
+FUJ00153035
+
+# I Name
+
+Function
+
+1_ I Correspondence
+Servers
+
+Messaging Servers that pass messages to/from the branches. Data is held either as
+messages with a given expiry period or as “persistent objects” which are retained
+until updated or deleted. For performance reasons, the branch estate is split into 4
+“clusters” each handling round 3,500 branches.
+
+2 I EOD Harvester
+
+The End of Day Harvester ensures that there is a consistent set of data from the
+branch for the APS and TPS harvesters to use.
+
+3 I Cluster Lookup
+
+Cluster lookup is a generic service that tells other agents in which correspondence
+server cluster a particular branch resides and which branches are within a particular
+cluster.
+
+4 I LFS Harvester
+
+LFS Advice Notice
+Loader
+
+LFS Planned Orders
+Loader
+
+LFS_ Replenishment
+Delivery Notice
+Loader
+
+LFS Database
+
+LFS passes data between the counters and Post Office’s SAP ADS system for cash
+and currency handling. The database is used as a staging post to screen duplicates.
+
+Pouch Information (both collections and delivers for all pouches — not just cash and
+Foreign Currency), and Cash Declarations are passed to SAP ADS. Advice
+notices, planned orders and replenishment delivery notices are received from SAP
+ADS. Note that advice notices have never been used.
+
+5 I APS Harvester
+APS Database
+APS Workstation
+
+APS passes Automated Payment transactions to Clients — either directly, via
+Girobank or via the EDG.
+
+The harvester reads all APS transactions from the correspondence server to put into
+the database which then splits them by client. The database also provides a
+summary by client which is passed to Post Office Ltd’s CTS process via the TPS
+database as well as checking that all AP transactions were also harvested into TPS.
+
+The harvesting agent also acknowledges smart transactions to allow the counter
+smart cache to operate (see security).
+
+The APS workstation is used to allow new clients to be added to the solution.
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doé Printed at:06:48:05
+
+on 9/3/2010
+
+Page 8 of 13
+FUJ00153035
+
+FUJ00153035
+
+6 I TPS Harvester
+TPS Loader
+
+TPS takes all transactions from the counters and then passes them directly in either
+full or summary form to a number of other systems:
+
+e AP Transactions passed to APS to allow reconciliation between APS and
+TPS
+
+* Bureau Transactions are passed to First rate via the EDG gateway.
+Horizon is responsible for delivery of files into Huthwaite, but not for
+putting data onto EDG itself.
+
+e AP Summaries are sent to CTS to allow Post Office to settle with their
+clients. Also Transaction Corrections and Error files.
+
+e' Summaries are sent to HR SAP to allow remuneration to the branch
+franchisee for the transactions they have done. This data is provided
+monthly, with TPS keeping a running total.
+
+© Nearly all transactions are sent to POL MIS (some — e:g. balancing
+transactions) are suppressed.
+
+© All. confirmations, (Banking, ETU, DCS) are sent to- DRS for
+reconciliation.
+
+e All confirmations are sent to the banking data warehouse for SLT
+calculations.
+
+* Asummary position of the transactions traded that day is sent to POL FS.
+
+There are also transactions corrections received from POL-FS that are fed to the
+counters via TPS.
+
+7 I Banking DWH
+
+Provides SLT calculations for banking. MSU are also able to query the history (91
+days) for ad-hoc reports via a workstation.
+
+8. I DRS Database
+ETU Bulk Agent
+S Bulk Agent
+
+C2 Bulk Agent
+C4/D Bulk Agent
+DRS Workstation
+TES Database
+
+DRS reconciles transactions for Banking, ETU and DCS with the clients.
+
+For ETU a payment file is received from c-pay and processed via the ETU bulk
+agent.
+
+For DCS a payment file is passed to Streamline via the C2 bulk agent. Once
+acknowledgement is received from Streamline that this has been received the S
+bulk agent puts the transactions back into DRS. Once Streamline have processed
+the payment file, they produce an EMIS file of the status for all transactions (i.e
+whether settled or not) and this is loaded into DRS via the C4/D bulk agent.
+
+TES produces a banking reconciliation (REC) file for A&L and CAPO and
+receives one from LINK. All transactions are passed to DRS for reconciliation.
+
+For DRS there is also a workstation to allow MSU staff to update the reconciliation
+states of transactions.
+
+9 I POL-FS
+
+An SAP system that provides the accounts for the Post Office. As well as the data
+from the branches it has a number of feeds to/from other systems.
+
+d:\profiles\thomasp\local settings\temporary internet files\olk1 7\horizon arch overview.doc Printed at 06:48:05
+
+on 9/3/2010
+
+Page 9 of 13
+FUJ00153035
+
+FUJ00153035
+
+10 I APS FIMS These components are responsible for file transfer to/from remote systems. For
+TIP FTMS. clarity they are not shown on the diagram.
+Gp FIMS APS FTMS is responsible for file transfers to/from APS Clients.
+NBX TIP FTMS is responsible for file transfers to/from Post Office systems
+Connect:Direct EDG FTMS is responsible for file transfers to/from other systems via the EDG.
+Gateway GP FTMS is responsible for file transfers to other Fujitsu sites
+DCSM NBX: Connect:Direct Gateway is responsible for file transfers to the banks.
+
+DCSM is respoasible for file transfers to/from e-pay and Streamline.
+4.3 Supporting Systems
+
+The picture below shows the supporting systems and flows within the data centre that cover reference data,
+security key management and SLT monitoring.
+
+(Out Bound Data File Deliver DCS <¢-wiDITID Allocatior [Branch Details Streamiine
+‘ee f ‘In Bound Datp File De —
+ere) t ies I ]us ©) [San ort Branch Detals (num counters, network service type)
+] t i F—sranch dots [I cuanum I [Wee] I I Heatbeat 1
+SiA Har 4 ‘Agent
+ror II sureau rapes a Banche das iy 5 omos E70
+Rasa branenes 8 OT ranches SU! rertes tact
+Maps Pie SLA coroner Customer moe
+anoiros erannes, Hare
+I ccm Branches
+eta
+I Rete! ros 5) be——————_ I rs ies t
+ata cians Ace Branch, Prod agent I Monitr
+eee, is: cr wn &
+store I customer
+ran st cumnI custome rena I SUA Har
+Status
+Ror Core Ret y
+aon mn Retries I Pauanam)} [yy lacool = Fy ay
+Loader ie Yoader I I suk ie "eranch object Memo
+Loader toager Leaver
+fo 8I [eurea I I ps —— ee
+3 SI I Leader I I Loader I prancn I S%P ot Da ‘Caantarr PS tus I wou
+Es ser} gore Leader) ong I ROB Emergent I I Retna ole Key Ou
+2 oe pec FT eager” II I “tsager oot, Secuny secuiy
+Rates & Subscription T T Y Data 7 Memo
+* Margins MOM pene eel Replcated ‘Customer Tantt Security
+1 I mn Core Ota Cotas I Dale I ata
+Ly ¥ L
+Corespondence Servers
+ry
+Delete Obsolete Deltas
+RetOuta Objects
+Ret Data I
+rene) Oa
+Oe Object
+seavengerI I Montor
+# I Name Function
+
+1 I Correspondence .
+Servers
+
+Messaging Servers that pass messages to/from the branches. Data is held either as
+messages with a given expiry period or as “persistent objects” which are retained until
+updated or deleted. for performance reasons, the branch estate is split into 4 “clusters”
+each handling round 3,500 branches.
+
+RDMC Database
+RDDS Database
+Bureau Loader
+
+Subscription
+Group Loader
+
+Non.Core Loader
+Core Ref__Data
+
+The reference data system is responsible for ensuring that reference data is delivered to
+counters and is house kept appropriately. The RDMC database receives reference data
+changes from Post Office’s RDS system and then they are normally validated on the
+RDT rig (see infrastructure) by the Reference data team.
+
+Once the reference data is validated it is released via the RDMC workstation onto the
+RDDS database to allow it to be loaded into the correspondence servers.
+
+Loading takes place in several ways depending on its type:
+
+d:\profiles\thomasp\local settings\temporary internet files\olk1 7\horizon arch overview.doc Printed at 06:48:05
+
+on 9/3/2010
+
+Page 10 of 13
+FUJ00153035
+
+FUJ00153035
+
+Loader
+
+Ref Files Loader
+Ref Data
+Replicator
+
+Non DB Ref
+Loader
+
+Ref Data
+Scavenger
+
+Deleted — Object
+Monitor
+
+RDT Rig
+
+RDMC
+Workstation
+
+e Non Core (branch specific) is loaded directly into the branch.
+
+* Core (delivered to all branches) is loaded into a “dummy group” in the
+correspondence server. This is then copied to the branches through the reference
+data replicator agent.
+
+© — Subscription Group data (which is written once each correspondence server cluster
+but can be read by all branches) is loaded through either the Subscription group
+loader or the Core Ref Data Loader depending on the data type.
+
+© Help text (which also uses subscription groups) is loaded via the RDMC
+workstation into RDMC. Once released into RDDS it is loaded via the file loader.
+
+© Other reference data that doesn’t have an automated route is loaded via the RDMC
+workstation in a similar way to the help text.
+
+e Bureau rate and margins data are received from First Rate and loaded via RDMC
+via a subscription group. RDDS is not used to minimise delays in processing the
+data.
+
+There are also two agents that are responsible for housekeeping — Scavenger deletes
+superseded or obsolete reference data and deleted object monitor checks that this
+deletion has occurred correctly (since the correspondence servers are distributed then
+deletions can take place at different times on different nodes, potentially causing
+issues).
+
+Messages for counters (memos) are loaded via the RDMC workstation into the RDMC
+database. These are then loaded into the correspondence servers.
+
+Branch information also flows from RDDS to the other databases to ensure there is a
+consistent view of which branches are open and shut as well as required reference data.
+
+3 I Banking DWH
+
+Used for measurement of file delivery to clients and data delivery to branches. Also
+produces some banking reports
+
+4 I APS Database
+
+Quantum Bulk
+Loader
+
+Quantum
+Emergency
+Loader
+
+Water Card
+Loader
+
+APS Ref Data
+Loader
+
+APS Ref Data
+Replicator
+
+For pre-payment Gas (Quantum) and Water Card customer and tariff information is
+loaded into the correspondence servers as core reference data.
+
+For Quantum, customer information is targeted at a specific branch. This is either done
+overnight (bulk) or during the day (emergency).
+
+For Water Card customer information is sent to all branches and is only updated
+overnight.
+
+5 I OMDB Database
+
+Heartbeat
+Harvester
+
+OMDB Harvester
+Outlet Monitor
+SLA Harvester
+
+The OMDB database collects status information for the branches and data centre
+agents. This is then used to trigger alerts etc (see systems management)
+
+The following information is collected about the branches:
+
+¢ Branch Status (WAN and LAN connection status generated by the gateway
+PC).
+
+e End of Day Markers (EOD)
+
+e* Connection Status to the correspondence servers (when the branch last
+
+d:\profiles\thomasp\local settings\temporary internet files\olk17\horizon arch overview.doc Printed at 06:48:05
+
+‘on 9/3/2010
+
+Page 11 of 13
+FUJ00153035
+
+FUJ00153035
+
+SMDB Database
+(not shown)
+
+connected)
+e Acknowledgements of data delivery to the branch (for SLT measurement).
+
+OMDB also collects information on agent heartbeats to monitor the agents either
+directly from NPS (for the banking authorisation agents) or via the correspondence
+servers for the other agents.
+
+The branch SLT information is sent to the DWH.
+
+Most of the data on the OMDB is replicated to a separate SMDB (Service Management
+Database) that is sited within a DMZ. This allows support and operations staff access
+to that data from the Fujitsu Services intranet.
+
+a
+
+KMA Database
+
+Key Object
+Loader
+
+Key Object
+Harvester
+
+Key Memo
+Loader
+
+KMA manages the cryptography keys needed in the solution (see security). For
+asynchronous functions data is transferred to/from the counters (and other servers) via
+the correspondence servers (loader and harvester).
+
+For some operations branch staff need to be involved and they are informed through
+memos (memo loader)
+
+7 I MTAS
+OCMS Database
+
+MTAS (MID/TID Allocation Service) is responsible for allocating MID (Merchant ID)
+to branches and TID (terminal ID) to counters. It takes feeds from RDDS and OCMS
+(database that handles opening of new branches) to determine branch status and then
+feeds data to Streamline on what has been allocated and to the DCS agents so that
+MID/TID can be added to each transaction sent to Streamline.
+
+1
+
+d:\profiles\thomasp\local settings\temporary internet files\olk1 7\horizon arch overview.doc Printed at 06:48:05
+
+on 9/3/2010
+
+Page 12 of 13
+FUJ00153035
+FUJ00153035
+
+5. DCS
+
+5.1 DCS RAC Model
+
+Figure 1 - RAC Model and Data Flows for DCS Transactions presents the RAC Model for DCS, showing the
+message flow, including the ICC interaction on the PIN Pad. Swipe card Transactions follow the same flows
+upwards through the message store layer, though the content of the message will be different.
+
+- wa —
+fa’ *. —
+apacss0& [ra] [ar] fer] ea ret
+‘SMS Formas OHOROHO
+by i
+‘hart 8 (stoi sana II Transaction
+DCS Agent Sprvor POL wis ea
+(ORS reports) I
+POL TIP Locat
+Gutaway Server
+
+rms
+
+Smid
+cia Yee
+
+oH
+
+a") et
+
+Sr MEGEIO eis pe
+
+Somat
+Trond
+Courter Cans, "@ wane
+Sin SE, I = a
+mW roma] cy 3) ptm
+i
+EMV Application ‘PINPad I. CO mma
+
+¥
+. wc .
+
+Figure 1 - RAC Model and Data Flows for DCS Transactions
+
+d:\profiles\thomasp\local settings\temporary internet files\olk1 7\horizon arch overview.doc Printed at 06:48:05
+on 9/3/2010 Page 13 of 13

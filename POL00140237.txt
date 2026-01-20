@@ -1,0 +1,3806 @@
+Fe)
+FUJITSU
+
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+Document Title:
+Document Reference:
+
+Document Type:
+
+Network Security High Level Design
+
+DES/NET/HLD/0016
+
+High Level Design (HLD)
+
+Release: Not Applicable
+Abstract: Provides a High Level overview of the network security components and
+appliances and positioning required to secure the HNG-X solution.
+Document Status: DRAFT
+Author & Dept: Sean Kerrin
+External Distribution:
+Approval Authorities:
+Name Role Signature Date
+Steve Dingle Solution Design
+Graham Allen HNG-X Development
+
+Note: See Royal Mail Group Account HNG-X Reviewers/Approvers Role Matrix (PGM/DCM/ION/0001)
+
+for guidance.
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+Page No: 1 of 62
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+0
+
+0.1
+
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+0.10
+0.14
+
+poororss
+eNonhoro
+
+nN
+
+3
+3.1
+
+3.1.1 Network Tier..........
+
+4
+44
+
+4.141 Security Policy
+4.1.2 Security Strategy an
+
+4.2
+
+4.2.1 Access and Enforcement Points
+4.2.2 Network Threats
+
+4.3
+
+4.3.1 Security Level:
+4.3.2 Types of DMZ for HNG-X Architecture
+
+44
+45
+
+4.5.1 Identity and Audit.
+
+Document Control
+
+Table of Contents
+
+DOCUMENT CONTROL
+
+Table of Contents ..
+List of Figures
+List of Tables.
+Document History
+Review Details...
+Associated Documents (Internal & External)
+Abbreviations
+Glossary ....
+
+cook meNoanaNn
+
+INTRODUCTION...
+
+Purpose ..
+Readership
+
+Constraints (Standards, Poli
+Principles.
+
+REQUIREMENTS TRACKING
+
+HNG-X NETWORK OVERVIEW .
+Target Network Solution
+
+NETWORK SECURITY DESIGN
+Network Security Overview.
+
+Security Demarcation Points...
+
+DMZ’
+
+Data Centre LANs and Server Services ..
+Services Requirements...
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 2 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.5.2. Command Audit...
+4.5.3 Network Management ..
+4.5.4 IPSEC
+4.5.5 SSL...
+4.6 Key ManagementiCerti
+4.7 Traffic Types...
+4.7.1 Data Plane Traffic... soeeeeesnee
+4.7.2 Control and Management Plane Traffic
+4.8 Traffic Classes and Traffic flows
+4.8.1 Traffic Flows and Classes ...
+4.8.2 Network Appliance Rule sets
+4.8.3 Device Matrix for Traffic Flows
+4.9 Security Components....
+
+4.9.1 HNG-X Network Security Devices 0.
+4.10 Network Attack Prevention Techniques 3
+4.10.1 Disabling IP directed broadcast.. 3.
+4.10.2 Enabling ARP Inspection... Ky
+4.10.3 Enabling Reverse Path Forwarding K}
+4.11 HNG-X Firewalls...... 4
+4.11.1. Advanced Protocol Handling .. 4
+4.11.2 Firewall Zones 5
+4.12 Firewall Based Rule Se’ 5
+4.12.1 Firewall Configuration... 36
+4.12.2 Sample Specific Rules for Firewalls 8
+4.13 Network Controls... )
+4.13.1. Physical Access, Lock and Key. 39
+4.13.2 Network Separation...... 0
+4.13.3 VLANS - VACLs, PVLANs. ie)
+4.13.4 Router ACLs.. 4
+4.13.5 Network Device Lockdown - Cisco “Auto Secure 4
+414 Securing, Deploying and Supporting HNG-X Net 2
+4.14.1 Baseline Device Configurations 2
+4.15 Network Routing ..... 3
+4.15.1 Secure LAN Routing 3
+4.15.2 Secure WAN Routing 3
+4.16 Network Management Tool 3
+4.16.1 CiscoWorks... 4
+4.16.2 Cisco Security Manager . 4
+4.16.3 Network Data Retention and Archiving 4
+417 Device IOS and Config Managemen’ A4
+
+4.17.1 Patching to Current IOS/Full IOS Updat
+4.17.2 Configuration Backup...
+4.18 Network Change Control.
+4.18.1 Verification of Change Control
+4.18.2 Periodic Network Configuration Checks.
+419 Penetration/Vulnerability Testing..
+4.20 Use of Network Sniffers ..
+4.21 Remote Access for Support.
+4.22 Internet Access
+4.23 Third Party Con i .
+4.24 Wireless WAN Security
+4.25 ASDL -IPStream.....
+4.26 General Device Security features..
+
+SCHBNVGHHGHBARAGE
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 3 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+A DEVICE CONFIGURATION SECURITY PARAMETERS
+
+A.1 Device Commands..
+B.1 General Security Consideration for Devices
+C.1 Switch Configuration Security Consideration:
+
+B CISCO AUTO SECURE
+
+TRAFFIC FLOWS AND FIREWALL RULE SETS
+
+1 Network Management.
+1 Central ....
+
+1 System Management.
+.1 Certificate and Key Managemen‘
+H.1— Branch
+i! Remote Access
+J. Audit...
+
+. 50
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref:
+Version:
+Date:
+Page No
+
+DESINET/HLD/0016
+vo.2
+
+06-Sep-07
+
+4 of 62
+POL00140237
+
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &>
+
+0.2 List of Figures
+
+Figure 1 — Overall view of the HNG-X Target Network solution...
+Figure 2 - Network Model....
+Figure 3 — Network Tier Model Overlay.
+Figure 4 —- McAfee IPS/IDS Positioning
+Figure 5 — Firewall Zone.
+Figure 6 - ASA DMZ Connectivity...
+Figure 7 - Remote Access
+
+Figure 8 - Internet Access
+
+Figure 9 — Network Management Flows.
+
+Figure 10 — Central Flows
+
+Figure 11 — System Management Flows.
+
+Figure 12 - Certificate and Key Management Flows ...
+
+Figure 13 - Branch Flows....
+
+Figure 14 —- Remote Access Flows...
+Figure 15 — Audit Flows
+
+0.3. List of Tables
+
+Table 1 - Security Levels on ASA.....
+
+Table 2 - Data Centre domain platform components ...
+Table 3 — Logon Summary Matrix .
+Table 4 — SAMPLE Inter LAN/Domain Protocol Matrix...
+Table 5 — Device Matrix for Traffic Flows...
+
+Table 6 — Network Security Devices
+Table 7 - Firewall Thresholds ..
+Table 8 — Interface Settings.
+Table 9 - Firewall Matrix
+Table 10 — Network Management Protocols
+
+Table 11 — Central Protocols
+
+Table 12 — System Management Protocols .......
+
+Table 13 - Certificate and Key Management Protocols
+
+Table 14 — Branch Protocols
+Table 15 —- Remote Access Protocols
+Table 16 — Audit Protocols
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 5 of 62
+re)
+FUJITSU
+
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+LE
+“POST
+OFFIGE
+
+COMMERCIAL IN CONFIDENCE
+
+0.4 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CP/PEAK/PPRR
+Reference
+
+O41 11-Jul-07 First Draft
+
+02 6-Aug-07 Rewrite of document and creation of Second Draft after
+
+Receiving Guidance on Document Scope
+
+0.5 Review Details
+
+Review Comments by :
+
+Review Comments to
+Mandatory Review
+
+‘Customer Solution Architect
+
+Monday 17th September 2007
+
+Dave Haywood
+
+Network Designer
+
+Temitayo Fashina
+
+Network Designer
+
+Stephen Wisedale
+
+Network Designer
+
+Rahman El-Khoulali
+
+Development Graham Allen
+scc Mik Peach
+Business Continuity Tony Wicks
+
+System Test Harjinder Hothi
+Security Architect Jim Sweeting
+Network Architect Mark Jarosz
+
+Migration Architect
+
+Jeremy Worrell
+
+Business Continuity
+
+Tony Wicks
+
+Security
+
+Network Designer
+
+Optional Review
+
+Bill Membery
+
+Ghalib Al-Kilidar
+
+Customer Solution Architect
+
+lan Devereux
+
+ZenSar Design Lead Gautam Das
+Programme Manager Phil Day
+Applications Architecture Dave Johns
+
+Test Design
+
+Peter Robinson
+
+Test Design
+
+George Zolkiewka
+
+Head of Service Management
+
+Steve Denham
+
+Head of Service Change & Transition
+
+Graham Welsh
+
+HNG-X Service Transition
+
+Steve Godson
+
+Service Support
+
+Peter Thompson
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+Page No: 6 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+Service Network
+
+Alex Kemp
+
+Data Centre Migration
+
+Martin Brett
+
+Infrastructure Design / Solution Design
+
+David Sackman / Steve Dingle
+
+Integration
+
+David Hinde
+
+Testing
+
+Peter Dreweatt
+
+SV&l Manager
+
+Sheila Bamber
+
+Tester Hamish Munro
+RV Manager James Brett (POL)
+VI Manager Peter Rickson
+TE Manager Peter Rickson
+
+HNG-X Acceptance & Risk
+
+Wayne Roberts (POL)
+
+Core Services
+
+Pat Lywood
+
+Core Services
+
+Ed Ashford
+
+Core Services
+
+Issued for Information
+distribution list to a minimum
+
+Position/Role
+
+Please restrict this
+
+Andrew Gibson
+
+Name
+
+Project Manager
+
+Dean Parsons
+
+(*) = Reviewers that returned comments
+
+0.6 Associated Documents (Internal & External)
+
+Reference Version Date Title Source
+
+PGM/DCM/TEM/0001 I 2.0 16-Apr-07 (Document Title) Dimensions
+
+(DO NOT REMOVE)
+
+ARC/NET/ARC/0001 V0.4 8/5/07 HNG-X Technical Network Dimensions
+Architecture
+
+ARC/SEC/ARC/0003 I V1.0 16/2/07 HNG-X Technical Security Dimensions
+Architecture
+
+DES/NET/HLD/0008 V0.2 4/6/07 Data Centre LAN Design Dimensions
+
+DES/NET/HLD/0009 I V1.0 9/8/07 HNG-X Wide Area Network HLD Dimensions
+
+DES/NET/HLD/0014 V0.1 20/7/07 HNG-X Branch Access Network HLD I Dimensions
+
+DES/NET/HLD/0010 V0.4 5/7/07 Branch Router Network HLD Dimensions
+
+DES/NET/HLD/005 V0.2 2/3/07 ie Data Centre Network Security I Dimensions
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents.
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref DESINETHLD/O016
+Version: V0.2
+
+Date: 06-Sep-07
+
+Page No: 7 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+0.7 Abbreviations
+
+Abbreviation finition
+
+AAA Authentication, Authorisation and Accounting
+
+ACE Application Control Engine
+
+AS Autonomous System
+
+ASBR ‘Autonomous System Boundary Router
+
+ASDM Adaptive Security Device Manager
+
+AUX Auxillary
+
+BCP Best Current Practice
+
+BGP Border Gateway Protocol
+
+BT British Telecommunications PLC
+
+BTLO1 Bootle data centre
+
+CE Customer Edge
+
+CEF Cisco Express Forwarding
+
+CoPP COntrol Pane Policing control
+
+CoS Class Of Service (IEEE802.1p) (layer 2 QoS)
+
+DAI Dynamic ARP Inspection
+
+dCEF Distributed Cisco Express Forwarding
+
+DMS Degrees, Minutes, Seconds
+
+Dwom Dense Wave Division Multiplexing
+
+DMZ De-Militarised Zone
+
+DRS Data Reconciliation Service
+
+DTP. Dynamic Trunking Protocol
+
+DWH Data WareHouse
+
+FWSM Firewall Services Module
+
+GMT Greenwich Mean Time
+
+HP. Hewlett Packard
+
+IDS Intrusion Detection System
+
+IGP Interior Gateway Protocol
+
+IP Internet Protocol
+
+IPS Intrusion Prevention System
+
+IRE11 Ireland 11 data centre
+
+IRE19 Ireland 19 data centre
+
+ITU Infrastructure Test Unit
+
+LAN Local Area Network
+
+MSFC Multi-layer Switch Feature Card
+
+NNM Network Node Manager
+‘©Copyright Fujitsu Services Ltd 2007 Ref DES/NET/HLD/0016
+
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 8 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+finition
+
+NPS Network Persistence Store
+
+NTP Network Time Protocol
+
+OEE Overall Equipment Effectiveness
+os Operating System
+
+OSPF Open Shortest Path First
+
+ovo OpenView Operations
+
+PDU Power Distribution Unit
+
+PFC Policy Feature Card
+
+POA Post Office Account
+
+PVST+ Per-VLAN Spanning Tree +
+QoS Quality Of Service
+
+RFC Request For Comments
+
+RMGA Royal Mail Group Account
+
+SAN Storage Area Network
+
+SIN ‘Suppliers’ Information Note
+
+sTD Standard
+
+TES Transaction Enquiry Service
+TPS Transaction Processing System
+TTY Teletype
+
+UDLD Uni-Directional Link Detection
+UPS Uninterruptible Power Supply
+UTC Coordinated Universal Time
+VLAN Virtual LAN
+
+VLSM Variable Length Subnet Mask
+VRF Virtual Routing & Forwarding
+VRRP Virtual Router Redundancy Protocol (RFC3768)
+vip VLAN Trunking Protocol (IEEE802.1q)
+VTY Virtual Teletype
+
+WAN Wide Area Network
+
+WGNO1 Wigan data centre
+
+0.8 Glossary
+
+AAA
+
+Term Definition
+
+AAA is Cisco's framework of security services that provide the method for identifying
+users (authentication), for remote access control (authorization), and for collecting
+and sending security server information used for billing, auditing, and reporting
+
+(accounting)
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref DESINETHLD/O016
+Version: V0.2
+
+Date: 06-Sep-07
+
+Page No: 9 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Term Definition
+
+DMZ A DN is a subnet between a trusted internal network and an untrusted external
+network. Typically, the DMZ contains publicly accessible systems (e.g., Web servers,
+file servers, mail servers and DNS servers). It usually is located at the perimeter of
+the trusted internal network.
+
+DWDM Dense Wave Division Multiplexing. A technique for multiplexing many data streams
+(usually 32) over a single fibre optic cable by using different frequency laser optics.
+
+Production When referring to data centre use, indicates the data centre primarily providing
+service to the customer business. Normally the Primary data centre at IRE11
+
+Test When referring to data centre use, indicates the data centre primarily providing a test
+service. Normally the Secondary data centre in IRE19
+
+0.9 Changes Expected
+
+Addition of further information on IDS/IPS and CSM tool.
+
+0.10 Accuracy
+
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, whilst
+every effort is made to ensure the accuracy of such information, it accepts no liability for any loss (however
+caused) sustained as a result of any error or omission in the same
+
+0.11 Copyright
+
+© Copyright Fujitsu Services Limited 2007. All rights reserved. No part of this document may be
+reproduced, stored or transmitted in any form without the prior written permission of Fujitsu Services.
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 10 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+1 Introduction
+
+This is the Network Security High Level Design that supports the parent documents found within
+Dimensions, namely HNG-X Technical Network Architecture ARC/NET/ARC/0001 and HNG-X
+Technical Security Architecture ARC/SEC/ARC/0003.
+
+1.1 Purpose
+
+The purpose of this document is to provide a high level description/overview of the network
+security components and appliances and considers the positioning required to secure the HNG-
+X solution. It is designed to expand on the security elements of the solution that have been
+identified within the Technical Network Architecture and Technical Security Architecture
+documents.
+
+1.2 Readership
+
+This document should be reviewed by those within the design, implementation and support
+group who may have a specific interest in the security aspects of the HNG-X solution.
+
+1.3 Scope
+
+This document maps out the High Level strategy and requirements for implementing security
+into the HNG-X design. It concentrates primarily on the following areas:
+
+e Network Security Policy
+
+« Network Tiers
+
+e DMZ's
+
+« Network Attacks
+
+e Network Security features
+
+« Firewalls
+
+« Network Controls in General
+
+1.4 Assumptions
+It is assumed that workshops will be held:
+
+« To determine the control and rule set of security devices such as firewalls, IPS and ACL
+controlled routers.
+
+«To examine and understand server and application traffic flows
+
+1.5 Risks
+
+e Internal risk is that lack of workshops will prevent LLDs from being created
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 11 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+Re
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+1.6 Dependencies
+
+Knowledge of system traffic flows and server communication is required prior to determining the
+firewall and IPS/IDS rule sets.
+
+A level of understanding is needed about server platforms and their positioning and purpose in
+the network as determined by the system architecture.
+
+1.7 Constraints (Standards, Policies, Guidelines)
+The design must conform to the architecture and policy set out in the parent documents
+« HNG-X Technical Network Architecture ARC/NET/ARC/0001
+« HNG-X Technical Security Architecture ARC/SEC/ARC/0003
+
+1.8 Principles
+
+As stated within the HNG-X Technical Security Architecture the following specific principles
+provide the foundation for this Network Security High Level Design
+
+* Control access to, from and within the HNG-X infrastructure
+e Ensure anomalous activity is detected and responded to
+e Least privilege ie
+
+o Restrict access using the principle of "that which is not explicitly granted is
+denied” or a “default deny” stance
+
+co Traffic passing between security domains must be controlled to only allow the
+relevant protocol and port necessary for the service being accessed.
+
+e Defence in Depth
+
+o Use a layered approach to security to provide multiple controls for prevention
+and detection
+
+* Secure defaults
+
+co All default settings , particularly passwords and SNMP communities must be
+changed before LIVE deployment
+
+« Check at the Gate
+
+o Check access as early as possible. Detect and prevent unauthorised access as
+early as possible.
+
+2 Requirements Tracking
+
+The following requirements should be met as part of the Network Security design i.e those
+areas that are concerned with the network security rather than business requirements
+
+Description
+
+All new developments will protect databases from SQL injection attacks mounted through data centre
+
+SEC-3133 perimeter controls such as firewalls.
+
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 12 of 62
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Network Security High Level Design
+
+POST N
+OFFICE
+
+POL00140237
+POL00140237
+
+Ref:
+
+SEC-3140
+
+Description
+
+No password shall be transmitted in clear text across any network, whether internal or external
+
+SEC-3156
+
+{CISP 8.5.1} Controls shall protect against denial-of-service attacks originating from non-Horizon
+systems including those listed in Requirement SEC-3152.
+
+SEC-3160
+
+All HNG-X systems shall use private IP addresses which shall not be exposed across the system
+boundary.
+
+SEC-3162
+
+{CISP 8.5.1e} Network management staff within each domain shall be alerted to any attempt to reach
+the HNG-X systems in their domain from unauthorised network addresses.
+
+SEC-3165
+
+Individual attempts to breach network security controls shall be treated as a minor security breach. A
+concerted attempt or a successful breach of network security controls shall be treated as a major
+security breach
+
+SEC-3167
+
+{CISP 8.5.19} Data over Wide Area Networks shall be encrypted unless specifically agreed in the
+relevant Technical interface Specification or where otherwise specifically agreed by Post Office Limited
+Information Security. The Fibre Optic link between Data Centres is not considered to be a Wide Area
+Network. The requirement applies to transaction data between branches and the data centre(s)..
+
+SEC-3168
+
+WAN Eneryption key management shall be independent of network configuration such that the
+confidentiality of Post Office traffic is not compromised by a single configuration error of either the WAN
+or the encryption system
+
+SEC-3169
+
+{CISP 8.5.1h} The system design shall require that no encrypted data is to pass through any HNG-X
+firewall layer other than certain defined fields in the application level protocol (e.g. encrypted PINs)
+except where data is subsequently decrypted and passes through another firewall layer. Other cases
+may be authorised by Post Office Information Security where a risk assessment has identified that the
+requirement for confidentiality outweighs the requirement for system availability and integrity
+
+SEC-3170
+
+All proposals for encrypted data to pass through any HNG-x firewall layer shall be subject to risk
+assessment to determine if the requirement for confidentiality outweighs the requirement for system
+availability and integrity
+
+SEC-3172
+
+Cases requiring encrypted data to pass through any HNG- firewall layer shall only be authorised by
+Post Office where a risk assessment has identified that the requirement for confidentiality outweighs the
+requirement for system availability and integrity
+
+SEC-3174
+
+{CISP 8.5.1}} Test systems shall only share logical network connection with operational systems in
+carefully controlled circumstances. Test systems shall be configured to connect in this manner for the
+minimum duration necessary to support testing. The logical connection shall only be permitted after an
+assessment has confirmed that live operation will not be adversely impacted or as otherwise agreed by
+Post Office Limited.
+
+SEC-3176
+
+All RADIUS servers that authenticate network access shall be secured and segregated into logical
+network segments by carrier access method and be externally visible to authorised domain users only
+
+SEC-3204
+
+‘Such update shall include at least the following password requirements: Minimum password length of 7,
+Minimum password history length of 4
+
+SEC-3235
+
+All cryptographic key lengths shall be at least 128 bits for symmetric keys and at least 1024 bits for
+asymmetric keys where the associated cryptographic control protects the integrity or confidentiality of
+HNG-X Business Data, Reference Data or Application Software unless otherwise agreed with Post
+Office Information Security. Note: Post Office is highly unlikely to agree to any shorter keys lengths
+(even for COTS products). For the avoidance of doubt, access to the TES Query service is not covered
+by this requirement but by requirement SEC-3236.
+
+3
+
+HNG-X Network Overview
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 13 of 62
+Network Security High Level Design
+
+Fe)
+FUJITSU
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+HNG-X solution is concerned with providing LAN and WAN services for multiple areas. As a
+consequence network security must be considered for all areas. An overview of the target
+network solution is outlined at 3.1
+
+3.1 Target Network Solution
+
+Figure 1 below (taken from ARC/NET/ARC/0001) depicts the network architecture that will be in
+place. The architectural design already has a layered approach in terms of routing and switching
+environments, and provides demarcation points that can be used to enforce and manage
+security policy. However, the requirement for operational traffic to traverse the LANs and WANs
+introduces a security concern and by definition requires that safeguards are put in place. The
+central LAN needs to be protected from attacks from any number of possible locations from
+outside. To provide a suitable layered security solution the architecture can be mapped against
+a network tier model.
+
+Cliont Systems
+
+Normal data pate
+- (Client wan
+
+fest Access)
+¥, AAG I
+Data 4 ata f
+Branch DMZ Centre Branch DMZ Centre a
+
+— GPRSIEDGE Receiver
+
+Earth Staton
+
+EDGE / GPRS /36 Backup
+
+Rote Rolter
+
+Router & Dish J
+
+BroadBand VSAT °° pope Po PC
+Branch Large Branch Small Branch
+
+Mobile Branch
+
+NNetLogical m)_HNG-X Arch, Network ¥3.v8d
+oa
+
+Figure 1 — Overall view of the HNG-X Target Network solution
+
+3.1.1. Network Tier
+
+The three tier model identifies the Access, Distribution and Core Tiers. In doing so it provides a
+way of separating and isolating the various traffic flows and types needed and can be used as a
+method of applying the security controls required to protect the network. Figure 2 (taken from
+ARC/NET/ARC/0001) below highlights the elements of HNG-X solution.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 14 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+IRE 1x Data Centre Data Centre
+
+Core Tier 1p Storage
+
+High Speed Layer 3 switching between Routing
+Distribution Tiers
+
+Connestivty between Data Centres T
+
+Distribution Tier ° I
+Server port density Post Server
+Urtstesten braren I I chen ree] [sweet I I comectiy
+Load Balancing,
+‘Security (VPN, Firewalls, IDS)
+
+Branch Client Support Client
+
+Access Tier
+Remote Access 7 ] ] I SAN
+Connectivity between Data Centres Ir pesreg arrangers extension
+, ("Besiing Arrangement
+‘Security (VPN, Firewalls, IPS)/ \ I oes
+
+“Branch Wide Area Network
+Services
+
+Alien
+Wide Area Network(s),
+
+Remote [~ Client Post SupportI I Wigan & Bootle
+LocationsI Office Data Centres
+
+Peering Arrangement / Transit LAN ]
+Post
+Office Suppor Horizon posse
+letwork ee Network, Netwctrcterior0ved
+
+Figure 2 - Network Model
+
+3.1.1.1 Core Tier
+
+This is the environment where high speed layer 3 switching takes place with the emphasis being
+placed on switching traffic as quickly as possible and providing redundant and fast converging
+connectivity between the other datacentre and also the areas within the distribution tier. High
+throughput and optimal routing is the priority within this tier; latency caused by protection
+mechanisms such as firewalls and ACL's is not wanted. The policy must be that the traffic within
+this tier has already been inspected and deemed valid.
+
+3.1.1.2 Distribution Tier
+
+This is the layer at which aggregation, routing, server port density, access control and QOS are
+provided. Load balancing, server virtualisation, policy based connectivity and security are some
+of the features that are also used. At this tier the security solutions or components that can be
+expected to be used are firewalls, VPNs, IDS/IPS. For the HNG-X design the Cisco Firewall
+Services Module (FWSM) blade will be deployed in the Core 6513s.
+
+3.1.1.3 Access Tier
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 15 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+This tier is designed to provide typically workgroup access. In terms of the HNG-X solution the
+access tier provides remote sites access from across the WAN to the central LANs and HNG-X
+system housed within the data centres. The HNG-X access tier has network security solution in
+use and traffic flows are protected with the use of Application Control Engine (ACE) blade in the
+6513 for SSL termination from the counters, and an ASA firewall and McAfee IPS component to
+protect unwanted traffic from the Core 6513. The Access Tier, within the DMZ, has RADIUS
+platforms to authenticate access from the Branch network.
+
+4 Network Security Design
+
+4.1 Network Security Overview
+
+4.1.1 Security Policy
+
+HNG-X Network Security requires layers of security within the network which will be
+implemented using the the following steps
+
+« Securing the HNG-X Network
+
+e Monitoring the HNG-X Network
+e Testing the HNG-X Network
+
+e Improving the HNG-X Network
+
+4.1.1.1. Securing the HNG-X Network
+
+This involves implementing the techniques of filtering, authenticating and encrypting traffic by
+using both system and network devices. in order to meet the requirements of the security policy.
+
+4.1.1.2 Monitoring the HNG-X Network
+System auditing and intrusion detection is required to monitor and detect violations.
+
+4.1.1.3 Testing the HNG-X Network
+Regular system auditing and vulnerability scanning will validate the security policy implemented.
+
+4.1.1.4 Improving the HNG-X network
+
+Monitoring and testing the security policy and solution will provide information as to how to
+improve on the security implementation. Emerging security threats will mean changing the
+parameters of the HNG-X security policy and to carry out vulnerability patching.
+
+4.1.2 Security Strategy and Solutions
+
+The network security strategy of Prevention, Containment, Detection and Response can be
+viewed in the following way
+
+« To prevent attack from outside the HNG-X infrastructure by ensuring that the perimeter
+of the network is secured by firewalls and IDS/IPS - SECURING
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 16 of 62
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Network Security High Level Design
+
+POL00140237
+POL00140237
+
+To prevent attack from within the HNG-X infrastructure by containing and detecting
+traffic using network segmentation (VLANs), access controls lists (ACLs), firewalls and
+IDS/IPS - SECURING
+
+To detect potential violation of network with use of IDS/IPS and firewall logging -
+MONITORING
+
+To log and audit activity on each security device to a Management system - TESTING
+
+To control access to network devices via Identity and Security Management
+(RADIUS/TACACs) - IMPROVING
+
+To respond to threats i.e harden the security policies based on log and audit findings
+
+The aims above are achieved by utilising the various security solutions available such as
+
+4.2
+
+Firewall for filtering
+
+IDS /IPS for detecting violations of policy
+
+VPN's for securing WAN traffic
+
+Anomaly Detection and Mitigation for identifying unusual traffic patterns
+Endpoint security for locking down end devices
+
+Identity and Audit Management i.e. authentication via RADIUS and logging
+
+Security Management via TACACs for configuration and control of network components
+
+Security Demarcation Points
+
+The network security policy of protecting the network and system data from any potential threat
+at the earliest possible moment is to be used with regards the HNG-X system. Therefore,
+providing a domain overlay to the network tier model is provided to assist with understanding
+the demarcation points and perimeter defences. Figure 3 (taken from the HNG-X Technical
+Network Architecture document) highlights the access and enforcement points.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 17 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &>
+
+@ Enforcement Point
+
+/
+
+Branch Network = oo
+ee
+
+Figure 3 — Network Tier Model Overlay
+
+4.2.1 Access and Enforcement Points
+
+The security of the network is built around determining where the various access and
+enforcement points are located and if the network components within these areas are suitable
+and configured correctly to maintain the integrity of the system.
+
+4.2.1.1 Access Point
+
+This is the point of entry from the WAN for all traffic. It resides within the Access tier of the
+network and would expect to be a network device that interfaces between the LAN and WAN.
+
+4.2.1.2 Enforcement Point
+
+This lies on the boundary between the access and distribution tier, and as shown within the
+architecture design comprises of a firewall. The Cisco Adaptive Security Appliance (ASA) 5540
+series appliance is the device that provides the protection and control. All traffic will pass
+through this component and any traffic that flows between domains will need to pass through.
+The firewall will only have one interface within any one network tier. In the case of the ASA one
+interface will belong to the access tier and the other will belong to the distribution tier.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 18 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.2.2 I Network Threats
+
+4.2.2.1. Potential Malicious Progams and Tools
+
+The HNG-X network must be secured against the threats and infiltration methods. There are
+many potentials ways of either maliciously attacking the HNG-X network in order to make it
+inoperable. Below are but a small number of network infiltration methods which could be used to
+infect the HNG-X systems:
+
+° Virus
+« Worm
+e¢ =©Trojan
+
+e Spyware/Adware
+
+e¢ Phishing
+e Spam
+° Bot
+
+4.2.2.2 Types of Network and System Attacks
+
+The HNG-X system must enforce security policies so that is protected from potential internal or
+external attacks. These threats can take various forms. The system attacks i.e server and end
+user may be affected due to a perpetrator using some of the malicious programs available, as
+identified at 4.2.2.1. The following list identifies some of the types of attacks that the HNG-X
+network needs to protect itself from, which ultimately affects the network and therefore renders
+the system unusable. Some of which are well known due to previous Internet exploitation:
+
+e Distributed Denial of Service (DDoS) where massive amounts of traffic sent to
+number of targets within short space of time
+
+e Denial of Service(DoS) where there is an attempt to stop legitimate users of a service
+from accessing that service using software bugs i.e. IP Spoofing
+
+e Man in the Middle Attack (MITM) where an attacker can read, insert, modify
+messages between two parties with neither party aware that the link has been
+compromised.
+
+4.2.2.2.1 Denial of Service attack — IP Spoofing
+
+This can occur when an intruder sends a message or large amount of UDP echo traffic to IP
+broadcast address which then causes all replies to be a particular spoofed source address i.e
+“Fraggle” attack
+
+4.2.2.2.2 Man in the Middle attack — ARP spoofing
+
+This is when a host sends an ARP request to the gateway router and an attacker sends an ARP
+response to a host with the attacker's MAC address instead of the expected gateway router's
+MAC address. The attacker can now intercept all the host traffic before forwarding it on to the
+router.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 19 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.3 DMZ’s
+
+The DMZ’s in HNG-X provide another layer of protection for the Core system. Isolating initial
+authentication, logon and DC service from with the Core infrastructure clearly limits the potential
+for security violations. Trusted and less trusted interfaces provide the necessary security and
+traffic flows are limited to the configurations permitted via the Cisco ASA appliance. Standard
+security rules apply, namely that traffic /sessions are only initiated from within a trusted zone;
+inside to outside. The inherent design of the firewall is to prevent any outside traffic/device
+access to an inside domain/LAN and therefore traffic from the outside that needs to
+communicate with the relevant DMZ will need to be explicitly permitted with the firewall's
+(ASA’s) configuration.
+
+4.3.1 Security Levels
+
+The DMZ’s Cisco ASA’s has default parameters that set the security levels so setting up of
+connections and passing of traffic for particular paths need to be configured specifically. In the
+case of the HNG-X DMZ’s the ASA will be configured with an outside, inside and DMZ interface.
+These interfaces will need their security levels set to reflect their trustworthiness and to enable
+the firewall configurations to work correctly. See Table 1
+
+Interface q Security Level
+Inside interface : 700 ( default)
+Outside Interface 0 (default)
+DMZ interface 0 by default , set to 50 (configurable)
+
+Table 1 - Security Levels on ASA
+
+Access tier has a number of DMZ’s with trusted, less trusted interfaces. Default policy is that
+any ASA appliance/firewall protecting the DMZ will allow connection allowed from inside to
+outside, but implicit deny all on the outside.
+
+To overcome this restriction and to allow incoming connections specific ACL rule sets, static
+routes and NAT statements will need to be configured on the ASA. Exact configuration setting
+will need to be identified in the Firewall LLD and the firewall workshop.
+
+4.3.2 Types of DMZ for HNG-X Architecture
+
+The DMZs for HNG-X are split into multiple areas. Services that are provided here are
+authentication, remote logon and SSL termination and are provided by RADIUS, RSA and SAS
+servers.
+
+« Post Office DMZ
+¢ = Branch DMZ
+
+* Clients DMZ
+
+© Support DMZ
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 20 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.4 Data Centre LANs and Server Services
+
+The DMZ's protect the servers and services that support HNG-X. It is these servers that will
+determine firewall rule sets as they provide the source and destination addresses and protocols
+for traffic flows. The following Table 2, taken from DES/NET/HLD/0008 shows server/platform
+types and associated DMZ.
+
+Zone Domain Systems / Platform types
+A Estate & Systems Tivoli Servers
+Management LAN Anti-Virus Server
+Other servers with no specific security
+B Central LAN segregation requirement. ie DNS servers,
+Active Directory servers.
+c Certificate & Key Certificate Server, Signing Server
+Management LAN Key Management System
+D ‘Audit LAN Auait Server, Audit Workstation, Atalla
+jevice
+Branch Database, TES, NPS,DRS,TPS, DWh
+E Database Servers LAN
+NNM / OVO server
+CiscoWorks server, TACACs+ server
+F Management Services AlarmPoint server, NTP server
+LAN Cisco Security Manager server
+Aurora console server
+RSA EnVision logging server
+POL MIS, POL FS
+G Post Office DMZ
+TES Application Server
+Branch Access, SSL VPN Termination
+Branch Access Layer Application Servers
+H Branch DMZ Branch Router RADIUS Authentication
+Server
+SYSMAN Gateways
+Client Agents
+i Clients DMZ Network Banking Atalla Devices.
+FTMS Agents
+RSA Authentication Servers
+J Support DMZ SAS Servers
+
+Out of Hours remote access
+
+Table 2 - Data Centre domain platform components
+
+‘Copyright Fujitsu Services Ltd 2007
+
+UNCONTROLLED IF PRINTED
+
+Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+Page No: 21 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5 Services Requirements
+The services provided by the HNG-X systems are:
+e — Identity and Audit
+« Network Management
+« IPSEC
+« SSL
+
+4.5.1 Identity and Audit
+
+All logon activities within the HNG-X domain, internal to datacentre or at remote sites i.e Branch
+or Clients (DVLA, Alliance and Leicester etc) will need authentication and role authorisation, and
+accounting. This is based on the AAA model. This includes either endpoint logon or network
+device logon.
+
+The servers providing user and network logon security are as follows:
+* Cisco ACS located in Management Services LAN
+e SAS server located in Support DMZ
+e Radiator RADIUS Branch Authentication server
+
+4.5.1.1. Integration with Active Directory
+
+The logon process is securely tied in with Active Directory whereby usemame and passwords
+are backed off from the ACS server. This extra hop in terms of authentication and authorisation
+bowen an extra level of security. For information on the process can be found within
+
+4.5.1.2 Cisco ACS
+
+Cisco ACS (Access Control Server) is the device that provides the focal point for user and
+device management across the HNG-X system.
+
+e ACS establishes a common user and device AAA management framework for
+protecting and monitoring user and device access in the network for example:
+
+o ACS controls who can log into the network
+co The privileges of each user, and what they can and can’t do
+o Recorded security audit or account billing information
+
+o Access and command controls that are enabled for each configuration’s
+administrator
+
+o ACS allows management and user access for all the Cisco devices within the
+
+HNG-X system
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 22 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5.1.3 Summary of Logon
+
+Device Action Protocol Security Location Notes
+Used mechanism
+Network Logon to network I SSH Via SAS I Support
+Components - I device is via the Server DMZ
+Cisco LAN interface. through
+IPSEC VPN
+Network Authentication of I TACACs+ I ACS Server I ManagementI Two Factor
+Components — I User Logon + LAN authentication
+Cisco Usernames
+in Active
+Directory
+(AD)
+Branch Router I Logon to network I http/teinet IPSEC via I Branch DMZ I Single factor
+- Sarian device is via the Sarian authentication
+WAN interface Head End
+router in
+datacentre
+Branch Router I Authentication of I RADIUS RADIUS Branch DMZ
+- Sarian User Logon or Radiator
+loading of config server +
+from bootserver Usernames
+in Active
+Directory
+(AD)
+
+Table 3 - Logon Summary Matrix
+
+4.5.1.4 System unavailable for logon
+In the event of system being unavailable to authenticate there are two options:
+e Network device local logon
+
+« Local console logon
+
+4.5.1.4.1 Network Device local logon
+
+In the event of system being unavailable to authenticate, the security policy permits that a
+device can be configured for a local account so that authentication can take place locally and
+user access levels are assigned based on the role of the user. These access levels within Cisco
+devices are known as user exec mode and privilege exec mode.
+
+4.5.1.4.2 Local Console logon
+
+As a last resort for engineer access a device can be administered via the console port. The
+security principles that need be in place and allow this are :
+
+e Generic username with a separate last resort password per device
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 23 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+« When password used then it is changed
+e Key under lock and key
+
+4.5.2 I Command Audit
+
+All commands issued by the users when they are logged in to network components are logged.
+The logging is performed by:
+
+e ACS logging
+e Aurora logging
+
+4.5.3 Network Management
+
+Network management for Cisco devices and Counters is undertaken securely from
+Management LAN and Support DMZ via SNMPv3, SSH version 2, or HTTP over SSL. Activities
+include:
+
+e Device monitoring
+e Uploading of Configurations
+
+4.5.3.1. Branch Router
+
+The Branch Sarian router is managed by the ROSS platform (Router operational support
+system). The Sarian router supports telnet, ftp and http, which is clearly insecure. To overcome
+this security issue these protocols are run over IPSec tunnels that are established from the VPN
+client on the ROSS platform to the Sarian IPSec head router in the DataCentre, and then
+onwards to the Branch router.
+
+ROSS platform also provides NTP service for Branch router via SNTP service via IPSEC tunnel.
+
+4.5.3.2 Other Security Criteria to be met
+e No clear text passwords will be used
+« Firewall management will use https and ASDM + Cisco Security Manager
+
+e All network devices will be deployed with parameters set for logging and alerting. This
+requirement is achieved by carrying out baseline configuration tasks.
+
+4.5.3.3 Logging
+
+The security policy is that all devices will be configured for logging, and these logs are
+maintained by CiscoWorks, Network Node Manager and RSA Envision logging server.
+
+4.5.3.4 Alerting
+
+The security policy is that all devices will be configured for alerting using SNMP v3. Alerts will
+also be directed towards CiscoWorks and Network Node Manager in the Management Services
+LAN which will then feed into the Enterprise Management System which is supported by a 24
+hour helpdesk.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 24 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.5.4 IPSEC
+
+IPSec has multiple configuration requirements due its stepped approach. The security policy is
+to use the strongest encryption and authentication configuration that is possible, on the basis
+that the deployed network devices support the current technologies and security enhancements.
+
+IPSec will be configured between
+e Sarian VPN concentrators and Sarian Routers for Management of Branch routers
+
+* On Handoff 2811s at Datacentre and at the remote sites for Client, Post Office, DVLA,
+A+L for production traffic and management traffic (for network devices)
+
+HNG-X IPSec policy is to encrypt all traffic; by default this means that all traffic is deemed
+interesting.
+
+The parameters below will be used for both LIVE and TEST traffic.
+
+4.5.4.1 Parameters
+
+The security parameters that are to be used by default as part of the IPSec configuration on the
+network devices are as follows:
+
+General Parameter I Weak Stronger HNG-X configuration parameters
+
+Encryption Algorithm I DES 3DES or AES__I AES with 256-bit key
+
+Hash Algorithm MDS SHA-1 SHA-1
+
+Authentication method I Pre-share RSA Signature I Pre-share or RSA Signature (TBD)
+
+Key Exchange DH Group 1 I DH Group 5 DH Group 5
+
+IKE SA lifetime 86,400 secs I <86,400 secs I Set to < 1day, limit to 4 hours (TBD)
+45.5 SSL
+
+This is more specific to the Branch counters whose security is provided by the Sarian Router
+and IPSEC headend at the HNG-X datacentre and the client application on the counters.
+
+All transaction data travels over SSL which has the secured communications via the IPSEC
+tunnels.
+
+This SSL transport is then terminated on the Cisco 6513 Access switch in the Datacentre via a
+Cisco ACE blade module which supports SSL terminations.
+
+HTTPS (TCP 443) is required to be permitted through controlling network devices.
+
+The Network administrator will generate the private/public key pair for the router. The private
+key cannot be seen by anyone, including the administrator. The Certificate server will be a
+central authority for deciding whom to issue, revoke, etc. the certificates. This server will be
+managed by the Crypto team providing a clear separation of management.
+
+4.6 Key Management/Certificates/PSK
+
+This element of the solution that provides authentication is via Certificate servers located in the
+Central LAN. As explained previously all communications will take place over a secure path,
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 25 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+IPSEC tunnel. Therefore, certificate integrity and management is regarded as safe. The
+assumption is that the certificate server has not been compromised itself.
+
+4.7. Traffic Types
+The network devices deployed can each be divided up into the following functional components:
+« Data Plane
+
+« Control and Management Plane
+
+4.7.1 Data Plane Traffic
+
+This is concerned with the type of application traffic and the direction it is looking to flow. Within
+the Datacentre there are numerous servers that are located in the Access and Distribution tiers
+that will need to communicate with each other as part of their system function. As both tiers are
+separated by either an FWSM or ASA, rule sets will have an impact on data traffic flow.
+Ultimately a security device will be configured to allow certain traffic pass through; this
+information should be available from the server and application HLD's or obtained by holding a
+suitable workshop on server traffic flows. An example of information that may need to be
+considered from the workshop is shown in Table 4 below
+
+Source Systems 1 I Destination Service being I Protocols
+Dewan ee o Domain/LAN/Devices I P/ovided roqulted
+Certificate ie.Counter Digital X509
+Certificate a I Server perarcater2
+Key Key Authentication
+Management Management
+LAN System
+Signing Server
+Estate & Tivoli Servers, I i.e all LANs Software, Anti I TBA
+Systems Anti-Virus virus service
+Management Server
+LAN
+DNS servers, I i.e DMZ servers DNS DNS,
+Active netbios, LDAP?
+Central LAN Directory
+servers.
+CiscoWorks ie Counters, all I TACAC+ for I TACACs+ (TCP
+server Network Devices device 49)
+Management I TACACS+ authentication, SNMP, SSH,
+Services LAN server authorisation ANG SYSLOG,
+RSA EnVision
+logging server
+Table 4- SAMPLE Inter LAN/Domain Protocol Matrix
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 26 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.7.1.1 Data Traffic Separation
+As stated above this will need to be derived from an appropriate workshop or via other HLDs
+
+4.7.1.1.1 Access Tier — LAN side
+
+Will be controlled with the use of VLANs whereby traffic classes i.e DVLA, CAPO, LINK and
+Support are separated into different VLANs and ports on the Access 6513 configured
+accordingly.
+
+4.7.1.1.2 Access Tier - WAN side
+
+Will be controlled via dedicated MPLS VPN, dedicated IPSEC tunnel over shared MPLS VLAN
+or dedicated circuits
+
+4.7.2. Control and Management Plane Traffic
+
+Most traffic passing through a network device does so via the data plane. However, the HNG-X
+active devices will needs to handle certain packets, such as routing updates, keepalives, and
+network management which are known as control and management traffic.
+
+The route processor on any of the HNG-X network devices need to be protected from possible
+network attacks such as DoS, whereby high rates of route processor destined traffic cause an
+excessive amount of CPU utilisation on the route processor.
+
+It is critical that the functionality and integrity of the network device is maintained as any impact
+on the network device from a DoS attack will clearly have an impact on the business. To
+alleviate this concern it is advisable that a policy to police the type of traffic entering a network
+device is created.
+
+4.7.2.1. Control Plane Policing Policy
+
+The HNG-X system integrity and functionality is reliant on active components behaving as
+expected. Preventing DoS and other attacks is crucial to the business. Identifying a number of
+traffic classes will assist in securing the system as these classes of traffic can be monitored and
+traffic not expected will be denied. Even though an appropriate workshop may be, the following
+requirements should be considered:
+
+e Critical traffic such as routing protocols i.e. OSPF and RIP
+
+e Important traffic such a network management traffic i.e ssh, telnet, ntp, snmp.
+e Normal traffic such as ping (icmp echo request)
+
+e Undesirable traffic i.e. any known malicious traffic
+
+e Default traffic i.e. any other traffic not previously captured
+
+4.7.2.2 I HNG-X Traffic Policing
+
+This element of network security will be undertaken by the 6513's in both the Core and Access
+Tiers.
+
+e Limitations will be placed on the types and rates of packets that can consume CPU
+resource. i.e for example fragmented ICMP echo requests
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 27 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e Traffic storm control will be configured on the switches with the threshold to be
+determined.
+
+4.8 Traffic Classes and Traffic flows
+
+4.8.1 Traffic Flows and Classes
+Traffic Flows fall into the following 3 categories:
+
+« Management
+
+* Production
+
+° Test
+
+Traffic Classes fall into multiple categories based on the clients. The comprehensive list is found
+within the HNG-X Technical Network Architecture, but two examples are:
+
+e EPAY LIVE and EPAY Test
+¢ DVLALIVE and DVLA Test
+
+4.8.1.1 Security Policy for Traffic Flows
+
+Identification of traffic flows and general server to server communication will provide the
+necessary port and protocol information for the creation of LLDs. This information, such as
+permitting only certain TCP ports to be opened between two servers needs to be determined
+and should be provided by server and application HLDs. It may be that some form of workshop
+will be held to identify these requirements.
+
+Expected level of information based on port, protocol, and IP addresses will then allow the
+creation of the rule sets for devices.
+
+The fundamental security policy and configuration should be the same for all classes, namely
+
+1. Allow only very specific traffic based on source, destination IP address and
+protocol
+
+2. Deny any other traffic.
+
+4.8.2 I Network Appliance Rule sets
+
+Proactive network security is ultimately provided by the network components deployed which, in
+the case of the HNG-X solution covers ASA, IPS, Routers with ACLs and Cisco ACS. Rule sets
+configured on these devices are the security mechanism used to isolate and drop unwanted and
+unknown traffic, report on potential security violations and offer a robust defence to network
+threats.
+
+Determining the precise rule set for the components should become known as the system is
+built, and should be seen as a list that will be updated regularly as new vulnerabilities and
+change to requirements are understood. The LLD for the particular components will indicate the
+protocols and parameters for the rule sets which should be collated as part of a security
+workshop. The format that the rule sets will take will be as per the following criteria:
+
+e Allowed traffic i.e expected traffic such as https port no 443
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 28 of 62
+re)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+« Denied traffic i.e. source IP address denied
+
+e Logged traffic ie. denied traffic logged to syslog server
+* Accepted signatures (IPS/IDS)
+
+4.8.3 Device Matrix for Traffic Flows
+
+Below Table 5 provides a summary guide for the specific LLDs to protect the HNG-X network. It
+should be used in conjunction with any workshop on traffic flows and firewall filtering.
+
+Protection I Location I Protection I Traffic Source I Destination I Confi Rules
+: Mechanism I Flow Specifics
+Device IType LAN LAN
+Cisco ASA I Access Application I Inbound Counter I Branch NAT rules I Permit counter
+Tier ——I Procotol to DMZs DMZ?? Inspection addresses
+cone Alen types Deny all other
+Static addresses
+routes Permit SSL
+Cisco ASA I Access Application I Inbound I Remote I Client DMZ Permit LAN
+Tier — —I Procotol toDMZs I Sites addresses
+Zone 1 filtering Deny all other
+addresses
+Cisco ASA Access Application I Inbound Support I Support Permit Support
+Tier — — I Procotol toDMZs _ I locations I DMZ LAN IP addresses
+conn) wey Deny all other
+addresses
+Sarian Access Packet Outbound I Access Branch ACLs Allow telnet, ftp
+Router/VPN I Tier Filtering from LAN router
+concentrator ACL Sarain
+HeadEnd
+Cisco ACE I Access TBA SSL Counter I Access TBA Permit SSL
+blade Tier LAN
+McAfee IPS I CoreTier I Siganature, I Inbound I Access I CoreLANs I Signature I Match signatures,
+3000 sensor Anomalies I to Core I LAN matching / I observe and
+to traffic I from updates permit/deny
+flow Access anomalous traffic
+Tier
+Cisco Core Tier I ACLs Inbound I Access I CoreLANs I ACLs Permit/deny accls
+Firewall -Zone 2 to Core I LAN based on
+Services from source/destination
+Module Access and protocol port
+(FWSM) Tier number
+Table 5 — Device Matrix for Traffic Flows
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED
+
+Page No: 29 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+Fe)
+FUJITSU
+
+COMMERCIAL IN CONFIDENCE
+
+4.9 Security Components
+
+Across HNG-X a variety of security barriers and data protection methods are to be deployed to
+protect the infrastructure and systems. These are as follows:
+
+« ASA Firewalls
+
+* Cisco Routers with ACLs
+
+*  Sarian VPN Concentrators and Routers
+e IPS/IDS appliance
+
+« SSL
+
+e VPN tunnels with valid encryption and authentication
+
+4.9.1. HNG-X Network Security Devices
+
+Table 6 lists the device to be deployed, their location/domain and the security criteria they will
+
+meet
+Network Access or Location Domain Network Tier Security criteria
+Security Enforcement
+Device Point
+Sarian Access Point I Data Branch I Access IPSEC tunnels
+Router/VPN Centre
+concentrator
+Cisco ACE I Access Point I 6513 Branch I Access SSL termination
+blade Access
+switch
+Cisco Enforcement I Data Branch I Access/Distribution I Application +
+Adaptive Point Centre protocol
+Security filtering, IPSec
+Appliance VPN, IP
+(ASA) address ranges,
+protocols and
+ports.
+McAfee IPS I Enforcement I Data Branch I Distribution Signature,
+2700 sensor Point Centre Anomaly, DoS
+Detection and
+Prevention,
+Firewall Enforcement I Data Branch I Core Firewall based
+Services Point Centre rules
+Module
+(FWSM)
+SAS server Access Datacentre I Support I Access Application
+DMZ level firewall
+Table 6 — Network Security Devices
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED
+
+Page No: 30 of 62
+
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.9.1.1 Device Details
+
+4.9.1.1.1 Cisco 2811
+
+Known as Handoff routers and used to supply IPSEC tunnel connectivity between the
+Datacentre and FJ RMGA LANS, (red LAN), Corporate LAN, DVLA, EPAY, Post Office sites,
+Support, Internet Access via SDCO1. The IPSEC tunnel also passes through a C+W VPN
+tunnel.
+
+The 2811 also provide Datacentre LAN connectivity into the Access switch 6513's.
+
+4.9.1.1.2 McAfee IPS/IDS 3000 Sensor
+
+The McAfee IPS/IDS 3000 Sensor has been chosen as the skill set for supporting this device is
+available within Fujitsu.
+
+It will act as a security barrier by using both its IPS and IDS capabilities.
+e IPS Mode —- Used only for Branch traffic monitoring
+« IDS Mode — Used to monitor all other traffic flowing in Core and Access tier.
+
+IPS Mode places the sensor inline and therefore is seen as an active device in the traffic path
+for Branch traffic all traffic flowing between the Branch counters and the Core and Access tiers.
+The traffic is inspected as it arrives on one interface and exits on the other. Any malicious traffic
+will be denied and an alert sent to the syslog server and its own Management station located in
+Management Service LAN .Subsequent malicious traffic will be blocked due to the IPS’s
+proactive capability.
+
+IDS mode will be utilised for remaining flows, and will monitor the traffic by using SPAN ports
+connected to Core and Access. Any alert notifications will be sent to its Management station.
+
+Active/Standby configuration will be deployed whereby all traffic is examined by the primary
+sensor with the secondary remaining inactive until a failover scenario is invoked.
+
+Sensor Management will be via McAfee Intrushield software that will be installed on a
+dedicated server in the Management LAN. Access to the sensors for general management,
+signature and software updates will be via this management server.
+
+Signature updates are expected to take place weekly whilst only a maximum of two software
+upgrades are ever likely to be required within any one year (if required at all).
+
+Expected positioning of the sensor is shown in Figure 4
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 31 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+Core Sutras Core Suenos
+
+CORE TIER
+
+ACCESS
+TIER
+
+Figure 4 - McAfee IPS/IDS Positioning
+
+4.9.1.1.3 Cisco Adaptive Security Appliance
+
+This is used to ensure that traffic traversing out of the Cisco 6513 Access switches is valid.
+They provide the route to the Demilitarised Zones (DMZs) for all the domains such as Post
+Office, Branch, Clients, Support and within each of these DMZ’s there are platforms such as
+Branch application servers and Branch Router RADIUS authentication servers.
+
+The default configuration of this appliance will be to ensure that no traffic is permitted to pass
+through unless explicitly permitted. This security stance adheres to the principle stated within
+Section 1.8 that states that traffic “which is not explicitly granted is denied”. Workshops to
+identify actual traffic flow will provide the protocol and port information necessary to configure
+the devices.
+
+4.9.1.1.4 Cisco ACE
+
+This blade provides server load balancing and virtualisation. It takes over the functions of a
+separate SSL devices and has security functions that otherwise would have been provided by
+multiple devices.
+
+It provides the termination point for counter SSL sessions from the counter HTTP client into the
+Branch session servers.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date: 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 32 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.9.1.1.5 Cisco Firewall Services Module
+
+Housed within the Core 6513 switches it provides another layer of security and protection to the
+Core servers. As another layer of protection that promotes the security policy of providing
+‘defence in depth’ it has been chosen as it is fully supportable as part of the managed service
+and protects the Core from any security violation from within the Access tier.
+
+This integrated module can be configured with up to 100 separate security contexts. A security
+context is a virtual firewall that has its own security policy and interfaces. Having multiple
+contexts is similar to having multiple stand-alone firewalls.
+
+Configuration Rules for the FWSM
+
+1. The policy of protection based on source IP address and Destination IP address and
+TCP/UDP ports will be followed.
+
+4.10 Network Attack Prevention Techniques
+
+The main aim of the HNG-X network security is to prevent attacks that impact the business or
+the support of the business. There must be mechanisms in place to counter act the threat. For
+the likes of DoS and MITM attacks hardware and software configuration including authentication
+techniques are core to providing system and network integrity, functionality and retaining
+business continuity. The following are examples of mitigation techniques that should be
+considered within the HNG-X network to prevent either a DoS or MITM attack:
+
+« Disabling ‘IP directed broadcast’ for DoS attack
+e Enabling ‘ARP inspection’ for MITM attack
+e Enabling ‘Reverse Path Forwarding’ for IP Spoof attack
+
+4.10.1 Disabling IP directed broadcast
+
+Disabling ‘IP directed broadcast’ denies IP broadcast traffic onto a network from other networks.
+This action should be considered as the default for any routers within the HNG-X network.
+System and server interaction may require some IP broadcast functionality; if this is found to be
+the case then appropriate ACL’s should be applied to each interface on which specific directed
+broadcasts are to be enabled. This feature is disabled as part of Cisco “AutoSecure” as
+identified in Appendix B.
+
+4.10.2 Enabling ARP Inspection
+
+ARP inspection ensures that an attacker cannot send an ARP response with the attacker's MAC
+address so long as the correct MAC and associated IP address are in the ASA’s static ARP
+table.
+
+By enabling ARP inspection on ASA firewall, the MAC address, IP address and source interface
+in all ARP packets are compared to static entries in the ARP table, and an action of permit or
+deny carried out.
+
+4.10.3 Enabling Reverse Path Forwarding
+
+By using the “ip verify reverse-path interface if_name” on the firewalls a spoofed source address
+can be detected. The firewall examines the source address of each packet and checks in its
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 33 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+routing table that there is a route present (as if to send the packet back). If the route isn’t
+present or the reverse path interface doesn’t match the arriving interface, the packet is dropped
+and a logging message generated.
+
+4.11 HNG-X Firewalls
+
+These are two types of firewall deployed in the HNG-X network:
+* Internal — as a FWSM blade in the Core 6513s within the Core Tier
+
+e External - as an ASA 5540 appliance for each DMZ that exists within the Access tier,
+namely,
+
+o Post Office, Client, Branch and Support.
+The ASA 5540's are capable of delivering some of the following features:
+e high performance and high density security services
+e provide up to 650Mbps firewall throughput
+* 400,000 concurrent connections
+
+4.11.1 Advanced Protocol Handling
+
+The HNG-X ASA devices can provide layer 3, 4 and 7protection. The minimum requirement is
+that all firewalls are configured to permit or deny on IP address and/or TCP or UDP port
+number. Extra protection can be provided by configuring the ASA to inspect packets at
+Application level and to permit or deny based on the set criteria.
+
+The ASA firewalls should be configured to inspect packets above the network layer. This will
+cater for those applications such as FTP, HTTP, multimedia and SQL that require their
+communication protocols to dynamically negotiate source or destination ports or IP addresses.
+
+The ASA supports Application Inspection by using the advanced protocol inspection algorithm
+which ensures the secure use of applications and services. If a secondary TCP or UDP port is
+used to transport data between a client and server then the application inspection function
+monitors the sessions and permits data exchange on the dynamically assigned ports whilst the
+session is open.
+
+4.11.1.1 Security Benefit of Protocol Handling
+From a network security perspective it:
+
+e Securely opens and closes negotiated ports and IP addresses for legitimate client-
+server connections through the ASA
+
+« Inspects packets for signs of malicious application misuse
+
+4.11.1.2 Configuration Policy for Application Inspection on HNG-X
+
+The ASA firewall has a preconfigured global policy that enables inspection of certain
+applications on all interfaces based on well known applications and their ports. This default
+inspection traffic class will be used at the implementation stage, and therefore requires no
+immediate firewall configuration.
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 34 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+In the event that a less well known application is identified later in the implementation cycle the
+inspection policy can be amended accordingly by the network security team managing the
+device.
+
+4.11.2 Firewall Zones
+
+The ASA and FWSM firewalls are positioned within the HNG-X datacentre and perform
+protection for different traffic flows. For ease of specifying rule sets they can be seen as being
+located in two zones, 1 and 2. This is identified below:
+
+Firewall Zone 2
+
+‘ore Switches
+Pad
+
+i
+
+a
+
+~
+
+Firewall Zone 1
+
+lz
+
+NE
+
+‘Access Suitches
+
+Ny
+
+Figure 5 — Firewall Zone
+
+4.12 Firewall Based Rule Set
+
+This HLD does not provide comprehensive rules sets for all traffic flows as it is not deemed to
+be an appropriate document for recording of such information. However, a guideline on their
+creation is needed and ongoing operational use is required so the following should be
+considered
+
+Two elements are considered for this.
+
+e That there is a base configuration or approach to be applied to all firewalls, be it a blade
+or appliance.
+
+« Each firewall will have more specific rules dependent on their positioning and the traffic
+they are expected to deny or allow.
+
+«It is expected that the firewall rule sets and traffic flows are identified in a working
+document or spreadsheet that will be used by operational staff and is under appropriate
+change control. As a guideline Appendix C provides both an overview of expected traffic
+flows. This could be used as a basis for identifying traffic flows at an appropriate
+workshop and/or at system build stage.
+
+©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 35 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e As a high number of protocols across the whole of HNG-X system are required for
+system functionality and that these are currently not identified within Application HLDs it
+is recommended that a workshop and a protocol capture activity is undertaken during
+system build stage.
+
+4.12.1 Firewall Configuration
+
+The ASA 5540 devices are positioned in pairs as a Hardware Failover Active/Standby
+configuration with Stateful failover and can be configured with separate contexts, if required.
+
+All firewall configuration (and management) must be undertaken via Cisco Security Manager.
+
+4.12.1.1_ General global parameters
+The LLD’s for firewalls should ensure that the following security guidelines are adhered to:
+e SSHv2 is permitted inbound for Management purposes with following parameters
+e Public key generation
+« Domain name
+e IP address of ssh client
+¢ Idle time out set to default of 5 mins
+« AAA authentication
+
+e NTP is permitted in and outbound of the firewall to the recognised time source server in
+the Management Services LAN to allow for time synchronisation
+
+« Syslog traffic is permitted outbound from each firewall to the syslog server
+
+e SNMP v3 (TCP/UDP 161) is permitted outbound from each firewall to the Alert
+Management Server
+
+e Traffic required for systems involved in Window Shares to be permitted
+
+e Object groups will be created to group devices (servers and network components)
+based on network address group i.e. subnets, protocols and services.
+
+e It is acceptable to use a subnet mask that covers a range of addresses even if there is
+no IP address within that range allocated to a device. This will simplify the base rule set
+by not having individual rules created and ultimately avoids large configuration files.
+
+e All traffic that attempts to pass through the firewall, yet fails due to the access rules is
+still logged. The aim is to “capture all denies and log”
+
+e A timeout threshold on connections between source and destination is set. With the
+stateful configuration of the firewall a valid connection could be opened and maintained
+indefinitely subject to traffic being sent. The threshold for any connection will remain at
+default, but are configurable if necessary. See Table 7
+
+Thresholds description Default Time Out I HNG-X Timeout I Configurable
+‘ Settings settings Settings
+TCP connection 1 hour 1 hour To minimum of 5
+mins
+XLATE table 3 hours 3 hours To minimum of 1
+min
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 36 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE
+Thresholds description Default Time OutIHNG-X — Timeout I Configurable
+Settings settings Settings
+Embryonic half closed I 10 minutes 10 minutes To minimum of 5
+connections mins
+UDP connection 2 minutes 2 minutes To minimum of 1
+min
+
+4.12.1
+
+Table 7 - Firewall Thresholds
+
+.2 Interface configuration
+
+The ASA 5540 appliance supports the use of sub-interfaces and as a high performing device
+
+can be
+
+used to deliver a number of the HNG-X services. In terms of interface connectivity and
+
+configuration the following policies should be used (Summarised in Table 8)
+
+An ASA will be used for multiple connections/clients. i.e it will not solely be used for
+DVLA, but will protect inbound DVLA, EPAY etc traffic. See Error! Reference source
+not found.
+
+As each ASA has been purchased with 4*GE and 1*FE interfaces then the gigabit
+interfaces should be used first. Table 8 below indicates recommended settings per
+ASA.
+
+All interfaces must have their speeds specified, and therefore the auto option is not
+used.
+
+Stateful failover requires an Ethernet interface with minimum speed of 100Mbps (always
+use Gigabit if available)
+
+The ASA should be configured to allow for encrypted and authenticated communication
+between failover pairs using the “failover key” command
+
+The outside interface that connects to connects to the access 6513 switch will be
+configured to support sub-interfaces
+
+The inside interface that connects to the Core 6513 switch will be configured to support
+sub-interfaces
+
+The DNZ interface that connects to the DMZ(s) will be configured to support sub-
+interfaces.
+
+Security Level Conventions will be used
+Any unused interfaces should not be configured and left in a “shutdown” state
+
+Interface I Position I Use of I Interface I Duplex Settings I Interface I Security I Interface Other
+Interface I Speed (auto/manual) I Capability I Level Attributes Information
+0 Outside I User Gigabit Manual Sub- 0 Named(linked to
+Traffic Interface IP add)*
+7 inside User Gigabit Manual Sub- 700 Named(linked to
+Traffic Interfaced IP add)*
+2 DMZ User Gigabit Manual Sub- Between I Named{linked to
+Traffic Interfaced I 1-99 IP add)*
+3 Mgt Mgt _ and I Gigabit Manual Normal NA Named(linked to I Use
+Stateful encryption
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 37 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+Interface I Position I Use of I Interface I Duplex Settings I Interface I Security I Interface ‘Other
+Interface I Speed {auto/manual) I Capability I Level Attributes. Information
+Failover IP add)* and
+authentication
+for failover
+using “failover
+key’
+* This assists with the configuration process, especially when using object groups. Names
+should be logical and meaningful
+Table 8 — Interface Settings
+CORE
+ry
+INSIDE
+subinteraces
+J tora teat
+DMZ's: / vane
+ssupintertoces 7
+‘or OM
+‘ JASA Access Tier
+Firewall
+outsine
+ssubriverinces
+3 ‘Routan 2
+Tworkron FSS Hond otf Router 1
+‘ge (owaerany
+a DMZ tor Cli
+s Hand Off Router 2
+C2 Router
+Figure 6 - ASA DMZ Connectivity
+4.12.2 Sample Specific Rules for Firewalls
+Precise firewall rule sets will require detailed investigation of the traffic flows and understanding
+of the application traffic and protocols in use. This information needs to be obtained from the
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 38 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+relevant application and server HLD’s in order that protocol matrix can be created. This is an
+ongoing activity. Table 9 shows an example of the type of information expected in the matrix:
+
+Firewall I Zone I Location I Source/IP__I Destination/IP I Protocol Permit/Deny I Interface
+ASA 1/1 Access I Counter Branch DMZ - I RADIUS Permit Outside
+Pair Tier Authentication faci
+Server UDP inside
+1812,1813
+FWSM I 2 Core Ciscoworks I Remote Client I SNMP permit Outside
+Tier LAN inside
+
+Table 9 - Firewall Matrix
+
+4.12.2.1 Configuration for Corporate Firewalls
+
+These will need to be amended to include any new HNG-X address ranges and to permit
+routing paths.
+
+4.12.2.2 Configuration for Remote Firewalls
+
+Remote firewalls such as the Branch Sarian router will need to be configured to allow HNG-X
+Datacentre traffic through.
+
+4.13 Network Controls
+
+Network controls will use the methods below:
+* Physical access , lock and key
+e Network Separation- Physical and Logical
+e VLANs -VACLs, Private VLANs, Limiting trunk ports
+« Router ACLs
+« Network Device Lockdown - Cisco “Autosecure”
+e NSA regulations
+e Device Operating System i.e Cryptographic Image
+
+4.13.1 Physical Access, Lock and Key
+
+This should be mandated as part of the overall security policy. Ensuring physical access is
+limited to authorised personnel will minimise the risk of a network breach, and should be
+considered the first line of defence.
+
+Physical access into an area, be it Datacentre or at a remote location will be controlled. Specific
+access controls per site are unknown as they are out of scope of this document but they
+expected to be based on the following:
+
+e Swipe Card Access
+e Standard Key Access
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 39 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e Access logs maintained
+e Required Security Levels of Personnel met
+« Location access/ computer room access limited to authorised personnel
+
+e Network devices installed in designated network racks which are locked and the key
+maintained by appropriate personnel
+
+« Procedures for logging access should be enforced based on local and Project security
+policy.
+
+4.13.2 Network Separation
+
+4.13.2.1_ Physical Separation
+
+The nature of the HNG-X architecture means that network segmentation is in place by default. It
+is physically segmented due to the components that will be in use i.e ASA firewall, routers, and
+switches.
+
+4.13.2.2_ Logical Separation
+This is provided by using VLANs.
+
+4.13.3 VLANS — VACLs, PVLANsS
+
+This method of network separation provides the following benefits:
+« Limits broadcast domain and therefore ARP attacks
+
+e Logically separates out traffic into different subnets whilst retaining same physical
+location for devices
+
+e VLANs can have access controls easily applied which offers another prevention
+mechanism.
+
+Even within the same server farm i.e the same broadcast domain there may be a requirement to
+isolate one server from another to minimise the risk of an attack from a valid source that has
+been compromised. Mitigating controls that should be implemented are Private VLANs, VACLs
+and manual configuration of VLANs on trunk ports.
+
+4.13.3.1 Private VLANs
+
+Servers can be protected from attack from other servers within their own VLAN with use of
+Private VLANs. This security capability is useful especially if one of the servers within the
+subnet has already been compromised, and is to be used to launch a network attack.
+
+All the DMZ's for the Branch, Client and Support remote networks have a number of servers
+that offer services. These servers may or may not need to communicate with each other. If they
+do not then it is good practice to configure the access switch/network connection for Private
+VLANs.
+
+The security recommendation is to isolate the DMZ servers at Layer 2 (subject to any workshop
+identifying the need for servers to communicate with each other).
+
+4.13.3.2 VACLs
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 40 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+These VLAN Access control lists filter the traffic that may go between VLANs and add an extra
+security barrier between end stations. Determining what, if any VLANs are access list controlled
+is dependent on the traffic flows between servers. Again, this level of detail that needs to be
+identified for any switch LLD, should be made available once a valid server/DMZ workshop has
+been undertaken.
+
+4.13.3.3. Trunk Port VLAN Configuration
+
+Base switch configurations should ensure that all trunked ports are limited to the number of
+vians that need to traverse that trunked port. This is achieved by using the “allowed vian”
+parameter. This prevents unnecessary VLAN information being passed across the network and
+prevents an attack from hopping across the network from VLAN to VLAN.
+
+4.13.4 Router ACLs
+
+These should be considered for use on all routing devices to control network traffic, whether it is
+for management, production or test. The relevant LLD for the device configuration will identify
+precise information based but the network security policy to be applied is to use extended
+access lists which identify both source and destination addresses and TCP or UDP protocol
+number.
+
+4.13.5 Network Device Lockdown - Cisco “Auto Secure”
+
+All HNG-X Cisco devices should be baselined with this tool. It implements a “one touch” device
+lockdown process that enables a rapid implementation of security policies and procedures to
+ensure secure networking services whilst removing the overhead on individual command line
+entries. Many of the features are taken from the NSA regulations. Appendix B shows what is
+enabled and disabled.
+
+N.B. This security tool may disable services that are required by some network management
+applications.
+
+4.13.5.1.1NSA guidelines
+
+Each network component should be configured with a baseline security configuration that is
+initially derived from the relevant recommended NSA (National Security Agency's) guidelines for
+router, switches, firewalls and operating systems. In adhering to the NSA’s guidelines access to
+the HNG-X network can be controlled, attacks resisted, other network components protected,
+and the integrity and confidentiality of network traffic maintained. These guidelines can be used
+in conjunction with Cisco’s “AutoSecure” feature.
+
+4.13.5.1.2Device Operating System
+
+All network devices should be deployed with the current version of software in order to mitigate
+the risk of known software bugs. Cisco devices in particular should use the General Deployment
+version of lOS, and ensure that secure protocols such as SSH and SSL are supported. As the
+1OS version regularly gets updated by Cisco this HLD does not expect to identify, at this point,
+the exact version of software that should be deployed. At time of system configuration the
+device software should be considered and upgraded in accordance with the network security
+management policies.
+
+One recommendation is to ensure that the Cisco IOS used has a cryptographic image. This
+would allow specific IOS security controls to be applied rapidly at any given time.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 41 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.14 Securing, Deploying and Supporting HNG-X
+Network Devices
+
+4.14.1 Baseline Device Configurations
+
+As outlined at above the devices deployed must be configured with a mininum security baseline
+configuration. Engineers should apply this configuration prior to any deployment; any specific
+security enhancements, such as device ACLs, can then be configured afterwards. A list of the
+minimum security considerations, albeit not exhaustive, are shown in Appendix A.
+
+4.14.1.1 Device configuration parameters/policy
+
+The LLD for network devices will specify exact configuration, but an example of some security
+features that should be adhered to and applied are as follows:
+
+e — Interfaces not required for use to be administratively shutdown
+e Network ports to have port security applied to them
+
+e Speed and mode of ports to be defined i.e 100 full
+
+e Passwords on devices to be encrypted
+
+e Passwords to be 14 characters in length consisting of at least 3 upper, 3 lower
+and 3 numeric characters
+
+e Remote access into devices limited to a certain number of management
+stations
+
+e Banner notification on each device stating only authorised access is allowed
+e Loopback interface is used for management purposes
+¢ NTP enable with MDS authentication
+e VTP enabled in transparent mode
+e Logging enabled and thresholds set
+e SNMP v3 configured
+A more comprehensive list of recommended parameters are shown in Appendix A
+
+4.14.1.2 General alerts for Routers, Switches and Firewalls
+
+Detecting potential network attacks and security violations can be mitigated by ensuring that the
+system is monitored and it has logging thresholds set to appropriate levels. All devices should
+have any access controls logged back to their associated logging server. Therefore, any traffic
+that has been denied can be identified and assessed to see if it is part of a determined,
+concerted attack on the network. This will provide evidence should the network security require
+enhancing.
+
+« Firewalls and Routers - Log denied and accepted packets
+
+e All devices - Log logon access to devices via AAA
+
+e All devices - SNMP alerts such as link up, link down, config changes
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 42 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.15 Network Routing
+
+Dynamic and Static routing will be in use in the LAN and WAN .Security constraints/or
+enhancements will be considered.
+
+e Use of Static Routes as primary source of routing notification
+e Use of “Passive Interface” to prevent unnecessary routing protocol advertisements.
+e A Need for Routing Protocol Authentication -OSPF/BGP MD5 option
+
+e Use of VRF as mechanism to hold separate routing table instances
+
+4.15.1 Secure LAN Routing
+The IGP routing protocol within the LAN is OSPF.
+
+4.15.1.1 OSPF Routing Protocol Authentication
+
+OSPF will be configured to used MD5 (Type 2) Authentication which uses MD5 cryptographic
+passwords. This will allow all OSPF neighbours to authenticate each other so that they can
+exchange routing update information in a secure manner.
+
+The obvious security benefit is that it prevents a rogue device from potentially joining the OSPF
+routing domain as a neighbour with the intention of injecting false routes.
+
+There is a security assumption made here that the password for MD5 authentication has not
+been compromised by any other breach.
+
+4.15.2 Secure WAN Routing
+
+WAN Routing is provided by C+W and is explained within the WAN HLD (DES/NET/HLD/0009).
+In terms of network security for HNG-X it is deemed secure for the following reasons:
+
+e A MPLS VPN tunnel service is provided by C+W between remote sites and the
+DataCentres
+
+e VRF-lite is configured on the CE routers and therefore separate instances of routing
+tables are maintained for each network.
+
+e Risk of route leakage is low as separate VRF’s are maintained for each VPN.
+
+e IPSEC tunnels are provided by HNG-X between remote sites and the DataCentres via
+the 2811 Handoff Routers which offer the following security benefits:
+
+o C+Ware unable to see HNG-X traffic
+o HNG-X have control of the IPSEC routing across the WAN
+
+o Termination of IPSEC tunnels are on HNG-X managed routers and therefore
+only HNG-X has the capability to configure.
+
+With regards to further IPSEC information and parameters refer to IPSEC section at 4.5.4
+
+4.16 Network Management Tools
+
+Ciscoworks and Cisco Security Manager (CSM) are the applications that will be used to
+securely configure the network devices including firewalls and to undertake network diagnostics.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 43 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+4.16.1 CiscoWorks
+
+Installed within the Management LAN CiscoWorks LMS will support Cisco devices and apply
+security policies in terms of port security, IOS levels and configuration files. It will also be the
+destination server for device SNMP traps and syslogs.
+
+By using this Management device to manage the routers and switches deployed across the
+HNG-X network, a strict control policy can be enforced. Support staff logon and authentication is
+used as any other server access, and all changes on the network are audited.
+
+4.16.2 Cisco Security Manager
+
+This tool will manage firewalls and ASAs and other security devices such as IOS routers which
+includes IPSEC VPNs. As with CiscoWorks, it provides centralised, auditable management, and
+minimises the security risk of changes being implemented on a firewall undetected. Again,
+access control to the server will be via the same process as other server logon.
+
+This application will administer consistent firewall policies using the policy view feature of the
+application.
+
+Creation of the policies and their deployment to the ASAs and VPN applied routers will be
+managed from this server that is located within the Management Services LAN.
+
+It uses a GUI that provides an easy method of configuring policies and associated services and
+protocols.
+
+el
+
+4.16.3 Network Data Retention and Archiving
+[DNA Comment on poliey for storage of network logs is required.)
+
+4.17 Device IOS and Config Management
+
+Patching IOS and providing updates is fundamental to the security of the network. The IOS of all
+devices must be free of any known bugs. Therefore areas of concern that may impact the
+network security are:
+
+* Software Patch to current IOS
+« Full OS Update
+e Configuration Backup
+
+In terms of network security any device upload/download will be carried by authorised
+personnel, at scheduled times, using the processes and tools defined within Service
+Management.
+
+4.17.1 Patching to Current lOS/Full IOS Update
+
+1OS updates and changes to IOS versions can only be authorised by the Network Security
+Management team. Any supplier initiated bug alert or vulnerability notification must initially be
+sent direct to this team to assess the impact.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 44 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+If as part of the day to day network management activities or as a result of a penetration
+/vulnerability test, a bug or vulnerability is found within the network it is the responsibility of the
+Network Security Management team to manage the issue and action it appropriately. This
+assessment may include any of the following:
+
+1. Approve an immediate/scheduled IOS fix as bug is already known to project and the fix
+has already been tested and approved for deployment.
+
+2. Interrogate the relevant logs to gather more information.
+3. Notify the product supplier of the issue ( using the standard support route)
+
+4. Escalate the issue within the organisation following the Project procedures
+
+4.17.1.1 Supplier provided bug fix
+
+Any bug fix provided by a supplier will need to be assessed prior to deployment. This should be
+carried out under the operational Change control procedure and must include an assessment by
+the network security management team that the fix is suitable for deployment. It should be
+mandated by the Network Security team that the fix is implemented before hand on a
+standalone rig and functionality tests carried out.
+
+4.17.2 Configuration Backup
+
+This activity will be undertaken by the HNG-X System or Network Management team. All
+backups will be activated by a Job Schedule, probably via CiscoWorks. This will therefore be an
+auditable event that can be monitored by the Network Security team.
+
+This action needs to be controlled so that it is clear that any configuration files copied off the
+network devices is done so as part of an approved service management activity, and that there
+has been no breach of security.
+
+As any logon process is authenticated an audit trail can be maintained.
+
+4.18 Network Change Control
+
+4.18.1 Verification of Change Control
+
+Any change to network IOS or configuration files must be verified by Network Security. This
+should be done in 2 phases:
+
+1. Assessment of any change is carried out and the change authorised by appropriate
+personnel.
+
+2. An action is carried out to cross reference the actual deployed configuration file or IOS
+with the specified and previously authorised change control.
+
+4.18.2 Periodic Network Configuration Checks
+
+Periodic scanning of the network devices and their configuration files must be undertaken to
+maintain configuration consistency and integrity. CiscoWorks should be configured to facilitate
+this by
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 45 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e running a regular job to compare archived device configurations files with the
+running and start up files on deployed Cisco devices
+
+e being configured for regular PING sweeps , at suitable intervals.
+
+4.19 Penetration/Vulnerability Testing
+
+This should be done at certain points in implementation lifecycle.
+
+This security test will be carried out at an early stage of system acceptance. Ongoing
+vulnerability monitoring will also be carried out that will ensure that the network devices and
+software configurations are current and bug free. Any new device that is introduced into the
+network that does not conform to configuration standards will be identified. This activity will
+come under Network Security Management control.
+
+4.20 Use of Network Sniffers
+
+These are deemed as an acceptable diagnostic tool subject to the network security team
+verifying their use and their use is controlled. The network sniffer will assist in the following
+areas:
+
+e Developmentiest arena for analysing traffic and application port numbers
+e Live Arena for providing diagnostics to support team.
+
+In terms of control a dedicated port should be reserved for use of any network sniffer. This in
+turn can be configured for a specific VLAN but no other end device should ever be plugged into
+the designated switchport.
+
+4.21 Remote Access for Support
+Remote Support for the HNG-X will be via the following:
+« RMGA workstations on RMGA LANs ( RED LAN)
+
+e Corporate workstations (Corporate LAN users, remote access via Corporate LAN, and
+all other non-RMGA LAN internal networks) via crossbeams at SDC
+
+Security of this support will be via
+« IPSEC VPNs configured on the 2811 Handoff routers
+e the SAS servers located in the Support DMZ LAN
+Figure 7 below (taken from DES/NET/HLD/0009 v0.5) highlights the remote access route
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 46 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+a
+RMGA RedI LAN “eorporate LAN RMGA Red’ LAN, T 7 Comorate Lan
+
+handoft handoff
+
+fy Hand outer
+
+Romote sites
+= Corporate LAN users
+
+Figure 7 - Remote Access
+
+4.22 Internet Access
+
+This is required for software updates, antivirus updates and Post Office access to webserver for
+Broadband checker.
+
+Current options:
+e Via aC+W Internet VPN to be presented on Ire11/19 CE routers (Preferred)
+
+« — to utilise SDCO1 Internet access point and then onwards to a C+W Internet VPN, then
+to the handoff routers in Datacentre (but would need a RMGA provided firewalls for
+inside /outside access)
+
+The security concern is the obvious threats from the Internet. Security barrier i.e firewall and or
+ACLs will need to be applied
+
+Figure 8 below (taken from DES/NET/HLD/0009 v0.5) highlights the Internet route via SDCO1
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 47 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE
+wo >
+
+oy
+spco1 ‘Choke’ routers Tevouo2
+(QoS applied to provide hard rate limit)
+*
+/\
+L\\ Cust x
+
+Cust y
+
+RMGA Internet outside VLAN. i
+
+RMGA Firewalls
+
+RMGA Intemet inside VLAN I
+
+caw
+RMGA internet VPN
+
+Figure 8 - Internet Access
+
+4.23 Third Party Connections
+DN: Need to understand anid discuss further
+
+Interface rules for connecting into 3% parties such as Corporate gateway, internet gateway,
+client LANs
+
+4.24 Wireless WAN Security
+
+Wireless WAN is secured by being logically separate part of the Orange network with IP A
+ddressing and authentication controlled by RMGA.
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 48 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+
+POL00140237
+
+Branch routers connect to Orange for Live and Test and the traffic is kept logically separate.
+This is achieved by assigning SIM card for the environments to different APN’s (access point
+name).Traffic from these APNs are sent across the Orange network in separate VPN’s one for
+Test and one for Live.
+
+4.25 ASDL -IPStream
+
+ADSL service from Fujitsu called ConnectDSL. ConnectDSL will be reconfigured to use the BT
+SID (service identifier) so that the physical location can be identified to allow correct
+personalised info to router to be downloaded when it is being provisioned initially. This offers the
+security safeguard that the router is actually part of the HNG-X network.
+
+4.26 General Device Security features
+
+e Branch router uses MAC address security to restrict the devices that can connect to the
+network
+
+e Branch router is locked using the following security features
+
+o Handling hard router resets- router goes back to default config that is security
+safe
+
+o The router firewall is configured to limit the WAN traffic to that explicitly allowed
+
+o Local management access ports including auxiliary, USB, management are
+blocked
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 49 of 62
+POL00140237
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+A Device Configuration Security Parameters
+A.1 Device Commands
+
+The following should be considered for network devices. They can be used in conjunction with
+any other security measure such as Cisco AutoSecure:
+
+Action Command for Cisco device
+
+GLOBAL command Disable unnecessary service * no service pad
+
+* no service ident
+
+* no service config
+
+* no service udp-small-servers
+e no service tcp-small-servers
+¢ — noip http server’
+
+* no ip source-route
+
+© no ip bootp server
+
+© noip finger
+
+* no ip identd
+
+* =nocdp run
+
+INTERFACE command Disable unnecessary © no ip proxy-arp
+service an
+* no ip directed-broadcast
+© noicmp redirect
+
+* no icmp unreachable
+
+® no icmp mask-reply
+
+* noip mop
+
+Logging e logging timestamps
+
+e logging console critical
+« logging buffered
+
+e logging trap debugging
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 50 of 62
+POL00140237
+
+POL00140237
+
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+B.1 General Security Consideration for Devices
+
+« Enable TACACS+ AAA. Two factor user authentication is via the TACACS+ server.
+The TACACS+ server offloads the username and password check to the Active
+Directory and Secure-ID servers.
+
+« Ensure no default passwords are present in the device configuration
+
+*« Configure the rate threshold of allowable unsuccessful login attempts (security
+authentication failure rate, login delay 2). Enable logging messages for failed login
+attempts (/ogin on-failure log).
+
+* Secure Lines
+
+o Console, AUX, VTY, and TTY lines with passwords (see below for password
+specification)
+
+o Permit only access via SSH (transport input SSH, transport output SSH)
+o Specify timeouts to free lines after inactivity (timeout 10)
+
+o Last resort users are configured on all network devices to permit access with a
+known username and password should the TACACS+ service fail. The
+password is different for each network device; the username is constant. The
+last resort username and password should not function (allow login) if
+TACACS+ is operating normally. If the last resort password for a device is
+divulged to a 3% party engineer, the password must be changed prior to re-
+introduction to the production service.
+
+= The last resort username has the following characteristics:
+« Case: mixed
+«First character: <alpha>
+« Subsequent characters: <alpha>I<numeric>
+
+e Minimum length: 9 characters (security passwords min-length
+9)
+
+= The last resort password has the following characteristics:
+* Case: mixed
+e First character: <alpha>
+e Subsequent characters: <alpha>I<numeric>
+
+e Minimum length: 9 characters (security passwords min-length
+9)
+
+« SSH
+o Create a local Private / Public key set (1024 bits) for use by SSH / SCP
+
+o Restrict login times and attempts (jp ssh timeout 10, ip ssh authentication-
+retries 3)
+
+e SNMPv3
+o SNMPVv3 is supported in Cisco IOS Software Release 12.0(3)T and later.
+
+‘Copyright Fujitsu Services Ltd 2007 Ref DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 51 of 62
+Network Security High Level Design
+
+oO
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+o Disable SNMPv1 and SNMPv2.
+
+o Define access lists to only allow connections from known management hosts
+o Enable Authentication (password) and Privacy (encryption)
+
+o Define a User the NMS systems will use to access devices
+
+o Define groups for two classes of user access using the User Security Model
+(USM) v3
+
+= Read Only, view v1 default
+* Read Write, view v1 default
+o Example:
+= snmp-server enginelD local 111100000000000000000000
+
+= snmp-server user userthree groupthree v3 auth md5 user3passwd priv
+des56
+
+= snmp-server user userfour groupfour v3 auth md5 user4passwd priv
+des56
+
+= snmp-server group groupfour v3 priv
+e Access Lists
+o Remote access
+
+= Restrict connections via SSH, HTTPS to known management host IP
+addresses
+
+o Remote traffic filtering
+
+= No traffic with RFC1918 IP addresses should be allowed to enter or exit
+the HNG-X network.
+
+= Edge routers should block all RFC1918 traffic unless specifically
+agreed as part of a private interconnect defined in the technical
+interface specification.
+
+* NTP
+
+o Enable NTP with MDS authentication. All network devices should be stratum 2
+devices synchronised with both NTP servers (one per data centre)
+
+o Network devices should make available an NTP service to devices on directly
+connected LANs. The device offering the service should be the LAN default
+gateway.
+
+o Configure an access list (ntp access-group) to only allow authorised NTP
+access
+
+e Routing protocols
+
+o Keys should be defined to secure communication and prevent poisoning of
+routing updates
+
+* BGP
+* OSPF
+©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+UNCONTROLLED IF PRINTED Page No: 52 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+C.1
+
+Switch Configuration Security Considerations
+
+* Macros should be configured and used to apply common security standards when the
+feature is available in 6500 switch IOS software.
+«Ports
+o Unused ports to be placed in a dedicated VLAN — 999 — and shutdown
+o Auto-negotiation is disabled on all ports. The preferred mode is:
+= Speed: 1Gb
+= Duplex: Full
+= Trunking: Disabled
+= DTP: Disabled
+= Port security: Enabled (to mitigate against CAM table attacks)
+= PortFast: Enabled (for workstations / servers only)
+= 802.1x authentication and Network Admission Control: Disabled
+= Traffic Storm Control: Enabled (Broadcast control)
+= Unicast Reverse Path Forwarding: Enabled (Spoofed IP source
+addresses)
+= Control Plane Policing Control: Enabled (Filtering and Rate Limiting of
+traffic to the route processor; DoS prevention)
+° VTP
+o VTP is enabled in transparent mode only. In this mode, the switch will transfer
+VTP advertisements between ports but will not act on them.
+= VTP passwords are used to authenticate VTP advertisements (for the
+future, if required, transparent mode does not generate or receive VTP
+advertisements)
+= There is one VTP domain per data centre.
+= VTP pruning is enabled.
+= Encapsulation negotiation is disabled.
+= Encapsulation is IEEE 802.1q
+e VLANs
+= VLAN 1 is not to be used for production traffic (it is used solely for DTP,
+STP, UDLD etc) and should be pruned from all trunk links to avoid the
+nested VLAN (VLAN Hopping) attack.
+= Anew default native VLAN should be chosen to be common across all
+data centre networks. The native VLAN is not used for production
+traffic to avoid the loss of CoS information.
+= VLANs 1 and 1002 through 1005 are reserved.
+¢ Trunks
+= Trunks are restricted to explicitly permit allowed VLANs. The default is
+to permit no VLANs.
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 53 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &>
+
+= Private VLANs are configured to mitigate against ARP attacks.
+= VMPS is disabled
+* DTPis disabled.
+* _UDLD is enabled.
+« ACLs
+= Layer 2 VACLs are used.
+« STP
+= PVST+ is the STP (PVST+ includes BPDU Guard and Root Guard).
+= One core and one access switch at each data centre is biased to be the
+root switch.
+= Uplink Fast and Backbone Fast are enabled
+= Loop Guard is enabled
+e ARP
+= Dynamic ARP Inspection and IP Source Guard are disabled as DHCP
+is not used.
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 54 of 62
+Fe)
+FUJITSU
+
+Network Security High Level Design
+
+COMMERCIAL IN CONFIDENCE
+
+POL00140237
+POL00140237
+
+B- Cisco Auto Secure
+
+Cisco Auto Secure performs the following functions:
+
+ACTION Protocol/Service Disabled
+Disables _ the I Finger, PAD, Small servers, Bootp, HTTP service, Identification service, CDP,
+following NTP, Source Routing
+Global
+Services
+Disables the I ICMP, Proxy-Arp, Directed Broadcast, MOP service, ICMP unreachables,
+following ICMP mask reply messages,
+Interface
+services
+ACTION Protocol/Service Enabled
+Enables the I Password-encryption service, Tuning of scheduler interval/allocation, TCP
+following synwait-time, TCP-keepalives-in and TCP-keepalives-out, SPD configuration,
+Global no ip unreachable for null 0
+Services
+Logging for I Sequence numbers and timestamps, console log, log buffered size,
+security interactive to configure the logging server address
+Secures Checks for banner and provides facility to add text to automatically configure:
+access to Logi d d
+router ¢ — Login and passwor
+
+e Transport input and output
+
+« Exec timeout
+
+¢ Local AAA
+
+¢ SSH timeout and ssh minimum retries
+
+e Enable SSH or SCP for access and file transfer to/from
+
+router
+
+e Disables SNMP if not being used
+Secures the I Enables CEF when available, anti-spoofing, blocks all IANA reserved IP
+Forwarding address blocks, installs a default route to NULL 0 if a default route is not
+Plane being used, configures TCP intercept for connection time-out if TCP intercept
+
+feature is available and user is interested, enables netflow on software
+forwarding platforms
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 55 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+C_ Traffic Flows and Firewall Rule Sets
+D.1 Network Management
+
+NETMGT
+
+Fama Ta I
+t
+cert hant sce @6=
+
+eZ
+
+Branch Counter Suppor LANs
+(FIRMGA~ RED LAN) oH Gant Lie
+
+Sites LAN
+
+Figure 9 —- Network Management Flows
+
+Source Destination Protocol Action Comment
+Management Remote LANs SNMP (161/UDP) Permit Management of network devices
+Services (AN Ce client, I TTP (69UDP) Permit
+
+Post Office, SSH/SCP (22/TCP) Permit
+ie Access TACACS+ (49/TCP) Permit
+NTP (123/UDP) Permit
+ICMP (TYPE 0,3,5,8 AND 11) I Permit
+Management Internal network I SNMP (161/UDP) Permit Management of network devices
+Services LAN pela ee and I TFTP (69/UDP) Permit
+‘switches, ASAs, I SSH/SCP (22/TCP) Permit
+McAfee IPS) TACACS+ (49/TCP) Permit
+NTP (123/UDP) Permit
+ICMP (TYPE 0,3,5,8 AND 11) I Permit
+
+Table 10 —- Network Management Protocols
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 56 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+E.1 Central
+
+CENTRAL
+
+/ sirowal
+esas Te 1 Sch 3]
+
+Cort Hand
+Router
+aN
+
+I \.
+xX i a
+CS= a) (Sse
+7 ~ __ NR aso
+Branch Counter Support LANs Corporate TANS TT
+(FI RMGA - RED LAN) xN Gent TANS
+Figure 10 - Central Flows
+Source Destination Protocol Action Comment
+Central LAN Servers on SNMP (161/UDP) Permit Logging and Domain administration
+
+servers Internal LANs (Sys 3
+Mgt Cert and Key. I SYSLOG (S14/UDP) Permit
+Mgt , Audit, Kerberos (88/TCP) Permit
+Database, Mgt Kerberos (88/UDP) Permit
+Services) :
+DNS (53/UDP) Permit
+DNs (53/TCP) Permit
+SMB (445/TCP) Permit
+ICMP (TYPE 0,3,5,8,11) Permit
+
+Table 11 — Central Protocols
+
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 57 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+F.1 System Management
+
+SYSMGT
+
+“ \ els g
+
+Flow
+‘Access Tier 6513 Switch ]
+
+seven
+Foor Cre Pat fea 68
+ae sin Peeled
+
+7 ~
+\
+I \ I Ons
+C at a) = —_ Bar) necans
+Pt >) @ a C Bar) rca a
+5 Ce CS) 88 wee
+Branch Counter SupportLANs Corporate TANS _ Sites LAN
+(FU RMGA RED LAN) aN Glient LANS
+Figure 11 —- System Management Flows
+Source Destination Protocol Action Comment
+‘System Mgt Servers on aA Permit Anti-Virus agents, server system
+LAN servers Internal LANs (Sys Permit management
+Mgt, Cert and Key 3
+Mgt, Audit, Permit
+Database, Mgt Permit
+Services) and :
+Servers on DMZ Permit
+LANs Permit
+Permit
+Permit
+Table 12 - System Management Protocols
+‘©Copyright Fujitsu Services Ltd 2007 Ref. DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 58 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+G.1 Certificate and Key Management
+
+‘Access Tier 6513 Switch
+
+Cent Hand
+Router PRE
+2a
+
+Ss
+Branch Counter
+(FURMGA ~ RED LAN)
+Figure 12 — Certificate and Key Management Flows
+Source Destination Protocol Action Comment
+Certificate and Remote LANs and I Sig Permit Certificate issuing and Key Management.
+Key Internal Devices Permit
+Management
+servers Permit
+Permit
+Permit
+Permit
+Permit
+Permit
+Table 13 — Certificate and Key Management Protocols
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 59 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+H.1 Branch
+
+prance
+aE a.
+a &
+Sen
+are riers Sua =
+=
+
+\ pez
+
+\ me Client
+0% fs,
+
+T II
+= soe & 3e
+ct
+
+Branch Counter ‘Support CANS: Corparaie TANS
+
+(FU RMGA RED LAN) oN Giient CANS
+
+Figure 13 —- Branch Flows
+
+Source Destination Protocol Action Comment
+
+Branch Branch Counters I i Permit Database services for counters
+Database LAN Pennit
+Permit
+Permit
+Permit
+Permit
+Permit
+
+Permit
+
+Table 14 — Branch Protocols
+
+‘©Copyright Fujitsu Services Ltd 2007 Ref: DES/NET/HLD/0016
+Version: V0.2
+Date: 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 60 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+1.1 Remote Access
+
+REMOTE
+ACCESS
+traffic flows
+
+J oat
+
+\ Q . of
+\O® / 3s
+
+Fewat
+
+ranch Hane Suppor ‘
+Q = “a cist) ©©
+} en) a=
+hom
+H . Gi Om)
+~ ~ a ~~ Tatermet
+> ( > Ss ‘Access LAN at
+‘Support LANs: Corporate LAN: SS ‘Stes LAN
+(FU RMGA~ RED LAN) oN
+Figure 14 —- Remote Access Flows
+Source Destination Protocol Action Comment
+Support LAN Support DMZ — = Permit Remote access into SAS servers
+SAS servers
+Support LAN Management Permit Remote access for Management of
+Services LAN — MCAfee IPS/IDS Appliance
+McAfee Intrushield
+IPS Manager
+Table 15 — Remote Access Protocols
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 61 of 62
+POL00140237
+POL00140237
+
+co Network Security High Level Design -
+FUJITSU COMMERCIAL IN CONFIDENCE &
+
+J.1 Audit
+
+auorr
+trate
+tows
+
+. ASA.
+SF
+
+‘Access Tior 6513 Switch
+
+Es =I :
+S ar =e =A on °°:
+
+[ L + \ 28H wos)
+tf L — a erat
+6 Bw Va >) aa C 2817) Access LAN at
+CBs CB» >) C8
+<5 8) SJ pao I
+SupporttANs —Corparole TANS _ SuetaN
+(FIRMGA~ RED LAN) aN Client TANS
+Figure 15 — Audit Flows
+Source Destination Protocol Action Comment
+‘Audit LAN 2 ‘TBA Permit
+Table 16 — Audit Protocols
+‘Copyright Fujitsu Services Ltd 2007 Ref. DESINET/HLD/0016
+Version: V0.2
+Date 06-Sep-07
+
+UNCONTROLLED IF PRINTED Page No: 62 of 62

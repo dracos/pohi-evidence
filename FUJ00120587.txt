@@ -1,0 +1,60 @@
+FUJ00120587
+FUJ00120587
+
+SSC Offline KELs and KBs
+
+Friday 10 Sep
+
+HORIZON KEL acha508S (Version 7)
+
+Status: ‘Authorised
+Title: Differences between two rem out receipts problem PC143435,
+‘Summary: Differences between two rem out receipts
+
+Raise by Anne Chambers on 12/02/2007
+
+Last updated: by Anne Chambers on 15/02/2007
+
+Release: 730
+
+System product: LFS
+
+Status Authorised
+‘Medium
+PC143435
+
+Tis: 702120346
+
+Symptoms
+
+PM reports problems with rem outs, in particular differences between the two receipts which are printed after the pouch barcode is
+scanned. For example: 1 bag of £2 coins remmed out, and 2 bags of £1 coins - £1500 in total. The first receipt (Return Advice Note)
+shows this. The second receipt (Office Copy) only shows one bag of each - total £1000. When they reversed the remittance, it again
+showed only one bag of each. This problem can also affect rem out of stock. When the branch balances, they may have a receipts and
+payments mismatch reported. They cannot do anything to clear this. They may also have a loss because not all the cash / stock that they
+remmed out has been removed from the system.
+
+Problem
+
+The messagestore contains ProductNo 1 Qty 1 SaleValue 500 (£1 coin bag) ProductNo 1 Qty 1 SaleValue 500 (£2 coin bag) ProductNo 5610
+SaleValue -1500 (cash in pouches) When reversed, the settlement is for £1000 only - hence £500 is stuck as Cash in Pouches. This will give
+them a receipts and payments mismatch. The branch will also probably be on the overnight POLFS Incomplete Summaries report (unless only
+volume stock was affected). The problem happens when the user rems out multiple numbers of the same product within a single pouch, and
+instead of using the Quantity button, selects the same item more than once via the screen or keyboard. <b>To fix
+TPS_POL_FS_SUMMARIES_INCOMP</b><br> SQL scripts were developed to add rows to TPS_POL_FS_SUMMARIES_INCOMP (or to
+update if appropriate). Examples of these are in Subversion/Utilities under Garrett/POLFS_Utilities/Trunk with names starting with ‘fix’
+
+Solution - Helpdesk
+
+CALLS ABOUT INCONSISTENCIES IN STOCK REM OUTS SHOULD BE REDIRECTED TO NBSC. SSC have contacted all branches who have
+had a problem with cash rem outs, quoting ref PC143435. The advice given depended on whether they had reversed the problem pouch or not. If
+not reversed, they were advised to do a dummy rem out for the difference between what they intended to rem out and what was recorded on the
+system, using a new barcode. Then the pouch was prepared for collection, but, before despatch, the PM should have crossed out the pouch
+number from the collection receipt and destroyed the pouch. This corrected the cash in the stock unit so they no longer had a loss. If the rem out
+had already been reversed, the cash in the stock unit was correct (so has not caused a loss) but an amount remained in the ‘cash in pouches’
+within the suspense account. This cannot be adjusted by the branch. Post Office will in due course issue a Transaction Correction to remove
+this. In either case, a warning about Receipts and Payments not matching may be displayed when the stock unit is balanced. This should be
+ignored in this case. When the Branch Trading Statement is printed, the Trading Position line will not be zero. This is expected. The PM can
+annotate the BTS with 'PC143435' in case it is questioned in future. SSC are sending a report of the affected branches to POL, including the
+pouch ids for the dummy rem outs. If any branches phone in for further advice quoting PC143435, HSD may be able to reassure them by using
+this information above. Otherwise send the call on to SSC.

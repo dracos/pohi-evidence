@@ -1,0 +1,86 @@
+FUJ00142152
+FUJ00142152
+
+Problem with BTS Stock Levels
+
+Ref: __r:\hng plan x\architecture\end to end assurance\btsstocklevels.doc
+Author: Gareth I Jenkins and Jon Hulme
+Date: 12/02/2010 15:53:00
+
+1. Introduction
+Yesterday, Peak 194458 was raised from Warwick Post Office (506246) about
+
+incorrect Stock Figures on their Branch Trading Statement (BTS).
+
+The purpose of this note is to explain the problem and the underlying cause and
+proposed fix.
+
+2. The Problem
+
+Firstly it is worth explaining what the BTS is.
+
+It is a report produced at the end of a Trading Period (TP) providing a summary to the
+Postmaster about the trading that was done during that period. When the report is
+produced the Branch is moved (or Rolled Over) into the next TP. The report can only
+be produced when all the Stock Units have rolled over into the new TP and certain
+mandatory Branch level reports have been produced. It is normally produced every 4
+or 5 weeks either on a Wednesday evening or a Thursday morning. Problems in
+producing the BTS do not prevent the Branch from continuing to trade normally.
+
+During BTS production the report is produced twice:
+= A Trial Report to allow the Postmaster to check that the data is correct
+
+= A Final Report which is produced after the trial report has been confirmed. This
+indicates that the Branch has rolled over into the next TP.
+
+The BTS consists of two parts:
+= Summary of Stock Unit and Suspense Account activities over the Trading Period
+= Consolidated Branch Stock levels for all Volume Stock items
+
+There have been issues (originally found at Coton and Warwick) with the figures in
+the first part of the report. Development took a copy of the data from Warwick on
+Thursday 12 Feb and checked that these figures in this part of the Report were
+correct.
+
+However this Peak relates to the second part of the report which shows the
+consolidated Stock levels.
+
+The problem is that in the Final Report, many of the figures are incorrect.
+It should be noted that:
+
+a The figures on the Trial Report (which the postmaster is asked to check) are
+correct
+
+a The figures that are stored as Opening Figures for the new Trading Period are also
+correct
+
+document Printed at I TIME I on I DATE \@ "d/M/yyyy" \* MERGEFORMAT I Page I of 2
+FUJ00142152
+FUJ00142152
+
+The only thing that is incorrect is the printing of figures on the Final BTS.
+
+Development did not check this second part of the final BTS as there had been no
+previously reported problems with this, and no reported differences between the trial
+and final reports. Even when the second part is examined, the error is not obvious as
+demonstrated by the fact that several branches have balanced and not noticed, when
+they were highly likely to have had this error.
+
+3. The Cause
+
+The root cause of the problem is that the code that re-prints the report manages to
+overwrite some of the cache of data held at the counter for generating the report as it
+is printing the report.
+
+4. The Fix
+
+The fix is to ensure the Trial and Final reports work on copies of the cached data
+which are discarded when the report completes, thus ensuring that any changes made
+to the data during the production of the report have no impact after the report
+completes.
+
+This is a one line change to a velocity template, which a held as Development
+Reference Data. This still needs to be developed and tested through the development
+process.
+
+document Printed at I TIME I on I DATE \@ "d/M/yyyy" \* MERGEFORMAT I Page 2 of 2

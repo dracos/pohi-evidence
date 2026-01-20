@@ -1,0 +1,432 @@
+FUJ00124014
+
+FUJ00124014
+i= Xhibit
+axs [2
+oe Horizon Data Integrity Ge,
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT ;
+PREJUDICE
+Document Title: Horizon Data integrity
+
+Document Reference:
+
+Document Type: Report (REP)
+Release: NIA
+Abstract: ‘This document describes the measures that are built into Horizon to
+
+ensure data integrity.
+Note that it only covers Horizon and not HNG-X (Horizon Oniine)
+Document Status: Final Draft
+
+Author & Dept: Gareth I Jenkins
+
+External Distribution:
+
+Approval Authorities:
+
+Suzie Kirkham Account Manager
+
+Note. See Post Office Accourit HNG-X Reviewers/Appi Matrix (PGM/D HION/0G0 1) for guid:
+
+Uncontrotted if Printed or Distributed
+
+FUJ00124014
+
+FUJ00124014
+
+el Horizon Data Integrity
+
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+
+0
+
+PREJUDICE
+
+Document Control
+
+0.1 Table of contents
+
+0
+
+Of
+8.2
+
+0.2.1 Table of Tables.
+
+0.3
+0.4
+0.8
+0.6
+OF
+O8
+0.9
+0.10
+
+3
+3.4
+
+3.1.4 The Counter
+3.1.2 The Counter is Physic
+3.1.3 Transaction Recovery... .
+
+3.2
+33
+
+Table of contents.
+Figures and Tables.
+
+Document History.
+Review Details ..
+Associated Documents (Internal & External!
+
+Accuracy
+Copyrig
+
+PURPOSE...
+
+HORIZON DATA INTEGRITY...
+
+SCENARIOS.
+A counter fail
+
+Successfully Restarted
+
+y Replaced
+
+A counter has a "Blue Screen of Death”
+
+There are package collisions on networks
+
+Uncontrolied if Printed or Distributed
+
+Page Ne
+
+FUJ00124014
+FUJ00124014
+
+Ge Honzon Data integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+0.2 Figures and Tables
+0.2.1 Table of Tables
+
+None.
+
+0.3 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CPIPEAK/PPRR
+Reference
+
+I Fest informat Draft Cna fe marked
+
+Version for release ts Post Office
+
+0.4 Review Details
+
+Review Comments by: Mave
+Review Comments to: ¢
+
+Role _ Name
+_ Guy Wikerson _ Commercial Director
+"Commercal
+__Head of Commercial, Retail, Royal Mail and Telos
+Post Office
+
+issued for information — Please restrict
+this disiribulion list to. a minimum
+Position/Role
+
+) # Reviewers that retumed comments
+
+Reviewers that retu:
+
+red no com
+
+0.5 Associated Documents (Internal & External)
+
+Reference Version =: Date Source
+PGM/DCMITEM/0001 Services Post O Account — Danensions
+
+3-X Document Template
+
+(0 NOT REMOVE)
+
+HNG-X Glossary
+
+SAL IN CO}
+WITHOUT PREJUDICE
+
+Uncontratied if Printed or Distributed
+FUJ00124014
+FUJ00124014
+
+oO . Horizon Data integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+Unless a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+0.6 Abbreviations
+
+Abbreviation Definition
+
+AP Automated Paytr
+
+y Check
+
+CRC Cyclic Redundar
+
+See also document ARC/GEN/REP/O001
+
+lication The mechanism by which data is reliably copied belween the &
+systems (i.e. alher counters, external storage in &
+centre)
+
+al system and other
+gie counter branch and the data
+
+0.8 Changes Expected
+
+Review comments etc
+
+0.9 Accuracy
+
+Fultsu Services endez
+effort is made to ens:
+ained as a result
+
+1 this document is co:
+re lability for any to
+
+uch informatio
+fie the same.
+
+(however caused)
+
+Copyright Fujitsu Services
+in any form without
+
+\li righis reserved, No part of this docum
+¥ written permission of Fujitsu Services.
+
+ay be reproduced, stored
+
+Uncontrolled if Printed or Distributed
+FUJ00124014
+
+FUJ00124014
+Foe] Horizon Data integrity
+FUJITSU eo
+COMMERCIAL IN CONFIDENCE AND WITHOUT OFFICE
+
+PREJUDICE
+
+1 Purpose
+This document is submitted fo Post Office for information purposes only and without prejudice. in the
+event that Post Office requires information in support of a legal case Fujitsu will issue a formal statement.
+
+This document is a technical description of the measures that are built into Horizon to ensure data
+integrity. including a description of several failure scenarios, and descriptions as to how those measures
+apply in each case.
+
+Note that this document only covers Horizen. It does not cover HNG-X (Harizon Oniine}.
+
+COMM
+
+wits
+
+Uncontrolled if Printed or Distributed
+FUJ00124014
+
+FUJ00124014
+eo Horizon Data integrity
+FUJITSU fost
+COMMERCIAL IN CONFIDENCE AND WITHOUT OFFICE
+PREJUDICE
+
+2 Horizon Data Integrity
+
+The Horizon system is designed to store all data locally on the counter's hard disk Once the data has
+been successfully stored there it is then replicated (copied) to the hard disks of any other counters in the
+branch (and m the case of a single counter branch to the additional external storage on the single
+counter). Data is aiso passed on from the gateway counter to the Horizon data centre using similar
+mechanisms,
+
+The replication process is designed such that should the data fail to be copied immediately (for example
+due to a failure on the local IT network within the branch or another counter being switched off or the
+branch being disconnected from the data centre}. then further attempts are made te replicate the data at
+regular intervals until it is finally copied successfully. Once the data reaches the Data Centre a further
+copy is taken and added into the audit trail where it is available for retrieval for up to 7 years. Data in the
+audit trail is “sealed” with @ secure checksum that is held separately to ensure that it has not been
+tampered with or corrupted
+
+Every record that is written to the transaction log has a unique incrementing sequence number. This
+means it is possible to detect if any transitions records have been lost.
+
+While a customer session is in progress. details of the transactions for that customer session are
+normally heid in the computer's memory until the custorner session (often known as the “stack”) is
+settled. At thal point ali details of the transactions (including any methods of payment used) are written to
+the local hard disk and replicated (as described above}. it should be noted that double entry
+bookkeeping is used when recording ali financial transactions, ie for every sale of goods or services,
+there is a correspanding entry to cover the method of payment that has been used. When a “stack” is
+secured itis written in such a way that either aif the data is written to the local hard disk or none of it is
+written. This concept of “atomic writes” is aise taken into account when data is replicated to other
+systems (ie other counters, external storage or the data centre)
+
+The data for a stack will have been successfully secured to the local hard disk before the screen is
+updated indicating that @ new customer session can be started Note that although an attempt will have
+been made to replicate the data to an external system ai this time, there is no guarantee at this point that
+such replication will have been successful For example if there is a Network Failure followed by @
+Terminal failure there is a slight risk that transactions in the intervening period could be lost.
+
+All data that is written includes a “checksum” value (known as a CRC) which is checked whenever the
+data is read to ensure that # has not been corrupted. Any such corruptions detected on reading will result
+in failures being recorded in the event logs which are held on the local hard disk for a few days for
+immediate diagnosis and also immediately sent through to the data centre where they are heid for 7
+years
+
+Any failures to write to a hard disk (after appropriate retries) will result In the counter failing and needing
+to be restarted and so will be immediately visible to the user
+
+Whenever data is retrieved for audit enquiries a number of checks are carried out
+1. The audit files have not been tampered with (ie the Seals on the audit files are correct)
+
+2 The individual wansactions have their CRCs checked to ensure that they have not been
+corrupted.
+
+check is made that no records are missing. Each record generated by a counter has an
+remental sequence Number and @ check is made that there are ne gaps in the sequencing.
+
+$ Lig 2009 COMMERTIAT WN EGNFT
+
+4OUT PRESU
+
+Ref.
+
+Uncontrolled if Printed or Distributed Date
+
+FUJ00124014
+
+FUJ00124014
+O Horizon Data integrity
+FUJITSU POST
+COMMERCIAL IN CONFIDENCE AND WITHOUT OFFICE
+PREJUDICE
+
+3. Scenarios
+
+it should be noted that these scenarios are all to do with equipment failures and these will always be
+visible to Fujitsu through the event logs which are retained
+
+3.1. Acounter fails
+
+When a counter fails. there are two possible scenarios:
+
+» Itcan be successfully restarted
+
+« {t cannot be successfully restarted, so needs to be physically replaced
+
+In each case the Data integrity considerations are different and so are described separately below.
+
+Once the counter has been restarted (regardless of whether or not it hes been replaced) recovery may be
+carried out ff recoverable transactions are detected on the counter This is also discussed below
+
+3.1.1. The Counter is Successfully Restarted
+
+in this case ali the data that had been secured prior to the failure is still present on the counter and so is
+available for use. if the User is im any doubt as to whether a transaction had been completed or not prior
+tc the failure they can use the transaction logs to confirm one way or the other.
+
+3.1.2 The Counter is Physically Replaced
+
+In this case there is no data on the local hard disk of the replacement couriter. However. since the data
+shouid have been replicated to other counters in the branch (or in the case of a single counter branch to
+the external storage ~ which should have been physically moved to the replacement counter}, then the
+data should be retrieved and copied to the new counter [if for some reason the data were no? available
+locally in the branch. then it will be copied back from the data centre. This all happens automatically as
+part of the counter replacement procedure.
+
+Note that the hard disks are encrypted so there is no danger of data protection issues once the old
+counter has been removed (or if # is stolen).
+
+Wher: @ counter is physically replaced, there is a possibility that not all data has been success’
+replicated to another system prior to the failure. in this scenario it is essential that the user con
+the last successful transaction on that counter was. again by using the transaction logs
+
+ily
+
+3.1.3 Transaction Recovery
+
+Some classes of transaction generate recovery data as they go along. so as to ensure that in the event of
+a failure between the transaction starting and the basket being secured, there is sufficient information
+available to enabie the transaction to be recovered. On Horizon there are two separate mechanisms to
+cover different classes of transaction:
+
+* Banking Recovery
+« AP Recovery
+
+Both these mechanisms a’
+has been a possible fail
+
+E Copyright Fajtse Se
+
+Uncontrotied if Printed or Distributed
+
+FUJ00124014
+FUJ00124014
+
+Horizon Data Integrity
+
+POST
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT OFFICE
+PREJUDICE
+
+3.1.3.4 Banking Recovery
+
+Tins covers credit card and debit card vansactions and e-Top-Up transactions as well es online banking
+transactions
+
+A check is cartied out to see if any incomplete banking style transactions (Le. network banking, credit /
+debit card or e-Top-Up) exist in the trensaction logs for that counter. An incomplete transaction is one
+where an authorisation request has been sent to the financial institution, and there is no corresponding
+completion message which is norm: secured as part of settlement at the end of the Customer session.
+
+In most cases, recovery information stored in the transaction jog can be used to ascertain the outcome of
+the transaction being recovered and a suitable completion record Is then recorded at the time of recovery
+In some cases the user is prompted to confirm whether or not the transaction has completed successfully
+ang the response from that prompt is used to generate the completion record.
+
+3.4.3.2 AP Recovery
+
+in the case of Automated Payments (AP), the user is asked if they wish to carry out AP recovery and they
+have the option of doing so immediately or leaving it until later
+
+if the user carries out recovery they will be asked about the last successful AP transaction (which can be
+seen from the branch copies of the AP receipts that are printed) and the system will then check to see if it
+hes been completed in the system. if it has not been completed in the system, then the system will use
+the AP Recovery data stored in the transaction logs to ensure that all incomplete AP transactions on the
+counter up until the one specified by the user are completed at recovery time. To assist with this process,
+each AP transaction has a unique, incrementing sequence number which is printed on the receipt
+
+Fujitsu understand that these processes are defined in Post Office’s Horizon User Guides
+
+3.2 Acounter has a "Blue Screen of Death”
+
+This is just a spi case of a counter failure, so please see section 3.1 above
+
+3.3. There are package collisions on networks
+
+The replication protocols used to copy details of transactions between counters and also between the
+gateway counter and the data centre ensure that the data is copied successfully. Should packets collide
+on the network (or should there be any other network issues such as the [T communigations fink failing)
+then the replication protocols will ensure that the data is resent Such reties will continue unt! the data
+is finally successfully transmitted,
+
+COMMERCIAL IN CONFIDE
+WITHOUT PREJ
+
+Uncontrolied if Printed or Distributed Date
+

@@ -1,0 +1,3420 @@
+Fe)
+FUJITSU
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+POL00397162
+POL00397162
+
+Document Title:
+Document Reference:
+
+Document Type:
+Release:
+
+Abstract:
+
+Document Status:
+Author & Dept:
+
+External Distribution:
+
+Security Risk
+Assessment Confirmed
+
+Approval Authorities:
+
+Nam Role
+
+M.Conneely (Author of
+
+parent HLD) Design
+
+Solution Design / Infrastructure
+
+SYSMAN Support Tasks for HNG-X
+
+DEV/INF/LLD/0079
+
+Low Level Design (LLD)
+INT1+
+
+Low Level
+
+Design Document detailing
+
+the Support Tasks
+
+implemented under the SYSMAN2 and SYSMAN3 environments
+
+for HNG-X.
+DRAFT
+
+Graham Comer, SMG; John Bradley, SMG; Contributors: Brian
+
+Gallacher, Steve Perkins
+
+None
+
+YES
+
+Signature
+
+Date
+
+Note: See Royal Mail Group Account HNG-X Reviewers/Approvers Role Matrix (PGM/DCM/ION/0001) for
+
+guidance.
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE
+
+UNCONTROLLED IF PRINTED
+
+Ref:
+
+Version:
+Date:
+Page No:
+
+DEV/INF/LLD/0079
+v0.3
+
+07-SEP-2009
+
+1 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+0 Document Control
+
+0.1 Table of Contents
+
+0 DOCUMENT CONTROL.
+
+0.1 Table of Contents.
+0.2 Document History.
+0.3 Review Details.
+0.4 Associated Documents (Internal & External
+0.5 Abbreviations.
+0.6 Glossary.
+0.7. Changes Expected.
+0.8 Accuracy.
+0.9 Security
+
+isk Assessmen:
+
+aeasniun
+Rona
+
+nN
+
+REQUIREMENTG.........:0000000
+
+3 DESIGN OVERVIEW.
+
+3.1 Installation Methodology.
+1 SYSMANZ2.
+.2 SYSMAN3..
+
+4 IMPLEMENTATION
+
+4.1. MTMR_TECAD_TASKS..
+4.44 Installatior
+4.2. MTMR_HNGX_I
+4.2.1 Installation...
+4.3 MANSENTRYCFG_CNTR_LOGS.
+43.1 Installation.....
+4.4 —SYSMAN3 Framework Task:
+4.4.1 SMG_Tripwire_Update.
+4.4.2 SMG_Execute_Tripwire
+4.4.3 SMG_Execute_Tripwire_Client.
+4.5 RHL_TPM_UTILS: Generic TPM Workflows..
+4.5.1 Installation...
+4.5.2 Audit of User Action.
+4.5.3 SMG_ControlWindowsService.
+4.5.4 SMG _FileTransfer...
+4.5.5 I SMG_Updatelnventory.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 2 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.6 RHL_TPM_SUPPORTTASKS: User-Invoked TPM Workflows.
+4.6.1 Installatior
+4.6.2 HNGX_Audited_File_
+4.6.3 HNGX_Control_Windows_Servict
+4.6.4 HNGX_Diags_Run_df.
+4.6.5 HNGX_Diags_Run_dir.
+4.6.6 HNGX_Diags_Run_is.
+4.6.7 HNGX_Diags_Run_ps.
+4.6.8 I HNGX_Purge_Aged_Diagnostics.
+4.6.9 I HNGX_Purge_Aged_Logfiles...
+4.6.10 HNGX_Retrieve_Windows_Service_Statu
+4.6.11 HNGX_Unload_Event_Log
+4.6.12 HNGX_Unload_Registry_Info.
+
+4.7. IUNX_ITM_LOGHOUSEKEEP: UNIX Campus Server Log File Housekeeping Process.
+
+4.8 WIN_ITM_LOGHOUSEKEEP: WINDOWS Campus Server Log File Housekeeping Process.50
+
+4.9 RHL_TMF_TASKSITM.
+4.9.1 Background.
+4.9.2 Requiremen'
+4.9.3 Implementation.
+4.9.4 _ Installation...
+
+4.10 RHL_TPM_SUPPORTTASKS_BMC: Workflows for NCO Patrol Probe Configuration.
+4.10.1 Installation...
+4.10.2 HNGX_Patrol_Config_Displa'
+4.10.3 HNGX_Patrol_Config_Remove..
+4.10.4 HNGX_Patrol_Config_Restore.
+4.10.5 HNGX_Patrol_Config_Write.. sevens
+
+411 RHL_TPM_DXC_REP_LOAD: User-Invoked TPM Workflows.
+4.11.1 Installation...
+4.11.2. HNGX_DXC_REP_LOAD
+
+5 CREATING AND SHARING FAVOURITE TASKS
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 3 of 69
+Fe)
+FUJITSU
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+POL00397162
+POL00397162
+
+0.2 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CP/PEAK/PPRR
+Reference
+ot 30/03/09 First Draft
+02 27/05/09 P0332 (DXC) and Tripwire additions P0332
+11/06/09 Non technical and cosmetic changes
+03 30/06/09 Tripwire Task Library Documented P0174
+07/09/09 Insertion of missing narrative in a number of sections /
+subsections to complete document content
+Non technical (e.g. Updating of section 0.3 Review Details
+contents to reflect up to date list of Reviewers) and cosmetic (to
+improve legibility) changes
+
+0.3 Review Detail
+
+is
+
+Review Comments by
+
+17" September 2009
+
+Review Comments to
+Mandatory Review
+
+Role
+
+Graham Comer & John Bradley & Richard Stevens
+
+Name
+
+Solution Design / infrastructure Design
+
+Mike Conneely (Author of parent HLD)
+
+System Test
+
+John Rogers
+
+ssc
+
+Role
+
+Mik Peach
+
+Optional Review
+
+Name
+
+Security and Risk Team
+
+CSPOA.security,
+
+System Qualities Architect
+
+Dave Chapman
+
+Architect
+
+Jason Clark
+
+Business Continuity
+
+Adam Parker
+
+Service Support
+
+Kirsty Gallacher
+
+HNG-X Service Transition Graham Welsh
+Service Network fan Mills
+
+Data Centre Migration Geoff Butts
+Data Centre Migration Peter Okely
+SV&l Manager Sheila Bamber
+
+Tester Hamish Munro
+
+RV Manager James Brett (POL, JTT)
+
+VI & TE Manager Mark Ascott
+
+Integrity Testing Alan Child
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 4 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Integrity Testing Michael Welch
+Development Graham Allen
+Networks Architect (Data Centre) Mark Jarosz
+Issued for Information — Please restrict this
+distribution list to a minimum
+Position/Role Name
+Lead Architect Systems and Estate Management lan Bowen
+(*) = Reviewers that returned comments
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 5 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+0.4 Associated Documents (Internal & External)
+
+Reference Versiot Date Title Source
+
+PGM/DCM/TEM/0001 I 4.0 21-Nov-08 RMGA HNG-X Generic Document I Dimensions
+
+(DO NOT REMOVE) Template
+
+PGM/DCM/ION/0001 I 49.0 20-Aug-2009 HNG-X Document Reviewers / I Dimensions
+Approvers Role Matrix
+
+DES/APP/HLD/0010 Generic Internal Web Services High I Dimensions
+Level Design
+
+DES/SYM/HLD/0044 SYSMAN Support Tasks for HNG-X Dimensions
+
+DEV/INF/LLD/0036 Proactive — Monitoring — Windows I Dimensions
+Supporting Agents
+
+DEV/INF/LLD/0025 I 1.1 Build for Tivoli Provisioning Manager I Dimensions
+
+DEV/INF/LLD/0039 Proactive Monitoring Unix Supporting I Dimensions
+Agents
+
+HNG-X cP0174 Intro of File Integrity Monitoring for I RMGA Ch
+
+(PVCS Ref CP4645) HNG-X to Support PCI Compliance I Mgt
+(Updated)
+
+HNG-X CP0332 SYSMAN Software Delivery to I RMGA Ch
+
+(PVCS Ref CP4863) Branch Estate Mgt
+
+Unless a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+0.5 Abbreviations
+
+API Application Programming Interface
+
+APOP Automated Payments — Out Pay, service identifier
+BBND Broadband checker, service identifier
+
+BKAC Bank Account Number checker, service identifier
+cP Change Proposal
+
+DVLA Driver & Vehicle Licensing Agency, service identifier
+EES Enterprise Event Server
+
+EPM Enterprise Provisioning Server
+
+HDSK Help Desk, service identifier
+
+HLD High Level Design
+
+HNG-X Horizon Next Generation — Plan X
+
+MGRM MoneyGram, service identifier
+
+ocp Operational Change Proposal
+
+OLCT Online Counter Training, service identifier
+
+Os Operating System
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref:
+Version:
+UNCONTROLLED IF PRINTED Date:
+
+Page No:
+
+DEV/INF/LLD/0079
+v0.3
+
+07-SEP-2009
+
+6 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+PAF Postal Address File, service identifier
+PGDD Postal Guaranteed Delivery Date, service identifier
+POLFS Post Office Limited Financial Services
+TCOM The Web Service that implements the BBND, BKAC and PGDD Web Service
+Agents. Originally called the Telecoms Service and now referred to as the Service
+Hub Service
+TPM Tivoli Provisioning Manager
+0.6 Glossary
+Term Definition
+SYSMAN2 The Horizon Systems Management Infrastructure
+SYSMAN3 The HNG-X Systems Management Infrastructure
+
+0.7 Changes Expected
+
+Agreed changes in response to reviewer comments / issues following formal review
+
+0.8 Accuracy
+
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, whilst every
+effort is made to ensure the accuracy of such information, it accepts no liability for any loss (however caused)
+
+sustained as a result of any error or omission in the same.
+
+0.9 Security Risk Assessment
+
+Security risks have been assessed and it is considered that there are no security risks relating specifically to this
+
+document.
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref: DEV/INF/LLD/0079
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+PageNo: 7 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+1 Introduction
+
+1.1. Purpose
+
+This document describes the Low Level Design of the systems management task infrastructure and
+details the support tasks that have be Specified with DES/SYM/HLD/0044
+
+1.2 Scope
+
+The associated High Level Design document defines the requirements, design objectives and overall
+scope for this design.
+
+This document provides the detailed low level design and installation of the deliverables identified within
+the aforementioned HLD.
+
+1.3. Assumptions
+None
+
+1.4 Risks
+
+There are no known risks associated with the design.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 8 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+2 Requirements
+
+This LLD should address the basic requirements outlined in HLD DES/SYM/HLD/0044.
+
+This LLD should also address the Web Service requirements of Stats collection and MoneyGram Web
+Service daily restart as outlined in DES/APP/HLD/0010.
+
+The LLD must describe the installation and configuration of all the deployment components.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 9 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+3 Design Overview
+
+3.1 Installation Methodology
+
+3.1.1. SYSMAN2
+
+SYSMAN2Z Deliverables will be manual installs delivered via PVCS
+
+3.1.2. SYSMAN3
+
+SYSMAN3 Tasks will be delivered via Dimensions
+
+3.1.2.1. Framework Tasks
+
+Framework 4.2.2 Tasks will be delivered such that they can be installed via TPM.
+
+3.1.2.2. TPM Workflows
+
+TPM Workflows will be delivered as tcdrivers that can be imported into TPM
+
+3.1.2.3 APDE: .tcdriver file creation
+
+tedriver file creation is described in DEV/INF/LLD/0025
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+PageNo: 10 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4 Implementation
+
+4.1  MTMR_TECAD_TASKS
+
+This product TEC_NT_Adapter_Tasks Stops or start the Tivoli event adapter. Optionally deletes the
+local cache.
+
+This has been enhanced to detect the Netcool probe and perform the same operations for that. The task
+will work against Horizon or HNG-X counters
+
+4.1.1 Installation
+
+4.1.1.1 _ Installation Files
+The following files are delivered for the installation:
+
+Fi Desc
+
+install_tecad_tasks.sh Install Script
+
+tec_adapter.tll Task Library Definition File
+
+check_tec_nt_adapter.sh Executes the underlying task NT_Check_TEC_NT_Adapter
+check_tec_win_adapter.sh Executes the underlying task NT_Check_TEC_WIN_Adapter
+control_tec_nt_adapter.sh Executes the underlying task NT_Control_TEC_NT_Adapter
+control_tec_win_adapter.sh Executes the underlying task NT_Control_TEC_WIN_Adapter
+install_tec_nt_adapter.sh Executes the underlying task NT_Install_TEC_NT_Adapter
+install_tec_win_adapter.sh Executes the underlying task NT_Install_TEC_WIN_Adapter
+nt_check_tec_nt_adapter.sh Checks the installation of the TEC NT Adapter
+nt_check_tec_win_adapter.sh Checks the installation of the Windows TEC adapter
+nt_control_tec_nt_adapter.sh Stops and starts either the NT TEC Adapter or NT Probe
+nt_control_tec_win_adapter.sh Stops and starts either the Windows TEC Adapter or Windows probe
+nt_install_tec_nt_adapter.sh Installs the TEC NT Adapter
+
+nt_install_tec_win_adapter.sh Installs the TEC Windows Adapter
+
+4.1.1.2 Installation Process
+The product is installed by running install_tecad_tasks.sh
+
+When the installation script is run, it will perform the following actions —
+
+# GET ARGUMENTS
+
+PolicyRegion=$1
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 11 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+# INITIALISE
+ALI_OID=‘wlookup ServerManagedNode"
+eval SERVER=idIcall $ALI_OID _get_label”
+# CHECKS
+if [-z "$PolicyRegion" ]; then
+
+usage
+fi
+# Check Region
+wsetpr TaskLibrary @PolicyRegion:"$PolicyRegion"
+if [$? != 0]; then
+
+echo "Error setting TaskLibrary resource for PolicyRegion $PolicyRegion"
+
+exit 1;
+fi
+# Delete existing jobs and tasks
+echo "Deleting Redundant Jobs and Tasks..."
+wdeljob Control_Tivoli_NT_Adapter Counter_Tasks >/dev/null 2>&1
+wdeljob Control_Tivoli_NT_Adapter NWB_Additional_Tasks >/dev/null 2>&1
+wdeljob Adapter_Control_Counter NWB_Additional_Tasks >/dev/null 2>&1
+wdeljob Adapter_Control_Server NWB_Additional_Tasks >/dev/null 2>&1
+wdeltask Control_Tivoli_NT_Adapter Counter_Tasks >/dev/null 2>&1
+wdeltask Control_Tivoli_NT_Adapter NWB_Additional_Tasks >/dev/null 2>&1
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+PageNo: 12 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+wdeltask Adapter_Control_Counter NWB_Additional_Tasks >/dev/null 2>&1
+wdeltask Adapter_Control_Server NWB_Additional_Tasks >/dev/null 2>&1
+
+# INSTALL TLL
+
+echo "Installing TaskLibrary..."
+will -r -P /usr/lib/cpp -p "$PolicyRegion" tec_adapter.tll
+
+# Creating Jobs and Linking into Appropriate Collections
+
+# TEC Adapter Check & Control
+echo "Creating Jobs...”
+
+wertjob -D -j Check_TEC_NT_Adapter_Counter -I TEC_NT_Adapter_Tasks -t
+Check_TEC_NT_Adapter_Counter -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Install TEC_NT_Adapter_Counter -] TEC_NT_Adapter_Tasks -t
+Install_TEC_NT_Adapter_Counter -M parallel -m 600 -o 17 -h mastertmr
+wertjob -D -j Check_TEC_NT_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Check_TEC_NT_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Install TEC_NT_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Install TEC_NT_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Control_TEC_NT_Adapter_Counter -I TEC_NT_Adapter_Tasks -t
+Control_TEC_NT_Adapter_Counter -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Control_TEC_NT_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Control_TEC_NT_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Control_TEC_WIN_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Control_TEC_WIN_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Check_TEC_WIN_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Check_TEC_WIN_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+wertjob -D -j Install_TEC_WIN_Adapter_Server -I TEC_NT_Adapter_Tasks -t
+Install_TEC_WIN_Adapter_Server -M parallel -m 600 -o 17 -h mastertmr
+
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Check_TEC_NT_Adapter_Counter
+/Administrators/Root_mastertmr-region/SMC_PO_Jobs
+
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Check_TEC_NT_Adapter_Server
+/Administrators/Root_mastertmr-region/SMC_Campus_Jobs
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+Page No: 13 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Control_TEC_NT_Adapter_Counter
+/Administrators/Root_mastertmr-region/SMC_PO_Jobs
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Control_TEC_NT_Adapter_Server
+/Administrators/Root_mastertmr-region/SMC_Campus_Jobs
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Check_TEC_WIN_Adapter_Server
+/Administrators/Root_mastertmr-region/SMC_Campus_Jobs
+win /Regions/${PolicyRegion}/TEC_NT_Adapter_Tasks/Control_TEC_WIN_Adapter_Server
+/Administrators/Root_mastertmr-region/SMC_Campus_Jobs
+4.1.1.3 Configuration
+No configuration is required
+4.1.1.4 Logging
+The executed tasks display output to stdout
+4.1.1.5 Post Installation
+At the end of the installation the Installation files may be removed from the temp directory
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: vo.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 14 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.2 MTMR_HNGX_LOGLEVEL
+
+A task that can set the logging level on a counter/branch or group of branches. Implementation of this is
+reliant upon an API provided by the counter application. Inventory should be updated when the logging
+level is changed so that it may be used for reporting..
+
+4.2.1 Installation
+
+4.2.1.1 _ Installation Files
+The following files are delivered for the installation:
+
+File Descripti
+
+Call_counter_log_config.sh Executes the Set_Counter_Log_Config task
+
+Call_counter_log_levels.sh Executes the Set_Counter_Log_Level task
+
+Counter_log_houskeeping.cfg Log housekeeping configuration file
+
+Counter_log_levels.cfg Log Level configuration file
+
+Counter_log_levels.sh Script to adjust the Log Levels of the Post Office Counter
+Application
+
+Counter_logging.tl Tivoli Task Library Language file
+
+Install_counter_tasks.sh Installation Script
+
+Set_counter_log_config.sh Script to update the purge counter logfiles config script
+
+Set_counter_log_levels.sh Script to adjust the Log Levels of the Post Office Counter
+Application
+
+4.2.1.2 Installation Process
+The product is installed by running Install_counter_tasks.sh
+When the installation script is run, it will perform the following actions —
+e Install the TaskLibrary
+e Create the job Set_Counter_LogLevel
+e Create the job Set_Counter_LogRetention
+e Link the jobs to the SMC_PO_Jobs Regions
+
+4.2.1.3 Configuration
+The Counter_log_levels.cfg file is used to set the number of days that counter logs are stored
+
+ie. c:/counters/counterapp/log=7
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 15 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+4.2.1.4 Logging
+The log level is sent as an inventory record by using orainvupdate events as shown below
+# Log Inventory update to delete old level indicator
+${LOGEVENT} -s E -r SYSMGT -e 101 "ORAINVUPDATE: D Counter_Application_Log_Level
+${CURRENT_LEVEL}" >/dev/null
+# Log Inventory update to insert new level indicator
+${LOGEVENT} -s E -r SYSMGT -e 101 "ORAINVUPDATE: I Counter_Application_Log_Level
+${TARGET_LEVEL}" >/dev/null
+4.2.1.5 Post Installation
+At the end of the installation the Installation files may be removed from the temp directory
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 16 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.3  MANSENTRYCFG_CNTR_LOGS
+
+Purge of counter log files that are older than a defined number of days. This is not strictly a task in Tivoli
+Framework terms but a local process that will be invoked from Tivoli's Sentry scheduler on a daily basis.
+Note that processes such as this are terminated after running for one minute so this limitation must be
+considered during the development.
+
+A local configuration file will be used to define the number of days to retain logs and a set of wildcard
+strings that identifies each subdirectory and set of files that is to be purged. This file will be distributed as
+a SYSMAN2 software package...
+
+4.3.1 Installation
+
+4.3.1.1 Installation Files
+
+The following files are delivered for the installation:
+
+File Descri
+
+Purge_counter_logfiles.sh Purge Counter Log Files script
+
+4.3.1.2 Installation Process
+e The Sentry is installed by the delivery Sentry process on the master tmr
+
+4.3.1.3 Configuration
+See Loglevel Task
+
+4.3.1.4 Logging
+The script logs to C:/sysmgt/Counter_Log_Housekeeping/ Counter_Log_Housekeeping_${DATE}.log
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 17 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.4 SYSMAN3 Framework Tasks
+4.4.1. SMG_Tripwire_Update
+
+4.4.1.1 Function
+
+A manual Tivoli Framework task that will be executed after a tripwire platform has received a software
+update on Solaris, Linux and Windows platforms.
+
+When a known change is to take place (such as those conducted under CP or OCP) then the final action
+performed by support on conclusion of the change, should be to run a Tripwire database update using an
+approved report i.e. one that has been analyzed by Operations Security
+
+4.4.1.2 Parameters
+The parameters will be passed interactively on task execution
+
+Parameter Name IN/OUT I Mandatory I Description
+Target IN YES Server Node Name. Supplied as task target
+Report IN YES Name of the report to perform update on. Input
+
+into task GUI on task execution
+
+Tripwire Passphrase IN YES Passphrase required by tripwire. Input into task
+GUI on task execution
+
+Administrator IN YES Name of the Tivoli Administrator. Automatically
+retrieved by the task GUL arg. layout
+
+44.1.3 Calls
+The task must be executed via the Tivoli Desktop GUI.
+
+Navigate to the SMG_Tripwire_Tasks task library, in the Tasks Policy Region, and execute the
+SMG_Tripwire_Update task.
+
+Select the Tivoli endpoint that is the target of the Tripwire update to be the task target. Check the ‘Output
+to Desktop’ check box and execute the task.
+
+A ‘Configure Task Arguments’ dialog is displayed (illustrated over leaf).
+
+Enter the name of the report to be used to perform the update in the Report field. Only the report name
+is required, the task assumes the report directory is:
+
+C:\Program Files\Tripwire\TFS\report on windows servers and
+/opt/tripwire/tfs/report on UNIX systems
+Enter the local Pass Phrase for the target server in the Pass Phrase field.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 18 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Set and Execute the task
+Configure Task Arguments
+‘Configure SMG Tripwire Update. from SMG_Tripwire_Tasks—
+Report I lal I
+Pass Phrase I ] I
+Administrator Root_Isgpems00: region, I
+sf)
+Set & Execute] [save I I Cancel [Task Description .. I
+i ee ey WA
+Configure Task Argument Dialog
+4.4.1.4 Task Pseudo Code
+.Reads in passed parameters by the task
+e Report name Report to be used to perform the Tripwire update against
+e Pass Phrase Local pass phrase to authorise the Tripwire update
+e Administrator name Name of the administrator executing the Tripwire update task
+Sets log file, dependent on OS:
+Operating System I Log File
+Windows C:/sysmgt/logs/SMG_Tripwire_Update.log
+UNIX /opt/sysmgt/logs/SMG_Tripwire_Update.log
+Maps UNIX/Windows event severities:
+UNIX Syslog Severity I Windows Event Log
+Severit
+CRITICAL ERROR
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: vo.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+PageNo: 19 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+WARNING WARNING
+INFORMATION INFORMATION
+Sets the report directory, dependent on OS:
+Operating System Tripwire Report Directory
+Windows C:\Program Files\Tripwire\TFS\report
+UNIX /opt/tripwire/tfs/report
+Sets the Tripwire update command, dependent on OS:
+Operating System Tripwire Update Command
+Windows tripwire --update --report-file "$reportDir\$report" --
+accept-all --local-passphrase $passPhrase
+UNIX /opt/tripwire/tfs/bin/tripwire --update --report-file
+$reportDir/$report --accept-all --local-passphrase
+$passPhrase
+
+Opens logfile
+
+Raises a WARNING severity event (UNIX sysiog, Windows Event Log), ID 111, indicating that a Tripwire
+update is being requested, passing back the name of the administrator performing the Tripwire update,
+and the name of the report being used to perform the update against.
+
+Executes Tripwire update
+
+An event is raised (UNIX syslog, Windows Event Log) indicating the result of update; severity
+INFORMATION on success and CRITICAL/ERROR on failure.
+
+4.41.5 Logging
+The Tripwire update task appends to the log.
+
+Operating System Logfile
+Windows C:/sysmgt/logs/SMG_Tripwire_Update.log
+UNIX /opt/sysmgt/logs/SMG_Tripwire Update.log
+
+4.4.1.6 Audit
+
+The result of the Tripwire Update action, including the invoking user, is logged for audit as syslog/Event
+Log event
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 20 of 69
+POL00397162
+
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Source ID I Severity Message
+TRIPWIRE I 111 I WARNING SMG_Tripwire_Update - $administrator requested Tripwire
+
+update on $ENV{ENDPOINT} using report $report.
+
+TRIPWIRE I 112 I CRITICAL SMG_Tripwire_Update - $administrator requested Tripwire
+update on $ENV{ENDPOINT} using report $report FAILED: $!
+
+TRIPWIRE I 113 I INFORMATION I SMG_Tripwire_Update - $administrator requested Tripwire
+update on $ENV{ENDPOINT} using report $report
+COMPLETED.
+
+4.4.2. SMG_Execute_Tripwire
+
+4.4.2.1 Shares
+
+The Execute Tripwire task utilises two shares:
+
+DIAGS$ /opt/ibm/Tivoli/tpm/repository/sysman on the EPM server
+$AUDIT c:\Audit on the EDS server
+
+4.4.2.2 Function
+
+Ascheduled Tivoli Framework task that will execute sub tasks (SMG_Execute_Tripwire_Client) to effect
+the generation of a Tripwire integrity report on configured targets. The task will then transfer all
+generated reports to the EDS $AUDIT share. When the integrity check detects a problem; a copy of the
+
+report will also be transferred to DIAG$ share on the EPM server.
+
+All transferred reports are converted to HTML and to a format appropriate to the OS the report is being
+
+transferred to.
+
+4.4.2.3 Parameters
+
+The IN parameters are read from PSPID Tags, with the exception of $file and $DIAG which are returned
+
+by the client task.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 21 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Parameter Name IN/OUT I Mandatory I Description
+
+$TARGETO01 IN YES List of targets on which to execute the tripwire
+client. Read in using pspid tags.
+
+$TARGET002
+
+$TARGETOOn
+
+$AUDIT_SERVER IN YES Sever hosting $AUDIT share. Read in using
+pspid tags.
+
+$AUDIT_DIRECTORY IN YES Target for distribution of client Report file on the
+EDS Audit Share. Read in using pspid tags.
+
+$DIAG_SERVER IN YES Server hosting DIAGS$ share. Read in using
+pspid tags.
+
+$DIAG_DIRECTORY IN YES Target for distribution of client report on the EDS
+DIAG Share. Read in using pspid tags.
+
+$HOLDING_DIRECTORY IN YES Temporary storage location on EMS server for
+reports being transferred to AUDIT and DIAG
+servers. Read in using pspid tags.
+
+$file IN YES Returned from client task: ReportName
+
+$DIAG IN YES Returned from client task: DIAG status.
+
+44.2.4 Calls
+
+This workflow can be initiated via the following calls:
+Framework Call:
+A Tivoli Job has been created, in the SMG_Tripwire_Tasks task library, using the command:
+
+wertjob -D  -j  SMG_Execute Tripwire Job -1 SMG _Tripwire_Tasks
+SMG_Execute_Tripwire -M parallel -m 600 -o 17 -h $EMS_Endpoint
+
+The job is currently scheduled to run every Monday at 0600.
+
+4.4.2.5 Pseudo Code
+
+Opens logfile for append.
+/opt/sysmgt/logs/SMG_Execute_Tripwire.log
+
+Runs wgetadmin -n to get the name of the administrator running the task. If this fails the task raises a
+
+CRITICAL syslog event, ID 109, informing of the failure and the task script exits.
+
+Raises a WARNING severity syslog event, ID 110, indicating that a Tripwire integrity check is being
+requested, passing back the name of the administrator performing the Tripwire integrity check.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 22 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Runs smgreadxml using and reads the resulting pidvars.sh file to obtain the parameters listed in Section
+4.4.2.3.
+
+Call wruntask on the SMG_Execute_Tripwire_Client subtask against the target list and captures the task
+output for analysis.
+
+Raises a CRITICAL severity syslog event, ID 104, for each endpoint the task fails to execute on.
+
+If the returned reportname in the task output is a valid filename (Not Error), copies the report from the
+target to SHOLDING_DIRECTORY on the EMS platform. Converts the file to Windows OS format, if the
+target is a UNIX platform, and copies the file to the EDS platform AUDIT share. The copy of the file in
+$HOLDING_DIRECTORY is then deleted.
+
+If status = “DIAG”, copies the report from the target to $HOLDING_DIRECTORY on the EMS platform.
+Converts the file to UNIX OS format, if the target is a Windows platform, and copies the file to the EPM
+platform DIAGS share. The copy of the file in $HOLDING_DIRECTORY is then deleted.
+
+4.4.2.6 Logging
+The task appends to the log.
+/opt/sysmgt/logs/SMG_Execute_Tripwire.log
+
+4.4.2.7 Audit
+
+The following syslog events are generated by the task
+
+Source ID I Severity Message
+
+TRIPWIRE 104 I CRITICAL SMG_Execute_Tripwire - Tripwire integrity check failed to
+execute on node:$_
+
+TRIPWIRE 105 I WARNING SMG_Execute_Tripwire - $targetServer report possibly in
+wrong OS format:$endpoint:$fileName
+
+TRIPWIRE 106 I WARNING SMG_Execute_Tripwire - S$targetServer report in wrong OS
+format:$endpoint:$fileName.
+
+TRIPWIRE 107 I CRITICAL SMG_Execute_Tripwire - wadminep pull
+failed:$endpoint:$targetFile
+
+TRIPWIRE 108 I CRITICAL SMG_Execute_Tripwire - wadminep push
+failed:$endpoint:$targetFile
+
+TRIPWIRE 109 I CRITICAL SMG_Execute_Tripwire - Failed to get administrator ID.
+
+TRIPWIRE 110 I WARNING SMG_Execute_Tripwire - Sadministrator requested Tripwire
+integrity check on the Tripwire estate.
+
+SYSMGT 901 I CRITICAL Monitor failed to open a file
+
+SYSMGT 902 I CRITICAL Monitor system call failed
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+
+Version: vo.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 23 of 69
+2
+FUJITSU
+
+POL00397162
+POL00397162
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+4.4.3. SMG_Execute_Tripwire_Client
+
+4.4.3.1 Function
+
+A sub task executed by SMG_Execute_Tripwire to execute the tripwire integrity check on Solaris, Linux
+
+and Windows platforms
+
+4.4.3.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+Report OUT YES Name of Report to be retrieved or a “No Report
+Generated” message if Tripwire integrity check
+fails
+
+Status OUT YES STATUS (for DIAG share) or “ERROR? if
+Tripwire integrity check fails
+
+44.3.3 Calls
+
+This workflow can be initiated via the following calls:
+
+Framework Call:
+
+wruntask -t SMG Execute Tripwire Client -l SMG_Tripwire Tasks -o 13 -h
+
+StaskTarget
+
+4.4.3.4 Pseudo Code
+
+Sets log file, dependent on OS:
+
+Operating System Log File
+Windows C:/sysmgt/logs/SMG_Execute_Tripwire Client.log
+UNIX /opt/sysmgt/logs/SMG_ Execute_Tripwire Client.log
+
+Maps UNIX/Windows event severities:
+
+UNIX Syslog Severity I Windows Event Log
+Severit
+CRITICAL ERROR
+MINOR WARNING
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 24 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+I WARNING INFORMATION
+Sets the Tripwire integrity check command, dependent on OS:
+Operating System I Tripwire Report Directory
+Windows tripwire --check --text-report-level 0
+UNIX /opt/tripwire/tfs/bin/tripwire --check --text-report-level 0
+
+Sets the Tripwire convert to HTML command, dependent on OS:
+
+Operating System I Tripwire Update Command
+
+Windows twprint --print-report --report-file "$report" --report-
+format HTML --output-file "$HTMLreport"
+
+UNIX /opt/tripwire/tfs/bin/twprint --print-report --report-file
+$xeport --report-format HTML --output-file $HTMLreport
+
+Opens logfile
+
+Executes Tripwire integrity check
+
+If the Tripwire integrity check fails; an event is raised (UNIX syslog/Windows Event Log), an ERROR and
+“No Report Generated” message are output from the task. The task then exits. The event raised is of
+severity CRITICAL/ERROR, ID 102.
+
+The output from the Tripwire integrity check command is processed and the generated report file name
+is extracted along with the value of V.
+
+If the value of V is greater than 1 DIAG is set to be true.
+
+The generated report is checked to see if exists and if it does it is converted to HTML format. If this
+conversion fails a WARNING/INFORMATION severity event is raised, but the script continues.
+
+The DIAG status is output along with the name of the HTML report file. If the HTML conversion failed the
+name of the original report is output instead of the HTML report.
+
+4.4.3.4.1 Unix
+
+# /opt/tripwire/tfs/bin/tripwire —-check —-text-report-level 0
+
+Parsing policy file: /opt/tripwire/tfs/policy/tw.pol
+
+*** Processing Unix File System ***
+
+Performing integrity check...
+
+‘©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref. DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 25 of 69
+POL00397162
+POL00397162
+
+oO SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+The object: "/sys" is on a different file system. Ignoring.
+
+Wrote report file: /opt/tripwire/tfs/report/nas-20090527-123509.twr
+
+TWReport nas 20090527123509 V:320 S:100 A:216 R:8 C:96 L:0 M:13 H:307
+
+Integrity check complete.
+
+4.4.3.4.2 Windows
+
+# tripwire -check -text-report-level 0
+
+Parsing policy file: C:\Program Files\Tripwire\TFS\policy\tw.pol
+*** Processing Windows File System ***
+
+Performing integrity check...
+
+*** Processing Windows Registry ***
+
+Performing integrity check...
+
+Wrote report file: C:\Program Files\Tripwire\TFS\report\LSBPVSH006-200905134
+1410
+
+OS.twr
+TWReport LSBPVSHO06 20090513141005 V:226 S:1000 A:140 R:2 C:84 L:0 M:4 H:222
+
+Integrity check complete.
+
+4.4.3.5 Logging
+Appends to logfile
+
+Operating System Log File
+
+Windows C:/sysmgt/logs/SMG_Execute_Tripwire_Client.log
+
+UNIX /opt/sysmgt/logs/SMG_ Execute_Tripwire_Client.log
+4.4.3.6 Audit
+
+The following syslog events are generated by the task
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref. DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 26 of 69
+oo
+FUJITSU
+
+POL00397162
+POL00397162
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+Source ID I Severity Message
+
+TRIPWIRE 101 I WARNING SMG_Execute_Tripwire_Client - Failed to convert report
+$report to HTML: $!
+
+TRIPWIRE 102 I CRITICAL SMG_Execute_Tripwire_Client - Tripwire integrity check
+command failed: $!
+
+TRIPWIRE 103 I CRITICAL SMG_Execute_Tripwire_Client - Tripwire report $report not
+found.
+
+4.4.3.6.1 Unix
+
+logger -t \"SEVERITY TRIPWIRE nnn\" -p user.err \"messgae"
+
+Where the Severity is CRITICAL, MINOR or WARNING
+
+Nnn is 100 for CRITICAL,
+
+Message is the report
+
+tripwire command
+
+4.4.3.6.2 Windows
+
+101 for MINOR and 102 for WARNING
+
+name and twreport data from the output from the
+
+c:/sysmgt/tools/LogEvent -r TRIPWIRE -s Severity “message” -e nnn
+
+Where the Severity is ERROR,
+Nnn is 100 for ERROR,
+
+Message is the report
+
+tripwire command
+
+MINOR or WARNING
+
+101 for MINOR and 102 for WARNING
+
+name and twreport data from the output from the
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref DEV/NF/LLDI0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 27 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5 RHL_TPM_UTILS: Generic TPM Workflows
+
+This product comprises a set of low level workflows that facilitate the construction of further workflows
+(such as user invoked tasks) in a modular manner.
+
+It is not proposed that these workflows should be invoked directly by users.
+
+4.5.1 Installation
+TPM Workflows are delivered within a .tcdriver file (in essence a zip file)
+.tedriver files must be generated within the Eclipse Framework (APDE) within a TPM Environment.
+
+The resultant compiled and zipped Workflows can be installed within any TPM environment using the
+TPM supplied $ { TIODIR}/tools/tc-driver-manager.sh command.
+
+The .tcdriver and installation script should be copied to /tmp/RHL_TPM_UTILS prior to execution
+No PSPID vars are required for this installation.
+
+The TPM Server must be active prior to installation.
+
+4.5.1.1 Installation Files
+The following files are delivered for the installation:
+
+File
+rhi_tpm_utils.install TPM Utility Workflows installation script
+rhl_tpm_utils.tcdriver TPM Utility Workflows
+
+4.5.1.2 Installation Process
+The product is installed by running the rhl_tpm_utils.install script.
+When the installation script is run, it will perform the following actions —
+e Test for installation logfile and directory & create if either found not to exist
+e Test required .tcdriver file exists in temp install directory
+e Test required TPM Target directory exists — create if not
+e Copy .tcdriver file to TPM Target directory
+
+e Attempt uninstallation of existing version of .tcdriver file (this warns to log if no previous version
+found — but we're ok to ignore if so as this must be a fresh install)
+
+e Run install of supplied .tcdriver file
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 28 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5.1.3 Logging
+
+All installation steps and output from tc-driver-manager.sh command are logged to the standard
+logging directory /opt/sysmgt/1ogs within file RHL_TPM_UTILS. log
+
+4.5.1.4 Post Installation
+
+At the end of the installation the Installation files may be removed from the temp directory
+/tmp/RHL_TPM_UTILS
+
+4.5.2 Audit of User Action
+The Task will record the running of the task as a SYSMAN3 Event
+
+4.5.3 SMG_ControlWindowsService
+
+4.5.3.1 Function
+Aworkflow that will stop or start a named Windows Service on a managed computer.
+The action, including the invoking user, is logged for audit.
+
+4.5.3.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+Action IN YES Either "stop" or "start" (to either stop or start the
+service)
+
+ServiceName IN YES Display Name or Shortname of the Windows
+
+Service to be stopped or started
+
+TargetServer IN YES TPM device ID of the Server upon which the
+Service is to be stopped or started
+
+4.5.3.3 Calls
+This workflow can be initiated via the following calls:
+Workflow Call:
+
+SMG_ControlWindowsService (Action, ServiceName, TargetServer)
+
+TPM SOAP Call:
+
+$TIO_HOME/soapclient/tpmlteSoap/soapcli.sh <valid_userid>
+<valid_password>
+
+“http: //<tpmservername>:8777/ws/pid/TpmLiteSoapService?wsdl”
+executeDeploymentRequest SMG_ControlWindowsService <Action>
+<ServiceName> <TargetServer>
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 29 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5.3.4 Pseudo Code
+
+The Task executes a device.execute logival operation to perform a net start/stop on the requested
+service
+
+4.5.3.5 Logging
+Logging is via TPM
+
+4.5.3.6 Audit
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.5.4 SMG _FileTransfer
+
+4.5.4.1 Function
+Aworkflow that will transfer a file from one managed computer to another.
+
+The action, including the invoking user, is logged for audit.
+
+4.5.4.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+SourceServerlD IN YES TPM device ID of the Server upon which the
+required file exists
+
+SourceServerName IN NO Optional hostname of the Source Server
+
+SourcePath IN YES Fully qualified path to the required source file
+
+SourceFile IN YES Filename of the Source file
+
+TargetServerlD IN YES TPM device ID of the Server upon which the file
+should be copied to
+
+TargetServerName IN NO Optional hostname of the Target Server
+
+TargetPath IN YES Fully qualified path for the required target file
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 30 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+TargetFile IN YES Filename of the Target file
+DOS2UNIX IN NO Optional switch to perform DOS to UNIX
+
+conversion on the file - "Y" will execute this —
+default (i.e. none specified) is "N"
+
+4.5.4.3 Calls
+This workflow can be initiated via the following calls:
+
+Workflow Call:
+
+SMG_FileTransfer(SourceServerID, <null>, SourcePath, SourceFile,
+TargetServerID, <null>, TargetPath, TargetFile, <null>)
+TPM SOAP Call:
+
+$TIO_HOME/soapclient/tpmlteSoap/soapcli.sh <valid_userid>
+<valid_password>
+
+“http: //<tpmservername>:8777/ws/pid/TpmLiteSoapService?wsdl”
+executeDeploymentRequest SMG_FileTransfer <SourceServerID>,
+<SourceServerName> <SourcePath> <SourceFile> <TargetServerID>
+<TargetServerName> <TargetPath> <TargetFile> <DOS2UNIX>
+
+4.5.4.4 Pseudo Code
+
+The workflow executes a TPM FileRepository.GetFile/PutFile logical operation
+
+4.5.4.5 Logging
+Logging is via TPM
+
+4.5.4.6 Audit
+Code Message Description / Cause
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+
+4.5.5 SMG_Updatelnventory
+
+4.5.5.1 Function
+
+A workflow that can create, update or delete and Inventory record associated with a computer. Utilised
+where actions are to be recorded against a computer for reporting purposes.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 31 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.5.5.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+ServerlD IN YES TPM ID of Server whose inventory is to be
+updated
+
+Inv_Component_Name IN YES Name of Component to be Inserted / Updated
+
+Inv_Component_Value IN YES Value to be associated to Component Insert /
+Update
+
+4.5.5.3 Calls
+
+This workflow can be initiated via the following calls:
+
+Workflow Call:
+
+SMG_UpdateInventory(ServerID, Inv_Component_Name, Inv_Component_Value)
+
+TPM SOAP Call:
+
+$TIO_HOME/soapclient/tpmlteSoap/soapcli.sh <valid_userid> <valid_password>
+“http: //<tpmservername>:8777/ws/pid/TpmLiteSoapService?wsdl”
+executeDeploymentRequest SMG_UpdateInventory <ServerID> <Inv_Component_Name>
+<Inv_Component_Value>
+
+4.5.5.4 Pseudo Code
+The Task performs DCMQuery operations
+
+4.5.5.5 Logging
+Logging is via TPM
+
+4.5.5.6 Audit
+Code Message
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref: DEV/INF/LLD/0079
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 32 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.6 RHL_TPM_SUPPORTTASKS: User-Invoked TPM
+Workflows
+
+4.6.1 Installation
+TPM Workflows are delivered within a .tcdriver file (in essence a zip file)
+.tcdriver files must be generated within the Eclipse Framework (APDE) within a TPM Environment.
+
+The resultant compiled and zipped Workflows can be installed within any TPM environment using the
+TPM supplied $ { TIODIR} /tools/tc-driver-manager.sh command.
+
+The .tcdriver and installation script should be copied to /tmp/RHL_TPM_SUPPORTTASKS prior to
+execution
+
+No PSPID vars are required for this installation.
+The TPM Server must be active prior to installation.
+
+4.6.1.1 Pre-Requisites
+
+The following products must be installed prior to this product;
+
+Product Description
+
+WIN_SMG_INSTSUPPLIB Latest version of the Systems Management Support Library — this
+contains unloadevent.exe used by the HNGX_Unload_Event_Log
+workflow
+
+RHL_TPM_UTILS TPM Utility Workflows
+
+4.6.1.2 Installation Files
+The following files are delivered for the installation:
+
+File Description
+
+rhl_tpm_supporttasks. install TPM Utility Workflows installation script
+
+rhl_tpm_supporttasks.tcdriver TPM Utility Workflows
+
+4.6.1.3 Installation Process
+The product is installed by running the rhl_tpm_supporttasks. install script.
+When the installation script is run, it will perform the following actions —
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 33 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e Test for installation logfile and directory & create if either found not to exist
+e Test required .tcdriver file exists in temp install directory
+
+e Test required TPM Target directory exists — create if not
+
+e Copy .tcdriver file to TPM Target directory
+
+e Attempt uninstallation of existing version of .tcdriver file (this warns to log if no previous version
+found — but we're ok to ignore if so as this must be a fresh install)
+
+e Run install of supplied .tcdriver file
+
+4.6.1.4 Logging
+
+All installation steps and output from tc-driver-manager.sh command are logged to the standard
+logging directory /opt/sysmgt/1logs within file RHL_TPM_SUPPORTTASKS. log
+
+4.6.1.5 Post Installation
+
+At the end of the installation the Installation files may be removed from the temp directory
+/tmp/RHL_TPM_SUPPORTTASKS
+
+4.6.2 IHNGX_Audited_File_Transfer
+
+4.6.2.1 Function
+
+This workflow will transfer a named file from one managed computer to the TPM DIAGS repository.
+A compression option is available to reduce file size.
+
+Files over 100Mb cannot be transferred with this workflow.
+
+DOS formatted files can be converted to UNIX format during a transfer.
+
+4.6.2.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+SourceServer IN YES Hostname of the server housing the required file
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+SourcePath IN YES Fully qualified path to the required file
+SourceFile IN YES Filename of the file to be transferred
+FileCompress IN NO Option to compress the file prior to transfer with
+
+gzip (i.e. creates .gz file)
+
+“Y” or “N” (defaults to “N”)
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 34 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+DOS2UNIX IN NO Option to convert file from DOS format to UNIX.
+
+“Y" or “N” (defaults to “N”)
+
+46.2.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks
+
+4.6.2.4 Pseudo Code
+This task invokes the SMG_FileTransfer Workflow
+
+46.2.5 Logging
+Logging is via TPM native logging facilities
+
+4.6.2.6 Audit
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.6.3. HNGX_Control_Windows_Service
+
+4.6.3.1 Function
+This workflow will start or stop a named Windows Service on a managed computer.
+
+This workflow can only be executed against computer definitions recorded as being a Windows platform
+
+4.6.3.2 Parameters
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 35 of 69
+Fe)
+FUJITSU
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+POL00397162
+POL00397162
+
+Parameter Name IN/OUT I Mandatory I Description
+
+TargetServer IN YES TPM device ID of the Server upon which the
+Service is to be stopped or started
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+Action IN YES Either "stop" or "start" (to either stop or start the
+service)
+
+ServiceName IN YES Display Name or Shortname of the Windows
+Service to stopped or started
+
+46.3.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+
+Tasks.
+
+4.6.3.4 Pseudo Code
+
+This workflow invokes the SMG_Control_Windows_Service Workflow
+
+4.6.3.5 Logging
+
+Logging is via TPM native logging facilities
+
+4.6.3.6 Audit
+
+Code Message
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.6.4 HNGX_Diags_Run_df
+
+4.6.4.1 Function
+
+This workflow runs a df command on a specified managed computer.
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref:
+Version:
+UNCONTROLLED IF PRINTED Date:
+
+Page No:
+
+DEV/INF/LLD/0079
+v0.3
+
+07-SEP-2009
+
+36 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+4.6.4.2 Parameters
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+CommandArgs IN NO Any command arguments.
+eg.
+-k (block size in K)
+-h (human readable output)
+NOTE - the following chars are not allowed
+7&1 <>
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+
+Repository DIAGS share.
+“Y" or “N” (defaults to “N”)
+
+CommandOutput OUT n/a Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+46.4.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+4.6.4.4 Pseudo Code
+
+Uses the device.execute logical operation to execute a df command
+
+46.4.5 Logging
+Logging is via TPM native logging facilities
+
+4.6.4.6 Audit
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 37 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Code Message
+800 Workflow Initiated
+801 Workflow Completed
+
+Successfully
+
+4.6.5 HNGX_Diags_Run_dir
+
+4.6.5.1 Function
+This workflow runs a dir command on a specified managed computer.
+
+This workflow is primarily designed to run the Windows dir command on targets with computer
+definitions recorded as being a Windows platform. However, execution on a UNIX platform will result in
+similar out to an Is command.
+
+4.6.5.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+CommandArgs IN NO Any command arguments.
+eg.
+<directory_name>
+
+IS (display subdirectories too)
+/Q (display owner)
+
+NOTE - the following chars are not allowed
+7&1 <>
+
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+Repository DIAGS share.
+“Y" or “N” (defaults to “N”)
+
+CommandOutput OUT n/a Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 38 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+46.5.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+4.6.5.4 Pseudo Code
+Uses the device.execute logical operation to execute a dir command
+
+4.6.5.5 Logging
+Logging is via TPM native logging facilities
+
+4.6.5.6 Audit
+Code Message
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+
+4.6.6 HNGX_Diags_Run_lIs
+
+4.6.6.1 Function
+This workflow runs an Is command on a specified managed computer.
+
+This workflow is primarily designed to run the UNIX Is command on targets with computer definitions
+recorded as being a UNIX platform. However, execution on a Windows platform will result in similar out
+to, using the cygwin provided Is command.
+
+4.6.6.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+Any command arguments.
+
+CommandArgs IN NO eg
+-Itc <directory_name>
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 39 of 69
+Fe)
+FUJITSU
+
+POL00397162
+POL00397162
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+-la <file_name>
+NOTE - the following chars are not allowed
+7&1 <>
+
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+Repository DIAGS share.
+
+“Y" or “N” (defaults to “N”)
+
+CommandOutput OUT nla Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+46.6.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+
+Tasks.
+
+4.6.6.4 Pseudo Code
+
+Uses the device.execute logical operation to execute an Is command
+
+4.6.6.5 Logging
+
+Logging is via TPM native logging facilities
+
+4.6.6.6 Audit
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.6.7 HNGX_Diags_Run_ps
+
+4.6.7.1 Function
+
+This workflow runs a ps command on a specified managed computer.
+
+This workflow is primarily designed to run the UNIX ps command on targets with computer definitions
+recorded as being a UNIX platform. However, execution on a Windows platform will result in similar out
+to, using the cygwin provided ps command.
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref. DEV/NF/LLDI0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 40 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+4.6.7.2 Parameters
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+CommandArgs IN NO Any command arguments.
+eg.
+-ef
+NOTE - the following chars are not allowed
+7 &1<>
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+
+Repository DIAGS share.
+
+“Y” or “N” (defaults to “N”)
+
+CommandoOutput OUT nla Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+46.7.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+4.6.7.4 Pseudo Code
+Uses the device.execute logical operation to execute a ps command
+
+4.6.7.5 Logging
+Logging is via TPM native logging facilities
+
+4.6.7.6 Audit
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 41 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+
+Successfully
+
+4.6.8 I HNGX_Purge_Aged_Diagnostics
+4.6.8.1 Function
+This workflow purges old files from the TPM Repository Diagnostics area for the specified Server.
+4.6.8.2 Parameters
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run command
+
+on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+AgeDays IN NO The age in days after which files within the
+<TPMrepository>/sysman/<TargetServer>/diags
+directory should be deleted
+
+(Null entry defaults to “31” days)
+
+46.8.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+4.6.8.4 Pseudo Code
+Uses a local sriptlet to execute
+
+¢ find $FileRepositoryPath$FilePath -type f -mtime +$AgeDays -Is -exec rm -v {} \;
+Logging
+
+Logging is via TPM native logging facilities
+
+4.6.8.5 Audit
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 42 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+
+Successfully
+4.6.9 HNGX_Purge_Aged_Logfiles
+4.6.9.1 Function
+This workflow purges old files from the TPM Repository Logfile area for the specified Server.
+4.6.9.2 Parameters
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run command
+on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+AgeDays IN NO The age in days after which files within the
+<TPMrepository>/sysman/<TargetServer>/logs
+directory should be deleted
+
+(Null entry defaults to “31” days)
+
+46.9.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+46.9.4 Pseudo Code
+Uses a local sriptlet to execute
+
+¢ find $FileRepositoryPath$FilePath -type f -mtime +$AgeDays -Is -exec rm -v {} \;
+Logging
+
+Logging is via TPM native logging facilities
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 43 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+46.9.5 Audit
+Code Message Description / Cause
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+
+4.6.10 HNGX_Retrieve_Windows_Service_Status
+
+4.6.10.1 Function
+This workflow runs a net start command on a specified windows managed computer
+This workflow can only be executed against computer definitions recorded as being a Windows platform
+
+4.6.10.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+Repository DIAGS share.
+
+“Y” or “N” (defaults to “N”)
+
+CommandOutput OUT n/a Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+4.6.10.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+Tasks.
+
+4.6.10.4 Pseudo Code
+Uses the device.execute logical operation to execute a net start command
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 44 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.6.10.5 Logging
+Logging is via TPM native logging facilities
+
+4.6.10.6 Audit
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.6.11 HNGX_Unload_Event_Log
+
+4.6.11.1 Function
+
+This workflow runs a custom unloadevent.exe command on a specified windows managed computer to
+retrieve Event Log information.
+
+unloadevent.exe is delivered within common windows platform product WIN_SMG_INSTSUPPLIB.
+This workflow can only be executed against computer definitions recorded as being a Windows platform
+
+4.6.11.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+TargetServer IN YES TPM Device ID of managed computer to run
+command on
+
+(Identified within Favourite Tasks / Select Target
+Computers page when running task)
+
+TargetLog IN YES Event Log to be searched (e.g. Application,
+System, Security)
+
+EventSource IN NO Message Source — Filters only those Events with
+the specified source (e.g. “Service Control
+Manager”
+
+or
+
+All Events (Default)
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 45 of 69
+Fe)
+FUJITSU
+
+POL00397162
+POL00397162
+
+SYSMAN Support Tasks for HNG-X
+COMMERCIAL IN CONFIDENCE
+
+MaxDays IN NO Maximum number of days to filter from (e.g. 2 -
+retrieves only Events within last 2 days)
+or
+No Max (Default)
+
+DiagnosticOutput IN NO Option to save results to a file saved in the TPM
+Repository DIAGS share.
+
+“Y" or “N” (defaults to “N”)
+
+CommandOutput OUT n/a Output of the executed command. Displayed
+within workflow logs and saved to DIAGS file if
+required.
+
+4.6.11.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+
+Tasks.
+
+4.6.11.4 Pseudo Code
+
+Uses the device.execute logical operation to execute a /sysmgt/tools/unloadevent.exe
+
+command
+
+4.6.11.5 Logging
+
+Logging is via TPM native logging facilities
+
+4.6.11.6 Audit
+
+Code Message Description / Cause
+
+800 Workflow Initiated
+
+801 Workflow Completed
+Successfully
+
+4.6.12 HNGX_Unload_Registry_Info
+
+4.6.12.1 Function
+
+This workflow runs a reg query command on a specified windows managed computer.
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref. DEV/NF/LLDI0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 46 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+(note — displays all values under key)
+
+This workflow can only be executed against computer definitions recorded as being a Windows platform
+
+4.6.12.2 Parameters
+
+Parameter IN/OU I Mandator I Description
+Name T y
+SourceServer IN YES Hostname of the server housing the required file
+
+(Identified within Favourite Tasks / Select Target Computers
+page when running task)
+
+RegKey IN YES Registry Key name to be queried
+eg.
+HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneinformation
+)
+
+DiagnosticOutpu I IN NO Option to save results to a file saved in the TPM Repository
+
+t
+
+DIAGS share.
+
+“Y” or “N” (defaults to “N”)
+
+CommandOutput I OUT n/a
+
+Output of the executed command. Displayed within workflow
+logs and saved to DIAGS file if required.
+
+4.6.12.3 Calls
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 Creating and Sharing Favourite
+
+Tasks.
+
+4.6.12.4 Pseudo Code
+
+Uses the device.execute logical operation to execute a reg query command
+
+4.6.12.5 Logging
+
+Logging is via TPM native logging facilities
+
+4.6.12.6 Audit
+
+©Copyright Fujitsu Services Ltd 2008
+
+COMMERCIAL IN CONFIDENCE Ref. DEV/NF/LLDI0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 47 of 69
+
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Code Message Description / Cause
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 48 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X .
+FUJITSU COMMERCIAL IN CONFIDENCE E&
+
+4.7 UNX_ITM_LOGHOUSEKEEP: UNIX Campus Server Log
+File Housekeeping Process
+This product is documented in the ITM LLD DEV/INF/LLD/0039
+
+4.8 WIN_ITM_LOGHOUSEKEEP: WINDOWS Campus Server
+Log File Housekeeping Process
+This product is documented in the ITM LLD DEV/INF/LLD/0036
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 49 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.9 RHL_TMF_TASKSITM
+
+This product delivers the systems management requirements specified in POA high-level design
+DES/APP/HLD/0010 for web service stats collection and a daily restart of the moneygram web service
+
+4.9.1 Background
+
+Web Services were introduced in stages for Horizon as detailed below.
+
+4.9.1.1 S60
+
+The two web services implemented at S60 are known as PAF and DVLA. PAF provides a lookup service
+for address and postcode queries using data stored locally on the servers hosting the web service. The
+DVLA web service provides an interface to the DVLA for online authorisation of vehicle re-licensing.
+
+4.9.1.2 $90
+
+The web service implemented at S90 is known as APOP; it is a Web Service that provides the interface
+for on-line transactions between the Counter and Authorisation Services hosted on Oracle databases.
+Initially there will be one Authorisation Service for postal orders but in the future it is envisaged that
+further Authorisation Services will exist to handle different types of vouchers. The APOP Web Service
+provides routing to these different Authorisation Services through a common interface.
+
+4.9.1.3 T40
+
+The web service implemented at T40 is known as MoneyGram; it is a Web Service that provides the
+interface for on-line transactions between the Counter and the MoneyGram (MGRM) Host service
+located in Minneapolis, USA.
+
+4.9.1.4 T60
+
+The web service implemented at T60 is known as Telecoms (TCOM); it consists of two web service
+components; BBND Service Application and BKAC Service Application that interact with the ADSL
+Checker Service and BACS checker service respectively.
+
+4.9.1.5 T82
+
+An additional web service was implemented at T82 on the Telecoms server known as Kahala GDD
+Calculator Service Web Service (PGDD); it provides access from the smartpost and AP-ADC Counter to
+the Neopost Internet Service in order to provide customers with Guaranteed Delivery Dates (GDD) for
+international parcels being sent using the ParcelForce World Wide guaranteed delivery services.
+
+4.9.1.6 HNG-X-INT14
+
+Web Services Help Desk, Service Identifier (HDSK) and Online Counter Training, Service Identifier
+(OLCT) are new for HNG-X.
+
+Fujitsu's Interstage Application Server is used to host web services. In the live environment TCOM is
+hosted on separate physical servers to APOP, PAF DVLA and MGRM though, by design, the
+implementation is not restricted in this way and it is possible to host multiple web services on the same
+server.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 50 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+The implementation for S90 onwards specifies some service subscripting of folder structures to ensure
+such multi hosting is supported by this development.
+
+The implementation for TCOM service hosts multiple web services, namely BBND, BKAC and PGDD.
+4.9.2 Requirement
+
+4.9.2.1 Collection of Statistics
+
+All the Web Service Agents other than the Online Counter Training Service are required to collect
+statistics in a fixed format for input to the Data Warehouse.
+
+Systems management requirements for the web services differ only in the configuration data so the
+implementation will be generic and sufficiently flexible to cater for the introduction of new web services
+with minimal reconfiguration.
+
+Web services will generate statistical information on a regular basis throughout the day. At midnight, the
+logs will be moved to an archive directory so that they will be available for collection by Tivoli at 00:15.
+
+On a daily basis, Tivoli must perform the following actions :
+
+e Retrieve logs from all servers hosting the configured web services.
+«Translate the retrieved files from DOS to Unix format.
+* Transfer the files to the active data warehouse.
+
+e Move files successfully transferred to a PROCESSED directory on the web server they
+originated from.
+
+« Remove files from the PROCESSED directory that are older than N days; N should be
+configurable and set to 7.
+
+Servers that are not accessible when Tivoli attempts to collect the data should be ignored and the data
+collected the following night.
+
+The destination directory to be used on the data warehouse is $REPOSITORY/webstats/YYMMDDitrans,
+where YYMMDD is the date of the day before the day on which the retrieval is being run. Once all the
+files have been transferred, the destination directory should be renamed from "trans" to "load".
+
+For HNG-X, the web service specification allows for multiple Web Services to be run on all servers. To
+enable this, the folder structure containing the web statistics includes the service name.
+
+i.e. /opt/HngxAgents/WS/WSStats/Svcid/Stats/Archive. (where Svcid is the specific Authorisation Web
+Service)
+
+4.9.2.2 MoneyGram Daily Restart
+
+There is a requirement to run a schedule task on the MoneyGram server, which will run a script to
+stop/restart the Moneygram web service on a daily basis.
+
+The restart should not be performed if a file named STOPPED exists in the relevant administrative
+folder for the web service.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 51 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+The service is scheduled to be stopped / restarted at 07:00 each day if the service has not already been
+restarted in the last two hours. The service should be restarted using the commands WSstop.cmd
+followed by WSstart.cmd. If required, the time of the stop/start can been delayed from 07:00 via the
+configuration file.
+
+4.9.3. Implementation
+
+4.9.3.1 Statistics Collection
+
+A configuration file will drive Tivoli tasks for the collection of web services statistics. This will be stored
+as /opt/sysmgt/cfg/websvc.conf on the TMR server. Configuration data in the file will include:
+
+e A list of web services systems. The list relates to standard definitions within configuration file
+websvc.conf that specify the servers for a particular platform type. These are specified using the
+format <PLATFORM>SERVERS="<server01>,<server02>,<servernn>" where <PLATFORM>
+defines the platform, MGRM, APOP, DVLA, PAF, TCOM and HDSK, and <server01> <server02>
+<servernn> is a comma-delimited list of Tivoli endpoint names for that platform.
+
+e A list of web services currently active on the each server. The list relates to web services currently
+active on each server. At HNG-X this is as follows:
+
+Platform (System) Web Service
+
+DVLA (DVLA) DVLA
+
+PAF (PAF) PAF
+
+APOP (APOP) APOP
+
+MoneyGram (MGRM) MGRM
+
+Telecom (TCOM) BBND, BKAC, PGDD
+HDSK HDSK
+
+e The Tivoli endpoint name of the active data warehouse server.
+
+« The value used for $REPOSITORY on the data warehouse. This is used to specify the initial part of
+the directory path where statistics will be transferred. The default for this, as used on live for other
+file transfers, will be /pw/stagonl/repository.
+
+e The directory used to store required command files on web servers. The default for this, using Unix
+format for directory delimiters, will be /WS.
+
+« The directory used to hold the archived web service statistics on multiple Web Service Hosting
+Servers. The default for this, using Unix format for directory delimiters, will be
+/opt/HngxAgents/WS/WSStats/Svcid/Stats/Archive.
+
+e Various Endpoint test parameters
+
+« The number of days after which statistical files in the PROCESSED directory will be removed;
+variable WEBSVC_DAYS_OLD_PARAM set to “7”.
+
+The retrieval of files will be implemented using code based on that used in ad-hoc file retrieval. This
+uses a set of timing values to cancel transfer requests that are not responding. Similar values will be
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 52 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+included with websvc.conf with an additional value specifying the number of retries for failed file
+transfers.
+
+There are differences in the file transfer method that can be used for transferring files from web service
+servers compared with transferring files to the data warehouse. Tivoli endpoints can only be the
+destination of a Tivoli software package and not the source. File transfer from the Web Server servers
+must therefore use functions provided in Tivoli's wadminep command to transfer individual files back to
+a Tivoli managed node. In this case, a Tivoli task will be used to list the archived statistics directory on
+the servers and copy the files to a temporary holding area on the TMR one by one. Once the files have
+been retrieved, a Tivoli software package can be used to transfer all retrieved files to the data
+warehouse in a single operation.
+
+The associated Tivoli job will have the following process flow:
+
+Step Process Description
+
+1 Validate that the "load" directory for the previous day does not already exist on the data
+warehouse. The presence of the directory indicates that processing has already
+successfully completed.
+
+2 For each system listed in websvc.conf and each server name for the relevant system listed
+in websvc.conf, perform the following steps :
+
+2.1 Retrieve a directory listing for the archived statistics directories on the current server.
+
+2.2 Housekeep the processed directory for each web service on the server also create the
+processed dir if not exists
+
+2.3 For each file in the retrieved directory listing, perform the following steps :
+
+2.3.1 I Transfer the file to a temporary holding directory on the TMR.
+
+2.3.2 I Translate the file to Unix format using the DOS2UNIX command.
+
+2.3.3 I If operations completed ok, record the server and file name so that the source file can be
+moved once transferred to the data warehouse.
+
+If no files were transferred, report a failure status and exit.
+
+Transfer the software package to the data warehouse.
+
+If the file transfer has completed ok, perform the following steps :
+
+5.1 Rename the data warehouse tmp directory so that destination directory includes
+yesterday's date/trans
+
+5.2 Rename the data warehouse directory suffix from "trans" to "load".
+
+5.3 Move source files that were successfully transferred to a processed sub-directory of the
+directory they exist in on each web server.
+
+Erase files from the temporary holding directory on the TMR.
+
+Report on overall status.
+
+A log file for the job will be written to directory /opt/sysmgt/websvcilogs. This will use a rolling set of
+seven files named stats_Day.log where Day is the relevant day of the week.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 53 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+The Tivoli job will be scheduled to run at 00:15 daily.
+
+4.9.3.2 I Scheduled Daily Restart (MoneyGram only)
+The daily restart is a Tivoli task/job triggered via the Tivoli scheduler.
+
+The scheduled job on the TMR is MGRM_Websvc_Restart and is scheduled for 07:00 daily. This job is
+created from the task mgrm_daily_restart under the task library web_service_tasks in policy region
+campus. The task calls a shell script websvc_mgrm_restart.sh that retrieves the MGRM server names
+and triggers the subtask mgrm_daily_restart_ep on each MGRM server.
+
+The subtask running locally on the server hosting MGRM web services will consist of a script,
+websvc_mgrm_daily_restart.sh, and a configuration file, websvc_mgrm_daily_restart.cfg by default,
+installed in directory /opt/sysmgt/tools. These are delivered in product RHL_ITM_MGRM_CFG.
+
+The configuration file for this monitor will contain:
+e A space-delimited list of web services hosted by the server.
+* The number of minutes to wait since the last restart of the web services.
+
+e The base directory for the web services. This is the directory from which the commands
+WSStop.cmd and WSStart.cmd can be invoked.
+
+e The number of minutes after the Tivoli scheduled 07:00 to stop/restart the service. This can
+be used to vary the stop/restart time on individual servers (optional)
+
+e A subdirectory named websvc_logs will be used to store any log files generated by the
+script.
+
+The log file, websvc_mgrm_daily_restart.log, is overwritten each time the script is invoked and
+includes the date and time at which the current run started so that correct operation of the task can be
+easily confirmed.
+
+4.9.4 Installation
+
+4.9.4.1 PSPID parameters
+
+Required PSPID parameters are as follows:
+
+<parameter prodver="RHL_TMF_TASKSITM" name="PAFSERVERS" value="Iprppws001 ,Iprppws002"/>
+<parameter prodver="RHL_TMF_TASKSITM" name="DVLASERVERS* value="Iprpdws001, Iprpdws002"/>
+<parameter prodver="RHL_TMF_TASKSITM" name="APOPSERVERS" value="Iprpaw's001 lprpaws002"/>
+<parameter prodver="RHL_TMF_TASKSITM" name="MGRMSERVERS*" value="Iprpmws001 Iprpmws002"/>
+<parameter prodver="RHL_TMF_TASKSITM" name="TCOMSERVERS*" value="Iprptws001"/>
+
+<parameter prodver="RHL_TMF_TASKSITM" name="HDSKSERVERS" value="Iprphws001,Iprphws002"/>
+<parameter prodver="RHL_TMF_TASKSITM" name="WS_ACTIVE_DWH value="Isgpems001"/
+
+Note: WS_ACTIVE_DWH is a dummy value and should be replaced with the Tivoli Endpoint name of
+the Active Data Warehouse server.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 54 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+All other values are the expected live values and should be replaced as required for development/test
+rigs.
+The xml file containing these values should be:
+
+<ems server name>_ parameters.xml and it should reside in the directory /opt/sysmgt/cfg prior to
+running the installation script.
+
+4.9.4.2 Installation Process
+
+«Check that all files have been copied to the directory /tmp/RHL_TMF_TASKSITM
+
+e All files in this directory should be in UNIX format (if required use dos2unix *)
+
+e Check permissions are correct as listed below.
+
+Install the tasks as follows (remaining in the /tmp/ RHL_TMF_TASKSITM directory) :
+>» sh install_websvc_tasks.sh (this may take a few minutes)
+
+* Check the logfile /opt/sysmgt/logs/RHL_TMF_TASKSITM.log.
+If successful, schedule the jobs as follows:
+
+» sh install_websvc_scheduling.sh
+
+4.9.4.3 Logging
+The installation logfile produced is /opt/sysmgt/logs/RHL_TMF_TASKSITM.log.
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 55 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.10 RHL_TPM_SUPPORTTASKS_ BMC: Workflows for NCO
+Patrol Probe Configuration
+
+4.10.1 Installation
+TPM Workflows are delivered within a .tcdriver file (in essence a zip file)
+.tcdriver files must be generated within the Eclipse Framework (APDE) within a TPM Environment.
+
+The resultant compiled and zipped Workflows can be installed within any TPM environment using the
+TPM supplied ${TIODIR} /tools/tc-driver-manager.sh command.
+
+The .tcdriver and installation script should be copied to /tmp/RHL_TPM_SUPPORTTASKS prior to
+execution
+
+No PSPID vars are required for this installation.
+
+The TPM Server must be active prior to installation.
+
+4.10.1.1 Pre-Requisites
+The following products must be installed prior to this product;
+
+Product Description
+
+RHL_NCO_PROBEBMC_CFG Latest version of the Systems Management BMC Patrol Probe
+Config (Installed on EES Platforms) that contain the executable
+smg_nco_patrol_write.exp
+
+RHL_TPM_WORKFLOWS_LIB I TPM System Logging Workflows
+
+4.10.1.2 Installation Files
+The following files are delivered for the installation:
+
+File Description
+
+thl_tpm_supporttasks_bmc. install TPM Utility Workflows installation script
+
+rhl_tpm_supporttasks_bmc.tcdriver I TPM Utility Workflows
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 56 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.10.1.3 Installation Process
+The product is installed by running the rhl_tpm_supporttasks_bmc.install script.
+When the installation script is run, it will perform the following actions —
+
+e Test for installation logfile and directory & create if either found not to exist
+
+e Test required .tcdriver file exists in temp install directory
+
+e Test required TPM Target directory exists — create if not
+
+e Copy .tcdriver file to TPM Target directory
+
+e Attempt uninstallation of existing version of .tcdriver file (this warns to log if no previous version
+found — but we're ok to ignore if so as this must be a fresh install)
+
+e Run install of supplied .tcdriver file
+
+4.10.1.4 Logging
+
+All installation steps and output from tce-driver-manager.sh command are logged to the standard
+logging directory /opt/sysmgt/logs within file RHL_TPM_SUPPORTTASKS_BMC.log
+
+4.10.1.5 Post Installation
+
+At the end of the installation the Installation files may be removed from the temp directory
+/tmp/RHL_TPM_SUPPORTTASKS_BMC
+
+4.10.2 HNGX_Patrol_Config_Display
+
+4.10.2.1 Function
+
+This workflow displays, within the TPM GUI, the current patrol.def file housed on a specified EES
+platform server.
+
+A diagnostic log file can be saved to the TPM Repository.
+
+4.10.2.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+TargetServer IN YES TPM Device ID of managed EES computer to
+run command on
+
+(Identified by hostname within Favourite Tasks /
+Select Target Computers page when running
+
+task)
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version: V0.3.
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 57 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+DiagnosticOutput IN NO Y or N to save returned Output to file within the
+
+diagnostic share.
+
+(default is N)
+
+CommandOutput OUT N/A Variable populated with command output.
+
+(Truncated to 3900 bytes in display — full output
+is available in log if saved)
+
+4.10.2.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 for Creating and Sharing Favourite
+Tasks.
+
+4.10.2.4 Pseudo Code
+
+Execute following command on remote server and store results in remote log file;
+cat /opt/netcool/omnibus/probes/linux2x86/patrol.def
+
+Copy remote log file to TPM Server repository
+
+Read copied logfile and display via TPM GUI as CommandOutput
+
+Remove copied log file if DiagnosticOutput = N
+
+4.10.2.5 Logging
+
+Remote command output is stored within
+/opt/sysmgt/logs/HNGX_Patrol_Config_Display.1log overwritten at every execution.
+
+TPM Diags file is stored is stored within the TPM Repository (accessible via the DIAGS share)
+subdirectory /sysman/hostname/diags with a filename HNGX_Patrol_Config Display _
+yyyymmddHHMMSS.1log
+
+4.10.2.6 Audit
+
+Message Description / Cause
+
+800 HNGX_Patrol_Config_Display: username: Workflow Initiated
+REQUESTED: ServerName cat
+/opt/netcool/omnibus/probes/linux2x86/patrol.def
+
+801 HNGX_Patrol_Config_Display: username: Workflow Completed
+COMPLETED: ServerName cat Successfully
+/opt/netcool/omnibus/probes/linux2x86/patrol.def
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 58 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.10.3 HNGX_Patrol_Config_Remove
+
+4.10.3.1 Function
+This workflow runs an nco_patrol_remove command on a specified EES platform.
+
+Removes the definition of the BMC Patrol Agent on the host and port from the patrol.def file for the BMC
+Patrol Probe.
+
+A diagnostic log file can be saved to the TPM Repository.
+
+4.10.3.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+TargetServer IN YES TPM Device ID of managed EES computer to
+fun command on
+
+(Identified by hostname within Favourite Tasks /
+Select Target Computers page when running
+
+task)
+HostName IN YES Host to be removed from the definition file
+Port IN YES Port matching host to be removed from the
+definition file
+DiagnosticOutput IN NO Y or N to save returned Output to file within the
+
+diagnostic share.
+
+(default is N)
+
+CommandOutput OUT N/A Variable populated with command output.
+
+(Truncated to 3900 bytes in display — full output
+is available in log if saved)
+
+4.10.3.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 for Creating and Sharing Favourite
+Tasks.
+
+4.10.3.4 Pseudo Code
+
+Execute following command on remote server and store results in remote log file;
+nco_patrol_remove hostname port
+
+Copy remote log file to TPM Server repository
+
+Read copied logfile and display via TPM GUI as CommandOutput
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 59 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+Remove copied log file if DiagnosticOutput = N
+
+4.10.3.5 Logging
+
+Remote command output is stored within /opt/sysmgt/logs/HNGX_Patrol_Config_Remove.log
+overwritten at every execution.
+TPM Diags file is stored is stored within the TPM Repository (accessible via the DIAGS share)
+
+subdirectory /sysman/hostname/diags with a filename HNGX_Patrol_Config_Remove_
+yyyymmddHHMMSS.1log
+
+4.10.3.6 Audit
+
+Code Message Description / Cause
+
+800 HNGX_Patrol_Config_Remove: username: Workflow Initiated
+REQUESTED: ServerName nco_patrol_remove
+hostname port
+
+801 HNGX_Patrol_Config_Remove: username: Workflow Completed
+COMPLETED: ServerName nco_patrol_remove Successfully
+hostname port
+
+4.10.4 HNGX_Patrol_Config_Restore
+
+4.10.4.1 Function
+This workflow copies an existing patrol.def.backup file onto patrol.def on a specified EES platform.
+
+A diagnostic log file can be saved to the TPM Repository.
+
+4.10.4.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+TargetServer IN YES TPM Device ID of managed EES computer to
+run command on
+
+(Identified by hostname within Favourite Tasks /
+Select Target Computers page when running
+task)
+
+DiagnosticOutput IN NO Y or N to save returned Output to file within the
+diagnostic share.
+
+(default is N)
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 60 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+CommandOutput OUT N/A Variable populated with command output.
+
+(Truncated to 3900 bytes in display — full output
+is available in log if saved)
+
+4.10.4.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 for Creating and Sharing Favourite
+Tasks.
+
+4.10.4.4 Pseudo Code
+Execute following command on remote server and store results in remote log file;
+
+file /opt/netcool/omnibus/probes/1inux2x86/patrol .def .backup
+If found execute following command on remote server and store results in remote log file;
+
+cp -v /opt/netcool/omnibus/probes/1inux2x86/patrol .def.backup
+/opt/netcool/omnibus/probes/1inux2x86/patrol.def
+
+Copy remote log file to TPM Server repository
+Read copied logfile and display via TPM GUI as CommandOutput
+Remove copied log file if DiagnosticOutput = N
+
+4.10.4.5 Logging
+
+Remote command output is stored within
+/opt/sysmgt/logs/HNGX_Patrol_Config_Restore.1log overwritten at every execution.
+
+TPM Diags file is stored is stored within the TPM Repository (accessible via the DIAGS share)
+subdirectory /sysman/hostname/diags with a filename HNGX_Patrol_Config_Restore_
+YyyymmddHHMMSss. log
+
+4.10.4.6 Audit
+
+Code Message Des
+
+800 HNGX_Patrol_Config_Restore: username: Workflow Initiated
+REQUESTED: ServerName cp -v
+/opt/netcool/omnibus/probes/linux2x86/patrol.def.back
+up /opt/netcool/omnibus/probes/linux2x86/patrol.def
+
+801 HNGX_Patrol_Config_Restore: username: Workflow Completed
+COMPLETED: ServerName cp -v Successfully
+/opt/netcool/omnibus/probes/linux2x86/patrol.def.back
+up /opt/netcool/omnibus/probes/linux2x86/patrol.def
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 61 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.10.5 HNGX_Patrol_Config_Write
+
+4.10.5.1 Function
+This workflow runs an nco_patrol_write command on a specified EES platform.
+
+Adds the definition of the BMC Patrol Agent on the host and port to the patrol.def file for the BMC Patrol
+Probe.
+
+Password supplied with the Agent userid is encrypted with nco_patrol_encrypt.
+Copies existing patrol.def file to backup version before changes made..
+A diagnostic log file can be saved to the TPM Repository.
+
+4.10.5.2 Parameters
+
+Parameter Name IN/OUT I Mandatory I Description
+
+TargetServer IN YES TPM Device ID of managed EES computer to
+run command on
+
+(Identified by hostname within Favourite Tasks /
+Select Target Computers page when running
+
+task)
+
+HostName IN YES Host to be added to the definition file
+
+Port IN YES Port matching host to be added to the definition
+file
+
+UserlD IN YES UserID used to connect to the BMC Patrol Agent
+
+running on the added host
+
+Password IN YES Password for the UserID used to connect to the
+BMC Patrol Agent running on the added host
+
+(Password will be encrypted)
+
+DiagnosticOutput IN NO Y or N to save returned Output to file within the
+diagnostic share.
+
+(default is N)
+
+CommandOutput OUT N/A Variable populated with command output.
+
+(Truncated to 3900 bytes in display — full output
+is available in log if saved)
+
+4.10.5.3 Calls
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref: DEV/INF/LLD/0079
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 62 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 for Creating and Sharing Favourite
+Tasks.
+
+4.10.5.4 Pseudo Code
+
+NOTE: SMG Utility smg_nco_patrol_write.exp expect script has been developed to allow the execution of
+nco_patrol_write and automatically responds to the prompts presented by this executable as passed as
+parameters to the calling script (expect was used as the UserlD and Password prompts could not be
+redirected back to the executing shell for response via a shell script EOF block)
+
+Execute following command on remote server to backup existing patrol.def file;
+
+ep -v /opt/netcool/omnibus/probes/1inux2x86/patrol.def
+/opt/netcool/omnibus/probes/1inux2x86/patrol .def.backup
+
+Execute following command on remote server and store results in remote log file;
+
+/opt/sysmgt/tools/smg_nco_patrol_write.exp h
+
+password
+
+Copy remote log file to TPM Server repository
+Read copied logfile and display via TPM GUI as CommandOutput
+Remove copied log file if DiagnosticOutput = N
+
+4.10.5.5 Logging
+
+Remote command output is stored within /opt/sysmgt/logs/HNGX_Patrol_Config_Write.log
+overwritten at every execution.
+TPM Diags file is stored is stored within the TPM Repository (accessible via the DIAGS share)
+
+subdirectory /sysman/hostname/diags with a filename HNGX_Patrol_Config_Write_
+yyyymmddHHMMss. log
+
+4.10.5.6 Audit
+Code Message Description / Cause
+800 HNGX_Patrol_Config_Write: username: Workflow Initiated
+
+REQUESTED: ServerName
+/opt/sysmgt/tools/smg_nco_patrol_write.exp hostname
+port userid password
+
+801 HNGX_Patrol_Config_Write: username: Workflow Completed
+COMPLETED: ServerName Successfully
+/opt/sysmgt/tools/smg_nco_patrol_write.exp hostname
+port userid password
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 63 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+4.11 RHL_TPM_DXC_REP_LOAD: User-Invoked TPM
+Workflows
+
+4.11.1 Installation
+TPM Workflows are delivered within a .tcdriver file (in essence a zip file)
+.tcdriver files must be generated within the Eclipse Framework (APDE) within a TPM Environment.
+
+The resultant compiled and zipped Workflows can be installed within any TPM environment using the
+TPM supplied $ { TIODIR} /tools/tc-driver-manager.sh command.
+
+The .tcdriver and installation script should be copied to /tmp/RHL_TPM_DXCREPLOAD prior to
+execution
+
+No PSPID vars are required for this installation.
+The TPM Server must be active prior to installation.
+
+4.11.1.1. Pre-Requisites
+
+The following products must be installed prior to this product;
+
+Product Description
+
+DXC_CRYPTO_CLIENT_INT14 I NON SMG delivered DXC Client Software
+
+RHL_TPM_UTILS TPM Utility Workflows
+
+4.11.1.2 Installation Files
+The following files are delivered for the installation:
+
+File Descripti
+
+thl_tpm_dxc_rep_load. install TPM Utility Workflows installation script
+
+rthl_tpm_ dxc_rep_load.tcdriver I TPM Utility Workflows
+
+4.11.1.3 Installation Process
+The product is installed by running the rhl_tpm_ dxc_rep_load.install script.
+When the installation script is run, it will perform the following actions —
+e Test for installation logfile and directory & create if either found not to exist
+
+«Test required _tcdriver file exists in temp install directory
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: v0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+PageNo: 64 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+
+e Test required TPM Target directory exists — create if not
+e Copy .tcdriver file to TPM Target directory
+
+e Attempt uninstallation of existing version of .tcdriver file (this warns to log if no previous version
+found — but we're ok to ignore if so as this must be a fresh install)
+
+e Run install of supplied .tcdriver file
+
+4.11.1.4 Logging
+
+All installation steps and output from tc-driver-manager.sh command are logged to the standard
+logging directory /opt/sysmgt/1logs within file RL_TPM_DXCREPLOAD. log
+
+4.11.1.5 Post Installation
+
+At the end of the installation the Installation files may be removed from the temp directory
+/tmp/RHL_TPM_ DXCREPLOAD
+
+4.11.2 HNGX_DXC_REP_LOAD
+
+4.11.2.1 Function
+This workflow will transfer a CM delivered code from the DXC to the TPM repository via the DXC client.
+
+4.11.2.2 Parameters
+None
+
+4.11.2.3 Calls
+This workflow is to be initiated via the Favourite Tasks page.
+
+Note — This workflow must be defined as per instructions in Section 5 for Creating and Sharing Favourite
+Tasks.
+
+4.11.2.4 Pseudo Code
+Uses the device.execute logical operation to execute:
+
+executedxc.sh -principal DELServer -client EPM -plan CMtoDelServer -direction
+download -pass DXCPassword*
+
+4.11.2.5 Logging
+Logging is via TPM native logging facilities
+
+4.11.2.6 Audit
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 65 of 69
+POL00397162
+
+POL00397162
+(oe) SYSMAN Support Tasks for HNG-X
+FUJITSU COMMERCIAL IN CONFIDENCE
+Code Message Description / Cause
+800 Workflow Initiated
+801 Workflow Completed
+Successfully
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE Ref DEV/INF/LLD/0079
+Version V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 66 of 69
+POL00397162
+POL00397162
+
+(oe) SYSMAN Support Tasks for HNG-X .
+FUJITSU COMMERCIAL IN CONFIDENCE E&
+
+5 Creating and Sharing Favourite Tasks
+Please refer to DEV/APP/SPG/0006
+
+©Copyright Fujitsu Services Ltd 2008 COMMERCIAL IN CONFIDENCE. Ref: DEV/INF/LLD/0079
+Version: V0.3
+UNCONTROLLED IF PRINTED Date: 07-SEP-2009
+
+Page No: 67 of 69

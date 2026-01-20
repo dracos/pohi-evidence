@@ -1,0 +1,419 @@
+FUJ00155207
+FUJ00155207
+
+Peak Incident Management System
+
+Call Reference  PC0140715 Call Logger Deleted User -- EDSC
+Release Targeted At -- T30 Top Ref : FSTK_ 2 0 _WP24470
+Call Type Live Incidents Priority B -- Business restricted
+Contact Deleted Contact Call Status Closed -- S/W Fix Available to Call Logger
+Target Date —10/1 1/2006 Effort (Man Days) 2.00
+Summary Branch summarisation: CofABalance object not updated
+All References — Type Value
+
+Fast Track Fix FSTK_2_0_WP24464
+
+Work Package PWY_WP._ 24470
+
+Release PinICL _ PCO141675
+
+Fast Track Fix FSTK_2_0_WP24470
+
+Release PinICL PC0143079
+
+Work Package PWY_WP._ 24464
+
+Release PinICL PC0141951
+
+SSCKEL KEL acha4226M
+Progress Narrative
+
+fbate:30-Oct-2006 17:30:27 User:Anne Chambers
+CALL PC0140715 opened
+
+Details entered are:~
+
+summary:Branch summarisation: CofABelance object not updated
+call Type:
+
+call Priority:B
+
+ffarget Release:T30
+
+Routed to:EDSC - _Unassigned_
+
+Date:30-Oct-2006 17:30:26 User:Anne Chambers
+[Start of Response]
+
+fhe CofABalance 551000 object should be updated each day (normally at EOD) to include the CofASummary figure for the account. In
+some instances this is not happening. Two cases I have found recently happened when the gateway had been rebooted and was writing
+loverdue CABS messages. The CofASummary messages and trailer for a previous day were written successfully, but processing stopped
+before the CofABalance persistent object was updated. On restart, the check probably found the trailer and assumed the process
+was complete, but did not notice that the object had not been updated.
+
+[the figure is needed because it is sent to POL within the LFS cash statement (GeneratedCash attribute). If it is wrong, some of
+pOL's cross checks may fail, and they may question why there is a difference between this figure and POLFS. There is now a
+
+ech. which realigns the CofABalance at EOD after end of Trading Period, but it would be better if we can remove this
+inconsistency and get it produced properly at the outset.
+
+could an extra check be made within CABSProcess to see whether the EODDate in the object is equal to (or greater than?) the
+lcoppate being processed? If not, the required summary line could be found via the CofABSP Trailer object.
+
+It attach messagestore extracts from two recent examples:
+IFAD 169859, CofASummary for 2nd Oct written 4th Oct 11:06 GMT, CofABalance not updated;
+IFAD 118807, CofASummary for 21st Sep written 22nd Sep 12:01 GMT, CofABalance not updated.
+[End of Response]
+
+kesponse code to call Live use error(L) as Incident Under Investigation(40)
+
+jate:30-Oct-2006 17:32:32 Uscr:Anne Chambers
+evidence Added -
+
+Date: 30-Oct-2006
+evidence Added -—
+
+lDate:30-Oct-2006 17:34:30 User:Anne Chambers
+
+[Start of Response]
+
+outing to EPOSS Dev via QFP.
+
+[End of Response]
+
+lkesponse code to call type L as Category 40 -- Pending -- Incident Under Investigation
+Hours spent since call received: 0 hours
+
+JDate:30-Oct-2006 17:34:40 Uscr:Anne Chambers
+[the Call record has been transferred to the team: QFP
+
+FUJ00155207
+FUJ00155207
+
+[Date:S3i-Oct-2006 07:49:39 UscriLionel Higman
+fhe Call record has been assigned to the Team Member
+
+Mark Scardifield
+
+Jbate:31-Oct-2006 08:53:50 User:Kath Greenwood
+the Call record has been transferred to the team: EPOSS-Dev
+fhe Call record has been assigned to the Team Member: Mike Coon
+
+JDate:01-Nov-2006 11:27:58 User:Mike Coon
+the Call record has been assigned to the Team Member: Gerald Barnes
+
+[Date:01-Nov-2006 1:
+Reference Added: 5
+
+6:14 User:Anne Chambers
+SKEL acha
+
+26M
+
+Date:01-Nov-2006 1
+lfarget Date/Time updated:
+Development Cost update
+[Start of Response]
+
+It talked to Anne about this and proposed a counter suggestion with which she agreed.
+
+6:47 User:Gerald Barnes
+new value is 10/11/2006 17:30
+new cost is 2 (Man Days)
+
+the writing of the CofABSP Trailer object and the CofABalance objects will be written atomically using a handle created by the
+StartTransaction method. In this way either the whole set will be written or none at all. This will ensure that you are not left
+lin a confused state if the machine is rebooted in the middle of writing out the CABSProcess output records.
+
+etx IMPACT
+
+IMPACT ON DEVELOPMENT:
+
+2 man days to code and module test
+
+IMPACT ON TEST:
+
+2 man days
+
+IMPACT ON USER:
+
+none
+
+IMPACT ON OPERATIONS:
+
+none
+
+RISKS:
+
+jreleasing
+
+Ino particular risks
+
+not. releasing
+rebooting the machine when CABSProcess is running will continue to risk leaving the system in a corrupt state
+LIST OF LIKELY DELIVERABLES:
+
+cABSProcess
+
+LIST OF THE ABOVE ALREADY DELIVERED FOR THE PROPOSED RELEASE:
+
+jone
+
+LIST OF THE ABOVE ALREADY DELIVERED TO A RELEASE LATER THAN THAT PROPOSED:
+
+None
+
+LIST OF THE ABOVE LIKELY TO BE REDELIVERED INTO THE PROPOSED OR A LATER RELEASE:
+
+jone
+[End of Response]
+lkesponse code to call type L as Category 55 -- Pending -- Live Fix Impact Supplied
+
+ours spent since call received: 3.0 hours
+
+JDate:01-Nov-2006 16:27:46 User:Gerald Barnes
+[fhe call Target Release has been moved to Proposed For -~ 130
+
+jbate:01-Nov-2006 16:28:41 Uscr:Gerald Barnes
+the Call record has been transferred ta the team: RelMngmntForum
+
+bate:03-Nov-2006 16:33:36 User:Tyrone Cozens
+Requires a LFS COUNTER drop for CABSProcess. John Budworth would like to agree a test slot with Sheila Bamber before authorising
+this PEAK.
+
+FUJ00155207
+FUJ00155207
+
+Date: 06-Nov-2006 12:28:22 User:fyrone Cozens
+the call Target Release has been moved to Targeted At -- 130
+
+Date: 06-Nov-2006 12:28:34 Uscr:Tyrone Cozens
+Product DevIntRel-Director -- Live Supp.Test added.
+
+Date: 06-Nov-2006 1:
+[Start of Response]
+
+IMF authorise a fix for 130. Routing to Eposs Dev for progression.
+
+[End of Response]
+
+Response code to call type L as Category 56 -- Pending -- Live Fix Authorised
+Jtours spent since call received: 0 hours
+
+9:20 User: Tyrone Cozens
+
+JDatc:06-Nov-2006 12:29:27 Uscr:Tyrone Cozens
+[the Call record has been transferred to the team: EPOSS:
+
+[Date:06-Nov-2006 16:47:50 Uscr:Gerald Barnes
+[fhe Call record has been assigned to the Team Member: Gerald Barnes
+
+JDate:07-Nov-2006 1)
+[Start of Response]
+Fixed by a new release of CABSProcess.
+
+8:42 Uscr:Gerald Barnes
+
+low the transactions written for each day by CABSProcess are written atomically - i.e. all or none. In particular on the final
+day the <Collection:CofABSP><ObjectName:Trailer> and the <Collection:CofABalance><ObjectName:551000> are written atomically and
+so it is not possible to have one without the other.
+
+{End of Response]
+
+response code to call type l as Category 46 -- Pending -- Product
+Hours spent since call received: 8 hours
+
+error Fixed
+
+jDate:07-Nov-2006 16:18:58 Uscr:Gerald Barnes
+{the Call record has been transferred to the team: EPOS:
+
+[Date:08-Nov-2006 10:13:56 User:Mike Coon
+Reference Added: Work Package PWY_WP_24464
+
+Dat e:08-Nov-2006 10:13:58 User:Mike Coon
+TOP Reference set to: Work Package PWY WP 24464
+
+IDate:08-Nov-2006 10:14:29 User:Mike Coon
+[Start of Response]
+
+Fix released in WP24464 for T30 (i3)
+
+(End of Response]
+
+Response code to call type L as Category 46 -- Pending -- Product Error Fixed
+liours spent since call received: 0 hours
+
+JDatc:08-Nov-2006 10:14:42 Uscr:Mike Coon
+[the Call record has been transferred to the team: Dev-Int-Rel
+
+Jdate:08-Nov-2006 10:28:50 Uscr:PIT Automated User
+lkeference Added: Fast Track Fix FSTK 2 0 WP24464 (TOP Reference)
+
+bate: 08-Nov-2006 10:26:52 User:PIT Automated User
+(Start of Response]
+
+"Pasttrack fix released, now ready for test."
+[End of Response}
+
+Response code to call type L as Category 46 (Product Error Fixed)
+the incident has been transferred to the team: Live Supp.Test
+
+Date: 09-Nov-2006 1.
+[Start of Response]
+
+nne has found a problem with this fix. It is not specific
+Please fix fail this. See the attached evidence labelled "
+[End of Response]
+
+Response code to call type L as Category 38 -- Pending -- Potential Problem Identified
+ours spent since call received: 1 hours
+
+7:55 Uscr:Gerald Barnes
+
+lly introduced by the fix but never the less needs to be addressed.
+Catch up problem" for detail.
+
+FUJ00155207
+FUJ00155207
+
+Jbate:09-Nov-2006 1.
+[Start of Response]
+
+las requested by Gerald, I am routing it back for re-fix.
+
+[End of Response]
+
+Response code to call type L as Category 50 -- Pending -- Fix Failed
+ours spent since call received: 0 hours
+
+7:27 User:Lionel Higman
+
+Date:09-Nov-2006 15:31:46 Uscr:Lionel Higman
+[the Call record has been transferred to the team:
+[the Call record has been assigned to the Team Member: Gerald Barnes
+
+Date:09-Nov-2006 17:08:55 User:Gerald Barnes
+[Start of Response]
+CABSProcess has now been changed so that all transactions are written atomically even when it catches up on multiple days.
+
+Discussions with Anne Chambers show that even on the busisest of offices it will be able to catch up at least 16 days.
+
+It attach our design discussion as
+[End of Response]
+
+Response code to call type L as Category 46
+Hours spent since call received: 2 hours
+
+atch Up Strategy’
+
+Pending -- Product Error Fixed
+
+[Datc:09-Nov-2006 1
+Evidence Added - Ca
+
+9:33 User:Gerald Barnes
+
+Date: 09-Nov-2006 17:11:13 User:Gerald Barnes
+[the Call record has been transferred to the team: EPOSS-Rel
+
+jDate:10-Nov-2006 11:31:13 User:Mike Coon
+Reference Added: Work Package PWY WP 24470
+
+Date:10-Nov-2006 11:31:20 User:Mike Coon
+tor Reference set to: Work Package PWY_WP_24470
+
+jbate:10-Nov-2006 11:31:58 User:Mike Coon
+[Start of Response]
+
+corrected fix released in WP24470 for T30 (13)
+
+[End of Response}
+
+esponse code to call type L as Category 46 -- Pending -- Product Error Fixed
+Hours spent since call received: 0 hours
+
+Date:10-Nov-2006 11:32:14 User:Mike Coon
+[the Call record has been transferred to the team: Dev-Int-Rel
+
+[Dat¢:10-Nov-2006 12:30:35 Uscr:PIT Automated User
+
+Reference Added: Fast Track Fix FSTK 2 0 WP24470 (TOP Reference)
+
+Date:40-Nov-2006 1
+[Start of Response]
+
+MFasttrack fix released, now ready for test."
+
+{End of Response]
+
+Response code to call type L as Category 46 (Product Error Fixed)
+the incident has been transferred to the team: Live Supp.Test
+
+0:36 User: PIT Automated User
+
+[Dat e:01-Dec-2006
+Reference Added:
+
+Edward Willis
+
+727:27 User
+n Pea141675
+
+bat e:14-Dec-2006
+
+Edward Willis
+Reference Added: z
+
+BC014195
+
+joate:31-gan-2007 0:36 User
+Reference Added: Release PinIC!
+
+John Boston
+PCO143079
+
+Joate:13-Apr-2007 09:12:52 User:John Budworth
+[Start of Response]
+
+[this PEAK is fixed by LFS COUNTER 36 1, Release RNT4031, Release PEAK 143079.
+
+Inst testing complete but can't be deployed until T30_INC1 35 5 has been deployed. This is currently at large volume pilot.
+Forecast for deployment of LFS COUNTER 36 1 is late April/early May.
+
+FUJ00155207
+FUJ00155207
+
+Routing to call logger for closure:
+[End of Response]
+
+lkesponse code to call type L as Category 60 -- Final -~ S/W Fix Released to Call Logger
+routing to Call Logger following Final Progress update.
+
+liours spent since call received: 0 hours
+
+IDate:11-Jul-2007 13:15:19 User:Anne Chambers
+
+[Start of Response]
+
+Irix now live, this problem no longer occurring.
+
+{End of Response]
+
+kesponse code to call type l as Category 60 -- Final -- S/W Fix Released to Call Logger
+Routing to Call Logger following Final Progress update.
+
+JDate:11-dul-2007 13:15:25 Uscr:Anne Chambers
+Ibefect cause updated to 14: Development ~ Code
+
+[Date:11-dul-2007 13:15:27 User:Anne Chambers
+ALL PC0140715 closed: Category 60 Type L
+
+Root Cause Development - Code
+
+Logger Deleted User -- EDSC
+
+Subject Product EPOSS & DeskTop -- Misc (version unspecified)
+Assignee Deleted User -- EDSC
+
+Last Progress 11-Jul-2007 13:15 -- Anne Chambers

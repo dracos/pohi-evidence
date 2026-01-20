@@ -1,0 +1,72 @@
+FUJ00130476
+FUJ00130476
+
+Warning: This information has been deleted and is val
+
+SSC DELETED KELs
+
+lueless to the support or understanding of the system
+
+HORIZON KEL kiangl823S
+
+Information
+Balancing whilst the End-of-Day process was running caused the DEF stock unit not to rollover properly.
+Summary: The DEF stock unit did not rollover with the Office
+Raised: by Lina Kiang on 06/03/2008
+Last updated: by Lina Kiang on 07/03/2008
+Release: 780
+
+System product: Riposte
+Branch code: 485611
+Keywords: EOD DEF
+Authorised
+Medium
+PCO155120
+7146976
+Version: 4
+
+Symptoms
+
+PM states he did the rollover last night and all the stock units have been rolled over into TP 12 except for the DEF stock unit which is
+automatically rolled over with the Office (which started rolling over at 7pm).<br><br>The Application log, shows that the CABSProcess was
+running between 19:00:44 to 19:01:28 and during this time there were some errors: <br>Source:Riposte<br>An unexpected error occurred
+while attempting to modify an entry in the run map. Timeout occurred waiting waiting for lock. (0xC1090003)<br><br>Source:
+EPOSSStockUnit<br>Error Message: Unexpected error executing command
+
+<CmdStr: <Cmd: StockUnitRollover> <StockUnit: DEF><InactiveRollover:True>> - see audit log for details.<br><br><br>The audit log
+
+had: <br>SU:Failure to log entry in SetRollOverCutOff: <Result: <Success:0> <Error: Timeout occurred waiting for lock. (0xC1090003)
+CreateMessageEx: RiposteCreateMessageEx call failed. > <ErrorCode:~1056374781>> <br>
+
+Problem
+
+This is effectively a specific instance of KEL dsed5628Q (when CABSProcess which runs as part of the EOD process was running when the
+Office was balancing): <br><br>"The problem is that because of a previous Peak, PCO140715, CABSProcess writes out messages atomically. It
+does a StartTransaction quite early on (which creates the lock), then initiates writing lots of transactions with CreateMessage and persistent
+objects with PutObject and finally really writes them with a call to EndTransaction (which ends the lock). If something else tries to write a
+transaction whilst CABSProcess has things locked then it will time out after 10 seconds. Hence if CABSProcess takes more than 10 seconds to
+run you could get this sort of problem. In the first case seen, PC0152376, the CABSProcess took 33 seconds to run which gave a significant
+window of opportunity for this sort of problem to occur.<br><br>Note: The CABSProcess only runs on the gateway counter so the problems
+seen will not occur on siave counters.”
+
+Solution - Helpdesk
+
+In this particular case, the StockUnits object (with the new CAP and NextCAP) and the StockUnitMarker objects (with new CAPnn,CAPMarker
+and CAPnn.NextCAP) for DEF needed to be written to mstore. Although the Balancing attribute in the StockUnits object did not get set back
+
+to False (which meant that some users could not attach to DEF), this was resolved by the User who was doing the balancing logging back
+
+onto the same counter he was balancing from (as suggested in KEL JAnscomb2213N).<br><br>Note that an OCR needs to be raised.
+
+StockUnits (1) Using Smiley: Get StockUnits, select DEF, Edit object, Manual edit. Replace CAP by the current Office CAP, Replace NextCAP
+
+by the Office NextCAP (what the other SUs are in already), Send Changes and Close. StockUnitMarkers (2) On the counter: <br>riposteobject
+get StockUnitMarkers DEF "” <FAD><br><Message: <Groupld:485611 > <Id:1><Num:71728> <Date:07-Feb-
+
+2008><Time:10:43:37><User:RHA0O1> <Expiry:34><TranStartNum:71728> <Collection:StockUnitMarkers> <ObjectName: DEF> <br> <b> <Data:<CAP9:
+the output to remove the oldest CAP and insert a new one: <br>riposteobject put StockUnitMarkers DEF
+
+<b> <Data:<CAP10: <CAPMarker:> <NextCAP:11>><CAP11:<CAPMarker: > <NextCAP: 12> ><CAP12: <CAPMarker:><NextCAP:01>>></b>" <FAD>
+
+Evidence
+

@@ -1,0 +1,286 @@
+Ref:
+
+FUJ00121073
+
+FUJ00121073
+
+Rem Misbalance
+
+g:\gij documents\notes\remmisbalance.doc
+
+Author: Gareth I Jenkins
+
+Date:
+
+1.
+
+2.
+
+13/02/2007 16:45:00
+Introduction
+
+There has been a serious bug introduced into Live that can result in accounts
+misbalancing.
+
+This bug was introduced as part of LFS_COUNTER 35_6 which went to a limited
+number of branches for a pilot from 4/2/07 to 11/2/07 and then to the whole estate on
+12/2/07. The problem first occurred in 2 pilot branches at the weekend of 10/2/07, but
+was not investigated until 12/2/07 (as is normal practice for such manifestations). It
+then occurred in 47 other branches on 12/2/07 and it is these 49 branches that need to
+have their accounts correcting.
+
+As a result of this, LFS_COUNTER 35_6 was removed from the estate overnight on
+12/2/07. However there are still 229 counters in 120 branches where the regression
+was unsuccessful so could have problems that manifest themselves until we do manage
+to regress the software. The process for managing such later occurrences will be as
+for the current 49 known branches.
+
+The purpose of this note is to describe the implications and how we can address the
+resultant problems.
+
+It is not attempting to address the cause of the fault or how it occurred. It is purely
+focussed on correcting the manifestations.
+
+Basic Problem Effects
+The basic problem is that when Rem Outs are carried out, incorrect transactions are
+recorded. Specifically some of the Rem transactions are missing.
+
+Take and example of 2 £500 coin bags being Remitted out, then the following was
+recorded:
+
+Product I Article I Description Amoun I Comment
+t
+
+Rem Out
+1 PCH. Cash £500 Should be £1,000.
+5610 2027 Cash in Pouches In £1,000 I Correct
+
+Despatch Pouch
+6509 2102 Cash in Pouches Out _I £1,000 _I Correct
+6286 I Z010___I Cash in Transit £4,000 I Correct
+
+The Stock Unit will show £500 excess cash and a Receipts and Payments mismatch.
+The suspense account will be correct.
+
+However the sum of all transactions within the Branch will not balance. Due to the
+misbalance, nothing is sent to POL FS. In order to get the data to be passed to POL
+FS we need to either amend the existing summaries or introduce one or more new
+summaries so that it does balance.
+
+g:\gij documents\notes\remmisbalance.docPrinted at 12:37:34 on 13/2/2007 Page I of 3
+3.
+
+3.1
+
+3.2
+
+FU.
+
+We need to decide exactly how to do this adjustment to get the data through. See section 3
+[for a discussion as to exactly what to do.
+
+Some branches have made a further Rem of £500 in an attempt to correct the situation.
+If this Pouch is subsequently Despatched, then this should result in the branch accounts
+being correct.
+
+Note that this will result in further incorrect data being sent to POL FS see discussion in
+section 3.2.
+
+However, if this Pouch is not Despatched, then the Stock Unit will balance and report
+correctly but the £500 will remain Stuck in Suspense.
+
+is}
+
+In this case, then this can be corrected by either Despatching the pouch or in extremis with a
+
+TC.
+
+It is recommended that all Branches are advised to do such a Dummy Rem and to
+Despatch the pouch so as to ensure that the Branch Accounts are clear.
+
+It has been agreed that POA SSC will contact each branch with detailed advice as to
+exactly what to do.
+
+Issues
+
+We have two issues:
+= How to correct the data so that it can be sent to POL FS
+= How to remove the excess (if any) from Suspense
+
+The preferred mechanism to correct values that are Stuck in Suspense is a Transaction
+Correction, and as this will result in further changes being made to POL FS it is
+important that we address both issues together.
+
+How to remove the excess from Suspense
+
+T'll cover this first.
+
+The simplest option is to send down a Transaction Correction (TC) to correct the
+amount in Suspense. However this correction needs to be matched against another
+Article. What is an appropriate article?
+
+The correction should be against a Product that is not involved in Branch Accounting,
+otherwise we are introducing further problems into the Branch. The best such
+products are the Rem Settlement Products.
+
+Since POL FS can’t use Dummy Articles for TCs, then the best Article to use is the
+Cash In Transit Article ZO10. It has now been agreed with POL that this is the
+product / article to use.
+
+How to correct the data to be sent to POL FS
+
+Currently the only incorrect figure being sent to POL FS is that for Cash. However if
+Branches do a further Rem Out to correct their SU position, then the Articles for Cash
+In Pouches and Cash In Transit will also become incorrect.
+
+documents\notes\remmisbalance.docPrinted at 12:37:34 on 13/2/2007 Page 2 of 3
+
+FUJ00121073
+}J00121073
+4.
+
+4.1
+
+FUJ00121073
+
+FUJ00121073
+
+Since the two Cash In Pouches Articles map to the same POL FS Account (551200),
+then any incorrect amounts to these articles should cancel out.
+
+However assuming that the Dummy Pouch is despatched, then we will have an
+additional posting to Cash In Transit (article Z010 account 553002).
+
+Therefore, we should be able to solve both our back end problems by using the Cash In
+Transit account to correct the files being sent to POL FS.
+
+Taking the example in section 2, we should add a Transaction for £500 into the POL
+FS file for article ZO10 which will result in this balancing. The dummy Rem will then
+produce the following:
+
+Product I Article I Description Amoun I Comment
+
+£ t
+
+Rem Out
+
+1 PCH Cash £500 To correct the SU
+
+5610 I Z027__I Cashin Pouches In__I -£500
+Despatch Pouch
+6509 I Z102__I Cash in Pouches Out I £500
+6286 I Z010__I Cash in Transit £500
+
+The postings to Articles Z027 and Z102 will cancel out in Account 551200, while the
+posting of -500 to account 553002 will cancel out with the adjustment made to enable
+the original transactions to post to POL FS.
+
+It has been agreed with POL that we use this article / account to correct the data to be
+posted to POL FS.
+
+Note that there will be no corresponding entry to account 553002 coming from SAP ADS
+since SAP ADS will never receive the pouch. This means that pairing these two entries will
+need to be done manually in POL FS.
+
+Other Implications and Complications
+
+There are a few other implications and complications:
+= Matching between Horizon and SAP ADS for Cash in Transit
+= POC Data sent to SAP ADS
+= Volume Stock Rems
+= Value Stock Rems
+= Foreign Currency
+= Pouch Reversal
+
+These are discussed below.
+
+Matching between Horizon and SAP ADS for Cash in Transit
+
+Since the Cash In Transit figure passed to POL FS against Article Z010 is correct, this
+should match with the SAP ADS value for the pouch (assuming they did not rely on
+the POC figure), and the Auto Matching in POL FS will pair these off as usual.
+
+g:\gij documents\notes\remmisbalance.docPrinted at 12:37:34 on 13/2/2007 Page 3 of 3
+4.2
+
+4.3
+
+4.4
+
+4.5
+
+FUJ00121073
+
+FUJ00121073
+
+Using this account for the Adjustment to the POL FS feed and subsequent dummy
+pouch should net out resulting in the account being balanced overall.
+
+POC Data sent to SAP ADS.
+
+It is not clear at this stage what data is sent to SAP ADS in the POC Records. It is
+probable that the POC records will have the same incorrect data (ie the Cash figure)
+recorded at the counter and thus not match the Cash In Transit figures posted by
+Horizon or the contents of the pouch. However when SAP ADS count the pouch
+contents and check the Remittance Advice Note in the Pouch they should have the
+correct value that matches the pouch content and presumably will post that figure to
+POL FS.
+
+Volume Stock Rems
+
+A similar issue affects Stock Rems Outs for Volume Stock (most stock is volume
+stock).
+
+However since Rems of Volume Stock are done by volume and not by value, it isn’t
+possible to detect any problems in this area from the Horizon audit trails. We have
+identified that 570 branches did Stock Rems on Monday 12" Feb, so the problem is
+restricted to those branches plus any in the pilot of failing software (61 Branches — not
+necessarily different).
+
+Should a branch detect the fact that they have a problem then they should carry out a
+dummy Rem for any difference and they should NOT use Stock Declarations
+(generating Discrepancies) or Stock Adjustments.
+
+It has been agreed that it is un-wise to inform branches of the potential problem, since
+this could result in potential fraud. However the Help Desk will be provided with
+advice to support branches that call about such mismatches. It should also be possible
+to reconcile the Stock returned to the Stock Centre with the Rems posted to POL FS
+and then correct matters with TCs.
+
+Value Stock Rems
+
+Value Stock Rems should be detectable. As part of our examination of the branches
+that have failed to post data to POL FS we will check for any with a problem in
+remitting out value stock. Should any be found, then they will be treated as special
+cases.
+
+Foreign Currency
+
+Foreign Currency is a special case of Volume Stock and will be affected in exactly the
+same way as Cash. However correcting the Suspense value is much harder and can’t
+be done easily with a TC. It is likely that any correction to the POL FS feed will need
+to correct the Currency In Pouches Out Product (ie the main Currency Article).
+
+There is a separate discussion as to exactly how we sort out Currency Stuck in Suspense. I
+
+We know of at least one example where the problem has occurred with Foreign
+Currency.
+
+g:\gij documents\notes\remmisbalance.docPrinted at 12:37:34 on 13/2/2007 Page 4 of 3
+FUJ00121073
+FUJ00121073
+
+4.6 Pouch Reversal
+
+We have found some branches where the branches have detected a problem with the
+Rem and so have carried out a Pouch Reversal to try and correct things.
+Unfortunately this makes things worse! We are still investigating in detail how best to
+correct this.
+
+It is likely that the Branch will still just need to carry out a dummy Rem to correct the
+cash position. However it is less clear exactly what the implications are on POL FS
+and there is also likely to be cash stuck in Suspense that will not cleanly cancel out.
+
+We'll provide an update on this when we've worked an example through.
+
+documents\notes\remmisbalance.docPrinted at 12:37:34 on 13/2/2007 Page 5 of 3

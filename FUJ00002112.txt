@@ -1,0 +1,2231 @@
+Fujitsu Services
+
+IMPACT Release 3
+Horizon to POL MIS AIS
+
+Commercial-in-Confidence
+
+Ref:
+
+Version:
+
+Date:
+
+EA/IFS/006
+7.0
+
+17/09/2009
+
+FUJ00002112
+FUs00002112
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Contributors:
+
+Internal Distribution:
+
+External Distribution:
+
+Approval Authorities:
+
+Horizon to POL MIS AIS
+
+Application Interface Specification
+
+INT14
+
+AIS for file sent from Horizon to POL containing Transaction
+Details (including Tender Lines and Events) for use in POL MIS.
+
+Approved
+
+Roger Barnes SI Design
+
+Gareth Jenkins
+
+See Section 0.2
+
+See Section 0.2
+
+Name Position Signature Date
+Gareth Jenkins TD, RASD, Fujitsu Services
+Tan Trundell Post Office Ltd.
+Graham Allen Development
+Commercial-in-Confidence Page: 1 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUJ00002112
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+0.0 Document Control
+0.1 Document History
+Version No. I Date Reason for Issue Associated
+CP/PinICL
+0.1 31-03-2004 Initial draft
+0.2 06-05-2004 Draft for review
+0.3 04-06-2004 Further draft following feedback from Post Office
+Ltd.
+1.0 11-06-2004 Final version for Approval
+ll 22-10-2004 Draft for CR 272 changes CP 3843
+1.2 20-01-2005 Clarification of how Bureau de Change records and
+Reversals are handled
+13 25-01-2005 Changes to Review list to get it past Document
+Management
+2.0 23-02-2005 Final version for Approval
+2.1 16-05-2005 Clarification in response to PEAKs PC115622
+PC117848
+3.0 03-06-2005 Final version for Approval
+3.1 13-02-2006 Addition of Business Date field to Sub File Header I CP4170
+Record
+3.2 14-03-2006 Changes as a result of review
+4.0 27-03-2006 For Approval
+4.1 11/04/2006 3.2: End of Day is now always 7pm CP 4061
+Remove references to OBCS CP 4173
+Remove section B2 and B4 relating to OBCS
+(placeholder paragraphs left)
+Amended 3.3.6 to include new record type “PDR”
+Add data for group 10 events to B.7.3
+Merged B.7.2 into B.7.1
+Added new B.7.2 detailing cut-off events
+5.0 09/05/2006 Issued for Approval
+5.1 11/06/2007 Section B6 amended. PAN field changed in order to
+comply with PCI regulation. Pan now to contain
+first 6 characters of PAN followed by zeros then the
+final 4 characters of the PAN.
+5.2 12/06/2007 Updated Reviewers & Approvers — Issued for review
+
+Commercial-in-Confidence Page: 2 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+FUJ00002112
+FUs00002112
+
+IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+5.3 18/01/2008 Change to forward additional APS data through to I CP4461
+POL MIS. In addition provision is made in here to
+forward further data in anticipation of approval of
+CP4478 (CP0045) for HNG-X
+6.0 06/05/2008 Issued for Approval
+6.1 18/11/2008 TRANSACTION_TYPE_FIELD in Section B6 now I PC0168806
+to be sent for DCS and ETU transactions as well as
+Network Banking transactions.
+METHOD_OF_DATA_CAPTURE changed to not
+exclude fields sent to DCS and ETU
+BANK_TRANSACTION ID changed to not
+exclude fields sent to DCS and ETU
+Card Impounded changed to not exclude sending to
+DCS and ETU
+6,7,and 8 removed from method of data capture
+Incorrect record size added to table A3
+Statement “Only sent for clients that take additional
+data” removed.
+7.0 17/09/2009 For Approval
+
+0.2 Review Details
+
+Review Comments by :
+
+Review Comments to :
+
+roger. barne:
+
+Mandatory Review Authority
+
+Name
+
+DU Test Designer
+
+Peter Robinson
+
+CS SSC Manager
+
+Mik Peach*
+
+POL
+
+Torstein Godeseth*, Sally Rush*
+
+TD, RASD, Fujitsu Services
+
+Gareth Jenkins*
+
+Optional Review / Issued for Information
+
+DU Team Leader
+
+David Harrison
+
+SI Development Manager
+
+Roy Birkinshaw
+
+CS Head of Service Management
+
+Steve Denham
+
+CS Network Service Manager Alex Kemp
+CS Business Continuity Manager Tony Wicks
+Commercial-in-Confidence Page: 3 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUJ00002112
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+CS Reference Data Introduction Mgr (RD IFS I Kevin McKeown
+only)
+CS Infrastructure & Availability Manager Liz Melrose
+CS Ops & Data Centre Manager Peter Thompson
+SV&I Manager Sheila Bamber
+(*) = Reviewers that returned comments
+0.3 Associated Documents
+Ref. I Horizon Version I Date Title Source
+Reference
+CTS I EA/IFS/005 Horizon to POL Client Transmission Fujitsu
+AIS Summaries AIS Services
+DP I EA/DPR/004 IMPACT Release 3 Design Proposal Fujitsu
+Services
+TIS I TI/IFS/008 Horizon to Post Office Technical Fujitsu
+Interface Specification Services
+OLA Operational Level Agreement
+SFS_ I RS/FSP/001 Security Functional Specification Fujitsu
+Services
+TIP I TI/IFS/001 7.0 31 July-I Pathway to TIP Application Interface Post Office
+AIS 02 Specification
+RDA I BP/IFS/010 Application Interface Specification Post Office
+Is Reference Data
+RDR Reference Data Rules and Values [Note I Post Office
+&V this may be release-specific]
+Doc I NB/IFS/004 Network Banking Message Flows I PVCS
+Flow and Interfaces
+
+Unless a specific version is referred to above, reference should be made to the current
+
+approved versions of the documents.
+
+0.4 Abbreviations/Definitions
+
+Abbreviation Definition
+AIS Application Interface Specification
+Branch Contractual term for what has previously been known as an Outlet
+CR/LF Carriage Return/Linefeed
+Commercial-in-Confidence Page: 4 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+FUJ00002112
+FUs00002112
+
+IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+EoD End of Day. It is the daily cut off event at each branch which separates one
+trading day from the next. It is the point at which harvesting (the collection
+of the day’s transaction details from the branch to the central Horizon
+systems) may start
+
+EPOSS Electronic Point of Sale Service
+
+FTMS File Transfer Managed Service
+
+FTP File Transfer Protocol
+
+MIS Management Information System
+
+OBCS Order Book Control Service
+
+OLA Operational Level Agreement
+
+Outlet See Branch.
+
+PDR Postmaster’s Dailey Report
+
+POL Post Office Limited
+
+POL MIS The system that provides management information reports on transactions
+carried out at the counters to POL
+
+RASD Requirements, Architecture, Solutions, Design - a unit within Fujitsu
+Services, Post Office Account team
+
+TIP Transaction Information Processing — system within POL. The system
+being replaced by POL MIS
+
+TIS Technical Interface Specification
+
+Commercial-in-Confidence Page: 5 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+FUJ00002112
+
+FUs00002112
+
+IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+0.5 Changes in this Version
+
+Version Changes
+
+6.1 TRANSACTION_TYPE_FIELD in Section B6 now to be sent for DCS
+and ETU transactions as well as Network Banking transactions.
+METHOD_OF_DATA_CAPTURE changed to not exclude fields sent to
+DCS and ETU
+BANK_TRANSACTION_ID changed to not exclude fields sent to DCS
+and ETU
+Card Impounded changed to not exclude sending to DCS and ETU
+6,7,and 8 removed from method of data capture
+Incorrect record size added to table A3
+Statement “Only sent for clients that take additional data” removed
+
+6.0 Issued for Approval
+
+5.3 Addition of APS fields and additional data as specified in CP 4461
+
+5.2 Updated Reviewers & Approvers — Issued for review
+
+5.1 Section B6 amended. PAN field changed in order to comply with PCI
+regulation. Pan now to contain first 6 characters of PAN followed by
+zeros then the final 4 characters of the PAN.
+
+5.0 Issued for Approval
+
+4.1 Remove references to OBCS
+Remove section B2 and B4 relating to OBCS (placeholder paragraphs left)
+Amended 3.3.6 to include new record type “PDR”
+Add data for group 10 events to B.7.3
+Merged B.7.2 into B.7.1
+Added new B.7.2 detailing cut-off events.
+
+4.0 Submitted for Approval
+
+3.2 Change to record length in 3.3.4 and changes to review list as result of
+review.
+
+3.1 Addition of Business Date field to Sub File Header Record
+
+3.0 Status changed to Approved and removal of change markings.
+
+2.1 Clarification of the use of Quantity on Events
+
+Clarification of Event Type 916
+
+[DN: There was an interim version (2.1a) which included a proposal for
+CPs 3926 and 3974. Since those CPs have now been withdrawn, the text
+associated has been removed and only the PEAK clarifications now remain
+in this version of the AIS. Changes made in the interim version are in red
+and in the formal version in violet. I
+
+Commercial-in-Confidence Page: 6 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+2.0 Status changed to Approved and removal of change markings.
+
+13 Changes to distribution list only and are coloured in violet.
+
+1.2 Changes from version 1.1 are in coloured text or strikeout.
+
+Changes are as follows:
+= Neil Fagan replaced by Sally Rush as the POL Reviewer
+
+= 3.3.6: Clarification of NB14 regarding inclusion of BDC Existing
+Reversals
+
+= 3.3.6: Addition of NB14 indicating that OBCS existing reversals are
+provided as OTX records rather than OBP records since OBCS
+specific attributes are not included in the reversal
+
+= App C: Note added stating that the info is for guidance only and is not
+maintained.
+
+0.6 Changes Expected
+
+Changes
+
+None.
+
+Commercial-in-Confidence Page: 7 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FU.
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+FUJ00002112
+}J00002112
+
+0.7 Table of Contents
+
+1.0 INTRODUCTION.
+
+1.1 PURPOSE.
+1.2 SCOPE.
+1.3. STRUCTURE.
+
+2.0 OVERVIEW OF THE
+
+2.1 OBJECTIVES..........
+2.2 INFORMATION FLOW
+2.3. DERIVATION AND USE OF DATA.
+2.4 I NON-COMPUTER DATA............ wee
+2.5 TECHNICAL IMPACT ON APPLICATION
+
+3.0 FILE STRUCTURE AND DATA ITEMS.
+
+3.1 FILE STRUCTURE.....
+3.2 TRANSMISSION OF FIL!
+3.3 RECORD DETAILS
+Format Key...
+Transmission File Header Record.
+Transmission File Trailer Record.
+Transactions Sub File Header
+Transactions Sub File Trailer...
+Transactions Detail Record.
+3. 47 CONTINGENCY / FAILURE
+
+4.0 DATA VOLUMES.
+
+TERFACE...
+
+5.0 TRANSMISSION OF DATA FILES — ACCEPT / REJECT RULES....
+
+5.1 FILE TRANSMISSION AND RENAMING:
+5.2 POL MIS VALIDATION.
+
+6.0 SECURITY OF TRANSMITTED DATA.
+
+7.0 OPERATIONAL PROCEDURE:
+
+APPENDIX A.
+
+POL MIS TRANSACTIONS.
+
+APPENDIX B.....
+
+ADDITIONAL DATA REQUIREMENTS FOR BRANCH TRANSACTIONG.......0000 33
+
+B.1 EXISTING REVERSALS.. .
+B.2 RETAINED AS PLACEHOLDER ONLY- RELATED TO ) OBCS N NOW NOT PART OF THE
+
+SYSTEM........
+B.3. AUTOMATED PAYMENT:
+B.4 RETAINED AS PLACEHOLDER ONLY- RELATED TO OBCS NOW NOT PART OF THE
+SYSTEM.
+B.5 BUREAU DE CHANGE.
+
+Commercial-in-Confidence Page: 8 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUJ00002112
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+B.6 DeBIt CARD (DCS) / NETWORK BANKING (NBS) / E Top-Ups (ETU). 35
+
+B.7 EPOSS EVENTS........
+B.7.1 Existing EPOSS Event .
+B.7.2. New Cut-Off Events Available for POL MIS (Release T10).
+B.7.3 Logical Groupings of Events
+
+APPENDIX C........0648
+
+Commercial-in-Confidence Page: 9 of 40
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+1.0 Introduction
+
+This document is intended for Release S80. It is based on the document Pathway to TIP AIS
+[TIPAIS], modified as follows:
+
+(a) Pathway replaced by Fujitsu Services
+
+(b) The term Remote FTMS server used in place of Gateway
+
+(c) Removal of Cash Account records (since no longer required)
+
+(d) Removal of Client Transmission Summaries (which are included in [CTSAIS])
+
+(ec) Updated to reflect additional; transaction details for Bureau de Change, Debit Card
+and Network Banking
+
+(f) The term Transactions Detail is taken to cover transactions, tender lines and events.
+
+1.1 Purpose
+The purpose of this document is to:
+
+« Specify the interface between Horizon and the remote FTMS server at Huthwaite for daily
+files containing transactions that POL require for management information
+
+¢ Provide the development teams with sufficient detail to develop this interface between
+Horizon and the remote FTMS server
+
+¢ Provide a consistent communications document for use amongst the teams that have the
+responsibility to develop and support the components comprising the application.
+
+1.2 Scope
+
+This document describes the format of the data files to be passed across the interface between
+Horizon and the remote FTMS server at Huthwaite and applies to those transactions that have
+taken place at branch counters, captured by EPOSS, which POL wishes to record in their data
+warehouse in order to support a management information capability.
+
+It includes any acceptance / rejection rules for the physical transmission of data and gives a
+brief indication of the operational procedures.
+
+The onward transmission or processing of these transactions beyond the remote FTMS server
+is outside the scope of this AIS.
+
+Additional data concerning hardware and software is contained within the document Horizon
+to Post Office Technical Interface Specification [TIS].
+
+1.3 Structure
+
+This document has the following structure.
+
+Section 2.0- gives an overview of the interface and its context
+
+Section 3.0 — gives detailed descriptions of the data in terms of file and record layouts
+
+Section 4.0 — provides estimates of data volumes transmitted across the interface
+
+Commercial-in-Confidence Page: 10 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+Section 5.0 — sets out rules for acceptance or rejection of the files transmitted from Horizon to
+the remote FTMS server at Huthwaite
+
+Section 6.0 — describes security measures applicable to the interface
+
+Section 7.0 — gives a brief description of the operational procedures required to support the
+interface
+
+Appendices
+These cover additional data appended to transaction detail records (e.g. reversals, events)
+
+Commercial-in-Confidence Page: 11 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+2.0 Overview of the Interface
+
+2.1 Objectives
+
+The objectives of the Horizon system transmitting files over this interface to the remote FTMS
+server at Huthwaite are:
+
+¢ To provide a reliable transfer service from the Horizon Host to filestore in the remote
+FTMS server at Huthwaite (main or standby server as required)
+
+¢ To push the daily transaction files required by POL for MIS from Horizon to the remote
+FTMS server at Huthwaite and provide feedback on performance in line with service levels
+
+¢ To provide POL with the transaction data required, to be used by POL to update its data
+warehouse to be used to provide an in-house MIS service.
+
+This File Transfer Managed Service (FTMS) provides a secure and reliable mechanism for
+transferring files both between Horizon systems, and between Horizon systems and external
+systems in a way that meets audit and service level requirements. It is compatible with EDG
+in that new FTMS channels do not require changes to FTMS functionality. A fuller description
+of the remote FTMS servers is given in the Horizon to Post Office Technical Interface
+Specification [TIS].
+
+(DN: The [TIS] needs updating to refer to this interface e.g. OLA, volumetrics, directories]
+
+2.2 Information Flow
+
+The FTMS application is logically composed of two components: the FTMS source (or
+sending) component and the target (or receiving) component. The FTMS source pulls files
+from the sending system (shown by the double arrowhead in the diagram), processes them
+ready for transfer then pushes them to the FTMS target. Operation is automatic - the FTMS
+target receives the files, logs the delivery, confirms their integrity and delivers them to a
+location accessible by the receiving system in the required format.
+
+The flow for Daily Transaction files is from the Horizon host system to a remote FTMS server
+at Huthwaite, for onward delivery within the POL estate. It is the responsibility of the target
+system (in this case POL MIS) to retrieve the files from the Remote FTMS server and transfer
+them to any system that it wishes to process them on. Similarly it is the responsibility of the
+target system to transfer any inbound files to the appropriate place on the Remote FTMS
+server for transmission to Horizon.
+
+Horizon Host Huthwaite
+Local FTMS Remote FTMS
+server server
+Host FTMS FTMS POL
+Application source target
+
+Figure 1 — Logical FTMS Link between Horizon Host and POL System (Huthwaite)
+
+Commercial-in-Confidence Page: 12 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+The FTMS service supports multiple channels, but the diagram above shows a simple one-way
+channel for simplicity, sending files from the Horizon host to a remote FTMS server from
+which a remote POL system can pick up the transferred files (shown as a dotted line to
+distinguish it as a host controlled activity). There is a flow from POL MIS to Horizon e.g. for
+error files.
+
+The POL system is to provide an in-house MIS service based on a data warehouse
+
+The transactional data from Horizon to POL MIS is bound by a transmission header record
+and a transmission trailer record. Between these will be a number of sub files - one per branch
+per ‘trading day’, meaning the period between successive Horizon End of Day events. See
+section 3.1 for more details.
+
+Relevant headers, trailers and event records will be expected when no transactions have taken
+place at a branch on a trading day. Two or more sub-files would be expected if a previous
+day’s sub-file(s) haven’t been received by POL. POL will not expect to receive ‘drip-fed’ data
+in small groups of records. If a branch has not been fully harvested (i.e. up to and including
+Horizon End of Day) for any reason by Fujitsu Services, then POL will not expect a sub file.
+The exception to this rule is where Horizon detects that records need to be repaired before
+they will be accepted by POL, these records are held back until the repairs have been made
+(see section 3.3.2). The repaired records will be sent in a separate sub file in an Exception File
+for that branch and trading day (see section 3.3.2 NB3).
+
+A sub file will be sent for every day where records are harvested from branches, including
+“Empty” sub files. An Empty sub file contains ONLY a sub file header, a sub file trailer and a
+single Transaction Details record (EVT) containing event code ID of 923 — Horizon End of
+Day, which indicates that no transactions have taken place, but that the branch has carried out
+the End of Day processing and the record has been harvested.
+
+POL validates the data received and returns error files as appropriate — see section 5.0.
+
+2.3. Derivation and Use of Data
+
+The branch counter transactions data is produced from the Horizon host systems having been
+collected from all POL branches. The data represents individual transactions, including their
+settlement, and events (such as the Horizon End of Day).
+
+2.4 Non-Computer Data
+The only transactions that pass over the interface between Horizon and POL MIS are those
+computer-based transactions described in this AIS.
+
+2.5 Technical Impact on Application
+
+A new set of processes is required within Horizon to produce the transactions and to process
+any error files received back from the remote FTMS server.
+
+This will replace the current feed from Horizon to TIP [TIPAIS].
+For other technical details see the [TIS].
+
+Commercial-in-Confidence Page: 13 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+3.0 File Structure and Data Items
+3.1 File Structure
+
+The file structure consists of:
+
+Transmission File Header Record
+
+Transaction Sub File Header Record
+
+Repeated for
+Transactions Details Records each branch, > Transactions spread
+trading day over N files
+
+Transaction Sub File Trailer Record
+
+Transmission File Trailer Record J
+
+The transactions data covers counter transactions, tender lines (how transactions are settled at
+the counter), and branch events. It is produced by the Horizon host systems from the
+individual data records collected from all branches for cach trading day. The transactions data
+is the detailed set of all individual transactions carried out in each branch,
+
+The daily transactions are sent to POL spread over a number of files (currently up to 64 files
+per day) for load balancing purposes. Exception and re-sent files are sent separately.
+
+Note that by end 2004, the number of branches will have reduced from 19,700 to 14,670
+branches, but the number of files sent will not change, however the number of sub-files will
+reduce to reflect the number of active branches.
+
+3.2 Transmission of File
+
+The transaction files are delivered every calendar day including Sundays and all Bank
+Holidays, covering all branches.
+
+POL requires transaction information for a full day’s work at each branch. Horizon inserts a
+“Horizon End of Day” event at each branch’s default closing time plus % hour or 7pm
+whichever is the earlier. Any transactions captured after this time will be sent in the next day’s
+transmission but will retain the actual date of capture. Note that CP 4061 changed the default
+closing time of all branches to 7pm, so in practice Horizon End of Day is now always 7pm.
+
+The transaction data received from a branch may not be in chronological sequence.
+
+3.3. Record Details
+
+3.3.1 Format Key
+
+Commercial-in-Confidence Page: 14 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+The following is the key used for the formats as specified in the file records throughout this
+section:
+
+= Number
+
+= Alpha Numeric
+Decimal Point - explicit
+= Alpha
+
+= __ Sign (explicit Positive/Negative Indicator)
+
+nec KX
+if
+
+Data will be passed in ASCII format in fixed length fields. Numeric (number) data will be right
+adjusted with leading spaces, alpha / alphanumeric data will be left adjusted with following
+spaces. Where the AIS refers to “Null” values, the fields will be space-filled. Times used
+across the interface will be local time without exception. The APS “Additional Data” field
+will be held in a variable length field of maximum length 2000 characters delimited by a
+CR/LF.
+
+3.3.2 Transmission File Header Record
+
+The Transmission File Header record will contain the following data (all fields are mandatory).
+
+Transmission File Header Record
+
+Field Name Description Format I Comments
+<field-number>
+Record Type Identifier <1>_I Unique record type identifier X()_ I TFH for this record
+File Type Identifier Unique file type identifier X(5)__ I TMSTX for this record
+<2>
+Interface Version Identifier I A POL maintained number giving the I 9(10) I Fixed value - “50° until otherwise agreed
+<3> Interface Version identifier being used by the
+TMS
+Transmission Source The Fujitsu Services Mainframe where the I _X(2)__I W_= Wigan B_= Bootle
+<4> files originated Generated by Fujitsu Services
+Transmission Day Number I Day number of the last complete POL I 9(3) I 001 - 366. The 24 hour period spans 2
+<5> Trading Day (ending at 19.00 hrs) preceding calendar days - Day 1 = 31st December -
+the harvesting run producing the 19:00:01hrs to 19:00:00 hrs - 1st
+Transmission Files January
+Generated by Fujitsu Services
+Transmission File Number I A Fujitsu Services generated transmission I 9(3) I 001 - 999. Combination of source, day
+<6> file number which helps to uniquely identify number and file number makes each file
+each transmission for each day unique within a year.
+Generated by Fujitsu Services
+Date of File Creation The date at which time the file was created 9(8) I ccyymmdd. May be different to
+<I> completion date if creating overnight.
+Generated by Fujitsu Services
+Time of File Creation ‘Commencement time at which the file was I _9(6) I hhmmss
+<8> created Generated by Fujitsu Services
+Transmission Status ‘A POL maintained status which will uniquely I _X(3) I Agreed look up type values are NOR =
+<a> identify the status of each transmission Normal and RES = Re-sent.
+4B
+
+NB1: Transmission status can only contain the two values as indicated above. Therefore, when a file
+has been rejected, it will keep the same number upon re-transmission.
+
+NB2: It is acceptable to POL for Fujitsu Services to extract corrupt sub-files and records from a
+transmission file after rejection has taken place. The amended transmission file would then be sent
+again using the same number. The original corrupt sub file and records would be sent to POL when
+
+Commercial-in-Confidence Page: 15 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+amended. All errors identified by POL and sent to Fujitsu Services require correction by Fujitsu
+Services before POL will accept transmission records.
+
+If POL does for some unidentified reason accept a transmission file which contains errors, the
+responsibility for this occurrence will be POLs. (See also section 5.0).
+
+NB3: Exception Files’ will have a Transmission File Number in the range 800 to 899. ‘Exception
+Files’ will have the Transmission Day Number of the normal file which the exception records would
+have been in had processing proceeded normally and they had not been retained by Fujitsu Services for
+repair.
+
+“Exception files' are files containing sub-files of transactions or events originally excluded by Fujitsu
+Services from normal sub-files because they were recognised as containing a data error. These
+transactions are repaired by Fujitsu Services, usually within 5 days, before subsequent transmission to
+POL.
+
+NB4: ‘Stripped Return Files’ will have a Transmission File Number in the range 700 to 799, unless
+the rejected file was an Exception file, when numbering will be in the range 800 to 899 as specified in
+NB4. ‘Stripped Return Files’ are files containing sub-files extracted by Fujitsu Services from rejected
+transmission files because they were flagged by POL as being in error. These sub-files are repaired by
+Fujitsu Services before subsequent re-transmission to POL. ‘Stripped Return Files’ will always have a
+Transmission Day Number equal to the one of the file from which the constituent sub-files were
+extracted.
+
+NBS5: POL MIS will only validate incoming files in terms of shape, structure and check totals. In
+particular, POL MIS will not validate records against POL Ref. Data on the basis that this has already
+been done within Horizon, and the records reflect what has actually been transacted at the branches.
+
+3.3.3 Transmission File Trailer Record
+
+The Transmission File Trailer record will contain the following data (all fields are mandatory).
+
+Transmission File Trailer record
+Field Name Description Format I Comments
+<field-number>
+Record Type Identifier Unique record type identifier X()_ I TFT for this record:
+<t>
+Date of File Completion The date at which time the file was I 9(8) I coyymmdd. May be different to
+<2> completed commencement date if creating
+‘overnight. Generated by Fujitsu Services
+Completion Time of File IThe fime at which time the file was I 9(6) I hhmmss.
+Creation completed Generated by Fujitsu Services
+<3>
+Total Number of Sub-Files I Total number of sub-files contained within I 9(6) I Calculated by Fujitsu Services
+<4> the transmission
+Total Value of Sub-File I Total value of amounts in all Sub File I SO(10)V I Calculated by Fujitsu Services
+Trailers Trailers contained within the transmission I  9(2)
+<5> file
+7
+
+NBI: In re-transmission, if one or more Sub Files are deleted, the two total fields are adjusted
+accordingly.
+
+3.3.4 Transactions Sub File Header
+
+Each Sub File Header will contain the following data records (all mandatory fields):
+
+[ Transactions Sub File Header record
+
+Commercial-in-Confidence Page: 16 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUJ00002112
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Field Name Description Format I Comments
+‘<field-number>
+Record Type Identifier Unique record type identifier X@) ‘SFH for Sub File Header.
+<t>
+Organisational Unit Code I Unique identifier for each Org Unit 9(10) I Branch
+<2> RDS maintained
+Version Number of Org I Version identifier for each Org Unit ‘9(10) I Version number maintained for
+Unit every Org Unit, incremented
+<3> individually when changes occur -
+RDS maintained
+Sub-File Type Identifier ‘Sub-file type identifier X(@)__I Value is OTRAN for Transactions
+<4> Sub File Header record
+Sub-File Sequence [A sequence number generated by Fujitsu 95) Starts at 1 and incremented for
+Number Services to uniquely identify each sub-file each subfile in the transmission
+<5> file
+Generated by Fujitsu Services
+Date of Sub-File Creation I The date at which time the sub-file was created 96) coyymmdd. May be different to
+<6> completion date if creating
+overnight Generated by Fujitsu
+Services
+Time of Sub-File Creation I Commencement time at which the sub-file was 96) hhmmss
+<7> created Generated by Fujitsu Services
+Business date Business date for the transactions in the sub-file 9(8) yyyymmdd
+<B>
+55
+
+NBI1: Original Sub-File Sequence Numbers are retained even if Sub-Files are deleted from original
+Transmission File on re-send.
+
+3.3.5 Transactions Sub File Trailer
+
+The Sub File Trailer record will contain the following data records (all mandatory fields):
+
+Transactions Sub File Trailer record
+Field Name Description Format I Comments
+<field-number>
+Record Type Identifier Unique record type identifier Xe) SFT for Sub File Trailer:
+<t>
+Organisational Unit Code I Unique identifier for each POL branch 9(70) Branch, Client
+<2> RDS maintained
+Version Number of Org I Version identifier for each Org Unit 9(10) Version number maintained for every
+Unit ‘Org Unit, incremented individually when
+<3> changes occur - RDS maintained
+Date of  Sub-File I The date at which time the sub-file was 3@) ceyymmdd. May be different to
+Completion completed commencement date if creating
+<4> overnight Generated by Fujitsu Services
+Completion Time of Sub-I The time at which time the sub-file was 96) hhmmss
+File Creation completed Generated by Fujitsu Services
+<5>
+Total Number of Records I Total number of Transaction Detail 96) Generated by Fujitsu Services
+<6> records (excluding headers/trailers)
+Total Amount Total amounts from Transaction Details I S9(10)V9(2) I Generated by Fujitsu Services
+<7> records
+37.
+
+3.3.6 Transactions Detail Record
+
+The Transaction Details record exists for capturing all transactional and tender information
+that has been captured for each Organisational Unit (branch). Note that tender details will
+appear in the same format as Transaction Details but will be distinguishable by the use of Item
+identifiers to describe each applicable method of payment.
+
+Commercial-in-Confidence Page: 17 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+FUJ00002112
+FUs00002112
+
+IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+Each Client Product / Stock Item or reversal may have other data items attached to the Branch
+Transaction Line and Tender Line Details Sub File. These when applicable will follow the
+Quantity field in the Branch Transaction Line Details record. See Appendix B for details.
+
+The Transactions Detail record will always contain the following data records:
+
+The following fields are mandatory fields in the sense that the records will be rejected if these
+fields are not populated.
+
+Record Type Identifier
+Organisational Unit Code
+Version Number of Org. Unit
+Date of Transaction
+
+Item Id
+
+Till Identifier
+
+Session Sequence Number
+Transaction Sequence Number
+
+Note that this doesn’t apply to EVT records. The rules for which fields are to be included for
+these records are defined in B.7 EPOSS Events.
+
+Transaction Details Record
+
+Field Name Description Format ] Comments
+
+<field-number>
+
+Record Type ldentifier Unique record type identifier 3) I See below
+
+<>
+
+Organisational Unit Code Unique identifier for each POL branch 9(10) I RDS maintained
+
+<2>
+
+Version Number of Org Unit __I Version identifier for each Org Unit 9(10) I Version number maintained for
+
+<a> every Org Unit, _ incremented
+individually when changes occur -
+RDS maintained
+
+Stock Unit Identifier Unique identifier to distinguish between all I X(3) I Includes any stock units in use at
+
+<a> stock units within each branch any back —_office_—_positions.
+
+Maintained by Fujitsu Services
+
+Session Sequence Number ‘A number which uniquely identifies each I 96) I Generated by Fujitsu Services
+
+<5>
+
+session within a Till Identifier
+
+Transaction Sequence Number I A number which uniquely identifies each I 9(4) I Generated by Fujitsu Services
+
+<6> transaction within a Session
+Till identifier Unique identifier for each till at each counter I 9(2) I This will include terminals 7 fils at
+<I> Position any back office positions.
+
+Maintained by Fujitsu Services
+
+Employee Identifier
+<8>
+
+Authorised employee identifier that carried I X(15) I Maintained by Fujitsu Services
+out each transaction
+
+Date of Transaction The date to which the transaction refers 9(8) I ccyymmdd Generated by Fujitsu
+<9> Services
+Start Time of Transaction The time at which time the transaction I 9(7) I hhmmsss Generated by Fujitsu
+<10> commenced Services
+End Time of Transaction The time at which time the transaction I (7) I hhmmsss Generated by Fujitsu
+<tt> finished Services
+Method of Data Capture How each transaction is captured at the point I 9(2) I RDS maintained — Values: 0 =
+<12> of sale Barcode, 1 = Keyboard/Screen
+
+(Manual), 2 = Magnetic Card, 3 =
+Smart Card, 4 Fallback to Mag
+Swipe, 5 = Scales
+
+Reversal indicator
+<13>
+
+To show if reversals have taken place 9(1) I Default ‘0; “1” shows that this is a
+linked reversed transaction; ‘2’
+shows that this is a non linked
+reversed transaction
+
+Generated by Fujitsu Services
+
+Commercial-in-Confidence Page: 18 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Refund Flag To show when refunds have been provided X(1)__] Default ‘N Refund transactions will
+<14> not be sent
+Generated by Fujitsu Services
+Fall Back Mode Flag To show when transactions have been keyed I X(1) I Defauit ‘N'Y’ shows that
+<15> after the event, i. In fall back mode transaction has been keyed in fall
+back mode
+Generated by Fujitsu Services
+Tem id A unique identifier that specifies a Product / I 9(10) I Defined by RDS — Fujitsu Services
+<16> Stock Item / Tender select as required
+Version Number of Item I The version number of the Item Transaction I 9(10) I Version number for every Item
+Transaction Mode Mode Transaction Mode combination held
+<17> by individual counters, incremented
+when changes occur. Default will
+be Null
+Maintained by RDS
+Transaction Mode Code Tdentifies generic types of transaction 9(10) I Eg: Rem In, Rem Out, Sell, Stock
+<18> Adjustment ete.;- RDS maintained —
+Fujitsu Services select as required
+‘Amount “Amount for this item S9(7)V9 I Generated by Fujitsu Services
+<19> (2)
+Quantity Total volume for each item $9(14) I Defaults to 1
+<20> Generated by Fujitsu Services
+
+‘Additional data for specific transactions - see NB 14 and details contained within Appendix B. No additional data for tenders
+identified.
+
+l [sagen
+
+* Total does not include any additional data items identified within Appendix B.
+NB1: Quantity field increased from 9(5) to 9(14) to hold Turkish Lira.
+
+NB2: POL MIS requires instances of ‘events’ recorded at branches. These will be captured within the
+transaction details. See Appendix B for more details.
+
+NB3: POL MIS does not require any transaction level information on modification of transactions
+before they are committed.
+
+NB4:. Note removed
+
+NBS: Postal Order Fees will have a separate transaction line and will not be linked to the original
+Postal Order transaction line (other than by being next in sequence within the session).
+
+NB6: Where a transaction has a specific ‘partner’ which may have a separate sequence number e.g.
+Travellers Cheques and Traveller’s Cheques Commission Fees, the pairing is only determinable from
+their presence in the same session.
+
+NB7: All Amount and Quantity fields will be passed to POL MIS through using the sign conventions
+used on Horizon. This can be summarised as follows:
+
+= All In-pay transactions have a positive sign
+= All Out-Pay transactions have a negative sign
+= Reversals have the opposite sign from the original transaction
+= Tender lines have the opposite sign from the corresponding transactions ie MoP tendered
+by a customer has a negative sign and cash given from a clerk to a customer has a Positive
+sign
+NBS8: A Stock Adjustment (Transaction Mode Codes 16 or 18 - Stock Adjustment - Positive or Stock
+Adjustment - Negative) can be performed against Item Id - Cash. A balancing entry (tender line) of
+Item Id - Cash will always be generated against the stock adjustment using the Stock Adjustment
+Transaction Mode applicable.
+
+NB9: If Transaction Mode Code is 17 or 19 (Declaration Discrepancy - Positive or Declaration
+Discrepancy - Negative), then the Item will be supported by an item transaction mode code and will
+also have an accompanying balancing transaction (As defined in POL RDS).
+
+NB10: The quantity field will be zero for revaluation transactions.
+
+Commercial-in-Confidence Page: 19 of 40
+
+©Copyright Fujitsu Services Limited 2008
+
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+NBII: Ifa transaction commences on day A just before midnight and completes on day B just after
+midnight, the date on the transaction will be day A. The start time will reflect day A, e.g. 23:59:000,
+and the end time will reflect day B, e.g. 00:01:000.
+
+NB12: If there are Gateway PC problems at a branch which stop the Horizon End of Day being
+recorded on the actual date, then once the Gateway PC problems are rectified, the Horizon End of Day
+will be recorded for the previous day(s) and not the actual day of recovery.
+
+NB13: Ifa Non Gateway PC is down at a branch, the Horizon End of Day marker will be inserted in
+the appropriate position in the file. However, the OTRAN sub file relating and any subsequent
+OTRAN sub files will not be sent to POL MIS until such time that the Gateway PC and all other PCs
+are attached at the point of a subsequent Horizon End of Day.
+
+For both NB12 and NB13 the Horizon End of Day will be inserted into the transaction file at the
+appropriate point.
+
+NB14: The Record Type Identifiers will be used to indicate the type of data and hence which
+additional data items may be included. The following table shows the Record Type Identifiers and
+indicates the relationship to the additional data items to be included:
+
+Record Type Identifier I Meaning Additional Data
+
+APS Automated Payments See B.1 Existing Reversals (only present if Reversal
+Indicator = 1) and B.3. Automated Payments
+
+NBS Network Banking See B.6 Debit Card (DCS) / Network Banking
+(NBS) / E Top-Ups (ETU)
+
+DCS Debit Card See B.6 Debit Card (DCS) / Network Banking
+
+will also include Credit I NBS)/ E Top-Ups (ETU)
+
+Card transactions at $90
+
+ETU E Top-Up See B.6 Debit Card (DCS) / Network Banking
+(NBS) / E Top-Ups (ETU)
+
+BDC Bureau de Change See B.1 Existing Reversals (only present if Reversal
+Indicator = 1) and B.5 Bureau de Change
+
+EVT Events See B.7 EPOSS Events
+
+OTX All other records See B.1 Existing Reversals (only present if Reversal
+Indicator = 1)
+
+PDR Cut-off events Week Number
+
+NBI15: . Refunds will not be sent across this interface.
+
+3.4 Contingency / Failures
+An alert will be raised within Horizon in the event that the file transfer fails.
+
+The operations team will be informed and procedures invoked to rectify the problem.
+
+Commercial-in-Confidence Page: 20 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+Details are given in the Operations Level Agreement [OLA]. Some details of the protection
+built into the platform and communications components are given in the Horizon to Post
+Office Technical Interface Specification [TIS].
+
+Commercial-in-Confidence Page: 21 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+4.0 Data Volumes
+
+Required frequencies and anticipated file sizes are:
+
+FILE TYPE RECORD TYPE Estimated No. Of I Characters I Estimated Megabytes
+Records Per Day Per Record in each Record Per
+Day
+Min Max ‘Min 2 Max
+Transmission I Transmission File Header 7 T0007 a 0.00 005
+Transaction & I Sub File Header TEKS 147k a 062 0.76
+Tender Lines:
+Transaction 7 Tender Line I 25.2m® I 75.6m7 136 3,268.43 9,805.30
+Details
+Sub File Trailer 14.7k 14.7k a7 1.01 124
+Sub Total: 3,040.75 11,145.44
+Transmission I Transmission File Trailer 7 7000" Ed 0.00 0.04
+Totals 3,040.75 11,145.53
+
+NBI: The estimated number of transactions per week (77 million) does not include separate tender line
+records for each transaction / customer session. POL estimates that there are approximately 1.25
+transactions per tender line.
+
+NB2: No allowance has been made in the figures quoted above for the additional data items listed
+within Appendices B.1 Existing Reversals to B.6 Debit Card (DCS) / Network Banking (NBS) / E
+Top-Ups (ETU).
+
+NB3: No allowance has been made to establish the number of additional characters for those products
+that may be re-engineered in the future.
+
+NB4: A +/- 15% safety factor should be built into all of the figures.
+
+APS Additional Data Based on current maximum figures for additional data as at January 2008 it is
+estimated additional 174 Megabytes per day will be added to the above figures. This, however is
+dependent on client agreements which can and do change. In addition new clients or clients changing to
+type X or type XO format files can alter this substantially.
+
+' Minimum = (Min number of records x Average Characters per record) x 90%. This is to take into account missing
+
+records,
+
+? Maximum = (Max number of records x Average Characters per record) x 110%. This is to take into account missing
+records from previous days.
+
+> As a minimum, Fujitsu Services could parcel all data from all branches in one transmission file.
+
+‘ Asa maximum, TIP have estimated that there could be up to 1000 daily transmission files.
+
+* Asa minimum, TIP expects a sub-file header from every branch, even if no lower level details are included.
+
+© 77M transactions (per week) divided by 5.5 (days per week) gives number of transactions per day, plus 77M/S.5 divided
+by 1.25 (to represent approximately 1.25 transactions per tender line).
+
+7 As 6 multiplied by 3 to represent the effects of busy days and catch up of previous transmission failures to TIP
+* As per footnote 3 - all data in one Transmission File.
+* As per footnote 4 - up to 1000 transmi:
+
+ions per day.
+
+Commercial-in-Confidence Page: 22 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+5.0 Transmission of Data Files — Accept / Reject Rules
+
+5.1 File Transmission and Renaming
+
+Fujitsu Services will send files containing many sub files from branches using the naming
+convention shown here to the Remote FTMS server at Huthwaite. Files will be transmitted
+from Horizon data centres, either Wigan or Bootle, the sending location being identifiable
+from the filename. Filenames will be structured as follows:
+
+X_666999.TP_ (Always in Uppercase)
+
+Where: X__ = the sender
+666 = the transmission day number, 001 - 366 - sce section 3.3.2 and NB1 below
+999 = the file number, 001 - 999
+TP_ = the file destination
+
+An example being W_166020.TP_ (used in subsequent examples).
+
+A full list of filenames are shown in Table B.
+
+When Fujitsu Services has finished transmitting a file they will rename the file as shown in
+Table B. In this way, POL will know that the transmitted file is complete. POL will not be able
+to access the file until transmission is complete and it has been renamed by Fujitsu Services.
+The directory structure is described in the [TIS].
+
+When POL MIS has processed the file it will rename the file as shown in Table B indicating
+whether:
+
+(a) the incoming file from Horizon has been received OK (suffix .TPB)
+
+(b) any errors have been detected in the file (suffix .TPX) together with an error file
+(Suffix (.TPZ) )
+NBI1: The day number represented by 666 above will be determined by a 24 hour period starting at the
+Horizon End of Day marker of the previous day. In the example of the Horizon End of Day marker
+being set at 19:00:00, transactions with transaction times falling between 19:00:00 (e.g. 12/2/04) and
+18:59:59 the next day (e.g. 13/2/04) will be attributed to the day number equal to the 18:59:59 date (i.e.
+13/2/04).
+
+The directory structure on the Remote FTMS server (Gateway) will appear as follows:
+
+(a) Live Directory
+
+POL_MIS/LIVE
+DATA
+(b) Test Directory
+POL_MIS/TEST
+DATA
+
+POL MIS will have a process running (to an operational timetable to be defined - probably
+commencing at 20:00 hours each night) that will execute FTP “DIR” to determine when a file
+
+Commercial-in-Confidence Page: 23 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+is ready for collection. The POL MIS machine will then issue an FTP “GET” to retrieve the
+Fujitsu Services files from the DATA directory on the Remote FTMS server. The POL MIS
+machine will then rename the file to W_166020.TPA and take a copy of the file to work on.
+POL MIS will then start to process the file to see if it is in an acceptable state. Normally POL
+MIS will stop scanning for Transmission Files made available by Fujitsu Services at
+approximately 03:00 a.m.
+
+No processing or validation checks are undertaken by POL MIS whilst the file is held in the
+DATA directory on the Remote FTMS server. The original copy remains on the Remote
+FTMS server and POL MIS performs the necessary validation checks on the copy it has taken
+to the POL MIS machine. All files held on the Remote FTMS server with an “A” extension
+are copies therefore of files currently being worked on by POL MIS on the POL MIS
+machine.
+
+Firstly, POL MIS will perform the validation on the transmission file as described in section
+5.2.
+
+POL MIS will check all sub files even if errors are detected within earlier sub-files. If any of
+the transmission or sub file data is found to be in error the whole of the file will be rejected. At
+this point POL MIS will rename both the copy file held on POL MIS and the original held on
+the Remote FTMS server to W_166020.TPX. An Error File with the name of
+W_166020.TPZ stating that POL MIS has found errors is sent to the Remote FTMS server to
+accompany the file found in error. The error file will consist of the transmission file header,
+header errors, sub file header, sub file errors, sub file trailers, trailer errors and transmission
+file trailer.
+
+See Jackson structure at Figure A for more details and Table A for error file report layout,
+error record type identifiers and error codes and their descriptions.
+
+Tf the file and sub-files contain no errors, POL MIS will rename both the copy file held on
+POL MIS and the original held on the Remote FTMS server to W_166020.TPB.
+
+Fujitsu Services will collect Error Files (those with a Z extension) and note related files with
+an X that have been rejected. When Fujitsu Services have investigated and corrected the
+records in error a new / corrected file with the same name as the original it is replacing will be
+passed to the Remote FTMS server. (As POL MIS knows it has produced an Error File for
+this file, it will also expect to find a subsequent replacement file with the same name).
+
+The following diagram and notes provide a summary of what can happen to a file following
+receipt (1) and a copy being passed to POL MIS (2). It is either correct (3) or incorrect (4).
+Appropriate actions and file name changes are undertaken accordingly.
+
+F
+I
+Fujitsu Services R
+Remote FTMS E POL POL POL MIS
+Server Ww Router LAN System
+A
+L
+1
+I 1 I ‘W_166020.TP_ (original placed on Remote FTMS server awaiting check)
+Commercial-in-Confidence Page: 24 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+2] W_166020.TPA ~—-( copy taken to POL MIS machine and original renamed)-———> W_166020.TPA
+
+3 I W_166020.TPB (no errors, ‘A’ extension changed to ‘B’ W_166020.TPB
+
+4a I W_166020.TPX (errors detected ‘A’ extension changed to ‘X')-——-—-------—-—> W_166020.TPX
+
+4b I W_166020.TPZ <(error file created by POL MIS providing details of errors detected)-I W_166020.TPZ
+
+NB1: If POL MIS receives a duplicate transmission file and/or sub-file(s), POL MIS will report this
+error to Fujitsu Services, and will also send these back to Fujitsu Services.
+
+NB2: POL MIS expects all transmission files to remain on the Remote FTMS server for a minimum of
+72 hours.
+
+5.2. POL MIS Validation
+
+This section specifies the validation:
+
+« POL MIS will reject a file should any error be found within the file, sub file, or records
+within the sub file that POL MIS cannot accept. In such a case, POL MIS will create an
+error file specifying the errors found.
+
+« POL MIS will return the error file to the Remote FTMS server, to be picked up by Fujitsu
+Services, specifying any rejected files that need to be corrected and resubmitted
+
+¢ Fujitsu Services will return repaired error records in a separate sub file for repaired records
+
+« POL MIS must inform Fujitsu Services of an error within 24 hours. Fujitsu Services must
+keep source files for 7 calendar days in case POL MIS require a file to be re-sent.
+
+Transmission File Header
+
+. Ensure file type identifier is valid
+
+. Ensure record type identifier is valid
+
+. Ensure interface version number is valid
+
+. Ensure transmission day number and transmission file number is valid by checking it is not a
+duplicate
+
+. Ensure file creation date is valid
+
+. Ensure time of file creation is valid
+
+. Ensure transmission status is valid
+
+RwNe
+
+NAW
+
+Transmission File Trailer
+
+8. Ensure record type identifier is valid
+
+9. Ensure date of file completion is valid
+10.Ensure time of file completion is valid
+11.Checksum the total number sub files
+12.Checksum the value of all sub file trailers
+
+Secondly, POL MIS will then perform validation on all sub-files. The validation will consist of:
+Sub File Header
+
+1. Ensure sub-file type identifiers are valid
+
+Commercial-in-Confidence Page: 25 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+FUJ00002112
+FUs00002112
+
+2. Ensure record type identifiers are valid
+3. Ensure Organisational Unit identifiers are valid (if required)
+4. Ensure sub-file sequence numbers are valid by checking it is:
+(a) Not a duplicate
+(b) In sequence
+. Ensure file creation dates are valid
+6. Ensure time of file creations are valid
+
+an
+
+Sub File Details
+
+7. Ensure record type identifiers are valid
+8. Ensure all mandatory fields are present
+
+9. Ensure all number fields format are numeric } These validations are only carried
+10.Ensure all dates are in date format } out for fields which are not null
+11.All flag fields are Y or N }
+
+Sub File Trailer
+
+12.Ensure record type identifier is valid
+
+13.Ensure Organisational Unit identifiers are valid
+
+14.Ensure date of file completion is valid
+
+15.Ensure time of file completion is valid
+
+16.Checksum the total number of records (depending on sub file type)
+17.Checksum the value of all sub file trailers (depending on sub file type)
+
+Commercial-in-Confidence Page: 26 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Figure: A Error File Jackson Structure
+: I
+< Denotes many ERRORS TERRORS ERRORS
+Table A
+A.l_— Error Record Layout
+The Error Record Layout is generic for all headers, details and trailers.
+Record: Error Record
+Field Name Description Format I Comments
+Record Type Identifier Unique record type identifier for record inI X(3) ‘see A2 for values
+error
+Date Generated The date the error file was generated 9(8) I ccyymmdd. Generated by
+MIS
+Error Code Unique Error Code which identifies the type of I 9(3) ‘see A3 for values.
+error
+Error Description The error code description X(30)__I The first 30 characters of
+the description only will be
+sent. see A.3 for values.
+Record Number The record number in the file in error 9(7) I Generated by MIS
+Starting at 1 and including all record types
+including File and subfile headers and trailer.
+Field Number The field number in the file in error 9(2) I Generated by MIS
+As defined in section 3.3
+53
+A.2— POL MIS Maintained Error Record Type Identifiers and Applicable Error
+Codes
+Error Record Type
+Identifiers
+Record Type I Form Description Applicable Error Codes
+Identifier at
+THZ ‘all'X(3)_I Transmission File Header I 001, 002, 003, 004, 005, 006, 016, 019, 021, 023, 026,
+Error 031
+
+Commercial-in-Confidence
+
+©Copyright Fujitsu Services Limited 2008
+
+Page: 27 of 40
+Fujitsu Services
+
+FUJ00002112
+
+FUs00002112
+
+IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+TIZ Transmission File Trailer I 002, 004, 005, 016, 019, 030
+Error
+SHZ ‘Sub File Header Error (002, 004, 005, 009, 010, 016, 019, 022, 024
+STZ ‘Sub File Trailer Error (002, 004, 005, 007, 008, 012, 013, 016, 019, 028
+‘OXZ Transaction / Tender Line I 002, 004, 005, 014, 015, 017, 019, 020, 027, 029,
+Details Error
+
+A.3 POL MIS Maintained Error Codes, Descriptions and relevant Validation
+
+Descriptions
+
+Error I Description Validation
+
+Code
+
+007 Tnvalid File Identifier File Type Identifier must be valid (Section 3.3.2)
+
+(002 Invalid Record Type Identifier Record Type Identifier must be valid (Section 3.3 et seq.)
+
+003 Invalid Interface Version Interface Version must be as specified in section 3.3.2
+
+004 Invalid Date File Creation Date must be a valid date (e.g. not 19960231)
+
+005 Invalid Time Time of File Creation must be a valid time and, in combination with the date,
+must not be in the future
+
+006 Invalid Transmission Status Transmission Status must be as specified in section 3.3.2
+
+007 Incorrect Sub File Total The total number of sub-files within the transmission must be correct
+
+008 Incorrect Sub File Total Value The total value of all sub file trailers within the transmission must be correct
+
+009) Invalid Sub File Type Sub File Type Identifier must be valid (Sections 3.3.4and_ 3.3.5)
+
+010 Invalid Sub File Sequence Number ___I The Sub File Sequence Number is not a valid number
+
+012 Incorrect Record Total The total number of records within the sub file must be correct (depending
+on sub file type -Section 3.3.5)
+
+013 incorrect Record Total Value The total value of all records within the sub file must be correct
+
+O14 Mandatory Field is Missing Mandatory fields must not be null
+
+015 Non Numeric Value Number fields must be numeric
+
+016 Date Out of Range Date of file completion must not be in the future and must not be more than 1
+year old
+
+o7, Invalid Flag - Must be Y or N Flag fields do not contain a Y or N
+
+019 Unexpected End of File Encountered I End of File unexpectedly encountered
+
+020 Duplicate Record Record must not be a duplicate of a previous record
+
+021 Missing Transmission Header All transmissions must contain a relevant Header
+
+022 Missing Sub File Header All sub-files must contain a relevant Header
+
+023 Duplicate Transmission File Transmission must not be a duplicate of a previous transmission
+
+024 Duplicate Sub File ‘Sub File must not be a duplicate of a previous Sub File
+
+026 Invalid Transmission Source Transmission Source must be either W_ or B_ followed by 001-366 for day
+number
+
+027 Invalid Numeric Value This numeric values cannot be negative and must be an integer
+
+028 Missing Sub File Trailer All sub-files must contain a relevant Trailer
+
+029 Field must be non zero Content of field must not be zero
+
+030 Trailer must be last record Last record must be trailer record
+
+031 Header must be first record First record must be header record
+
+032, Incorrect Record Size
+
+Table B — Filenames at Remote FTMS server
+
+Name
+
+Description
+
+W_166020.TP.
+
+‘Completed transaction fle by Fujitsu Services available for POL MIS to process
+
+W_166020.TPA
+
+checks
+
+Completed transaction file by Fujitsu Services renamed by POL MIS undergoing validation
+
+W_166020.TPB
+
+Error free file renamed by POL MIS.
+
+W_166020.TPX
+
+File in error renamed by PL MIS
+
+W_166020.TPZ
+
+Error File produced by POL MIS
+
+Commercial-in-Confidence
+
+©Copyright Fujitsu Services Limited 2008
+
+Page: 28 of 40
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+6.0 Security of Transmitted Data
+
+The integrity of the transmitted data will be preserved within secure environments at both the
+POL data centre (Huthwaite) and the Fujitsu Services data centres (Wigan and Bootle). The
+security on the links between the POL data centre and the Fujitsu Services data centres is
+covered in the Security Functional Specification [SFS] and is outside the scope of this
+document. The file is digitally signed (standard FTMS function).
+
+7.0 Operational Procedures
+
+The Horizon system will push the transaction files to the Remote FTMS server at Huthwaite
+each calendar day, on a schedule controlled by the Maestro schedule control system.
+
+Operational procedures within the Fujitsu Services area of responsibility will be documented in
+the Operational Level Agreement [OLA]. This will include the period that Fujitsu Services will
+need to retain data files in the event of being unable to transmit the data files to POL.
+
+Commercial-in-Confidence Page: 29 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Appendix A
+
+POL MIS Transactions
+
+All transaction items which POL MIS will receive from Horizon will be maintained within the
+POL Reference Data System. These items will be allocated to the relevant Transaction Modes
+to support each transaction. Refer to the latest version of the document Application Interface
+Specification Reference Data [RDAIS] to for more structural details and the Reference Data
+Rules and Values [RDR&V] for the products/items and the transaction modes that this
+supports.
+
+It is important to note the following:
+
+¢ For reversal transactions, the original Transaction Mode is shown in the transaction details
+that are sent to POL MIS. POL MIS will know if a reversal has taken place by referring to
+the reversal indicator within the transaction line.
+
+e For all “Events”, these will have the Transaction Mode of “Event”.
+
+e The following transaction modes are not applicable to POL MIS and will be filtered out
+within Horizon. Also, balancing transactions will be suppressed (e.g. for REMs). Such
+Balancing transactions will be identified by Reference Data passed to Horizon from RDS.
+
+0 Default
+7 Transfer In - Between Stock Units
+13 I Transfer Out - Between Stock Units
+21 ‘I Ordered
+Commercial-in-Confidence Page: 30 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Appendix B
+
+Additional Data Requirements for Branch Transactions
+
+Sections B.1 Existing Reversals to B.3 Automated Payments are the current known products
+that have additional data captured at the point of sale and which are required to be sent to
+POL MIS.
+
+Sections B.5 Bureau de Change and B.6 Debit Card (DCS) / Network Banking (NBS) / E
+Top-Ups (ETU) are on-line transactions for which POL require additional data originating at
+the counters for MIS.
+
+B.1 Existing Reversals
+
+Generally, note that wherever an Existing Reversal has taken place, the additional data in the
+transaction record passed to POL MIS must start with the following fields, followed by any
+item specific fields as shown below. The three fields below are mandatory for Existing
+Reversals.
+
+Record: Existing Reversals
+
+Field Name Description Format I Comments
+Reversed Till Identifier Original Till Identifier involved with I 9(2) I This will include any Tills in use at any back
+this reversal office positions. Maintained by Fujitsu
+Services.
+Reversed Session Number I Original Session Sequence I _9(6) Generated by Fujitsu Services
+Number involved with this reversal
+Reversed Transaction I Original Transaction Sequence I __9(4) Generated by Fujitsu Services
+Number Number involved with this reversal
+2
+
+Where reversal information (as above) is included this should appear immediately after the
+Transaction / Tender Line Details but before any applicable additional data items listed in the
+remainder of this appendix.
+
+Tf New Reversals have taken place, then the additional data information will not be captured.
+
+The details listed within this appendix have been confirmed during Horizon Joint Working
+Meetings.
+
+NB1: The reversal of settlement transactions will always have a reversal indicator of “2”, meaning
+additional data will not be supplied in these circumstances.
+
+Commercial-in-Confidence Page: 31 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+IMPACT Release 3
+Horizon to POL MIS AIS
+
+Commercial-in-
+
+-Confidence
+
+H EA/IFS/006
+
+Version: 7.0
+
+Date: 17/09/2009
+
+B.2 Retained as placeholder only- related to OBCS now not part
+
+of the system
+
+B.3 Automated Payments
+
+The following data requirements apply to a number of automated payment products which fall
+mainly into Electric, Gas, Water and Other groupings. The exact listing is maintained within
+the POL Reference Data System. Header and Trailer records are as per all transaction files as
+shown within the Record Structure section. Transaction line details are as follows:
+
+Record: Automated Payments
+
+Field Name Description Format I Comments
+Token Tdentifer Unique Code to identity token 370) I RDS maintained. Mandatory
+Version Number Version number of Token 970) I On HNG-X generated transactions this will
+be set to 1
+On Horizon generated Transactions this is
+RDS maintained
+Mandatory
+Customer Ref. Number Identifier relevant to the Customer (20) I Non-Mandatory. Generated by Fujitsu
+Services.
+client_account_no The AP client account code 34)
+Client_serv_code The AP client service code 34)
+Teceipt_reference The APS Receipt Reference Xe) I Terminal number (node_ld), two spaces,
+equipment indicator (H),
+‘AP_transaction_reference I Thelast4 digits oF 34)
+ap_sequence_no
+Payment_code Method of payment a) (i=Cash, 2=Cheque, 3=Savings Stamps,
+4=Debit Card/Credit Card
+38
+‘additional_data APS XML Additional Data field (2000) I Variable length XML field, will start with the
+(Variable I label <X_DATA> and end with the label
+Length) I </x_DATA> and will be delimited by CRILF.
+
+B.4 Retained as placeholder only- related to OBCS now not part
+
+of the system
+
+Commercia
+
+©Copyright Fujitsu Services Limited 2008
+
+in-Confidence
+
+Page: 32 of 40
+
+FUJ00002112
+FUs00002112
+
+FUJ00002112
+
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+B.5 Bureau de Change
+The additional transaction data required is as follows.
+Record: Benefit Payment - Bureau
+Field Name Description Format I Comments
+BUREAU_REGION Categorises offices into regions to allow I 9(4)
+different margins to be applied
+COMMISSION Commission SATA) I Only charged on sterling
+traveller's cheques at present.
+CURRENCY Currency X(16)
+EFFECTIVE_EXCHANGE_RATE I Spot RaterMargin SOTO WAT
+)
+EXCHANGE_RATE Spot Rate 3TO WAIT)
+MARGIN ‘Actual margin applied Sowa)
+MARGIN_PRODUCT Product Id of the margin applied to this 310)
+transaction
+PURCHASED_VALUE Transaction value (sterling) including S9(7W9(2)
+the margin, ie what the customer either
+receives or pays
+7
+
+B.6 Debit Card (DCS) / Network Banking (NBS) / E Top-Ups
+
+(ETU)
+The additional transaction data required is as follows.
+Field Name Description Format I Comments
+AMOUNT_REQUESTED mount requested by customer, but not I Ota)
+necessarily authorised.
+‘AUTHORISATION_CODE Authorisation code from FI (Merchant I __X(6) I DCS: See APACS30 vi7 page 64
+Acquirer in case of DCS) NBS/ETU: May be present if
+retumed from Fl (bitmap ref. 038,
+Authorisation Identification
+Response)
+BANK_TRANSACTION_ID Unique transaction id X72) I NBS: bitmap ref. O17 (LINK field
+“Systems Trace Audit Number"
+(STAN))
+CARD_IMPOUNDED indicates card has been retained by the 9 Useful if statistics for impounded
+clerk cards are needed
+Value = 1 if impounded
+CLIENT_ID Client Id 970) _ I DCS: Not populated
+CURRENCY Currency XG
+FEE Fee 9(12) I Fees not currently charged
+FINANCIAL_TRANSACTION 9 DCS/ETU: Value = 1
+NBS: Determines if itis a financial
+txn, Le, withdrawal or deposit
+(value = 1), other transactions
+value = 0.
+HORIZON_TRANSACTION_ID I Horizon Transaction Id X(@2)_I Unique transaction id - could be
+useful for error resolution.
+TSSUER_SCHEME_ID Tssuer Scheme ID 9(70) I Identifies card scheme used e.g
+
+A&l Debit Card, Nationwide
+Flexaccount, Card Account,
+Lloyds TSB BBA ete.
+
+From POL Ref. Data (matched via
+PAN)
+
+Commercial-in-Confidence
+
+©Copyright Fujitsu Services Limited 2008
+
+Page: 33 of 40
+Fujitsu Services
+
+IMPACT Release 3
+Horizon to POL MIS AIS
+
+Commercial-in-Confidence
+
+FUJ00002112
+FUs00002112
+
+Ref: EA/IFS/006
+
+Version: 7.0
+
+Date: 17/09/2009
+
+MERCHANT_NUMBER
+
+Merchant ID
+
+‘O16
+
+DCS: Another identifier (MID) for
+the branch recognised by the
+Merchant Acquirer
+
+NBS/ETU: Not populated
+
+PAN
+
+Primary Account Number
+
+aI9)
+
+The PAN field will contain the
+leading six digits of the PAN
+followed by zeros then the final 4
+digits of the PAN
+
+RECEIPT_DATE
+
+Date printed on receipt
+
+318)
+
+ccyymmdd, Same as transaction
+date (date transaction was
+initiated)
+
+(For NBS, same as bitmap ref.
+013, Date, Local Transaction)
+
+[DN is there any point in having
+this field because the Date of
+Transaction is in the body of the
+Transaction Details Record?
+There is a RECEIPT_TIME,
+which may differ (bya few
+seconds) from the Transaction
+Time]
+
+RECOVERY_FLAG
+
+Indicates whether transaction has been
+recovered following a failure.
+
+Value = 1 recovery
+
+RESPONSE_CODE
+
+Horizon Response Code
+
+9(2)
+
+‘See Appendix C
+(includes a translation of the Fl’s
+response code (authorised,
+decline - insufficient funds etc)
+
+ROUTING_GATEWAY
+
+Represents the FI to which the txn is
+sent
+
+‘Oi0)
+
+DCS: The Merchant Aquirer -
+Streamline Merchant Services at
+present
+
+NBS: The system to which the
+request is routed (A&L, Card
+Account, LINK)
+
+ETU: The Fl is e-pay at present
+
+SETTLEMENT_DATE
+
+Date transaction is settled by FI
+
+36)
+
+Format ccyymmdd
+DCS/ETU: Not populated
+NBS: The settlement day into
+which the transaction will be
+placed
+
+TRANSACTION_RESULT_CODE
+
+Transaction outcome
+
+32)
+
+‘See Appendix C
+Generated at counter ~ indicates
+Transaction outcome (completed
+ok, abandoned by clerk etc)
+
+TRANSACTION_TYPE.
+
+Transaction Type
+
+3)
+
+Balance Enquiry etc
+
+‘agent_sia_info
+
+‘Agent SLA information
+
+a6)
+
+Only populated at HING-X, but
+inserted here to ease change
+
+counter_sla_info
+
+‘Counter SLA information
+
+316)
+
+‘Only populated at HNG-X, but
+inserted here to ease change
+
+179
+
+Commercial-in-Confidence
+
+©Copyright Fujitsu Services Limited 2008
+
+Page: 34 of 40
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+B.7 EPOSS Events
+
+B.7.1 Existing EPOSS Events
+
+EPOSS events are required to be sent to POL MIS on an individual transaction basis. The
+events required are as follows:
+
+Event ID IEvent Description Comment Logical Groups
+923 [Horizon End of Day (EoD) Group 7
+938 IForced Log Out Group 1
+930 ILog On- completion Group 1
+932 ILog On- failed wrong passwordiuser name Group 1
+931 Log Out - completion Group 1
+933 IManager Forced Log Out Group 1
+915 [Create Stock Unit- completion Group 4
+916 [Delete Stock Unit - completion Group 4
+919 [Stock Unit Balance - completion Group 4
+917 __ [Attach User to Stock Unit - completion Group 5
+
+6299 I Trading Statement Created Group)
+6300 __I Trading Statement Period rolled Group 9
+6301 __ I Trading Statement Period Roll Abandoned Group
+6302 IExcess Cash Removed Parameter required Group 7
+
+indicating amount
+6303 ICash Shortage Made Good Parameter required Group 7
+
+indicating amount
+6304 __ICash Variance Report Previewed Group 1
+6305 __ICash Variance Report Printed Group 1
+6306 [Outstanding Transaction Correction Reminder Displayed I Parameter required Group 8
+
+indicating number of
+Transaction Corrections
+Outstanding
+
+The events have been summarised into a number of logical groups. This grouping helps
+determine the additional data required for capture for each event. No additional data is passed
+for group one.
+
+B.7.2, New Cut-Off Events Available for POL MIS (Release T10)
+
+A new set of Cut-Off Events will be generated and will be made available to POL MIS in the
+form of PDR records.
+
+Commercial-in-Confidence Page: 35 of 40
+
+©Copyright Fujitsu Services Limited 2008
+Fujitsu Services
+
+IMPACT Release 3
+Horizon to POL MIS AIS
+
+Commercial-in-Confidence
+
+Ref: EA/IFS/006
+
+Version: 7.0
+
+Date: 17/09/2009
+
+B.7.3, Logical Groupings of Events
+
+See below for further details based around the logical groupings for the events:
+
+Field Name WTRT[ Grout I Group? Groups GroupsI Group? I Groups Groups} Group 70
+Record Type Weenter 7 eur =vT eur evT ev =v =vT :
+Organisational Unt Code ™ a dM a
+version Number of rg Unt ™ a a a
+Stock Unit denier N Tal Nal Na Nal Nal Nal Na mH
+Session Sequence Number N Nall Nal Nal Nal Nal Nal Na Nall
+Transaction Sequence Number N Nal Nal Nal Nal Nal Nal Nal Nall
+Fri denier w Ey % Ey % a a % 33]
+Employes enter 7 EXOTTRIER] —OORTTIOER I OETHRTGIR] —RTTRTETTR] — FOURTGTHTR]——FOOGTHTTGR]—— KRTTTIIR] STOO
+Date of Transaction wi CEYYNINDDI — CCYYNIMDD] —CCYYHMOD] —CCYNMDD] — CCYYMADBI — CCYYNINDD]—CCYWMIDDI CY WHMAOD
+Sat Time of Transaction iy Na Tal Na Na Nal Nal Nal Nall
+End Time of Transaction wT FHNNSSS] — HHVNISSS FHNNSSSI —HHMNSSS] —RANNISSS]I —_HANMSSSI HAMS] HHNINISSS
+ethod of Data Capture N Nil Nl Nl Nat Na Tal] Ta Nal
+Reversal ncicator N Nal Nal Tal Nal Nal Nal Na Nall
+Refund Flog N Nall Nal Nal Nal Nal Nal] Na Nall
+Fal Back Mode Flag w Nal Tal ry Tai Wal Tal Ta Wal
+em 8 ™ 980] 388 or) Ma a
+Version Number of fem Tx Mode I Nv Nal Nal Nal Nal Nal Nal Nal Nall
+Transaction Mode Code ™ 20 2 20 Ey Ey 2 2 20
+[Amount N ‘Null Null] Null] Null] ‘Amount!} Nail Null] '$9(7)V9(2)]
+Guantiy w Nal Tal Tal Nail Nal No of Nal Sara)
+Corrections
+fAdarional ba
+Balance Create / Delete Stock Unit] MA Tox 7x
+Shared Trdvidual Stock Unt WA =
+New Delete / Modify System User I MA OOOO
+Fading Period Wa 396
+Week Number 99]
+
+FUJ00002112
+FUJ00002112
+
+Commercial-in-Confidence
+
+©Copyright Fujitsu Services Limited 2008
+
+Page: 36 of 40
+FUJ00002112
+FUJ00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+
+M= Mandatory N= Null MA = Mandatory when applies * - Null for Horizon End of Day. $ 999 for 919. Null for 915, 916 & 920, # willbe null when the stock units are first being established in a branch, ~ null is acceptable for 919 and 916
+
+Column formats are defined in section 3.3.6.
+
+The event codes are maintained within the POL Reference Data System. Transaction Mode 20 applies to events. The event code ID is compliant with the
+Item ID format - 9(10). Tender line details would not be expected for any of the events listed above.
+
+NB1: The Events associated with each group described above are defined in the tables in sections B.7.1 Existing EPOSS Events and B.7.2 New Cut-
+Off Events Available for POL MIS (Release T10) above.
+
+NB2: There are no events for group 3 or Group 6, so they have been deliberately omitted from the table above.
+
+NB3: The additional data fields are only present for events of a given group. There are no “fillers” to be included for additional fields that may apply to
+other groups. For example an event of type 6299 (Type 9) will have a single additional data field of “Trading Period” of length 3.
+
+Commercial-in-Confidence Page: 37 of 40
+
+©Copyright Fujitsu Services Limited 2008
+FUJ00002112
+FUs00002112
+
+Fujitsu Services IMPACT Release 3 Ref: EA/IFS/006
+Horizon to POL MIS AIS Version: 7.0
+Commercial-in-Confidence Date: 17/09/2009
+Appendix C
+
+As stated in previous versions of this document it is not intended to maintain the Response
+code, Result code and Transaction Type tables in this document. Documentation on these
+codes will be maintained in the Network Banking Message Flows and Interfaces document ref.
+NB/IFS/004. Accordingly these sections have been removed from this version of this
+document.
+
+Commercial-in-Confidence Page: 38 of 40
+
+©Copyright Fujitsu Services Limited 2008

@@ -1,0 +1,81 @@
+Record of Meeting 13 August 2008
+
+Audit Room
+
+Present: Gareth Jenkins
+Alan Holmes
+Steven Meek
+
+Penny Thomas
+By phone: Pete Sewell
+
+The meeting was called to discuss the issue of errors produced by riposte as described
+in PEAKs PC0152376, PC 0152421, PC0155120 and PC0158102 and KEL D5628Q
+in relation to the validity and integrity of data provided to POL under the ARQ
+agreement.
+
+Gareth Jenkins explained the issue as described in the PEAKs and KEL listed above.
+An EOD process (CABSProcess) was being run between 1900 and 2000 hours, and at
+the same time the user was performing a balancing process on the gateway PC.
+During the EOD operation the CABSProcess created a ’lock’ on the messagestore
+during which time (30 seconds) causing any other message writes to wait, subject to a
+10 second timeout, until the lock was released. The balancing operation attempted to
+write messages to the messagestore but this operation timed out and the messages
+were discarded. Due to a deficiency in the implementation of the counter code the
+end user was not informed of the failure and the transaction (the balancing operation)
+appeared to complete successfully.
+
+When this type of error happens Riposte records an event to the event log. It was
+said that this type of error could happen with any type of transaction.
+
+Also highlighted in the meeting was the statement contained in PC0152376, written by
+Gerald Barnes, :-
+
+‘The fact that EPOSS code is not resilient to errors is endemic.
+There seems little point fixing it in this one particular case
+because there will be many others to catch you out. For example when
+I tried to balance with CABSProcess running I found that declaring
+cash failed with the same sort of error message!’
+
+When this error condition occurs, the message is discarded and no gap is left in the
+message sequence numbers. The messages that fail to be written represent auditable
+events/transactions and this throws the credibility of the message sequence number
+check used to prove the integrity of data provided to POL under the ARQ service.
+
+The question is, should any of these errant messages have been included in data returns
+and under what other circumstances could this type of failure arise?
+
+The discussion then focused on the way forward. It was agreed that we needed to
+understand what types of transactions had been subject to this error. To do this we
+needed to retrieve all of Event Logs, filter the riposte error messages, and analyse what
+was found. Only Event logs from 8 January 2003 have been retained due to a previous
+retention agreement with POL.
+
+FUJ00154824
+FUJ00154824
+At the same time we needed to consolidate all of the ARQ outlet and timeframe data
+requests into a single excel spreadsheet so that ultimately any relevant errors found in
+the Event logs above, could be compared to ARQ data provided to POL for litigation
+purposes to confirm the integrity of the data provided. This exercise can only be
+carried out from 8 January 2003 as prior to this date Event log audit data was only
+retained for 18 months.
+
+We cannot provide any further ARQs until this exercise is complete as the audit server
+is being fully utilised retrieving the 5.5 years worth of Event log data. We must
+question whether it is advisable to provide further ARQ data or witness statements
+until we have a process in place to fully validate our returns.
+
+It was agreed that the process of retrieving all of the available Event logs would be
+carried out and this would start immediately. A sample would be provided to Steven
+to review. Also, the consolidation of the ARQ records would commence.
+
+At the same time Steven would identify which messages we needed to focus on and
+write the necessary code to analyse the event data.
+
+We also need to consider how we introduce an appropriate process going forward.
+
+Penny Thomas
+14 August 2008
+
+FUJ00154824
+FUJ00154824

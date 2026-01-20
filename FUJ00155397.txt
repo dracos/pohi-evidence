@@ -1,0 +1,149 @@
+FUJ00155397
+FUJ00155397
+
+From: Allen Graham (BRAO1)
+
+Sent: Tue 23/12/2008 11:43:33 AM (UTC)
+To: Evans Steve (FELO1)[Steve.A.Evans,_
+Subject: RE: Audit and PC0152376
+
+Good description and summary, thanks
+
+Graham Allen
+Application Services - Post Office Account
+
+FUJITSU
+Lovelace Road,
+
+1, Berkshire, RG12 8SN.
+
+httpv//uk fujitsu
+
+eS Please consider the environment - do you really need to print this email?
+
+Fujitsu Services Limited, Registered in England no 96056, Registered Office: 22 Baker Street, London, W1U
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be privileged. Fujitsu Services
+does not guarantee that this e-mail has not been intercepted and amended or that it is virus-free.
+
+From: Evans Steve (FELO1)
+
+Sent: 19 December 2008 18:18
+
+To: Denham Steve
+
+Cc: Allen Graham (BRAO1); Sewell Peter (FELO1); Holmes Alan; Thomas Penny; Jenkins Gareth GI
+Subject: Audit and PC0152376
+
+Steve
+Here's my version of event and a summary.
+
+Sorry if this is late, or has too much detail. However, I thought it best to give you all of it should you want to
+work anything else into the summary.
+
+I have ccd these guys so that they might correct anything that I’ve got wrong, but I think this is the heart of it.
+
+Summary
+An attempt to write a transaction to the message store, where Riposte has already locked the messagestore for access,
+
+results in failure.
+
+PC0152376 showed that in one scenario, and in one known case of that scenario, this has happened
+without the generation of any message to the GUI, or Windows Event data. There is an error message in
+the ‘Audit Log’, but these entries do not lead to any kind of alert.
+
+Therefore there would be no immediate warning of the failure.
+
+However, where the problem has lead to an accounting imbalance, that has been investigated and
+financially written off, or investigated by 4" line-support (as in PC0152376).
+
+The problem shown in PC0152376 existed in Live only between May 2007 and early Nov 2008.
+
+History
+
+As the result of a fix made to CABSProcess.dll (PC0140715), which is an End-Of-Day (EOD) process, CABSProcess.dll
+was changed to write multiple transactions to Riposte atomically.
+
+It would lock the messagestore, collect data for several transactions and then write the accumulated data before freeing
+the lock.
+
+That fix was delivered to the live estate in
+o LFS_COUNTER 36_1/Release RNT4031/Release PEAK 143079.
+FUJ00155397
+FUJ00155397
+
+It would have become active in Pilot in May 2007, and across the estate on 13-Aug-2007.
+
+In late Dec 2007, a problem was reported in PC0152376.
+
+This was an isolated example of a Stock unit being rolled over on counter 1 at the same time
+that the various EOD of day processes were being run in the background around 7pm.
+
+It was during the CABSProcess that the following message was written to the audit log
+(only)...
+
+‘Timeout occurred waiting for lock. (0xC1090003) CreateMessageEx: RiposteCreateMessageEx
+call failed. '
+
+CABSProcess did not re-attempt to write the required messages, and reported no other error
+(i.e. no Events)
+
+Therefore this error would go unnoticed until the imbalance was noticed.
+
+In this case messages that should have posted a monetary gain in the Stock unit to local
+suspense failed to be written.
+
+Consequently, when local suspense was cleared (written off to P&L in this case) the gain
+wasn't taken into account and this resulted in a negative trading position seen on the
+Branch Trading Statement.
+
+Although it was found by the developer in testing and analysis that attempting to perform
+Balancing whilst CABSProcess was running might also lead to this same problem, because
+
+this was (and remains) the only case of it’s kind that we know of experienced in Live, a fix was
+not required, but the issue and corrective actions were documented in KEL dsed5628Q.
+
+Subsequent investigations have shown that:
+= Nowhere else in the EPOSS code is an atomic transaction attempted.
+«If the problem of Riposte being locked is falsely introduced into the following scenarios;
+oO. Selling a stamp
+o Existing Reversals
+
+© Utilities/AP Manual
+o Remittances of Value and Non-Value Stock
+o Balancing a shared stock unit
+o Adjusting Stock
+© Rolling over the Office
+..-in all cases tried
+© There were multiple windows events generated which could be used to warn of the error
+
+© the actual accounting records written were consistent and so no accounting problems would have
+occurred.
+
+In early September 2008, it was decided that we should fix the exact problem that was documented in
+PC0152376 and which was the only known instance of an attempted atomic writing of multiple
+transactions. This fix was delivered to Pilot on 16 Oct 2008, and across Live on 23 Oct 2008, via
+
+© 186 - LFS_COUNTER 44 1/Release RNT8601/Release PEAK PC0165710
+Steve
+Stephen A Evans
+
+Horizon Counter Development Manager - AS SC Post Office
+
+Fujitsu Services
+FUJITSU
+Lovelace Road, Bracknell, Berkshire. RG12 8SN.
+FUJ00155397
+FUJ00155397
+
+E-mail: steve.a.evang
+Web: http://uk.fujitsu.cot
+
+Fujitsu Services Limited, Registered in England no 96056, Registered Office 22 Baker Stre
+
+London, W1U 3BW.
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be privileged. Fujitsu Services does not
+guarantee that this e-mail has not been intercepted and amended or that it is virus-free.
+
+4 Before printing, think about the environment

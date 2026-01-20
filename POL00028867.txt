@@ -1,0 +1,358 @@
+POL00028867
+POL00028867
+
+Peak Incident Management System
+
+Call Reference PC0121925 Call Logger Deleted User -- ITU SV&I
+Release Targeted At -- Horizon Future Unspecified Top Ref 3005
+Call Type Business Integration Testing Incidents/Defects _ Priority C -- Progress restricted
+Contact Deleted Contact Call Status Closed -- Administrative Response
+Target Date —_18/06/2005 Effort (Man Days) 0
+Summary S80 E2E 2 : Shared SU Cash dec Gain after mig > TP
+All References Type Value
+
+Customer reference 2783
+
+SSCKEL KEL MScardifield2219S
+
+Supplier reference 03223 (Escher)
+
+Customer reference 3005
+
+Clone Call PC0123319
+Progress Narrative
+
+foate:13-gun-2005 09: eu: 56 User:Clifford Sawdy
+caLL PC0121925 open
+Details entered are
+summary:S80 E2E 2
+11 Type:B
+
+1 Priority:B
+target Release:BI 3580
+outed to:QFP - Unassigned_
+Istc7 cycle 2 Day 6
+
+Shared SU Cash dec Gain after mig > TP
+
+POL have raised the following Incident:-
+
+A cash declaration was made in "Stock Balancing" for the amount diplayed on the Snapshot. When the Cash Variance was checked
+lbfterwards a Gain of £45.05 was displayed.
+
+[the dicrepency was the cash value of the transactions performed on the stock unit after rolling into Branch Trading."
+
+PoLs test was performed in a shared SU on the slave after earlier rolling from CAP to TP mode. The gateway SU had rolled to TP
+the previous day.
+
+Having rolled into TP mode a few txns were performed. Finally, a snapshot was printed and the cash was declared correctly with
+I[D:01, overwriting an the existng ID:01 declaration. The gain (shown on the Event Log) was the value of the SC txns performed in
+re.
+
+store to follow.
+
+Date:13-Jun-2005 09:41:52 User:Lionel Higman
+[fhe Call record has been assigned to the Team Member: Mark Scardifield
+
+Jpate:43-Jun-2005 09:48:02 User Clifford Sawdy
+Evidence Added - ms FAD:501680 dual
+
+Date:13-Jun-2005 10:55:56 Uscr:Mark Scardifield
+{the Call record has been transferred to the team:
+the Call record has been assigned to the Team Member: Walter Wright
+
+Date:44-gun-2005 15:15:36 User:iionel Higman
+fhe call Target Release has been moved to Targeted At -- BI_3880
+
+jbate:14-Jun-2005 15:35:42 User:Walter Wright
+[the Call record has been assigned to the Team Member: Martin McConnell
+
+jDate:15-dun-2005 09:50:17 User:Ray Donohoe
+Ibvidence Added - audit log 501680 for 11/6/05 at coun
+
+Date:15-dun-2005 14:02:32 User:Martin McConnell
+
+[Start of Response]
+
+From the audit log it is clear that :
+
+ht. There is no messageport notify event recorded in the audit.log when there should have been. (This Comes from Riposte). Without
+this update, Dataserver will not have the figures ‘in its books' to be able to see past the figures that have been accumulated
+for cash since the data tree was first built
+
+POL00028867
+POL00028867
+Pp. At, or near the time of the ist transaction, there is a VB trapped error indication of an ‘overflow’. However, because this
+
+has been trapped, the system should still be able to continue (I've simulated the condition) and normal operations should still
+Ibe able to continue.
+
+Still looking.
+
+[End of Response]
+Response code to call type B as Category 40 -- Pending -- Incident Under Investigation
+Hours spent since call received: 0 hours
+
+jbate:16-Jun-2005 15:27:58 User:Martin McConnell
+evidence Added - Log file supp £ a ''good
+
+bate:16-dun-2005 15:59:45 User:Martin McConnell
+It've attempted to recreate the situation which occurred over a CA Rollover in this instance and the injecting a transaction like
+the mails txns (<Groupid:501680><Id:2><Num:6635,6636>). Difference being that up here the trace has turned up a transaction
+jcecevied (16:24:15 DS:C/I 1,7505) and in the supplied audit log nothing at all appears for 6635 etc..
+
+Date: 29-dun-2005 12:59:34 User:Martin McConnell
+fter several days of attempting to recreate this problem with a keyboard controlling test program which has generated tens of
+thousands of EPOSS transactions, thousands of print preview cut off reports I have only seen one instance of this problem
+hereby a message does not get passed to EPOSS counter code via the message port interface.
+
+lan attempting a fresh run as of this morning (29th June) and will leave for a further 24 hours or so to see if I can see the
+oblem at least once more.
+
+In essence the problem is out of our control (within Counter development) and even if we pass this onto Escher, they will want
+lsome sort of recreatable scenario. Therefore unless someone can come up with a sequence of actions at the counter that is able to
+reproduce the failure ‘on demand‘ all that we can do here is to give some statistical predications on what might happen in live
+combined with a workaround should the problem manifest itself.
+
+ill update this peak tomorrow, with ‘final findings'....
+
+jbate:01-dul-2005 09:30:54 User:Martin McConnell
+nly the one failure found in the several thousands of transactions generated thus far. Cliff has informed me that a repeat run
+lof this cycle is being repeated this coming weekend, and I'll be hoping to get them set up with performance diagnostics to run at
+the critical point from which the clerk logon is made.
+
+Date:04-gul-2005 1
+{Start of Response]
+
+set up a Performance Process Monitor on BTCT on Saturday morning to capture the processes that led to this error first appearing
+juuring POL's counter testing on Day 6(w/e). Log file is attached.
+
+8:53 User:Ray Donohoe
+
+POL were not able to recreate the error on Saturday.
+[End of Response]
+
+Response code to call type B as Category 40 -- Pending -- Incident Under Investigation
+tours spent since call received: 2 hours
+
+Jbate:04-Jul-2005 10:30:05 User:Ray Donohoe
+evidence Added - Process Performance Monitor
+
+Dat ¢:04-Jul-2005 10:44:59 User:Martin McConnell
+evidence Added - Audit log for 1 rigs_
+
+JDate:04-dul-2005 10:45:39 User:Martin McConnell
+Evidence Added = hog file gener. by soak test program
+
+oate:04-gul-2005 10:58:52 User:Martin McConnell
+I've added a sample trace file for one of the test rigs where over 17000 transactions were applied; if we multiply this up by a
+factor of 3 (number of days) times 3 number of rigs ~ 153000 transactions generated. Out of this I have seen ONE failure, so
+lacing on this statistic there is, obviously a 1 in 153000 chance of hitting this problem. Alas this problem is still related to
+Jsome temporary resourcing problem (the one I wittnessed seemed to be down to a print preview lockup?), but the system did go onto
+recover but leaving the figures stagnant in memory.
+
+lafter spending more than a week on this I don't know there is anything more than can be done because:
+ll. The code is dependent on Escher's Notify mechanism, which MAY itself be beholdant of perhaps some NT or other system failure.
+2. We cannot reproduce this at will with any defined or prescribed pattern.
+
+3. We can recommend a course of action to allow the clerk to yet a fresh rebuild of the tree if he/she finds anything odd, simply
+py logging off and on again, the dataserver tree will automatically refresh.
+
+the only other course of action which I can recommend is for us to set up a 'heartbeat' to self test the state of the listener to
+see if the tree is reliable or not and if it is NOT then we reset the flags on the tree to start from scratch instead of relying
+lon the accumulative effects of these ‘notifications' since the last tree build. This is do-able but not something I would
+recommend at this late stage in the test cycle.
+
+JDate:04-gul-2005 10:59:24 Uscr:Martin McConnell
+Passing to Mark for him to see my comments and to decide on the next course of action...
+
+POL00028867
+POL00028867
+
+jbate:04-dul-2005 11:00:17 User:Martin McConnell
+[the Call record has been assigned to the Team Member: Mark Scardifield
+
+Joate:04-dul-2005 11:15:51 User:Mark Scardifield
+[Start of Response]
+
+[there is nothing further we can do at this stage. It has been agreed (at Morning Prayers) that this incidentr can be closed.
+[End of Response]
+
+Response code to call type B as Category 63 -- Final -
+outing to Call Logger following Final Progress update.
+Hours spent since call received: 0 hours
+
+Programme approved - No fix required
+
+Date:04-dul-2005 18:32:09 User:Clifford Sawdy
+this has occurred on a second office during Day 8 Cycle 3. POL have raised a new defect to track this, the text of which is
+copied below. We have extracted the test steps from the two offices where this has appeared and will provide a further update
+tomorrow any commonalities.
+
+POL update in Defect:-
+MA variance check was made at Office G (007 261). The stock unit snapshot showed a cash figure of £100,000.00. The cash figure
+\acclared was £100,050.00 and therefore a variance check should have produced a gain of £50.00. However, the system showed a gain
+lof £100,050.00. Tf the user logs out and then logs back in again, the variance check shows the correct value.”
+
+JDate:04-Jul-2005 18:32:26 User:Clifford Sawdy
+[the Call record has been transferred to the team: EPOSS-Dev
+
+jate:04-Jul-2005 18:32:52 User:Clifford Sawdy
+Reference Added: Customer reference 3005
+
+joate:05-dul-2005 11:21:52 Uscr:Mark Scardifield
+Martin - reuniting you with this PEAK.
+
+jate:05-ul-2005 11:22:02 User:Mark Scardifield
+[the Call record has been assigned to the Team Member: Martin McConnell
+
+Jbate:05-dul-2005 13:58:48 User:Clifford Sawdy
+bvidence Added - mstore PAD:7261 - Cycle
+
+loate:06-dul-2005 09:37:54 User:Martin McConnell
+fhe latest messagestore attached is not quite the same in that Dataserver has lost transaction totals (as before) but NOT to the
+nessageport notification mechanism because the value of (opening figures) cash was written at :
+kGroupId:71261><Id:2><Num:2499><Date:01-Jul-2005><Time:10:35:43>. Therefore this failure has occurred as the result of dataloss
+between EPOSS and the Riposte query mechanism. The audit log shows that 54 records have been detected from a ‘TALOP_QUERY STATUS"
+call. Alas there is no trace or other information returned about the success or otherwise about the record(s) returned from
+HTALOP_ACCESS QUERY’. Technically therefore this second occurrence is a different category and perhaps MORE disturbing. I am not
+lable to tell whether :
+
+h. A silent failure has occurred within Riposte
+
+2. A failure has occurred within Riposte and notified to us
+
+8. Riposte is behaving OK but EPOSS has failed within the loop
+
+[There is room within the main 'CompletePopulateTree' function to extend error handling in that we know in advance how many
+lrecords should be returned and should a null string be returned, but this fuction is literally the ‘engine’ room of Dataserver
+land not something which I would like to 'tinker' with at this late stage.
+
+Jbate:06-dul-2005 16:02:44 User:Ray Donohoe
+evidence Added - event 1c 040705 FAD 7261
+
+JDate:07-gul-2005 10:01:52 User:Martin McConnell
+Bit of a smoking gun presented in the event viewer log for the ‘busy process':
+
+(04/07/05 12:31:01) The description for Event ID (1) in Source ( Busy ) could not be found. It contains the following insertion
+string(s): VM Usage @Mon Jul 04 12:13:01 2005 :08, 93336KbPhys, 396996KBPage, 60540KbDesktop.
+
+jould have been so much better had perfmon.exe been running on this machine becuase obviously we could have nailed which process
+ight have been ‘draining’ the system near the point of failure, but all that we can categorically state is that the system has
+suffered a big jump in system resource usage which has most likely led to this failure.
+
+Jbate:07-dul-2005 10:07:19 User:Martin McConnell
+IT should add the bracketted date/time string in the event I inserted earlier was of my doing and it should have been (04/07/05
+12:13:01), ie a few minutes prior to the point of failure.
+
+POL00028867
+POL00028867
+
+[bate:13-dul-2005 15:16:16 User:cliftord Sawdy
+the call Priority has been changed from B
+fhe call Priority is now ¢
+
+bate:13-Jul-2005 15:20:38 User:Clifford Sawdy
+Reducing to ‘Ct priority because although it is still thought to be a live problem, investigation also points to Riposte/build
+Janomolies on BYC7 which may explain its prevalence in E2E.
+
+[Date:13-dul-2005 17:15:56 User:Lionel Higman
+[fhe call Target Release has been moved to Targeted At -- Future Unspecified
+
+jatc:15-dul-2005 08:19:10 User:Lionel Higman
+TOP Reference set to: Customer reference 3005
+
+Date:18-gul-2005 15:45:17 User:Martin McConnell
+Have looked at the parameters on the latest E2E builds and the Message port upper and lower limits look fine to me, there is no
+ay of knowing (and this is clutching at straws) of what they were, guess we'll never know.
+
+Dat e:19-Jul-2005 10:34:39 User:Clifford Saway
+call has been cloned to Call:PC0123319 by User:Cliff Sawdy
+
+JDate:25-Jul-2005 16:05:06 User: eae ‘Sawdy
+evidence Added ~ performar c
+
+JDate:26-gul-2005 1.
+IEPOSS uses the TALOP CREATE MESSAG
+Jueue size parameter of 1000. The
+
+; PORT call from the retailbroker.Transaction interface call. Currently when called it uses a
+ounter in BTC are confirgured with RiposteConfig parameters of a Max. 1024 an Min-8.
+
+In my experiments if I set the Queue size = 1 no matter what the Riposte config is set to the system returns a single message
+then returns no more messages thereafter. I know this is NOT the actual problem but it does tend to imply that Riposte does NOT
+live us ANY warning that the NOTIFY call set up has failed. What we need is the 'c' equivalelent of the ReadMessagePort call
+hich indicates that an overflow has occurred so that we can rebuild our internal data tree if necessary, or better still just
+for Riposte to indicate on a call back that it has failed; either will do.
+
+therefore we need an error path associated with the above, a call we can probee the status with, or if this is already handled
+Jdocumentation as to what we can actually do.
+
+Date: 26-Jul-2005 14:12:19 Usor:Martin McConnell
+[fhe Call record has been transferred to the team: Escher-Dev
+
+JDate:26-Jul-2005 16:43:45 Uscr:Mike Coon
+Ikeference Added: Supplier reference 03223 (Escher)
+
+jDate:26-Jul-2005 16:53:27 User:Mike Coon
+Placed on Escher support web site as item 03223 with edited version of narrative above.
+
+JDate:18-Jan-2006 17:54:12 User:Mark Scardifield
+Reference Adde CKEL MScardifield2219S
+
+jDate:28-Mar-2006 15:33:37 User:Mike Coon
+[fhe Call record has been assigned to the Team Member: At-Escher
+
+Jbate:07-Apr-2006 14:35:53 User:Lionel Higman
+[Start of Response]
+
+correcting response category which at “Programme approved - No fix required" was
+[End of Response]
+
+Response code to call type B as Category 40 ~
+licurs spent since call received: 0 hours
+
+learly wrong.
+
+Pending -- Incident Under Investigation
+
+Date: 26-Sep-2006 0.
+[Start of Response]
+
+lscher annotation of closure of their call (03223): "Unless you tell me by Friday that you wish to proceed with a fix for 03223,
+03295, 03563 and 04404 at some future point, I propose to take these off your hands and make them internal Escher issues owned by
+jour QA team. I hope this is OK2". Hence closed by them ("suspended") at 8/21/2006 6:44:18 AM.
+
+9:05 User:Mike Coon
+
+this amounts to a dec
+[End of Response]
+Response code to call type B as Category 68
+
+aration by POA that we are no longer interested in obtaining a fix.
+
+Final -~ Administrative Response
+
+POL00028867
+POL00028867
+
+Routing to call Logger following Final Progress update.
+fours spent since call received: 0 hours
+
+t=2006 11:29:07 User:Sheila Bamber
+se updated to 42: Gen - Outside Pathway Control
+
+jbate:23-Oct-2006 11
+CALL PC0121925 close
+
+9:12 User:Sheila Bamber
+: Category 68 Type B
+
+Root Cause : Gen - Outside Program Control
+
+Logger Deleted User -- ITU SV&I
+
+Subject Product EPOSS & DeskTop -- EPOSS (version unspecified)
+Assignee Deleted User -- ITU SV&I
+
+Last Progress 23-Oct-2006 11:29 -- Sheila Bamber

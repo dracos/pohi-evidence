@@ -1,0 +1,3679 @@
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+High Level Design Specification for Track and Ref:
+
+Trace (T&T) Agents Version:
+
+Company-in-Confidence Date:
+
+FUJ00171843
+FUJ00171843
+
+DE/HLD/015
+4.0
+27-Aug-2008
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Contributors:
+
+Internal Distribution:
+
+External Distribution:
+
+Approval Authorities:
+
+High Level Design Specification for Track and Trace (T&T)
+
+Agents
+High Level Design
+
+T84
+
+This is the High Level Design for the Track and Trace (T&T)
+Agents that harvest the T&T messages recorded at the Horizon
+Counter to NPS and present these messages to the Enterprise
+Data Gateway (EDG) Web Service to be processed, receiving an
+acknowledgement in return. This internal Fujitsu Services
+document is intended to provide the level of detail to provide a
+baseline for the Post Office Account developers and testers.
+
+Approved
+
+Anne Mohan
+
+(James Cadman to v2.0, Rex Dixon to v3.0)
+
+Allan Hodgkinson, Dave Johns, Mark Jarosz, Simon Fawkes,
+
+Phil Turner
+
+Fujitsu Services Document Management
+
+None
+
+Name Position
+
+Signature
+
+Date
+
+Allan Hodgkinson SI Design Manager
+
+Roy Birkinshaw SI Development Manager
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: I of 55
+FUJ00171843
+
+FUJ00171843
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Versi
+ersion: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+0.0 Document Control
+0.1. Document History
+Version No. I Date Reason for Issue Associated
+CP/PinICL.
+01 28/09/2004 First draft issued for review. CP3770
+0.2 02/11/2004 Revisions due to review comments and additional
+information.
+0.3 30/11/2004 Revisions incorporating changes resulting from the
+updated AIS and TIS and review comments.
+1.0 14/12/2004 Baseline for document including minor revisions due
+to review comments.
+ll 17/01/2005 Revisions to the PAF address Riposte attributes for
+the delivery address for the Detailed record and the
+format of the event date in the Ad-Hoc record.
+1.2 31/01/2005 Revisions to provide clarification for the use of the
+PAF address Riposte attributes.
+1.3 09/02/2005 Revisions to include the Cluster id in the Monitor id I PCO115110
+for the Agents and also in the file names for the T&T
+EDG Interface Agent statistic files.
+Also the inclusion of the T&T event filtering
+information supplied by Simon Fawkes.
+1.4 24/03/2005 Revision changing heartbeat intervals to 5 minutes at I PC0115836
+Simon Fawkes request. PC0117912
+Revision to generate a Windows event for monitoring
+exceptions raised on the T&T Exceptions Table.
+Minor revisions due to review comments.
+2.0 12/04/2005 Issue for approval (at BI3 S80).
+21 31/10/2005 Added “Last Dispatch” flag (at BI3 $90). CP4034
+PCO0125635
+Clarified that FAD code is padded with leading I Cp4066
+zeroes (at BI3 S81R).
+Corrected “PAF Validated” flag to align with AIS
+(and the executable code).
+2.2 01/11/2005 Added “Country of Destination” in Delivery address I CP4107
+line 4.
+3.0 09/01/2006 Approved (at BI3 S90)
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence Page: 2 of 55
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design I eral Track and Ref _ DE/HLD/015
+Fujitsu Services Version: 40
+Company-in-Confidence Date: 27-Aug-2008
+3.1 16/07/2008 Added “Value of Goods”, “Consequential Loss I CP4401
+Value”, “Item Format”.
+Added “Guaranteed Date”, “DD flag”, “FAD”. CP4507
+Escape the 5 special characters ‘<>& quote and PC151919
+double quote’.
+Use local time for H_DT and A_ET fields. PC 149242
+4.0 27/08/2008 Approved
+0.2 Review Details
+Review Comments by :
+Review Comments to: I Anne Mohan
+Mandatory Review Authority Name
+SI Design Manager Allan Hodgkinson
+SI DU Designers Chris Bailey(*)
+SI Development Team Leader Peter Ambrose(*)
+SI Test Manager Sheila Bamber(*)
+CS System Support Centre Manager Mik Peach(*)
+CS Security Manager Bill Membery(*)
+CS Business Continuity Manager Tony Wicks(*)
+Optional Review / Issued for Information
+HNG-X Programme Manager Phil Day
+Application Architect Dave Johns
+SI DU Designers Gareth Jenkins
+SI Development Manager Roy Birkinshaw
+SI Test Designer Peter J. Robinson
+SI Development - Counter Richard O'Neill
+SI Development - Agents Andy Williams, John Rayner
+(*) = Reviewers that returned comments
+0.3 Associated Documents
+Reference Version I Date Title Source
+[PA/TEM/001] I 9.0 07/02/05 I Fujitsu Services Document Template PVCS
+[AD/DES/039] Generic Agent Components for Release PVCS
+CSR+ High Level Design
+© 2005 Fujitsu Services Company-in-Confidence Page: 3 of 55
+FUJ00171843
+FUJ00171843
+
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Versi
+ersion: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+
+[AD/DES/066] Pathway Agents: XML-RAG Converter PVCS
+
+[AS/DPR/013] Design Proposal for Track & Trace PVCS
+
+[AS/IFS/001] 4.0 Horizon to EDG Feed for Track and Trace PVCS
+
+[AS/IFS/002] 1.0 02/03/05 I Horizon to EDG — Technical Interface PVCS
+Specification for Track and Trace
+
+[AD/LLD/005] Low Level Design for NBX Guaranteed
+Reversals Agent
+
+[CR/CDE/018] I 2.2 05/09/05 I Track and Trace Integration — Conceptual PVCS
+Design
+
+[CR/CDE/019] I 1.0 07/08/04 I Requirements Catalogue for Track and PVCS
+Trace Integration
+
+[DE/HLD/014} Track and Trace — Counter High Level PVCS
+Design
+
+[DE/LLD/015] Low Level Design for Track and Trace EDG I PVCS
+Interface Agent
+
+[DE/LLD/019] Low Level Design for Track and Trace PVCS
+Harvester Agent
+
+[NB/DES/008] Platform Physical Design for the NBX PVCS
+Routing Agent Server
+
+[NB/HLD/027] I 1.0 25/11/04 I NPS Track and Trace Changes HLD PVCS
+
+[PF/HLD/001] 1.0 14/05/04 I High Level Design - Counter PAF Module PVCS
+
+[RD/DOC/003] Smart Post Application Reference Data PVCS
+Definition
+
+[RS/DES/081] Implementation Build Guide for Secure NT I PVCS
+Platforms
+
+[RS/FSP/001] Security Functional Specification PVCS
+
+[RS/POL/002] Horizon Security Policy PVCS
+
+[SD/DES/262] EDG (GP) FTMS Local Gateway Physical I PVCS
+Platform Design
+
+[UM/LLD/005] Smart Post Admin Track and Trace Low PVCS
+Level Design
+
+[WSIS] 0.1 03/12/04 I Horizon EDG Web Service Interface Prism
+Specification
+
+Unless a specific version is referred to above, reference should be made to the current approved versions
+
+of the documents.
+
+0.4 Abbreviations/Definitions
+
+0.4.1 Abbreviations
+Abbreviation Definition
+ACRR Agent and Correspondence Server — Resilience & Recovery.
+AIS Application Interface Specification.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 4 of 55
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+Trace (T&T) Agents Version: 4.0
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+ASCII American Standard Code for Information Interchange.
+
+ccs Counter Call Scheduler.
+
+cD Conceptual Design.
+
+cs Correspondence Server.
+
+DMZ Demilitarised Zone. An area of the network protected by firewalls which
+separate it both from external systems and from the main Horizon data
+centres.
+
+DP Design Proposal.
+
+EACRR Enhanced Tivoli/ACRR.
+
+EDG Enterprise Data Gateway.
+
+EE_IO Enquiry Engine Input Output.
+
+EPOSS Electronic Point of Sale Service.
+
+FS Fujitsu Services.
+
+HLD High Level Design.
+
+HTTP Hypertext Transfer Protocol.
+
+ITU Integration and Testing Unit.
+
+LDT Last Despatch Time.
+
+LLD Low Level Design.
+
+MS Microsoft.
+
+MSMQ Microsoft Message Queuing.
+
+NBE Network Banking Engine.
+
+NBX Term used to describe the NBE functionality absorbed into the Horizon
+domain.
+
+NPS NBX Persistent Store.
+
+OBC Operational Business Change. A mechanism for POL to request day to day
+changes to data within the Horizon system.
+
+PAF Postal Address File.
+
+PIT Product Integration Team.
+
+PO Post Office.
+
+POA Post Office Account.
+
+POL Post Office Limited.
+
+PPD Platform Physical Design.
+
+QAS Quick Address Software.
+
+RAG Riposte Attribute Grammar.
+
+RASD Requirements, Architecture & Strategy Development.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence Page: 5 of 55
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+Trace (T&T) Agents Version: 4.0
+Company-in-Confidence Date: 27-Aug-2008
+
+Riposte Retail Integrated Point Of Sale system in a Transaction Environment.
+Proprietary product from Escher group that is used to:
+(a) Support the Counter PC user’s desktop.
+(b) Provide a speedy and reliable message replication process between the
+Counters in a Branch and the Correspondence Servers at the Campuses.
+The term includes WebRiposte whenever the context admits.
+
+RPC Remote Procedure Call
+
+SI Systems Integration.
+
+SOAP Simple Object Access Protocol.
+
+T&T Track and Trace.
+
+TCP Transmission Control Protocol.
+
+TEC Tivoli Event Console.
+
+TIS Technical Interface Specification.
+
+WSs Web Service.
+
+WSDL Web Service Descriptor Language.
+
+XML Extensible Mark-up Language.
+
+0.4.2 Definitions
+
+The following terms, when Capitalised as here, have specific meanings as indicated:
+
+Term Definition
+
+Agent Component of the Horizon Application Architecture that conventionally sits
+between the Correspondence Servers and Host (or external) layers.
+
+Agent Hash The Agent Hash is a value between 0 and 3 algorithmically derived from the
+
+Branch’s FAD Code at the Counter.
+
+Agent Server
+
+Hardware platform that supports Agent processes. It includes the Generic
+Agent Server, as well as application-specific servers such as the EDG (GP)
+FTMS Local Gateway Servers and NBX Routing Agent Servers.
+
+Branch PO location with one or more Counters installed as part of the Horizon
+programme.
+
+Campus One of two Horizon data centres in Bootle and Wigan. Each can handle the
+entire Horizon workload.
+
+Cluster Group of Correspondence Servers, all handling the same set of Branches
+
+and replicating data between each other for resilience purposes.
+
+Cluster Lookup Service
+(LUC)
+
+An NT service that supports Agents in a multiple Cluster environment. It
+provides a mapping of Riposte Groups to Clusters.
+
+Correspondence Server
+
+Hardware platform that supports the Campus-based Riposte Message
+Service, and handles message replication to and from a group of Branches.
+
+Counter
+
+Counter PC installed in a PO Branch.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence Page: 6 of 55
+
+FUJ00171843
+FUJ00171843
+
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+
+Generic Agent Server Hardware platform that supports the Agent processes for most applications
+(i.e. all those for which there are no application-specific requirements).
+
+Horizon Horizon is the end-to-end solution that provides Post Office with a range of
+Counter services.
+
+Host Layer Architectural layer containing the services running on the Host Central
+Servers.
+
+Platform An instance of a hardware unit (server, workstation, Router etc) that is
+installed by and configured by POA to meet the Horizon security,
+application and capacity requirements.
+
+Prism The alliance of companies responsible for supporting POL desktop and
+business systems.
+
+Reference Data This is used in three different ways:
+
+The end to end service for the receipt, manipulation and delivery of
+configuration data and parameters for use by the rest of the system, within
+the Horizon Programme.
+
+Read Only Data defined in the Riposte Message Store providing sets of
+Collections and Objects used to configure the Branch and define the
+business parameters to be used and followed in providing a Counter service.
+The entirety of read only objects within the system, whether in the Riposte
+Message Store or not, that configures the system in some way or provides
+sofi parameters to system definition and use.
+
+Release A documented and co-ordinated collection of software and/or data provided
+by FS to deliver POL Services, or to extend the infrastructure used to
+deliver these services.
+
+Token Generic name for magnetic swipe cards, smart cards or bar codes used to
+initiate a Counter transaction.
+
+Transaction A recorded and auditable instance of business activity, involving service
+provision or Stock movement across organisational or service boundaries.
+
+WebRiposte A version of Riposte that supports additional web functionality. (This
+additional functionality is not relevant to the Agents described in this
+document).
+
+0.5 Changes in this Version
+
+Version Changes
+
+0.1 Initial version.
+
+0.2 Changes due to review comments and additional information.
+
+0.3 Revisions due to review comments and changes to the AIS and TIS.
+
+1.0 Baseline for document including minor revisions due to review comments.
+
+Ll Changes to include the Riposte attributes for PAF addresses for the delivery address in the
+
+Detailed record.
+
+Change to the formatting of the Event Date for the Ad-Hoc record from YYYYMMDD to
+YYMMDD.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 7 of 55
+oO
+FUJITSU Trace (T&T) Agents
+
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+Version: 4.0
+
+Fujitsu Services
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+Changes to clarify the use of the PAF address Riposte attributes to form the delivery
+address sent to the EDG in the Detailed record.
+
+Changes to include the Cluster id in both the monitor id for the Agents and in the file
+names for the T&T EDG Interface Agent statistic files.
+
+Also the inclusion of the T&T event filtering information supplied by Simon Fawkes.
+
+Changing the heartbeat intervals to 5 minutes.
+Generate Windows events for monitoring exceptions raised on the T&T Exceptions Table.
+
+Minor changes due to review comments.
+
+2.0
+
+Issue for approval (at S80).
+
+2.1
+
+Added “Last Dispatch” flag (CP4034, at BI3 S90).
+Clarified that FAD code is padded with leading zeroes (CP4066, at BI3 S81R).
+Corrected “PAF Validated” flag to align with AIS (and the executable code).
+
+A (very) few minor changes elsewhere. This includes joining the two parts of Table 11 and
+moving the text that was formerly between the two parts.
+
+2.2
+
+Added “Country of Destination” in Delivery address line 4 (CP4107).
+
+3.0
+
+Issue for approval (at S90).
+Resource name changed from “DB” to “DB1” (Table 29) (PC0128464)
+
+3.1
+
+Added “Value of Goods”, “Consequential Loss Value”, “Item Format”. (CP4401)
+Added “Guaranteed Date”, “DD flag”, “FAD”. (CP4507)
+
+Escape the 5 special characters ‘<>& quote and double quote’. (PEAK 151919)
+Use local time for H_DT and A_ET fields. (PEAK 149242)
+
+0.6
+
+Changes Expected
+
+Changes
+
+None
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 8 of 55
+FUJ00171843
+
+FUJ00171843
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Versi
+ersion: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+0.7. Contents
+0.7.1 Table of Contents
+1.0 INTRODUCTION 12
+2.0 SCOPE 12
+3.0 DESIGN PRINCIPLES 13
+3.1 ASSUMPTIONS 13
+4.0 REQUIREMENTS 13
+4.1 ARCHITECTURAL REQUIREMENTS 14
+4.1.1 Constraints Framework & Building Blocks 4
+4.1.2 Integration with Other Systems 4
+4.1.3 Design Principles 14
+4.2 T&T PROCESSING 15
+4.2.1 T&T Token 15
+4.2.2. T&T Reference Data 16
+4.2.3. T&T Validation Process 16
+4.3 MAILS ACCEPTANCE (ADDITIONAL REQUIREMENTS TO THE DELIVERED SERVICE) 17
+43.1 T&T Token 17
+5.0 SYSTEM COMPONENTS 17
+5.1 APPLICATION COMPONENTS FOR T&T AGENTS 17
+
+5.1.1 Introduction
+
+1
+
+13 Reference Data
+
+1.4 Topology of the T&T Integration Agents
+T&T Harvester Agent (TT_HV_ALL)
+
+2.1 Overview
+
+Structure, Launch and Coneurreney
+Detailed Processing
+Exception Handli
+Performance and Scalability
+Resilience.
+Security.
+Configurability...
+Audit
+Operational SuMMATY......ceccseseieicieieentintnteininieieieientntinieieinieieieiestnneeieess
+‘T&T EDG Interface Agent (TT_NQ_EDG)
+1 Overview.
+
+.2. Structure, Launch and Coneurene.
+3 Detailed Processing...
+5.1.3.3.1 Control Thread.
+5 13.3.2 EEO Thread.
+Ping Thread.
+3h 3.3.4 Microsoft SOAP Toolkit Version 3.0.
+4 Exception Handling.
+
+5 Performance and Scalability
+6 Resilience.
+
+7 Security. sve
+8 Configurability.
+
+5.1.3.9 Audit..
+
+5.1.3.10 Operational Summary...
+
+5.2 APPLICATION COMPONENTS FOR EXISTING AGENTS
+5.2.1 Counter Call Scheduler (CCS) Agent Configuration
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 9 of 55
+FUJ00171843
+
+FUJ00171843
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Version: 4.0
+Fujitsu Services a
+
+Company-in-Confidence Date: 27-Aug-2008
+5.3. INTERFACES TO EXTERNAL COMPONENTS 46
+5.3.1 Interfaces to Riposte 46
+5.3.2. Interfaces to NPS 46
+5.3.2.1 Overview 46
+5.3.2.2. T&T Transaction Table (TMS_RX_TT_TRANSACTIONS)....... coeessueeesuteesneeesnneecsnecesnssensneessneee #7
+5.3.23 T&T Exceptions Table (TMS_RX_TT_EXCEPTIONS). . AR
+5.3.2.4 NPS Archiving and Housekeeping. . 49
+5.3.3 Interfaces to the EDG WS 49
+6.0 SYSTEMS MANAGEMENT 50
+6.1 NT EVENTS AS A SOURCE FOR MONITORING 50
+6.2. T&T EVENTING REQUIREMENT 52
+6.2.1 Event Filtering 52
+6.2.2 Expedited Eventing 53
+7.0 APPLICATION DEVELOPMENT 53
+8.0 SYSTEM QUALITIES 53
+8.1 PERFORMANCE AND SCALABILITY 53
+8.1.1 T&T Harvester Agent 53
+8.1.2. T&T EDG Interface Agent 53
+8.2 RESILIENCE 54
+8.2.1 Resilience to a Failing Correspondence Server 34
+Resilience to a Failed Connection to NPS 54
+T&T Harvester Agent 54
+.2.4 T&T EDG Interface Agent 54
+8.3. SECURITY 54
+8.3.1 T&T Harvester Agent 54
+T&T EDG Interface Agent 54
+3.3 Service Users 54
+8.4 POTENTIAL FOR CHANGE 55
+9.0 SOLUTION IMPLEMENTATION STRATEGY 55
+10.0 MIGRATION 55
+
+0.7.2 Table of Figures
+Figure I — T&T Data Flows and Architecture.
+
+Figure 2 — Data Flows Involving T&T Agents...
+Figure 3— T&T EDG Interface Agent Threading Model and Data Flows
+
+sees 32
+
+0.7.3. Table of Tables
+Table 1 — T&T Integration Agents...
+
+Table 2 — Architectural Requirements — Constraints Framework & Building Blocks....
+
+Table 3 — Architectural Requirements — Integration with Other Systems.
+Table 4 — Architectural Requirements — Design Principles... 1S
+Table 5 — T&T Processing Requirements —- T&T Token
+Table 6 — T&T Processing Requirements — T&T Reference Data....
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 10 of 55
+FUJ00171843
+
+FUJ00171843
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Feet,
+Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+Table 7 — T&T Processing Requirements — T&T Validation Process. 16
+
+Table 8 — Mails Acceptance Requirements:
+Table 9 — Mails Acceptance Requirements — T&T Token
+Table 10 — Registry for T&T Harvester Agent
+Table 11 — Inclusion List of Riposte Attributes Harvested by the T&T Harvester Agent....... 27
+Table 12 — PAF Generated Riposte Attributes for the Delivery Address.
+Table 13 — Operational Summary of the T&T Harvester Agent.
+Table 14 — Riposte Attribute Mapping to EDG WS Header Record Fields...........0...0020.000..34
+Table 15 — Riposte Attribute Mapping to EDG WS Sender Record Fields...............00::00 34
+Table 16 — Riposte Attribute Mapping to EDG WS Detailed Record Fields...
+Table 17 — Riposte Attribute Mapping to EDG WS Ad Hoc Event Record Fields...
+Table 18 — Riposte Attribute Mapping to EDG WS Trailer Record Fields......
+Table 19 — Registry for T&T EDG Interface Agemt..............ceceececeeseeeeeeee
+Table 20 — Registry for T&T EDG Interface Agent — Control Thread.
+
+Table 21 — Registry for T&T EDG Interface Agent - EE_IO Thread.........
+Table 22 — Registry for T&T EDG Interface Agent — Ping Thread.
+
+Table 23 — Operational Summary of the T&T EDG Interface Agent... cece 46
+Table 24 — NPS Tables for T&T Agents
+
+Table 25 — T&T Transaction Table (TMS_RX_TT_TRANSACTIONS)........0.0:0:ceeeee 48
+Table 26 — T&T Exceptions Table (TMS_RX_TT_EXCEPTIONS)........ veseeeeeeeeeseeeeteeenee 49
+
+Table 27 — Monitor Severity Levels
+Table 28 — Monitor Ids of the Resources for the T&T Harvester Agent.
+Table 29 — Monitor Ids of the Resources for the T&T EDG Interface Agent.
+Table 30 — NT Events for Monitoring the T&T Harvester Agent:
+Table 31 — NT Events for Monitoring the T&T EDG Interface Agents.
+Table 32 — T&T Event Filtering Changes.
+Table 33 — Service Users for T&T Integration Agents.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 11 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+1.0 Introduction
+
+This is an internal FS document providing the HLD specification for the new Agents produced
+for the T&T Integration development. There are two types of Agent specified within this
+document, one that harvests the T&T messages recorded at the Horizon Counter from the
+Correspondence Servers. This Agent converts the Riposte attributes of these messages into
+XML and writes them to a table on the NBX Persistent Store (NPS). The second Agent
+retrieves these messages from the NPS and validates and converts them into the format
+expected by the Enterprise Data Gateway Web Service (EDG WS). The XML document
+produced is sent as a SOAP request via an RPC over HTTP using TCP to the EDG WS which
+uses Microsoft Message Queue (MSMQ) at its back end to secure the call and pass the data
+on to the EDG engine. This Agent receives a synchronous acknowledgement from the EDG
+WS as a SOAP response confirming the message has been received.
+
+These Agents are required for Release BI3 S80. CP4034 has produced a minor change for
+Release BI3 S90, CP4066 for BI3 S81R, and CP4107 for shortly after BI3 S90.
+
+CP4401 and CP4507 introduce changes for smartpost and Kahala integration with smartpost
+for Release T82. The PEAK fix, reference PC151919, has been implemented at T84.
+
+2.0 Scope
+
+This document describes the High Level Design for the new Agents for T&T Integration. The
+level of detail is intended to act as a baseline to FS POA developers and testers.
+
+The Conceptual Design (CD) for T&T Integration is described in [CR/CDE/018] and the
+system outline design is provided by the Design Proposal (DP) [AS/DPR/013]. The DP
+describes the architecture for T&T Integration and the following new agents are required to
+support this model:
+
+Agent Description
+
+T&T Harvester Agent This Agent harvests T&T messages from the Correspondence Servers,
+converts them to XML and writes them to NPS.
+
+T&T EDG Interface Agent This Agent retrieves the T&T messages from NPS, validates, formats
+and sends them to the EDG WS via SOAP over HTTP using TCP
+receiving a confirmation in return that they have been received.
+
+Table 1 - T&T Integration Agents
+
+The Horizon Counter facilities for T&T Integration are described in the HLD [DE/HLD/014]
+which defines the T&T message formats that are harvested by the T&T Harvester Agent from
+the Correspondence Servers.
+
+The interface between the T&T EDG Interface Agent and the EDG WS is described in the
+Application Interface Specification (AIS) [AS/IFS/001] and the Technical Interface
+Specification (TIS) [AS/IFS/002]. The EDG WS is developed by the Prism Alliance and the
+platform(s) hosting the EDG WS and MSMQ will be developed and supported by Prism.
+
+The tables required on NPS for the T&T data derived from the T&T messages are described
+in detail in the NPS T&T Changes HLD [NB/HLD/027]. However, the interaction between
+the T&T Integration Agents and these tables is described in this HLD.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 12 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+3.0 Design Principles
+
+So far as is practicable, all new Agents should be designed in line with the existing generic
+models, structures and standards for Harvester, Loader and Enquiry Agents. The design
+principle is that as much as is possible should be configurable and amendments to existing
+Agents should be applied in such a way that existing functionality is untouched as far as is
+practicable. This is to avoid introducing the new bugs that would be introduced were the
+Agent to be unnecessarily re-engineered.
+
+The new T&T Harvester Agent should be modelled closely to the existing NBX Guaranteed
+Reversals Agent, for assured harvesting of [CO]s.
+
+The design of these Agents takes into account as far as is possible the perceived future design
+for T&T for IT roadmap where Riposte will be superseded by a Transaction Store and
+Consolidation (TSC) table. The T&T Harvester Agent will no longer be required but the
+T&T EDG Interface Agent should be able to be switched to the new source for the T&T
+messages with as little change as possible.
+
+3.1 Assumptions
+The following assumptions have been made with this design document:
+
+. The T&T messages are held in ASCII format on the Correspondence Servers and
+in the SOAP requests sent to the EDG WS so that no character set
+transformations are required.
+
+. There are no priorities on the order in which different types of T&T messages are
+processed by the T&T Agents. This is done by the sequence in which they are
+harvested from the Correspondence Servers for each Cluster. This is a reasonable
+assumption in that the T&T messages are constantly harvested and sent to the
+EDG WS by the T&T Agents and T&T message priority would only be an issue in
+clearing a backlog of the messages due to an Agent/EDG WS failure or the rate at
+which T&T messages are recorded at the Counter exceeding the rate at which the
+EDG WS can process these messages.
+
+. Any codes required for the EDG WS such as the file type identifying the client (ic.
+“POLP” for Parcelforce or “POLR” for Royal Mail) do not require any mapping
+to be performed by the T&T Agents. These should be recorded at the Counter as
+they are expected by the EDG WS.
+
+. The T&T information does not contain any sensitive data that requires encryption
+and/or access control.
+
+4.0 Requirements
+
+The requirements affecting T&T Agents are captured in the CD [CR/CDE/018] although this
+document is superseded by the Requirements Catalogue detailed in [CR/CDE/019].
+
+The following tables are a synopsis of the requirements, and the reader should refer to the CD
+and the Requirements Catalogue for a full statement of these requirements. The tables include
+a brief statement of how the requirement is met.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 13 of 55
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+
+4.1 Architectural Requirements
+
+4.1.1 Constraints Framework & Building Blocks
+
+Ref. Synopsis of requirement How met
+
+T&T-001 I Smart post should validate and capture postal I This is covered in the Counter HLD
+addresses using the Generic Horizon PAF I [DE/HLD/014]. The validated address is written
+module. to the Transaction message harvested by the T&T
+
+Harvester Agent.
+
+T&T-161 I The T&T architecture should provide an I The interface building block is described in the
+interface building block that can bring on new I AIS [AS/IFS/001] identifying the record formats
+clients without the development of bespoke I for the EDG WS.
+individual interfaces.
+
+Table 2 — Architectural Requirements — Constraints Framework & Building Blocks
+
+4.1.2 Integration with Other Systems
+Ref Synopsis of requirement How met
+T&T-005 I The T&T/PAF information supplied to EDG I The T&T messages held in XML on the T&T
+should conform to the agreed AIS/TIS I Transaction table are formatted by the T&T EDG
+({AS/IFS/001)/[AS/IFS/002}). Interface Agent to conform to that described in
+the AIS before they are sent to the EDG WS via
+the methods described in the AIS and TIS.
+T&T-163 I The physical interface provided from Horizon I This underpins the design approach adopted for
+to EDG should be as specified in the TIS I this document.
+({AS/IFS/002}).
+T&T-024 I Reference data changes to T&T barcode data] This is covered in the Counter HLD
+should be delivered within the existing OBC I [DE/HLD/014].
+arrangement for smart post “Extra Data” files.
+T&T-026 I T&T/PAF data should be delivered to the Data I T&T transactions are written to the Riposte
+Centres within the current architecture. message store at the Counter which is replicated
+to the Data Centres.
+T&T-501 I The Client Take-on process for adding new I This is outside the scope of this document.
+clients should be documented.
+Table 3 — Architectural Requirements — Integration with Other Systems
+4.1.3 Design Principles
+Ref. I Synopsis of requirement How met
+T&T-018 I Invoking external applications (including PAF) I This is covered in the Counter HLD
+should be data driven. [DE/HLD/014].
+T&T-036 I The system should support soft launch I This is covered in the Counter HLD
+capability for T&T piloting. [DE/HLD/014}.
+T&T-185 I Smart post Admin Functions menu hierarchies I This is covered in the Counter HLD
+and selection options must optimise transaction I [DE/HLD/014].
+
+flows and ensure overall transaction times are
+kept to a minimum.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 14 of 55
+
+Fe)
+FUJITSU
+
+High Level Design Specification fo:
+Trace (T&T) Agents
+
+Fujitsu Services
+
+Company-in-Confidene
+
+FUJ00171843
+FUJ00171843
+
+r Track and Ref: DE/HLD/015
+Version: 4.0
+ec Date: 27-Aug-2008
+
+T&T-210
+
+Failure to send T&T information to the EDG
+for mails transactions should not cause the
+transaction to be abandoned.
+
+There is no interaction between the EDG WS and
+the Counter; messages are written to the Riposte
+message store by the Counter application without
+awaiting a response from EDG WS. T&T
+messages held on the T&T Transaction table are
+only flagged as actioned if they have been
+received or explicitly rejected by the EDG WS.
+
+T&T-141
+
+Manual
+possible.
+
+input of T&T barcodes must be
+
+This is covered in the Counter
+
+[DE/HLD/014]
+
+HLD
+
+T&T-142
+
+Manual input of address and Postcode should
+be allowed if supported by business rules for the
+service in question.
+
+This is covered in the Counter
+
+[DE/HLD/014].
+
+HLD
+
+T&T-143
+
+T&T/PAF data should be retained in the
+message store in the event of a communications
+failure and transferred to the data centre at the
+earliest opportunity.
+
+This is a feature of the Riposte message server.
+Messages written whilst the communications are
+unavailable will be replicated at the next
+opportunity.
+
+T&T-144
+
+T&T/PAF transaction messages should be
+duplicated across the Branch Counter network
+as well as being transferred to the
+Correspondence Servers.
+
+This is covered in the Counter HLD
+
+[DE/HLD/014].
+
+T&T-145
+
+The T&T/PAF collection sub system should be
+duplicated across both data centres to provide a
+resilient delivery mechanism.
+
+This is a feature of the Riposte message server.
+All messages written at the Counter are
+replicated to Correspondence Servers within both
+data centres. The T&T Harvester Agents are also
+located at each of the data centres in Bootle and
+Wigan so that in the event of a failure of one data
+centre the harvesting of the T&T messages can
+resume at the other data centre.
+
+Table 4 — Architectural Requirements — Design Principles
+
+4.2 T&T Processing
+
+4.2.1 T&T Token
+Ref. Synopsis of requirement How met
+T&T-006 I The Counter should recognise the T&T] This is covered in the Counter HLD
+barcodes defined in the approved Smart Post I [DE/HLD/014].
+Reference Data Definition update for T&T
+[RD/DOC/003].
+T&T-502 I Non-GB barcodes conforming to the T&T I This is covered in the Counter HLD
+barcodes defined in the approved Smart Post I [DE/HLD/014].
+Reference Data Definition update for T&T
+[RD/DOC/003] should be processed.
+Table 5 — T&T Processing Requirements —- T&T Token
+4.2.2 T&T Reference Data
+Ref. Synopsis of requirement How met
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 15 of 55
+
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+T&T-007 I New barcodes conforming to the T&T barcodes I This is covered in the Counter HLD
+defined in the approved Smart Post Reference I [DE/HLD/014].
+Data Definition update for T&T
+[RD/DOC/003] may be added using reference
+data as part of the OBC process.
+T&T-040 I The smart post variable that initiates the I This is covered in the Counter HLD
+capture of T&T data should be configurable I [DE/HLD/014].
+with smart post reference data and may be
+applied to any Primary and Secondary service.
+Table 6 — T&T Processing Requirements —- T&T Reference Data
+4.2.3 T&T Validation Process
+Ref. Synopsis of requirement _I How met
+T&T-080 I Scanned and manually entered barcodes should I This is covered in the Counter HLD
+be verified against the format and check digit I [DE/HLD/014]
+rules as described in the Smart Post
+Application Reference Data Definition
+(RD/DOC/003 [3]) and a suitable error message
+displayed if verification fails, except that the
+country code should no longer be validated.
+T&T-081 I Checks should be in place so that an error] This is covered in the Counter HLD
+message should be displayed when duplicate I [DE/HLD/014].
+barcode presentation events occur.
+T&T-503 I Checks should be made so that barcodes that] This is covered in the Counter HLD
+are not associated with the postage service I [DE/HLD/014].
+currently being transacted are rejected and a
+suitable error message displayed.
+T&T-082 I Manual input of the T&T barcode must be I This is covered in the Counter HLD
+allowed and validated against the validation I [DE/HLD/014].
+rules (See T&T-080)
+
+Table 7 — T&T Processing Requirements — T&T Validation Process
+
+4.3 Mails Acceptance (additional requirements to the delivered
+
+service)
+Ref. Synopsis of requirement How met
+T&T-023 I Where time of posting is after the Last] This is covered in the Counter HLD
+Despatch Time (LDT), the system should I [DE/HLD/014}
+
+prompt the Counter clerk to inform the
+customer appropriately If the customer still
+wishes to post the item, and the item is using a
+priority service:
+
+The Guaranteed Delivery Date (GDD) input
+should be adjusted accordingly (this is a
+manual process performed by the Counter
+staff),
+
+Mail Item Receipt / Certificate of Posting
+should include the GDD
+
+A message to state that the item has missed the
+
+© 2005 Fupits ScspRed be included OC i ta etience
+“Ticop
+
+Page: 16 of 55
+
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+Table 8 — Mails Acceptance Requirements
+
+4.3.1 T&T Token
+
+Ref. Synopsis of requirement How met
+
+T&T-006 I The Counter should recognise the T&T I This is covered in the Counter HLD
+barcodes defined in the approved Smart Post I [DE/HLD/014].
+Reference Data Definition update for T&T
+[RD/DOC/003]
+
+Table 9 — Mails Acceptance Requirements — T&T Token
+
+5.0 System Components
+5.1 Application Components for T&T Agents
+
+5.1.1 Introduction
+
+5.1.1.1 T&T Integration Overview
+
+An overview of the architecture of the Horizon to EDG interface for T&T is given in the
+diagram below, taken from the DP for T&T Integration [AS/DPR/013] (the diagram in
+[AS/DPR/013] should be taken as the definitive source for this diagram):
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 17 of 55
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+Other Clrents
+Royal Mail Parcelforce
+Domain Track and Track and Track andl
+Trace System I I Trace System Syston
+ra I
+DG formats.
+Post Office Ltd
+data to individual
+Domain Hato indi EDG POL MIS SAP HR I I POL FS
+T T
+Message interface Poss feet
+(alsitis) message ‘Summaries
+1
+:I SOAP
+TPS
+TaT Agent
+Horizon Data
+Centre Domain ‘
+Correspondence Server
+A
+TaT message
+I
+
+Message Store
+Horizon Counter
+
+Applications = i be ecb ee ese bees sel f ete 7
+
+! 1
+I '
+i i
+i 1
+i Smart Post Pi aiesieol 1
+f 4 1
+1 Application ‘Application '
+' 1
+ieo-----}----ab------ fee --f----_ fee flee 1
+Horizon Branch 4 i L]
+Outputs Local Despatch
+Mails Mails Bulk Postage Exception Collect Report
+Receipt Receipt Label Report ‘Status:
+
+Report
+
+Figure 1 - T&T Data Flows and Architecture
+
+5.1.1.2 NBX Persistent Store (NPS)
+
+The T&T Integration Agents use the persistent storage mechanism called the NBX Persistent
+Store (NPS). The NPS includes the following for the T&T Integration:
+
+. A transient table of T&T messages harvested by the T&T Harvester Agent. This
+table is then used by the T&T EDG Interface Agent to send the T&T messages to
+the EDG WS.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 18 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+. An exceptions table holding details of any T&T messages that have been rejected
+by the EDG WS through the T&T EDG Interface Agent or that have failed to be
+harvested by the T&T Harvester Agent.
+
+. Housekeeping to purge the T&T message records from the transient table holding
+these messages, when they have been processed, after a specified period of time.
+
+5.1.1.3 Reference Data
+
+The reference data described within the Counter HLD [DE/HLD/014] has no implications
+with respect to the Agents described in this HLD. However, T&T messages are to be treated
+at the Counter as 'urgent' which entails the configuration of the Counter Call Scheduler (CCS)
+through type D reference data to ensure this is the case.
+
+5.1.1.4 Topology of the T&T Integration Agents
+
+The key transaction flows with respect to the T&T Agents are defined by the following
+diagram. This concentrates on the flows from the Correspondence Servers through the T&T
+Harvester Agents to the NPS and then on to the EDG WS through the T&T EDG Interface
+Agent.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 19 of 55
+FUJ00171843
+
+FUJ00171843
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Version: 4.0
+Fujitsu Services a
+Company-in-Confidence Date: 27-Aug-2008
+MSMQ Post Office Ltd Domain
+
+EDG WS
+
+PIRIER
+SOAP/HTTP
+
+Horizon Data Centre Domain
+
+I
+
+Firewall Lo)
+{
+5 ¥ ¥
+T&T EDG T&T EDG T&T EDG T&T EDG
+Interface Interface Interface Interface
+Agent Agent Agent Agent
+1a EN Ly Laan
+= ~ ~ .
+Read/Update
+
+/ Housekeeping
+
+I nique Insert
+
+rE
+
+T&T T&T T&T T&T
+Harvester Harvester Harvester Harvester
+Agent Agent Agent Agent
+Harvest
+l I l l
+cs cs cs cs
+Figure 2 — Data Flows Involving T&T Agents
+© 2005 Fujitsu Services Company-in-Confidence Page: 20 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+5.1.2 T&T Harvester Agent (TT_HV_ALL)
+
+5.1.2.1 Overview
+
+The T&T Harvester Agent harvests the T&T messages recorded at the Counter so that they
+can be presented to the EDG WS via the T&T EDG Interface Agent. These messages are
+retrieved from the Correspondence Servers using a checkpointed message port ensuring that
+every message is harvested, in the same way as the NBX Guaranteed Reversals Agent. The
+Riposte attributes of the T&T message identified by an inclusion list held in the Registry are
+converted into XML which is then written to the T&T Transaction table. The T&T messages
+held on this table in XML are then retrieved by the T&T EDG Interface Agent validated,
+formatted and sent to the EDG WS.
+
+The one difference in the way that the T&T Harvester Agent works compared to the NBX
+Guaranteed Reversals Agent is that T&T messages are uniquely inserted into the T&T
+Transaction table using a unique Transaction Id. This is enforced by using a unique index on
+the Transaction Id field in the table so that no T&T messages are duplicated on the table.
+
+5.1.2.2 Structure, Launch and Concurrency
+
+The T&T Harvester Agent is a database-coordinated Interactive Harvester. There is one
+Agent instance per Riposte Cluster running on the NBX Routing Agent Server Platform (see
+the PPD [NB/DES/008]). This means there are four T&T Harvester Agents with the Service
+Name TMSTTHarvester<n>, where <n> identifies the Cluster Id.
+
+The Agent runs as an NT Service, and is launched and relaunched by Tivoli, running under its
+own Service User name (see Table 33). The Agent is not dependent on any Correspondence
+Server in a different Cluster, nor will it be dependent on the Cluster Lookup Service.
+
+The Agent uses a checkpointed message port with the checkpointing controlled by the
+PULSE_INTERVAL parameter. This should be configured so that following a failure any
+outstanding work can be caught up within five minutes of the Agent restarting. Checkpoints
+are divorced from commits to the database, which is controlled by the
+SUCCESS_UNIT_COUNT parameter. The proposed values are:
+
+PULSE_INTERVAL: 960,000
+
+SUCCESS_UNIT_COUNT: 50
+The PULSE_INTERVAL used by the Agent needs to be different from those used by other
+Agents, so that they don’t synchronise their checkpointing.
+
+Restarting from a checkpoint necessarily means that T&T messages can be passed to the T&T
+Transaction table more than once. The use of a unique Transaction Id as a key on this table
+ensures that no duplicate records are written to the table should this occur. The duplicate
+T&T messages that the Agent attempts to write to the T&T Transaction table are ignored and
+are not treated as exceptions.
+
+5.1.2.3 Detailed Processing
+
+The T&T messages recorded at the Counter are identified by the <TTA:> Riposte attribute
+Although other values may exist for this attribute the T&T messages held on the
+Correspondence Servers to be harvested by the T&T Harvester Agent are identified by this
+attribute having a value of 1 (see [DE/HLD/014]):
+
+<Data:
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 21 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+<TandT:
+<MData:
+<TTA:1>
+
+The following information is harvested from the T&T messages on the Correspondence
+Servers and written to the T&T Transaction table (see Section 5.3.2.2):
+
+. The Cluster Id written to the CLUSTER_ID field on the T&T Transaction table is
+retrieved from the Registry where the Cluster the T&T Harvester Agent is
+servicing is defined (see Table 10).
+
+. The unique Transaction Id written to the TRANSACTION_ID field on the T&T
+Transaction table is the EPOSS Transaction Id for messages containing an EPOSS
+Transaction. If the EPOSS Transaction does not exist for the T&T message a
+replacement unique id is recorded by the Counter and held in body of the T&T
+message. The Transaction Id is held in the Riposte attribute <TxnId:> either in the
+transaction data for EPOSS Transactions:
+
+<TxnData:
+<TxnId:44-901777-1-61439-3>
+
+Or in the T&T information where an EPOSS Transaction Id does not exist:
+
+<Data:
+<TandT:
+<Control:
+<Txnid:44-ffffff-c-nnnnnnnn-p>
+
+. The Riposte attributes of the T&T message required by the EDG WS are
+identified in an inclusion list held in the Registry (see Table 11). These attributes
+are filtered from the T&T message held on the Correspondence Server and
+converted to XML using the XML-RAG Converter routines described in
+[AD/DES/066]. The XML produced only contains XML in the format supported
+by the XML-RAG Converter, which is a subset of the full XML specification (the
+restrictions are detailed in [AD/DES/066]). This XML is then written to the
+TT_MESSAGE field on the T&T Transaction table.
+
+The T&T Harvester Agent does no validation of the T&T information in terms of the fields
+required by the EDG WS. This excludes checking to ensure that mandatory fields are present
+or any checking of the data in the Riposte attributes.
+
+The T&T messages held on the T&T Transaction table can then be retrieved by the T&T EDG
+Interface Agent validated, formatted and sent to the EDG WS.
+
+The T&T Counter HLD [DE/HLD/014] and LLD [UM/LLD/005] describe the T&T message
+format including the Riposte attributes for these messages and the design for the T&T
+Transaction table is described in detail in the NPS T&T Changes HLD [NB/HLD/027].
+
+5.1.2.4 Exception Handling
+
+The Agent will treat operational failures in the same manner as do other Harvester Agents
+with all failures recorded in the NT event log.
+
+Exceptions that occur due to the Agent attempting to write duplicate T&T messages to the
+T&T Transaction table can be ignored and do not need to be recorded as exceptions on the
+T&T Exceptions table. In this case the T&T message for the Transaction Id in question must
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 22 of 55
+FU.
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+FUJ00171843
+}J00171843
+
+already exist on the T&T Transaction table and this should only occur when the T&T
+Harvester Agent has failed and is restarted from a previous checkpoint.
+
+T&T messages that can not be harvested are written to the T&T Exceptions table on NPS,
+and reported in the NT event log. A limit to the maximum number of these events (i.e. 50)
+that can be recorded along with a time limit after which the count is reset if the event hasn’t
+occurred within this period (i.e. 1 hour), as applied to other Agents (i.e. the NBX Guaranteed
+Reversals Agent see [AD/LLD/005]), prevents an event storm in the event of a large number
+of exceptions. However, these exceptions should only occur due to:
+
+. A missing Transaction Id from the T&T message on the Correspondence Server.
+
+. Errors returned from the XML-RAG Converter routines used to convert the
+Riposte attributes of the T&T messages on the Correspondence Servers into XML
+before this is written to the T&T Transaction table.
+
+Exceptions occurring in the T&T Harvester Agent will not have a Sequence Number
+(SEQ_NUMBER) to write to the T&T Exceptions table. This can be used to differentiate
+between exceptions occurring within the T&T Harvester Agent from the T&T EDG Interface
+Agent.
+
+5.1.2.5 Performance and Scalability
+
+The volumes for the T&T Integration are detailed in the CD [CR/CDE/018] with an expected
+peak of 12 Transactions per second. To cater for this level of activity four T&T Harvester
+Agents, one per Cluster, are deemed to be sufficient and Agent hashing is not therefore
+required for these Agents.
+
+A failure could result in a T&T Harvester Agent instance having to reprocess all the T&T
+messages since a previous checkpoint. Using a Transaction Id as a unique key for the T&T
+messages ensures that duplicates can not be written to the T&T Transaction table in this case.
+
+It is important that the NBX Routing Agent instance(s) on the same platform is not starved of
+processor resource. Therefore, it is proposed that these Agents will be bound to one of the
+two processors on the platform. This restricts the maximum usage by this Agent to 50% of the
+platform processor resource. This is done by the Agent using a “SetProcessA ftinityMask()”
+call to bind it to the first processor, i.e. the one defined by the 2**0 bit in the affinity mask.
+Note the processor to which it binds is not currently configurable.
+
+5.1.2.6 Resilience
+
+The Enhanced Tivoli/Agent and Correspondence Server — Resilience & Recovery (EACRR)
+mechanism ensures that if an instance of the T&T Harvester Agent fails another one takes its
+place. When the Agent loses a connection with Riposte or the Oracle NPS database it fails
+and a new instance tries to re-establish the connections. The aim of EACRR is to restart a
+failed Agent instance within 5 minutes or so; the Agent instance then has to repeat work from
+the previous checkpoint in order to catch up.
+
+Following a failure during the connection phase, the standard Agent approach of retries is
+appropriate; retries continue until the configured TOTAL_CONNECTION_TIMEOUT period
+has elapsed, after which the Agent fails. A timeout of the order of 5 minutes is required so
+that EACRR can restart it on another NBX Routing Agent Server well within the 15 minute
+period.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 23 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+5.1.2.7 Security
+
+There are no security issues with the T&T Harvester Agent as this Agent operates entirely
+within the Horizon domain.
+
+5.1.2.8 Configurability
+
+The following table, though not exhaustive (see [DE/LLD/019]), lists the main items for the
+T&T Harvester Agent that are configurable through the Registry:
+
+Ttem Description
+
+Cluster Id The CLUSTERID value holds the number of the Riposte Cluster for
+this Agent instance.
+
+Pulse Interval The PULSE_INTERVAL value controls the checkpointing for the
+
+Agent by defining the interval in terms of the number of messages
+processed by Riposte before a checkpoint is written (set to 960,000
+(see Section 5.1.2.2)).
+
+Success Unit Count The SUCCESS_UNIT_COUNT value controls commits to the
+database by defining the number of messages before a commit is
+performed (set to 50 (see Section 5.1.2.2)).
+
+Database Location The DBLOCATION value identifies the location of the NPS database.
+Oracle User Name The USERNAME value identifies the Oracle user name to connect to
+the NPS database (see [NB/HLD/027])
+
+Oracle Password The PASSWORD value identifies the Oracle password for the user
+
+name that allows a connection to the NPS database.
+
+Total Connection Timeout I The TOTAL_CONNECTION_TIMEOUT value applies to the period
+after which the Agent exits when attempting to connect to the
+Correspondence Server and the NPS database (5 minutes).
+
+Heartbeat Interval This is the interval between heartbeat MONID events being generated
+confirming that the Agent is available (5 minutes).
+Inclusion List The STANDARD_ATTRIBUTES list is a comma-separated list of
+
+the Riposte attributes held in the T&T messages that are required by
+the EDG WS. These attributes are converted to XML by the T&T
+Harvester Agent and held in the T&T Transaction table on NPS.
+
+Table 10 — Registry for T&T Harvester Agent
+
+The inclusion list described in the previous table includes the following Riposte attributes
+required for the message formats described in the AIS [AS/IFS/001] that need to be harvested
+by the T&T Harvester Agent to be sent to the EDG WS. Riposte attributes ifalicised in Table
+11 may or may not exist within the T&T message, whereas the non-italicised attributes are
+always present.
+
+Certain attributes may be repeated for multiple T&T items within the same T&T message.
+Multiple T&T items in the T&T message are grouped using the <MItem:> Riposte attribute,
+although this attribute may or may not exist for T&T messages containing single items. The
+<MItem:> Riposte attribute is not explicitly declared in the inclusion list for the T&T
+Harvester Agent; however, the Riposte attribute hierarchy is retained as XML tags within the
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 24 of 55
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+Trace (T&T) Agents Version: 4.0
+Company-in-Confidence Date: 27-Aug-2008
+
+XML produced from the RAG-XML conversion ensuring that individual items are still
+
+segregated.
+Riposte Riposte Attribute Hierarchy Description
+Attribute i j
+<FT> <Data: The file type for the T&T transaction (i.c.
+<TandT: “POLP” for Parcelforce or “POLR” for Royal
+<MData: Mail).
+<FT:POLP>
+<Date:> <Date:DD-MMM-YYYY> The date the T&T transaction was recorded at
+the Counter.
+<Time:>> <Time:HH:MM:SS> The time the T&T transaction was recorded at
+the Counter.
+<Addl> <Data: The first line of the PO address where the T&T
+<TandT: transaction is recorded.
+<Control:
+<Source:
+<Add1:...>
+<Postcode:> <Data: The postcode of the PO address where the T&T
+<TandT: transaction is recorded.
+<Control:
+<Source:
+<Postcode:...
+<Type:> <Data: The record type for the T&T records sent to the
+<TandT: EDG WS (i.e. “A” for Ad Hoc Event and “D”
+<MData: for Detailed).
+<Type:D>
+<EV> <Data: The comma separated list of event codes to put
+<TandT: in Ad Hoc Event records. One Ad Hoc entry to
+<MData: be generated per value and barcode.
+<EV:...>
+<Name:> <Data: The name of the PO Branch.
+<TandT:
+<Control:
+<Source:
+<Name:.
+<VBC> <Data: The barcode for the T&T item.
+<Mitem:
+<VBC:...>
+<VServ:> <Data: The EDG variant id for the primary service for
+<Mitem: Detailed records sent to the EDG WS.
+<VServ:...>
+<VWkend:> <Data: The weekend handling code corresponding to
+<Mitem: the secondary service for Detailed records sent
+<VWhend: ...> to the EDG WS.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 25 of 55
+
+FUJ00171843
+FUJ00171843
+
+co High Level Design Specification for Track and Ref: DE/HLD/015
+FUJITSU Trace (T&T) Agents Versi
+ersion: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+<GroupId:> <Groupld:...> A six-digit FAD code identifying the collection
+point.
+<Weight:> <Data: The weight of the T&T item in kg to 3 decimal
+<Mitem: places.
+<Weight:...>
+<Adadress:> <Data: This contains the PAF Riposte attributes that
+<Mitem: provide details for the delivery address (see
+<WVDestina. below).
+<Addre:
+<VLDT:> <Data: This contains the Last Despatch flag (aka the
+<Mitem: Posted After Last Collection flag), set to “Y” if
+<VLDT:...> the T&T item was posted after the last
+collection, else set to “N” or omitted.
+<Country:> <Data: The full name of the destination country.'
+
+<Country: ...>
+
+<VITVOG:> <Data: The value of goods in pence.
+<Mitem:
+<VITVOG. ...>
+<VITVOC:> <Data: The value of ‘Consequential Loss’ in pence.
+<Mitem:
+<VITVOC:...>
+<VPiP:> <Data: Item format, may be omitted.
+<Mitem:
+<VPiP:...>
+<VGuarant0:> <Data: Guaranteed Date in form DD/MM/CCYY, may
+<Mitem: be omitted.
+
+<VGuarant0:...>
+
+<VGIND:>
+
+<Data:
+<Mitem:
+<VGIND:...>
+
+DD flag. Set to ‘N’ if Guaranteed Date field is
+present and has been keyed by Clerk, set to “Y”
+if Guaranteed Date field is present and has not
+been keyed by Clerk or set to ‘ ’ (space) if
+Guaranteed Date field is not present.
+
+Table 11 — Inclusion List of Riposte Attributes Harvested by the T&T Harvester Agent
+
+All the Riposte attributes generated through PAF (see [PF/HLD/001]) for the delivery address
+found under the <Data:<M/tem:<VDestina:<Address:> attribute described in Table 11 are
+included in the XML produced from the RAG-XML conversion by the T&T Harvester Agent.
+The following tables only describe the delivery address attributes relevant to T&T, although
+other attributes will exist in the XML produced (e.g. Town/City, County/Region, and Country
+
+etc.).
+
+Riposte attributes italicised in the following tables may or may not exist under the
+<Data:<M/tem:<VDestina:<Address:> attribute, whereas the non-italicised attributes are
+
+"In practice the <Country:> attribute will be present if (and only if) the T&T message results in a single
+
+Detailed record.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence Page: 26 of 55
+
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+High Level Design Specification for Track and
+Trace (T&T) Agents
+
+Company-in-Confidence
+
+FUJ00171843
+FUJ00171843
+
+Ref: DE/HLD/015
+Version: 4.0
+Date: 27-Aug-2008
+
+present.
+the T&T message.
+
+This assumes that the <Data:<M/tem:<VDestina:<Address:> attribute does exist for
+
+Riposte Riposte Attribute Hierarchy Description
+Attribute i !
+<Result:> <Data: The code identifying whether the address has
+<Mitem: been manually input or validated using the PAF
+<VDestina: WS. A code of “00” or “O1” indicates that the
+<Address: address is PAF validated.
+<Result:...>
+
+The following Riposte attributes can only exist
+
+<Data:<Mitem:<VDestina:<Address:> attribute:
+
+for a PAF validated address under the
+
+Riposte Riposte Attribute Hierarchy Description
+Attribute
+<Org:> <Data: The organisation name from the QAS address
+<Mitem: element of a PAF validated address (i.e.
+<VDestina: Fujitsu).
+<Address:
+<Org:...>
+<POBox:> <Data: The PO box from the QAS address element of a
+<Mitem: PAF validated address (i.e. PO Box 1).
+<VDestina:
+<Address:
+<POBox:...>
+<Subprem:> <Data: The sub premise name/number from the QAS
+<Mitem: address element of a PAF validated address
+<VDestina: (i.e. Flat B).
+<Address:
+
+<Subprem:...>
+
+<Buildname:> <Data: The premise name from the QAS address
+<Mitem: element from a PAF validated address (i.c.
+<VDestina: Ocean Towers).
+<Address:
+<Buildname: ...>
+<Buildnum:> <Data: The building number from the QAS address
+<Mitem: element of a PAF validated address (i.e. 27).
+<VDestina:
+<Address:
+<Buildnum: ...>
+<Thoro:> <Data: The thoroughfare from the QAS address
+<Mltem: element of a PAF validated address (i.e. Peak
+<VDestina: Lane).
+<Address:
+<Thoro:...>
+<Postcode:> <Data: The postcode from the QAS address element of
+<Mitem: a PAF validated address.
+<VDestina:
+<Address:
+
+© 2005 Fujitsu Servi
+
+<Postapdpiny7in-Confi
+
+dence Page: 27 of 55
+
+FUJ00171843
+FUJ00171843
+
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+
+Company-in-Confidence Date: _-27-Aug-2008
+
+The following Riposte attributes can only exist for a manually entered PAF address under the
+<Data:<Mltem:<VDestina:<Address:> attribute:
+
+Riposte Riposte Attribute Hierarchy I Description
+Attribute :
+<Premises:> <Data: The manually entered premises address
+<Mitem: element.
+<VDestina:
+<Address:
+<Premises: ...>
+<Address:> <Data: The manually entered address element.
+<Mitem:
+<VDestina:
+<Address:
+<Adadress: ...>
+<PostcodeZip:> I <Data: The manually entered postcode address
+<Mitem: element.
+<VDestina:
+<Address:
+<PostcodeZip: ...>
+
+Table 12 — PAF Generated Riposte Attributes for the Delivery Address
+
+5.1.2.9 Audit
+
+There is no requirement to audit the T&T Harvester Agent.
+
+5.1.2.10
+
+Operational Summary
+
+Agent name: TT_HV_ALL
+
+Platform(s): NBX Routing Agent Server
+
+Service Name: TMSTTHarvester<n>
+
+Style: Database-Coordinated Interactive Harvester
+
+Scope & parallelism: One per Cluster where <#> identifies the Cluster Id.
+
+Registry key(s):
+
+HKEY_LOCAL_MACHINE\SOFTWARE\ICL\PathwayAgents\TT_HV_ALL
+HKEY_LOCAL_MACHINE\SOFTWARE\ICL\PathwayA gents\TT_HV_ALL\TMSTTHarvester<n>
+
+Use of checkpoints: Starts from named checkpoint, error if it does not exist.
+
+Checkpoint name(s): AGT_TT_HV_ALL_H_<n>_<suffix>
+
+Use of dummy offices: The Agent Data Office (999993) for holding management information on the history of
+
+backup checkpoints.
+
+Host database: NPS.
+
+Needs to be running: Runs 7 x 24. Important between 07:00 and 20:00 7 days per week; Critical between
+
+08:00 and 17:30 Monday to Friday and 08:00 and 13:00 Saturday.
+
+Documentation: [DE/LLD/019]
+
+Table 13 — Operational Summary of the T&T Harvester Agent
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 28 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+5.1.3 T&T EDG Interface Agent (TT_NQ_EDG)
+
+5.1.3.1 Overview
+
+The T&T EDG Interface Agent retrieves the harvested T&T messages held in XML on the
+T&T Transaction table on NPS and validates and formats this information for the EDG WS as
+specified in the AIS [AS/IFS/001]. The XML document produced from formatting the
+Riposte attribute based XML for the T&T messages held on the T&T Transaction table are
+sent as a parameter in a SOAP request over HTTP using TCP to the EDG WS. The response
+received from the EDG WS identifies whether the message has successfully been received and
+if so the T&T Transaction table is then updated to confirm that the T&T message has been
+actioned and an update timestamp is written to the table. If there are no T&T messages to
+send or the EDG WS is unavailable the Agent sends Echo Test SOAP requests to the EDG
+WS to ascertain the state of the service. These message exchange patterns are described in the
+TIS [AS/IFS/002].
+
+5.1.3.2 Structure, Launch and Concurrency
+
+The T&T EDG Interface Agent is an Interactive Enquiry Agent with one Agent instance per
+Riposte Cluster identified by the Cluster Id field (CLUSTER_ID) on the T&T Transaction
+table. This means there will be four T&T EDG Interface Agents with the Service Name
+TMSTTEDGInf<n>, where <n> identifies the Cluster Id.
+
+This Agent runs as an NT Service on the existing EDG (GP) FTMS Local Gateway Platform
+(see the PPD [SD/DES/262]) within a Demilitarised Zone (DMZ), and is launched and
+relaunched by Tivoli, running under its own Service User Name (see Table 33).
+
+The T&T EDG Interface Agent works by having a single Control thread reading the T&T
+Transaction table. The Control Thread maintains a queue of T&T messages which are
+retrieved and processed by a configurable number of synchronous EE_IO threads that
+validate, format and send the information as a SOAP request to the EDG WS. Echo Test
+SOAP requests are sent at a regular configurable interval to the EDG WS to ascertain the
+state of the service if the Agent is idle (i.e. there are no T&T messages to send and the Agent
+has sent no T&T messages for a configurable period of time) or if the EDG WS is unavailable
+(ie. T&T messages sent to the EDG WS failing for the configurable number of retries either
+through timeouts or receiving responses from the EDG WS signifying the service is
+unavailable).
+
+5.1.3.3 Detailed Processing
+The T&T EDG Interface Agent consists of the following three types of threads:
+
+. A single Control thread organises the processing of the T&T messages held on the
+T&T Transaction table. This thread reads the table maintaining a queue of the
+T&T messages that haven’t been processed for the Riposte Cluster Id identified in
+the Registry for the Agent (see Table 19).
+
+. The messages are retrieved from this queue by the EE_IO threads which process
+them. If successful the EE_IO thread notifies the Control thread which updates
+the T&T Transaction table accordingly.
+
+. A configurable number of synchronous EE_IO threads retrieve the T&T messages
+from the queue maintained by the Control thread. Each message once retrieved is
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 29 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+validated and formatted to create an XML document as defined in the XML
+schema in the AIS [AS/IFS/001]. This XML document is sent to the EDG WS as
+an input parameter in a SOAP request via RPC over HTTP and the Control thread
+is notified with the result of the request.
+
+. A single Ping thread polls the EDG WS by issuing an Echo Test SOAP request
+and receives a response in return signifying the status of the EDG WS. These
+requests are initiated if the Agent is idle for a configurable period of time (i.e.
+there are no T&T messages to send) or if the EDG WS is unavailable.
+
+Detailed descriptions of the Control, EE_IO and Ping threads are provided in the following
+sections but an overview of this process for the T&T EDG Interface Agent is shown in the
+following figure:
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 30 of 55
+FUJ00171843
+FUJ00171843
+
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: _-27-Aug-2008
+Post Office Ltd Domain MSMQ
+EDG WS I
+Sond/Ack 928 Sh
+
+SOAP/HTTP
+: Pirewall cL I
+{ [
+¥ ¥
+EEO I I EEO II EEIO I I EEO Ping
+Thread Thread Thread Thread I Thread
+2 T&T EDG
+Control Thread Titeruce
+Agent
+{Firewall 3]
+
+Horizon Data Centre Domain
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Read/Update
+
+Page: 31 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+Figure 3— T&T EDG Interface Agent Threading Model and Data Flows
+
+5.1.3.3.1 Control Thread
+
+The T&T EDG Interface Agent contains a single Control thread that reads the T&T
+Transaction table on NPS returning records in Sequence Number (SEQ_NUMBER) order that
+have not been processed (ACTIONED is “N”) for the Cluster Id (CLUSTER_ID) the Agent is
+servicing. The Control thread maintains a queue of the T&T messages that are processed by
+the EE_IO threads as they become available. A high water mark value, initially set to 0, is set
+to the last Sequence Number in the queue to ensure that records on the T&T Transaction table
+are only read once. The size of the queue is managed by configurable high and low threshold
+values held in the registry (see Table 20). The T&T Transaction table is read until the queue
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 32 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+reaches the high threshold where further reads are suspended until the queue reaches the low
+threshold when the reading of the table is resumed.
+
+When a T&T document SOAP request sent to the EDG WS by an EE_IO thread is successful
+or explicitly rejected by the EDG WS, identified by the “<faultcode>” element of the
+“<soap:Fault>” in the response having the value “soap:client”, the Control thread updates the
+actioned flag (ACTIONED=”"Y”) and the updated timestamp (UPDATE_TSMP is set to the
+current date and time) on the T&T Transaction table for the T&T message record in question.
+When T&T messages are rejected by the EDG WS (“<soap:Fault>” has a “<faultcode> of
+“soap:client”) the corresponding record from the T&T Transaction table is written to the T&T
+Exceptions table along with the description of the fault held in the “<faultstring> element of
+the “<soap:Fault>” in the response, which is written to the EXCEPTION_DETAILS field.
+
+5.1.3.3.2 EE_IO Thread
+
+The EE_IO thread retrieves messages held in the T&T message queue maintained by the
+Control thread. This message is validated and formatted to produce the XML document that
+is passed as a parameter in the SOAP request sent to the EDG WS. The format of the T&T
+XML document sent to the EDG WS is described in the XML schema in the AIS
+[AS/IFS/001] and consists of the following:
+
+. The Version Number for the interface (XML tag <VER>)
+
+. The Transaction Id for the T&T message (XML tag <TXNID>).
+. A Header record (XML tag <[NTHEAD>).
+
+. A Sender record (XML tag <INTSEND>).
+
+. Either Detailed (XML tag <TNTDET>) or Ad Hoc Event (XML tag
+<TNTADHOC>) records. The type of these records being identified by the
+<Type:> Riposte attribute that is set to either “D” for Detailed or “A” for Ad Hoc
+Event. Only one type or the other can be sent to the EDG WS in the XML
+document.
+
+. A Trailer record (XML tag <TNTTRAIL>).
+The Version Number for the interface is set to 1.1 (see the AIS [AS/IFS/001]).
+
+The Transaction Id is obtained from the TRANSACTION_ID field on the T&T Transaction
+table for the T&T message. The EDG WS checks the SOAP wrapper before sending a SOAP
+response to the Agent but doesn't check the body of the XML document. The Transaction Id
+provides a means of tracing the T&T message at the EDG WS back to the Horizon domain if
+there are any issues with the subsequent processing of a SOAP request once it has been
+received and accepted by the EDG WS.
+
+The data for the individual fields within the T&T message records (Header, Sender, Detailed,
+Ad-Hoc Event and Trailer) sent to the EDG WS are held in the Riposte attribute based XML
+in the TT_MESSAGE field on the T&T Transaction table. The mapping of the Riposte
+attributes to the XML tags for the fields in the above records for the EDG WS are described
+in the following tables. These tables identify the fields as defined within the AIS [AS/IFS/001]
+and the Riposte attribute that maps to them along with any details about the formatting or
+validation of the data. Only the fields included in the XML document sent to the EDG WS are
+listed.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 33 of 55
+FUJ00171843
+
+FUJ00171843
+
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+Field I Field Name Opt/ I Riposte XML Tag I Description
+No. Mand I Attribute
+1 Record type indicator M N/A H_RTI Set to “0”.
+3 File type M <FT> H_FT “POLP” for Parcelforce or
+“POLR” for Royal Mail.
+7 Despatch date M_ I <Date:> H_DD The date transacted at the
+Counter is held in the format
+“DD-MMM-YYYY” in the
+Riposte attribute but is converted
+to the format “YYYYMMDD”
+for the EDG WS.
+8 I Despatch time M_ I <Time> H_DT The time transacted at the
+
+Counter is held in the format
+the Riposte
+attribute but is converted to the
+format “HHMMSS” for the EDG
+WS. GMT is converted to local
+
+“HH:MM:SS” in
+
+time for the EDG WS.
+
+Table 14 — Riposte Attribute Mapping to EDG WS Header Record Fields
+
+Field I Field Name Opt/ I Riposte XML Tag I Description
+No. Mand I Attribute
+
+1 Record type indicator M INA S_RTI Set to “1”.
+
+3 Sender’s name M N/A S_SN Set to “Post Office Ltd”.
+
+4 Sender’s address 1 M <Addl> S_SAI The first address line of the PO
+Branch where the T&T
+transaction was recorded.
+
+10 I Sender’s postcode M <Postcode:> S_SPC The postcode of the PO Branch
+
+where the T&T transaction was
+
+recorded.
+
+Table 15 — Riposte Attribute Mapping to EDG WS Sender Record Fields
+
+The type of records that form the body of the T&T message sent to EDG WS are defined by
+the Riposte attribute <Type:> which is set to <Type:D> for Detailed records and <Type:A>
+for Ad Hoc Event records. Where multiple Detailed or Ad Hoc Event records occur within
+the same T&T message the Riposte attributes specific to the individual records are
+encapsulated within the <Mitem:> Riposte attribute. The maximum number of Detailed or Ad
+Hoc Event records allowed for the XML document sent to the EDG WS is configurable (see
+Table 21) but is defined within the ATS [AS/IFS/001].
+
+Field I Field Name Opt’ I Riposte XML Tag I Description
+
+No. Mand I Attribute
+1 Record type indicator M N/A D_RTI Set to “2”.
+3 T&T number M <VBC:> D_TT The barcode for the T&T item.
+4 I Service Id 0 I <Vserv:> D_SID The primary service id.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 34 of 55
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+Trace (T&T) Agents
+
+Company-in-Confidence
+
+High Level Design Specification for Track and
+
+FUJ00171843
+FUJ00171843
+
+Ref: DE/HLD/015
+Version: 4.0
+
+Date: 27-Aug-2008
+
+Weekend handling code
+
+O I <Vwkend:>
+
+D_WHC
+
+The weekend handling code
+corresponding to the secondary
+service.
+
+6
+
+Postcode keyed
+
+fe) <Result:>
+
+D_PAF
+
+Used for the PAF Validated flag
+(or, more accurately, the “PAF
+not validated” flag). A value of
+“00” or “01” signifies that the
+address is PAF-validated and this
+flag is set to “N”. Otherwise the
+address has been manually input
+and the flag is set to “Y” for the
+EDG WS. Manual input captured
+as part of Kahala, the flag is set
+to “Y”,
+
+Sender’s reference
+
+M <VLDT:>
+
+D_S_REF
+
+Used for the Last Despatch flag.
+Set to “Y” if the T&T item was
+posted afier the last collection,
+else set to “N” (the default).
+[CP4034]
+
+HALCON collection Id
+
+M_ I <Groupld:>
+
+D_FAD
+
+The six-digit FAD code, with
+leading zeroes [CP4066],
+identifying the collection point.
+
+Consignment weight
+
+0 I <Weignt>
+
+D_WT
+
+The weight of the T&T item in
+kg to 3 decimal places. This is
+converted to 100ths of a kg for
+the EDG WS rounded up, with no
+decimal places.
+
+Value Of Goods
+
+fe) <VITVOG:>
+
+The value of goods in pence. This
+is converted to pounds for the
+EDG WS by removing 2 least
+significant digits.
+
+Consequential Loss
+
+Value
+
+O I <VCLOss:>
+
+D.cV
+
+The value of ‘Consequential
+Loss’ in pence. This is converted
+to pounds for the EDG WS by
+removing 2 least significant
+digits,
+
+Item Format
+
+O I <vPiP:>
+
+D_FOR
+
+Item Format . D_FOR is omitted
+if <VPiP:> is omitted, empty or
+equal to “0” otherwise the input
+value is used.
+
+Number of items
+
+D_NO
+
+Set to “1”.
+
+Prepaid indicator
+
+M N/A
+
+D_PRE
+
+Set to “R”.
+
+Consignee name
+
+M N/A
+
+D_CN
+
+Set to “Consignee Name”
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 35 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+oO
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+19 Delivery address 1 fe) <Address:> D_DAI The first line of the delivery
+address. For PAF validated
+addresses (<Result:>="00" or
+“O1’) concatenate either <Org:>
+or <POBox:> or (<SubPrem:>,
+<BuildName:>, <BuildNum:>
+and <Thoro:>). For manual or
+‘smart post Kahala lookup’
+addresses concatenate
+<Premises:> and <Address:>,
+Separate each field by a space. In
+all cases truncate complete field
+to 30 char.
+
+See below
+
+22 Delivery address 4 fe) <Country:> D_DA4 Full name of the destination
+country, truncated if necessary to
+30 characters. [CP4107]
+
+23. I Delivery postcode 0. I <Address> D_DPC _I The delivery address postcode.
+
+See below
+
+24 I Guaranteed Date fe) <VGuarant0:> I D_GTD The Guaranteed Date. Format
+DD/MM/CCYY is converted to
+CCYYMMDD for EDG WS.
+
+25 I DD flag Oo. I <VGIND> D_GTF The DD flag. Input value is used
+unless Guaranteed Date is not
+present when a space will be
+explicitly set.
+
+Table 16 — Riposte Attribute Mapping to EDG WS Detailed Record Fields
+
+The “Delivery address 1” and the “Delivery postcode” are derived from the PAF address
+Riposte attributes (see [PF/HLD/001]) under the following Riposte attribute:
+
+<Data:
+<MItem:
+<VDestina:
+<Address
+
+A PAF validated delivery address is identified by the following Riposte attribute having a value
+of “00” or “OL”:
+<Data:
+<MItem:
+<VDestina:
+<Address:
+<Result...>
+
+In this case the PAF validated “Delivery address 1” field (D_DA1) is formed from the
+following organisation name Riposte attribute if it exists.
+
+<Data:
+<MItem:
+<VDestina:
+<Address:
+<Org:...>
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 36 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+If the above attribute is absent the “Delivery address 1” field (D_DA1) is formed from the
+following PO Box Riposte attribute if it exists.
+
+<Data:
+<MItem:
+<VDestina:
+<Address:
+<POBox:...>
+
+If neither of the above attributes exist the “Delivery address 1” field (D_DA1) is formed from
+a concatenation of any of the following Riposte attributes that exist in the order they are
+described below with a space separating each attribute.
+
+<Data:
+<MItem:
+<VDestina:
+<Address:
+
+<Thoro:...>
+
+The PAF validated “Delivery postcode” (D_DPC) is formed from the following Riposte
+attribute:
+
+<Data:
+<MItem:
+<VDestina:
+<Address:
+<Postcode:...>
+
+A value for the <Data:<M/tem:<VDestina:<Address:<Result:> Riposte attribute other than
+“00” or “01” signifies that the PAF address has been manually entered. In this case the
+“Delivery address 1” (D_DA1) is formed from a concatenation of the following Riposte
+attributes in the order they are described below with a space separating each attribute.
+
+<Data:
+<MItem:
+<VDestina:
+< Address:>
+<Premises:...>
+
+<Address:...>
+
+The manually entered “Delivery postcode” (D_DPC) is formed from the following Riposte
+attribute:
+
+<Data:
+<MItem:
+<VDestina:
+< Address:>
+<PostcodeZii
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 37 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Version: 4.0
+Fujitsu Services
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+The “Delivery address 1” field (D_DA1) is limited to 30 characters for the field definition in
+the AIS [AS/IFS/001]. Consequently, if the length of the XML value for this field derived
+from the above process exceeds this length it must be truncated to 30 characters.
+
+An Ad Hoc Event record is created for each T&T item identified by the barcode for each T&T
+event in the comma separated list held in the <EV:> Riposte attribute.
+
+Field I Field Name Opt’ I Riposte XML Tag_ I Description
+No. Mand I Attribute
+1 Record type indicator M N/A A RTI Set to “4”.
+3 T&T number M <VBC> A TT The barcode for the T&T item.
+4 Incident code M <EV>> AIC The incident code for the T&T
+
+item retrieved from the comma
+separated list of incident codes held
+in the Riposte attribute.
+
+5 Location M <Name:> A_LOC The name of the PO branch
+
+6 Event date M_ I <Date:> A ED The date transacted at the Counter.
+This is held in the format “DD-
+MMM-YYYY” in the  Riposte
+attribute but is converted to the
+format “YYMMDD” for the EDG
+ws.
+
+7 Event time M <Time:> A ET The time transacted at the Counter.
+This is held in the format
+“HH:MM:SS” in the — Riposte
+attribute but is converted to the
+format “HHMMSS” for the EDG
+WS. GMT is converted to local
+time for the EDG WS.
+
+8 I FAD M I<Groupld> IA_FAD I Six digit FAD code with leading
+zeroes.
+
+Table 17 — Riposte Attribute Mapping to EDG WS Ad Hoc Event Record Fields
+
+The Trailer record requires no details from the Riposte attributes.
+
+Field I Field Name Opt/ I Riposte XML Tag I Description
+No. Mand I Attribute
+1 Record type indicator M N/A T_RTI Set to “9”.
+3 Record count M N/A T_CNT Set to the number of records in the
+
+T&T message i.e. Header, Sender,
+Detailed and Trailer is 4.
+
+Table 18 — Riposte Attribute Mapping to EDG WS Trailer Record Fields
+
+The following validation is applied to the Riposte attributes XML as part of the formatting
+process to create the XML document to be sent to the EDG WS.
+
+. Ensure that the required mandatory fields are present for the T&T message type
+(i.e. Detailed or Ad Hoc Event).
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 38 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+. The number of records for the T&T message type (i.e. Detailed or Ad Hoc Event)
+is checked against the value for the maximum number allowed held in the Registry
+(see Table 21).
+
+If the T&T message fails this validation then the details are written to the T&T Exception
+table. The value extracted from each Riposte attribute XML is checked for the presence of
+the 5 special characters (<>& quote and double quote), and wherever present, each is escaped
+before the value is added to the XML document. The XML document created is passed as a
+parameter in a SOAP request that is sent to the EDG WS as an RPC over HTTP via TCP as
+detailed in the AIS [AS/IFS/001] and TIS [AS/IFS/002]. The interface to the EDG WS is
+defined by the WSDL file detailed in the Prism document [WSIS]. The location of this file is
+defined by a configurable Registry value (see Table 19).
+
+The SOAP requests from the EE_IO threads are controlled by a number of configurable
+registry values (see Table 21). SOAP requests that are successfully received by the EDG WS
+are identified by <soap:Body> of the response containing the following (see [WSIS])
+
+. <types:TntDocumentResponse /> identifying that the request was successful.
+
+. The “<faultcode>” element of a “<soap:Fault>” having the value “soap:client”
+identifying that the SOAP request has been rejected by the EDG WS due to a fault
+in the SOAP document identified in the <faultstring> element of the “<soap:Fault>
+
+The Control thread is notified of the success or failure, along with the reason for the failure, by
+the EE IO thread and the T&T Transaction table is updated accordingly by the Control
+thread. The EE_IO thread can then retrieve another T&T message from the queue managed
+by the Control thread. If there are no messages in the queue for the EE_IO thread to process
+the thread waits a configurable period before checking the queue again.
+
+A SOAP request from the EE_IO thread is deemed to have failed if:
+
+e The HTTP connection timeout value for the EE_IO thread is exceeded when
+trying to establish an HTTP connection to the EDG WS.
+
+. The response timeout value for the EE_IO thread is exceeded when waiting for
+the SOAP response from the EDG WS.
+
+. A SOAP response is received from the EDG WS signifying that the service is
+unavailable, identified by the “<faultcode>” element of the “<soap:Fault>” in the
+response having the value “soap:server”.
+
+After a failed SOAP request the EE_IO thread waits for a specified delay and then attempts to
+resend the request. This process is repeated for the number of retries defined in the registry
+after which the EDG WS is considered to be “down” and the EE_IO thread suspends trying to
+resend the T&T message to the EDG WS.
+
+Echo Test SOAP requests are initiated from the Ping thread when an EE_IO thread is the first
+to fail to send the SOAP request to the EDG WS for the specified number of retries. The
+other EE_IO threads that are running concurrently continue to attempt to send the SOAP
+requests they are currently processing when this happens for the specified number of retries
+If any of these attempts are successful then the EDG WS is considered to be “up” and other
+EE_IO threads can resume processing and attempt to resend the requests that originally failed,
+with the retry count set back to zero. At this point the Echo Test requests from the Ping
+thread are suspended.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 39 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+The EDG WS is also considered to be “up” when a configurable number of consecutive
+successful Echo Test requests have been achieved by the Ping thread in which case the EE_ IO
+threads can resume processing the SOAP requests that originally failed.
+
+5.1.3.3.3. Ping Thread
+Echo Test SOAP requests are initiated from the Ping thread when:
+
+. No T&T messages have been sent to the EDG WS for a configurable period of
+time.
+
+. The EDG WS is identified as “down” by an EE_IO thread.
+
+The Ping thread sends SOAP requests to the EDG WS at a regular configurable interval and
+receives a response in return identifying the status of the service. The format of the SOAP
+request is defined in the AIS [AS/IFS/001] and WSDL defined in [WSIS]. The SOAP request
+is successful if the <soap:Body> of the response contains <types:EchoTestResponse/>. The
+request is considered to have failed when:
+
+. The HTTP connection timeout value for the Ping thread is exceeded when trying
+to establish an HTTP connection to the EDG WS.
+
+. The response timeout value for the Ping thread is exceeded when waiting for the
+SOAP response from the EDG WS.
+
+. A SOAP response is received from the EDG WS with a “<soap:Fault> in
+“<soap:Body>” of the response either with a “<faultcode> of “soap:server”
+indicating that the EDG WS is unavailable or a “<faultcode> of “soap:client”
+identifying an error in the SOAP request sent.
+
+If the Ping thread is sending Echo Test SOAP requests to the EDG WS when the Agent is in
+the idle state (i.e. there are no T&T messages to send to the EDG WS) and a configurable
+number of consecutive requests fail the EDG WS is considered to be “down”. Otherwise the
+Ping thread continues to send Echo Test SOAP requests to the EDG WS until there are T&T
+messages to send when the Echo Test SOAP requests are then suspended.
+
+When the EDG WS is “down” a configurable number of consecutive successful Echo Test
+requests must be processed before the EDG WS is deemed to be up again. At this point the
+EE_IO threads can resume processing if there are T&T messages to send to the EDG WS or
+the Echo Test SOAP requests continue to monitor the state of the service if the Agent is in an
+idle state.
+
+5.1.3.3.4 Microsoft SOAP Toolkit Version 3.0
+Microsoft SOAP Toolkit Version 3.0 is used by the EE_IO threads to create the SOAP
+requests that are sent to the EDG WS as per the AIS [AS/IFS/001] and TIS [AS/IFS/002].
+
+5.1.3.4 Exception Handling
+
+The Agent will treat operational failures in the same manner as other Agents with all failures
+recorded in the NT event log.
+
+Errors with the SOAP requests performed by the EE_IO threads are indicated using the
+“<soap:Fault>” element in the SOAP response from the EDG WS (see the AIS [AS/IFS/001]
+and TIS [AS/IFS/002] for details). Errors due to problems with the EDG WS are identified
+by the “<faultcode>” having the value “soap:server” which signifies that the service is
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 40 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+unavailable. Errors attributable to the badly formed SOAP requests sent to the EDG WS are
+identified by the “<faultcode>” element having the value “soap:client”. These are recorded as
+exceptions in the T&T Exceptions table with the “<faultstring>” element provides the
+description of the error.
+
+Where the validation and formatting of the T&T messages performed by the EE_IO thread
+fails the Control thread is notified and the error details are written to the T&T Exceptions
+table along with the information held on the T&T Transaction table for the message in
+question according to the details in Section 5.3.2.3. The error is also reported in the NT event
+log. A limit to the maximum number of these events (i.e. 50) that can be recorded along with
+a time limit after which the count is reset if the event hasn’t occurred within this period (i.e. 1
+hour), as applied to other Agents (i.e. the NBX Guaranteed Reversals Agent see
+[AD/LLD/005}), prevents an event storm in the event of a large number of exceptions
+
+5.1.3.5 Performance and Scalability
+
+The volumes for the T&T Integration are detailed in the CD [CR/CDE/018] with an expected
+peak of 12 Transactions per second. Four T&T EDG Interface Agents, one per Cluster,
+operate on the T&T Transaction table paired with the T&T Harvester Agents operating on the
+same Cluster Id.
+
+The number of EE_IO Threads in the T&T EDG Interface Agents servicing the queue of T&T
+messages maintained by the Control thread is configurable (see Table 21). The flow of the
+T&T messages to the EDG WS can be adjusted here, although the scalability in terms of this
+Agent is dictated by the rate at which the EDG WS is able to process these requests. The
+suggested value of the number of EE IO threads will have to be determined during
+development when the figures for the rate of the response from the EDG WS are available.
+
+5.1.3.6 Resilience
+
+The EACRR mechanism ensures that if an instance of the T&T EDG Interface Agent fails
+another one will take its place. When the Agent loses a connection to the Oracle NPS
+database it fails and a new instance tries to re-establish the connection. The aim of EACRR is
+to restart a failed Agent instance within 5 minutes or so.
+
+Following a failure during the connection phase, the standard Agent approach of retries is
+appropriate; retries continue until the configured TOTAL_CONNECTION_TIMEOUT period
+has elapsed, after which the Agent fails. A timeout of the order of 5 minutes will be required
+so that EACRR may restart it on another T&T EDG Interface Agent Server well within the 15
+minute period.
+
+If when initialising the EE_IO or Ping threads the SOAP resources fail to initialise within the
+period specified in the registry (see “SOAP Initialisation Timeout” in Table 19) a warning is
+written to the Windows Event Log and the T&T EDG Interface Agent fails and is restarted
+via the EACRR mechanism.
+
+If a response is received from the EDG WS by one of the EE_IO threads or the Ping thread
+signifying that the service is unavailable all transmissions to the service by the EE_IO threads
+are suspended until a response is received by the Ping thread identifying that the service is
+available again and transmissions by the EE_IO threads can resume.
+
+The EE_IO thread records the time after each SOAP request or after checking the queue if it
+is empty and this time is used to identify the activity of these threads. If the interval between
+this time and the previously recorded time for the thread is greater than the configurable
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 41 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+period in the registry (see Table 21) then the thread is deemed to have failed. In this case the
+agent is stopped and restarted.
+
+5.1.3.7 Security
+
+The T&T EDG Interface Agent is hosted on the existing General Purpose FTMS Gateway
+Local Platform. This platform is located within a DMZ and is described in detail in the PPD
+[SD/DES/262]. The interface between this Agent and the EDG WS is described in the TIS
+[AS/IFS/002].
+
+As there is no sensitive information in the T&T messages no encryption is required for the
+information sent to the EDG WS.
+
+5.1.3.8 Configurability
+
+The following table, though not exhaustive, lists the main items for the T&T EDG Interface
+Agent that are configurable through the Registry:
+
+Item Description
+
+Cluster Id The CLUSTERID value holds the number of the Riposte Cluster for
+this Agent instance that forms part of the selection criteria for
+reading the T&T Transaction table.
+
+Database Location The DBLOCATION value identifies the location of the NPS
+database (see [NB/HLD/027]).
+
+Oracle User Name The USERNAME value identifies the Oracle user name to connect
+to the NPS database (see [NB/HLD/027])
+
+Oracle Password The PASSWORD value identifies the Oracle password for the user
+name that allows a connection to the NPS database.
+
+NPS Connection Timeout The TOTALCONNECTIONTIMEOUT value applies to the period
+
+after which the Agent exits when attempting to connect to the NPS
+database (5 minutes).
+
+WSDL File Location The location of the WSDL file that defines the interface with the
+EDG WS (D:\AgentData\WSDL\HorizonToEDG.wsdl).
+
+SOAP Initialisation Timeout I The timeout for the initialisation of the SOAP resources that is
+applied to both the EE_IO and PING threads (1 minute).
+
+Table 19 — Registry for T&T EDG Interface Agent
+
+The following items are specific to the Control thread:
+
+Ttem _ I Description
+
+“Rehoming” Time This defines the time of the day when the Agent is forced to close
+down and restart in order to attempt to connect to the preferred
+Correspondence Server and NPS node.
+
+Queue High Threshold The high threshold for the queue of T&T messages maintained by the
+Control thread (defined in the LLD [DE/LLD/015}).
+Queue Low Threshold The low threshold for the queue of T&T messages maintained by the
+
+Control thread (defined in the LLD [DE/LLD/015}).
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 42 of 55
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+Trace (T&T) Agents Version: 4.0
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+NPS Read Wait
+
+This is the period that the Control thread waits before reading the
+T&T Transaction table again when there are no T&T messages to
+process.
+
+Heartbeat Interval
+
+This is the interval between heartbeat MONID events being generated
+confirming that the Agent is available (5 minutes).
+
+Stats Folder
+
+This identifies the folder containing the files where the stats
+information is written (D:\AgentData\Stats).
+
+Stats Interval
+
+This is the interval for which the stats information is written to records
+on the stats files in the stats folder (5 minutes).
+
+Table 20 — Registry for T&T EDG Interface Agent — Control Thread
+
+The following items are specific to the EE_IO threads:
+
+Item
+
+Description
+
+Number of EE_IO Threads
+
+The number of EE_IO threads available to process the T&T messages
+held in the queue by the Control thread.
+
+HTTP Connection Timeout
+
+The timeout applied to establishing an HTTP connection by the
+EE_IO thread (set to 25 seconds).
+
+SOAP Response Timeout
+
+The timeout applied to waiting for the response EDG WS for the
+SOAP request sent by the EE_IO Thread (FS proposal 20 seconds,
+see TIS [AS/IFS/002}).
+
+Retry Count
+
+The number of attempted retries to send the T&T message to the EDG
+WS by the EE_IO thread before the process is deemed to have failed
+(set to 5, see TIS [AS/IFS/002]).
+
+Retry Wait
+
+The delay before the EE IO thread attempts to resend the T&T
+message (set to 2 seconds; see TIS [AS/IFS/002}).
+
+Maximum = number — of
+Detailed Records
+
+The maximum number of Detailed records as defined by the AIS
+[AS/IFS/001] that are allowed for the T&T XML document sent to
+the EDG WS (set to 10, see AIS [AS/IFS/001]).
+
+Maximum Number of Ad-
+Hoc Records
+
+The maximum number of Ad-Hoc records as defined by the AIS
+[AS/IFS/001] that are allowed for the XML document sent to the
+EDG WS (set to 50, see AIS [AS/IFS/001)).
+
+Idle Wait
+
+The period the EE_IO thread waits when there are no T&T messages
+in the queue maintained by the Control thread before checking the
+queue again (set to 0.5 seconds).
+
+Table 21 — Reg
+
+The following items are specific to the Ping thread:
+
+istry for T&T EDG Interface Agent — EE_IO Thread
+
+Item
+
+Description
+
+Idle Time
+
+The time that has elapsed during which no SOAP requests have been
+sent to the EDG WS before Echo Test SOAP requests are initiated by
+the Ping thread (set to 60 seconds; see TIS [AS/IFS/002]).
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence Page: 43 of 55
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+Echo Test Interval The interval between Echo Test requests being sent to the EDG WS
+
+(set to 30 seconds; see TIS [AS/IFS/002]).
+
+HTTP Connection Timeout I The timeout applied to establishing an HTTP connection by the Ping
+thread (set to 25 seconds).
+
+SOAP Response Timeout The timeout applied to waiting for the response from the EDG WS for
+the Echo Test SOAP request sent by the Ping Thread (set to 20
+seconds; see TIS [AS/IFS/002]).
+
+Retry Count The number of attempted retries to send the Echo Test request to the
+EDG WS by the Ping thread before the process is deemed to have
+failed and the EDG WS is considered to be “down” (set to 3, see TIS
+[AS/IFS/002)).
+
+Success Count The number of consecutive successful Echo Test SOAP requests for
+the EDG WS to be considered up again when in the “down” state (set
+to 6; see TIS [AS/IFS/002]).
+
+Idle Wait The period the Ping thread waits when it has no work to do when the
+EE_IO threads are processing the T&T messages normally (set to 2
+seconds).
+
+Table 22 — Registry for T&T EDG Interface Agent — Ping Thread
+
+5.1.3.9 Audit
+
+The information held on the T&T Transaction and T&T Exceptions tables on NPS provides
+the means for auditing the T&T EDG Interface Agent. The T&T Transaction and Exceptions
+tables are archived as part of the NPS archiving and housekeeping process (see
+[NB/HLD/027)).
+
+Statistics are maintained by the Control thread in files named after the day of the week along
+with the Cluster Id the Agent is servicing (i.e. Monday_<n> where <n> identifies the Cluster
+Id) in the folder specified in the registry (see Table 20). These files are created at midnight
+with the new file for the day and Cluster Id overwriting the existing file. The statistics are
+written to these files after a configurable interval held in the registry, based on the difference
+between the current statistics values and those written last time. The following information is
+collected by the Control, EE_IO and Ping threads and recorded to the statistics files (the
+structure of these files is defined in the LLD [DE/LLD/015]).
+
+For the Control thread:
+
+. The number of T&T messages read from the T&T Transaction table on the NPS
+database.
+
+. The number of T&T messages accepted by the EDG WS.
+
+. The number of T&T messages that failed either in the validation or by rejection
+from the EDG WS resulting in a record being written to the T&T Exception table.
+
+For the EE_IO thread the figures are the sum of the following for all the EE_IO threads
+operating:
+
+. The number of SOAP requests sent to the EDG WS including retries.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 44 of 55
+oO
+FUJITSU Trace (T&T) Agents
+
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+Version: 4.0
+
+Fujitsu Services
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+The total number of SOAP requests that failed due to either failing validation
+when building the XML document to send or being rejected by the EDG WS or
+timing out at the Agent waiting for a response or the EDG WS being sending a
+response identifying that it is unavailable.
+
+The number of SOAP requests rejected by the EDG WS identified by the SOAP
+response “<soap:Fault> element having a “<faultcode>” of “soap:client”.
+
+The number of T&T messages failing validation in the EE_IO thread whilst
+building the XML document to send to the EDG WS.
+
+The number of SOAP requests that failed due to timing out when the Agent is
+waiting for the response from the EDG WS.
+
+The number of SOAP requests that failed due to the EDG WS being “down”
+identified by the SOAP response “<soap:Fault> element having a “faultcode” of
+“soap:server”.
+
+The total number of characters in the T&T messages successfully sent to the EDG
+Ws.
+
+For the Ping thread:
+
+The number of Echo Test SOAP requests sent to the EDG WS including retries.
+
+The total number of Echo Test SOAP requests that failed due to the EDG WS
+being “down” identified by either the SOAP response “<soap:Fault> element
+having a “faultcode” of “soap:server” or the requests timing out.
+
+The number of Echo Test SOAP requests that failed due to timing out when the
+Agent is waiting for the response from the EDG WS.
+
+The number of Echo Test SOAP requests that failed due to the EDG WS
+returning a SOAP response with the “<soap:Fault> clement having a “faultcode”
+of “soap:server”.
+
+5.1.1.10 Operational Summary
+Agent name: TT_NQ_EDG Platform(s): EDG General Purpose FTMS Gateway Local
+Service Name: TMSTTEDGInf<n> Style: Interactive Enquiry Agent
+
+Scope & parallelism: One per Cluster where <> identifies the Cluster id.
+
+Registry key(s):
+HKEY_LOCAL_MACHINE\SOFTWARE\ICL\PathwayAgents\TT_NQ_EDG
+HKEY_LOCAL_MACHINE\SOFTWAREI\ICL \PathwayAgents\TT_NQ_EDG\TMSTTEDGInf<n>
+
+Use of checkpoints: None.
+
+Use of dummy offices: None.
+
+Host database: NPS
+
+Needs to be running: Runs 7 x 24. Important between 07:00 and 20:00 7 days per week: Critical between
+08:00 and 17:30 Monday to Friday and 08:00 and 13:00 Saturday.
+
+Documentation: [DE/LLD/015]
+
+Table 23 — Operational Summary of the T&T EDG Interface Agent
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 45 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+5.2. Application Components for Existing Agents
+
+5.2.1 Counter Call Scheduler (CCS) Agent Configuration
+
+T&T messages are to be treated at the Counter as 'urgent'. This entails the configuration of
+the CCS through type D reference data to ensure that the T&T messages recorded at the
+Counter identified by the Riposte attribute <TTA:1> are treated as such. The maximum
+interval for this process is set to 5 minutes and the minimum interval is set to 4 minutes to
+ensure this is the case.
+
+5.3 Interfaces to External Components
+
+5.3.1 Interfaces to Riposte
+
+The Riposte attribute grammar is described in detail in the Counter HLD [DE/HLD/014]. The
+Riposte attributes required for the EDG WS and the interface between the T&T Harvester
+Agent and the Correspondence Servers are described in Section 5.1.2.
+
+5.3.2 Interfaces to NPS
+
+5.3.2.1 Overview
+
+The following two tables are required on NPS for the T&T Integration messages harvested by
+the T&T Harvester Agent from the Correspondence Servers so that the messages can then be
+sent to the EDG WS via the T&T EDG Interface Agent.
+
+Table Table Name Description
+
+T&T Transaction Table I TMS_RX_TT_TRANSACTIONS This table holds the T&T messages
+harvested by the T&T Harvester Agent that
+are then validated, formatted and sent to the
+EDG WS by the T&T EDG Interface Agent.
+
+T&T Exceptions Table I TMS_RX_TT_EXCEPTIONS This table holds any exceptions generated
+by the T&T Harvester being unable to
+harvest the T&T message from the
+Correspondence Server or T&T messages
+failing validation by the T&T EDG
+Interface Agent or being rejected by the
+EDG WS.
+
+Table 24 — NPS Tables for T&T Agents
+
+The design for these tables is described in detail in the NPS T&T Changes HLD
+[NB/HLD/027]. The T&T Harvester and EDG Interface Agents process the T&T messages
+held on the Correspondence Servers by Cluster. The Agent pairs processing a specific Cluster
+Id preferably connect to the same Oracle NPS database using the same Oracle instance to
+avoid block pinging between these instances. In practice as these Agent pairs may start or re-
+start at different times and the NPS availability may change in between, this may not be the
+case.
+
+Both the T&T Agents use the “Rehoming” approach that is considered acceptable for NBX by
+forcing the Agents to close down and restart overnight allowing the Agents to attempt to
+reconnect to the preferred NPS database and Oracle Instance if they are not already using
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 46 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+oO
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+them. As the NPS has a hot backup (i.e. the NPS is not taken down to be backed up) this
+process is not triggered by the Agents losing their connection to the NPS.
+
+The T&T EDG Interface Agent is configured to “Rehome” by the Control thread closing
+down the Agent at the time defined within the registry.
+
+The T&T Harvester Agent is configured to “Rehome” by the Agent closing down after it has
+taken the Backup checkpoint before the Correspondence Servers are backed up.
+
+This section describes how the tables in the NPS are populated and used by the T&T Agents.
+
+5.3.2.2 T&T Transaction Table (TMS_RX_TT_TRANSACTIONS)
+
+The T&T Transaction table is populated by the T&T Harvester Agent from the T&T messages
+held on the Correspondence Servers. The Riposte attributes in these messages required for
+EDG WS (as specified in the AIS [AS/IFS/001]) are identified in an inclusion list (see Table
+11). These Riposte attributes are converted to XML and written to the table along with the
+fields identified in Table 25. The messages held on the T&T Transaction table are then read
+by the T&T EDG Interface Agent before they are validated, formatted and sent to the EDG
+Ws.
+
+The following table lists the Oracle column names for this table (see [NB/HLD/027]) and
+describes their purpose with respect to the T&T Agents:
+
+Oracle Column Name _I Field Purpose for T&T Agents
+SEQ NUMBER Sequence number within I The sequence number uniquely _ identifies
+Cluster. transactions within each Cluster. This defines the
+
+order in which the messages were written to the table
+and allows the use of a high water mark within the
+processing performed by the T&T EDG Interface
+Agent.
+
+CLUSTER_ID Cluster Id. The T&T Harvester and EDG Interface Agents run
+with one agent per Cluster. The Cluster Id here
+allows the T&T EDG Interface Agents to select a
+specific Cluster to process from the T&T
+Transaction table.
+
+TRANSACTION_ID Transaction Id. The Transaction Id provides a means of uniquely
+identifying the T&T messages recorded at the
+Counter and held on the Correspondence Servers.
+This is used to ensure that T&T Transactions aren’t
+duplicated. This is the EPOSS Transaction Id for
+the T&T messages that are currently being
+processed, but could be any unique Transaction Id
+that uniquely identifies the T&T message recorded at
+the Counter.
+
+INSERT_TSMP Timestamp when record I This is the current date and time when the record is
+was inserted into the I written to the table by the T&T Harvester Agent.
+table.
+
+TT_MESSAGE T&T message. The T&T Harvester Agent converts the T&T
+
+message harvested from the Correspondence Server
+to XML so that the T&T message can then be
+retrieved formatted and sent to the EDG WS by the
+T&T EDG Interface Agent.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 47 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+Trace (T&T) Agents
+
+Fe)
+FUJITSU
+
+Fujitsu Services
+
+Version: 4.0
+
+Company-in-Confidence Date: —_-27-Aug-2008
+
+ACTIONED Actioned Flag (Y/N) This flag defaults to “N” when the T&T message is
+written to the table by the T&T Harvester Agent and
+is set to “Y” when the record has been sent to the
+EDG by the T&T EDG Interface Agent and
+
+confirmation has been received by the Agent.
+
+UPDATE_TSMP Timestamp when record
+
+was Actioned.
+
+The updated timestamp is set to the current date and
+time when the T&T message record has been passed
+to the EDG by the T&T EDG Interface Agent and
+the Actioned flag is set to “Y”.
+
+Table 25 — T&T Transaction Table (TMS_RX_TT_TRANSACTIONS)
+
+5.3.2.3 T&T Exceptions Table (TMS_RX_TT_EXCEPTIONS)
+
+The T&T Exceptions table is populated with T&T messages from the Correspondence Servers
+that the T&T Harvester Agent is unable to process and by the T&T EDG Interface Agent
+where T&T messages held on the T&T Transaction table fail validation or are rejected by the
+EDG WS. This is likely to be a sparsely populated table as there is little validation performed
+on the T&T messages within these Agents, validation of the T&T information mainly occurs at
+the EDG WS (see Sections 5.1.2.4 and 5.1.3.4).
+
+The following table lists the Oracle column names for this table (see [NB/HLD/027]) and
+
+describes their purpose with respect to the T&T Agents:
+
+Oracle Column Name _I Field Purpose for T&T Agents
+SEQ_NUMBER Sequence number within I This value is taken from the T&T Transaction table
+cluster. for T&T EDG Interface Agent exceptions. However,
+this sequence number does not exist for exceptions
+with the T&T Harvester Agent.
+CLUSTER_ID Cluster Id. This value is taken from the T&T Transaction table
+
+for T&T EDG Interface Agent exceptions and from
+the Cluster Id being processed for T&T Harvester
+Agent exceptions.
+
+TRANSACTION_ID
+
+Transaction Id.
+
+This value is taken from the T&T Transaction table
+for T&T EDG Interface Agent exceptions and from
+the <TxnId:> Riposte attribute from the T&T
+message on the Correspondence Servers for T&T
+Harvester Agent exceptions.
+
+INSERT_TSMP
+
+Timestamp when record
+was inserted into the
+table.
+
+This is the current date and time when the record is
+written to the table by the T&T Harvester/EDG
+Interface Agent.
+
+TT_MESSAGE
+
+T&T message.
+
+The T&T message from the Correspondence Servers
+for exceptions with the T&T Harvester Agent and
+the T&T message field (TT_MESSAGE) from the
+T&T Transaction table for exceptions with the T&T
+EDG Interface Agent.
+
+ACTIONED
+
+Actioned Flag (Y/N)
+
+The Actioned flag defaults to “N”.
+
+UPDATE_TSMP
+
+Timestamp when record
+was Actioned.
+
+This field is not used.
+
+EXCEPTION_DETAILS
+
+Exception details.
+
+This provides details of the reason the exception
+occurred.
+
+© 2005 Fujitsu Services
+
+Company-in-Confidence
+
+Page: 48 of 55
+
+FUJ00171843
+
+FUJ00171843
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+ALERT_RAISED Alert raised flag This flag identifies whether an alert has been raised
+
+for the exception.
+
+Table 26 — T&T Exceptions Table (TMS_RX_TT_EXCEPTIONS)
+
+5.3.2.4 NPS Archiving and Housekeeping
+
+The NPS Archiving and Housekeeping process runs every night and archives and removes all
+records that have been processed (ACTIONED = “Y”) from the T&T Transaction table where
+the insert timestamp (INSERT_TSMP) is older than a specified period (5 days). This process
+is described in detail in the NPS T&T Changes HLD [NB/HLD/027]
+
+5.3.3 Interfaces to the EDG WS
+
+The interface to the EDG WS is described in the AIS [AS/IFS/001] and TIS [AS/IFS/002]
+
+This interface is effectively managed within the T&T EDG Interface Agent. SOAP requests
+are sent to the EDG WS by this Agent via RPC using an HTTP connection and the availability
+of the service is identified by the responses received from these requests. The EDG WS is
+deemed to be unavailable if a SOAP request consistently times out for the specified number of
+retries or if the response received from the EDG WS explicitly states that the service is
+unavailable identified by a SOAP “faultcode” of “soap:server”. This can occur in either the
+EE_IO threads or the Ping thread and entails the suspension of all processing of the T&T
+messages by the EE_1O threads until the Ping thread receives a response from the EDG WS
+that confirms that the service is available again.(see Section 5.1.3).
+
+6.0 Systems Management
+
+6.1 NT Events as a Source for Monitoring
+
+The T&T Harvester and EDG Interface Agents generate specific events that are monitored to
+provide information on the health of the service itself and the resources upon which the
+Agents are dependent.
+
+Each event has an associated “severity level”, for which the keyword is “MONSEV:”. The
+severity levels used are given in the following table.
+
+Severity Level I Value
+Good G
+Bad B
+
+Table 27 — Monitor Severity Levels
+
+The monitored resources are identified by their monitor id included in the text of the event
+message by the keyword “MONID:”. The monitor id is limited to 20 characters and the
+resources being monitored, and their associated monitor ids, are given in the following tables.
+
+The standard Agent monitoring for a Harvester Agent as defined in [AD/DES/039] is applied
+to the T&T Harvester Agent; however, the following Heartbeat “MONID” is produced by the
+Agent to confirm that the Agent is running. In the following tables <n> identifies the Cluster
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 49 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+Id that the Agent is servicing (i.e. for the T&T Harvester Agent for Cluster Id 1 the Monitor
+Id will be TTHarvester1.HB for the heartbeat resource)
+
+Resource Monitor Id
+
+T&T Harvester Heartbeat TTHarvester<n>.HB
+
+Table 28 — Monitor Ids of the Resources for the T&T Harvester Agent
+
+Resource Monitor Id
+
+T&T EDG Interface Service TTEDGInf<n>.SERVICE
+T&T EDG Interface Heartbeat TTEDGInf<n>.HB
+
+NPS Database TTEDGInf<n>.DB1
+EDG WS TTEDGInf<n>.EDGWS
+
+Table 29 — Monitor Ids of the Resources for the T&T EDG Interface Agent
+
+The following table gives the meanings of the monitored NT events. To aid the filtering
+process, they will be assigned their own facility code and will use a reserved range of event
+numbers (8000 to 9999).
+
+Resource Severity I Description
+Level
+T&T Harvester Heartbeat Good Service is available.
+
+Generated at a configurable interval (see Table 10)
+providing a heartbeat for the service.
+
+Table 30 — NT Events for Monitoring the T&T Harvester Agents
+
+Resource Severity I Description
+Level
+T&T EDG Interface Service Good Service is available.
+
+Generated by the Control thread when it first starts.
+
+Bad Service is closing: reason
+
+Generated by the Control thread before the Agent is
+closed down.
+
+T&T EDG Interface Heartbeat I Good Service is available.
+
+Generated at a configurable interval (see Table 20) by
+the Control thread providing a heartbeat for the service.
+
+NPS Database Good NPS database is available.
+
+Generated after the Control thread makes a connection
+to an NPS instance.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 50 of 55
+FUJ00171843
+FUJ00171843
+
+FUJITSU High Level Design Specification for Track and Ref: DE/HLD/015
+}} Trace (T&T) Agents Version: 4.0
+Fujitsu Services
+Company-in-Confidence Date: 27-Aug-2008
+Bad NPS database is unavailable: reason
+
+Generated by the Control thread after it loses the
+connection to the NPS instance before the Agent closes
+down.
+
+EDG WS Good EDG WS is available.
+
+Generated by the Ping thread when the EDG WS is
+identified as being “up” either when the Agent first
+starts or when the EDG WS has been “down” (sce
+Section 5.1.3.3.3).
+
+Bad EDG WS is unavailable: reason.
+
+Generated by the Ping thread when Echo Test SOAP
+requests are initiated to check the status of the service
+when it is “down” (see Section 5.1.3.3.3).
+
+Table 31 — NT Events for Monitoring the T&T EDG Interface Agents
+
+It is possible for more than one instance of these Agents to be started up for the same Cluster
+Id due to failure conditions such as network problems causing a second instance to start up.
+Although two T&T Harvester Agents running for the same Cluster Id doesn’t cause a problem
+as only unique transactions are written to the T&T Transaction table (duplicates are ignored)
+and two T&T EDG Interface Agents running against the same Cluster Id also doesn’t cause a
+problem as there are no restrictions on resending the same T&T message to the EDG WS, a
+monitoring view should raise alarms if two of the same type of Agent are running against the
+same Cluster Id. When Tivoli notices this, which it usually does once the problem has been
+resolved, it will close both agents down and restart the Agent for the Cluster Id in question.
+
+6.2 T&T Eventing Requirement
+There are two eventing requirements for the T&T Agents:
+
+e Event filtering - there is a requirement to link events raised by the Agent services
+using generic event sources with a particular Agent instance.
+
+© Certain events need to be forwarded to the TEC via the expedited eventing route.
+
+6.2.1 Event Filtering
+
+There is a requirement to link events raised by the Agent services using generic event sources
+with a particular Agent instance.
+
+There are two Agent types delivered as part of the track and trace solution: an interface agent
+and a harvester agent.
+
+All POA Agents include the Agent service name (see Table 33) within angle parenthesis ‘<>’
+at the start of the event text. For example:
+
+<TMSTTEDGInf3>A gent terminated after shutdown request.
+
+The event is raised with a source of TT_NQ_EDG. The number at the end of the string
+included within the angle parenthesis indicates the instance number of the Agent. The filter
+should change the event source from TT_NQ EDG to TTEDGInf<n>, where <n> identifies
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 51 of 55
+FU.
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+oO
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+FUJ00171843
+}J00171843
+
+the instance number and the TMS prefix included within the event text is removed. In the
+example above the source would become TTEDGInf3.
+
+The event filter needs to make the following changes:
+
+Event Source I Text Included Within Event Message I New Event Source
+TT_NQ_EDG I <TMSTTEDGInf1> TTEDGInfl
+TT_NQ_EDG_ I <TMSTTEDGInf2> TTEDGInf2
+TT_NQ _EDG <TMSTTEDGInf3> TTEDGInf3
+TT_NQ EDG <TMSTTEDGInf4> TTEDGInf4
+TT_HV_ALL <TMSTTHarvester1> TTHarvester]
+TT_HV_ALL <TMSTTHarvester2> TTHarvester2
+TT_HV_ALL <TMSTTHarvester3> TTHarvester3
+TT_HV_ALL <TMSTTHarvester4> TTHarvester4
+
+Table 32 —- T&T Event Filtering Changes
+Given all PO accounts utilise the same scheme within all Agents the filter should be developed
+to maximise the potential for reuse, whilst not incurring a large development cost.
+
+The cost of development will be funded by the 10 man day T&T filtering impact included in
+the original T&T budget.
+
+6.1.2 Expedited Eventing
+
+Both the T&T Harvester and EDG Interface Agents raise regular heartbeat events to show
+that they are still active. This is required to protect against the effects of ‘sleepy Agent’
+syndrome, i.e. the service is reported as being up and running but is not actually processing
+messages.
+
+The expedited eventing route was introduces to support the delivery of these style of
+messages.
+
+The following changes are required in order to support the use of expedited eventing by the
+T&T Harvester and EDG Interface Agents. Note that there will be no change to the actual
+Agents, the route an individual event will be forwarded by will be defined by a local event
+filter. The changes are:
+
+1. Introduce a new instance of the Windows 2000 event adapter.
+
+2. Filter the heartbeat events so they will not be picked up by the existing event
+adapter.
+
+3. Filter the new adapter to just process the heartbeat events.
+Details of heartbeat events to be forwarded by the expedited route:
+Source: TT_NQ_EDG, event id: 8030, example event text contains: MONID:TTEDGInf3.HB
+Source: TT_HV_ALL, event id: 8030, example event text contains: MONID:TTHarvester3.HB
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 52 of 55
+FUJ00171843
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+7.0 Application Development
+
+The normal Agent development environment is adequate for most of the development and unit
+testing.
+
+An emulator is required for the external EDG WS which will receive the SOAP requests and
+produce the relevant responses to provide a suitable environment to the unit test the T&T
+EDG Interface Agent.
+
+8.0 System Qualities
+
+8.1 Performance and Scalability
+
+8.1.1 T&T Harvester Agent
+See Section 5.1.2.5.
+
+8.1.2 T&T EDG Interface Agent
+See Section 5.1.3.5.
+
+8.2 Resilience
+
+8.2.1 Resilience to a Failing Correspondence Server
+
+The T&T Harvester Agent is configured with a Resilient Locale. If the Riposte connection to
+a Correspondence Server fails, this Agent will fail and wait to be restarted by Tivoli EACRR
+mechanisms. During the connection phase, it will attempt to connect to the preferred
+Correspondence Server, but if that is not possible it will connect to the alternative instead.
+8.2.2 Resilience to a Failed Connection to NPS
+
+Both the T&T Harvester and T&T EDG Interface Agents connect to NPS to get access to the
+T&T Transaction and Exceptions tables. If the connection to NPS fails then the Agent will
+fail and wait to be started by Tivoli EACRR mechanisms. Details of the approach taken to
+connect to NPS are described in Section 5.3.2.
+
+8.2.3 T&T Harvester Agent
+See Section 5.1.2.6.
+
+8.2.4 T&T EDG Interface Agent
+See Section 5.1.3.6.
+
+8.3 Security
+
+8.3.1 T&T Harvester Agent
+See Section 5.1.2.7.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 53 of 55
+FUJ00171843
+
+FUJ00171843
+
+High Level Design Specification for Track and Ref: DE/HLD/015
+
+©
+FUJITSU Trace (T&T) Agents
+
+Fujitsu Services
+
+Version: 4.0
+Company-in-Confidence Date: —_-27-Aug-2008
+
+8.3.2 T&T EDG Interface Agent
+See Section 5.1.3.7.
+
+8.3.3 Service Users
+
+The Secure Build Implementation Guide [RS/DES/08 1] defines that all Service User accounts
+must be created using the global group and local group model with the minimum level of
+privileges being assigned in order to achieve the required functionality. The standard for such
+Service Users is to create them in the local resource domain as domain users.
+
+These standards apply to the new T&T Integration Agents which run as NT services. The
+following table lists the proposed Service User names:
+
+Agent Platform Service Name Service User
+
+T&T Harvester Agent NBX Routing Agent Server TMSTTHarvester<n I TMSTTHarvester
+
+>
+
+T&T EDG Interface Agent I T&T EDG Interface Agent Server I TMSTTEDGInf<n> I TMSTTEDGInf
+
+Table 33 — Service Users for T&T Integration Agents
+
+8.4 Potential for Change
+
+The design for the T&T Harvester and EDG Interface Agents defined here has attempted to
+build in the potential for change by continuing the approach of previous Agents. As part of
+this process the intention is to make configurable as much as is possible for these Agents.
+
+9.0 Solution Implementation Strategy
+
+The functionality described here for the T&T Harvester and T&T EDG Interface Agents is to
+be released at BI3 S80 except where specifically stated to the contrary.
+
+10.0 Migration
+
+As the T&T Integration Agents are new for BI3 S80 there are no migration issues envisaged
+for these Agents.
+
+© 2005 Fujitsu Services Company-in-Confidence Page: 54 of 55

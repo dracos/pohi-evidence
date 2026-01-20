@@ -1,0 +1,148 @@
+FUJ00142190
+FUJ00142190
+
+Fujitsu Services,
+22 Baker Street,
+London,
+
+W1U 3BW,
+08/04/10
+
+Mark Burley,
+Post Office Ltd,
+2nd Floor
+
+148 Old Street
+London
+
+EC1V 9HQ
+
+London,
+
+Dear Mark,
+
+Please find enclosed a statement detailing Fujitsu's position with respect to the Final Balance
+Report issue from the HNG-X Pilot. This statement has now been confirmed by our
+Commercial, Legal and Programme Leads.
+
+Signed on behalf of Fujitsu Services by,
+
+Alan D'Alvarez
+Programme Director,
+Royal Mail Group Business Unit
+FUJ00142190
+FUJ00142190
+
+Background
+During Branch Trading Statement (BTS) Production the report is produced twice in the form
+of:
+
+e A Trial Report to allow the Postmaster to check that the data is correct.
+e A Final Report which is produced after the Trial Report has been confirmed. This
+indicates that the Branch has rolled over in the next Trading Period.
+
+The BTS consist of two parts:-
+
+e ASummary of Stock Unit and Suspense Account activities (relating to Cash and Cash
+movements) over the Trading Period.
+* Consolidated Stock Levels for all Volume Stock Items.
+
+Problem Description
+On the Final Report, the Stock Holding figures in the second section of the Report are
+incorrect on the final balance.
+
+Points to Note
+
+«The first section of the Final Report (relating to Cash
+and Cash movements) is correct.
+
+e The figures that are stored as Opening figures for the
+new Trading Period are correct. To expand on this slightly, at the
+time the Final BTS Report is produced some Opening Figures for the
+Suspense Account are stored back in the BRDB. These figures are
+from the first part of the report and so are not corrupted by the
+defect and therefore are correct.
+
+e The figures on both sections of the Trial Report, (which
+the Postmaster is asked to check) are correct.
+
+Cause
+
+The root cause of the issue is that the code that re-prints the
+report makes incorrect use of the cache of data held at the counter
+for generating the report as it is printing the report.
+
+To expand on this further:-
+
+1. When the BTS is being produced, it is done based on data written to the Branch
+Database (BRDB) whenever a Stock Unit Rolls over.
+2. BTS Production retrieves this data from BRDB to the counter.
+3. The counter then uses it to generate the Trial BTS.
+4. There is a defect in the way that the report is produced such that some of the in-memory
+copy of the data is overwritten when the Trial BTS is produced.
+Acconsequence of this is that when the final BTS is produced it is using incorrect data.
+The problem has been fixed by ensuring that the final BTS uses the
+original data retrieved by the counter at step 2 rather than the data left
+over after step 4.
+7. The problem was first reported by the Warwick Branch when it was pointed out that the
+trial Balance figures were correct and the
+Final Balance figures were incorrect.
+8. Comparing the Trial and Final balance figures with the
+corresponding Stock Unit Balance Reports shows easily that the Trial
+Balance is correct and the Final Balance is incorrect.
+9. None of the incorrect data is stored to BRDB so there is no possibility of
+ongoing corruption of stock levels.
+
+Oa
+
+Key Questions
+Can Fujitsu provide a complete and comprehensive list of all products where the volumes on
+the Final Balance Report differ to those on the Trial Balance Report?
+
+All figures relating to the Volume Stock Holdings can be corrupted by the issue, but not
+necessarily all the figures will be incorrect.
+
+How Has the Defect Arisen?
+The defect is a software issue that was not detected in application testing by the Joint Test
+Team.
+
+What are the Impacts of this Defect — detailing all stock items affected?
+All the Volume Stock items in this section of the report could be affected.
+
+What is Fujitsu doing to resolve this defect?
+
+Fujitsu has developed a software fix to resolve the issue by ensuring that the Final Report
+uses the original data retrieved by the counter at Step 2 described above rather than using
+
+the data left after Step 4. This is a counter fix that has been signed-off in test as part of the
+01.08 Maintenance Release counter fixes and has been deployed to the live HNG-X branches.
+For HNG-X migrations in the immediate future, the 01.08 counter fixes are deployed and
+committed to the branch 1 working day after HNG-X becomes operational. Before this fix was
+available, Fujitsu had written a KEL which includes instructions to the HSD to give advice to
+Postmasters. The advice is to use the Trial Report, which is correct. The Final Report is to
+be kept but not used.
+
+The 01.08 Counter fixes will be included within the next Counter Migration package, to
+remove the need for deploying additional fixes to branches within 24 hours of migrating to
+HNG-xX.
+
+Can Fujitsu Provide a Statement Proving the Integrity of the Data is not compromised in any
+way, and the only impact is incorrectly reported data?
+
+Fujitsu confirms that this defect relates specifically to the printing of Report data to support the
+production of the Office's Branch Trading Statement created immediately following the Offices
+migration onto the HNG-X system. This defect results in a discrepancy with the volume data
+reported in the Final Balance Report following the printing of the Trial Balance Report, and is
+not related in any way to the underlying Branch Data held in the operational HNG-X system.
+This in no way compromises the underlying Data held in respect of the individual branch or
+the system as a whole.
+
+Can Fujitsu provide a commitment to support POL in proving the integrity of the system in any
+subsequent legal action (specifically where the difference in the two reports is used as a
+means to challenge the integrity of the system)?
+
+Fujitsu is willing to provide a commitment to assist in trying to prove the integrity of the system
+in any subsequent legal action in accordance with the existing contractual arrangements.
+
+FUJ00142190
+FUJ00142190

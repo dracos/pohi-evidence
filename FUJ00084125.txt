@@ -1,0 +1,96 @@
+FUJ00084125
+FUJ00084125
+
+SSC Offline KELs Monday 19 Mar
+
+HNG-X KEL acha5259Q
+
+KEL type: Information
+Title: PM forced to clear Local Suspense several times
+
+PM forced to clear Local Suspense several times, resulting in the Cash figure on the balance
+report changing and possibly a discrepancy in the new trading Period.
+
+Raised: — by Anne Chambers on 22/04/2010
+
+Summary:
+
+Last
+
+updated: by Anne Chambers on 30/04/2010
+Release: HNGX
+
+System . or
+product: CounterBusinessapplications
+
+Status: Authorised
+Visibility: Medium
+Peak: PC0198077
+
+TES: 12240422
+Version: 2
+Symptoms
+
+The PM wrote a discrepancy of £167.17 to Local Suspense, then this was cleared from Local Suspense as
+normal and the PM selected to make good cash (or one of the other settlement options).
+
+At this point the system printed out a final balance report for TP12 with the cash figure amended and nil
+discrepancy. Normally the system would then come up with a message to confirm rollover, but instead
+went back to the screen asking how the discrepancy was going to be made good.
+
+Again the PM selected cash and this time a final balance report showing TPO1 was produced, again
+showing nil discrepancy but the cash figure had risen by £167.17. All the rest of the transactions in receipts
+and payments were still showing.
+
+Again instead of allowing him to confirm the rollover, it went back to the screen asking how the
+discrepancy was to be made good. Again cash was selected and another final balance report produce, this
+time with the cash figure showing £334.34 more cash than it should have done. At this point the PM used
+the Cancel button to exit.
+
+A reprint of the Balance report, the Suspense report and the Branch Trading Statement for the Trading
+Period just completed were correct. However there may be a discrepancy in the next period.
+
+Problem
+Looking at the counter logs, after they pressed the Stock Balancing/Report button the first time, there was
+a ClassCastException / system error 0437 (trying to process a corrupt ReportingService response), forcing
+
+them to start again.
+
+F/637/1
+FUJ00084125
+FUJ00084125
+
+The reason for the exception is understood (PC0197409 / KEL PorterS199P). This problem particularly
+affected branches in the first 2-3 weeks of April, and could start occurring again.
+
+PC0198077 sent to development to see if this behaviour can be prevented after a system error has occurred.
+Solution - ATOS
+
+HSD: If the PM is stuck in a loop attempting to confirm rollover, there is a Cancel button on one of the
+screens which they should use. Get the evidence below and pass call to SSC.
+
+33 branches which had this problem between 7th and 15th April have been identified and notified to POL
+via BIMS -see spreadsheet attached to PC0197797.
+
+If this starts happening again, check whether CastClassExceptions are occurring again (e.g. via Smiley
+Desktop/Tivoli/Events by AlertKey/Alertkey 0437). These will cause various problems including this one.
+Can be stopped by stopping/restarting affected OSR instances under OCP, and checking after after restart
+that there are no more.
+
+Inform MSU of any more instances.
+Evidence
+
+Please include:
+
+* Date/time/counter used for the rollover
+
+* Stock unit
+
+* Amount of discrepancy
+
+* How they cleared Local Suspense (usual options are Make Good/cash; Assign to Nominee; Settle
+Centrally)
+
+* Whether they have done anything to try to sort out the discrepancy
+
+F/637/2

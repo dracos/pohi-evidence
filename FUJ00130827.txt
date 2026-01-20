@@ -1,0 +1,63 @@
+FUJ00130827
+FUJ00130827
+
+HORIZON KEL dsed5628Q (Version 4)
+
+Type: Unresolved
+Status: Deprecated
+
+Title: Stockunit loss / gain not sent to local suspense
+
+Summary: Stockunit loss / gain not sent to local suspense when stockunit was rolled during CABSProcess
+Raised: by Dave Seddon on 10/01/2008
+
+Last updated: by Anne Chambers on 01/08/2008
+
+Release: s70
+
+System product: EPOSS
+
+Keywords: local suspense suspence bts non zero
+
+Status: Deprecated
+
+Visi Medium
+
+Peak: PC0152376
+
+TFS: 782747
+
+Symptoms
+
+When a stockunit was rolled over at 7pm the loss/gain for that stockunit was not sent to local suspense and consequently when local
+suspense was cleared this loss/gain was not included. The value of this loss/gain was shown on the trading position line on the branch trading
+statement which would always be zero if there was no problem. <br><br>In the counter application event log the following pair of events were
+written at 7pm in between events that showed the CABSProcess was running...<br><br>Source: Riposte<br>Text: An unexpected error
+occurred while attempting to modify an entry in the run map. Timeout occurred waiting for lock.<br><br>Source: EPOSSStockUnit<br>Text:
+Warning Messaeg: Unexpected error executing fPostTxnsToLocalSuspense - see audit log for details. <br> <br>In the counter audit log the
+following was written at the time...<br><br>SU:fPostTxnsToLocalSuspense (:- 1056374781) Timeout occurred waiting for lock. (0xC1090003)
+CreateMessageEx: RiposteCreateMessageEx call failed.
+
+Problem
+
+The probiem is that because of a previous Peak, PC0140715, CABSProcess writes out messages atomically. It does a StartTransaction quite
+early on (which creates the lock), then initiates writing lots of transactions with CreateMessage and persistent objects with PutObject and
+finally really writes them with a call to EndTransaction (which ends the lock). If something else tries to write a transaction whilst CABSProcess
+has things locked then it will time out after 10 seconds. Hence if CABSProcess takes more than 10 seconds to run you could get this sort of
+problem. In the first case seen, PC0152376, the CABSProcess took 33 seconds to run which gave a significant window of opportunity for this
+sort of problem to occur.<br><br>Note: The CABSProcess only runs on the gateway counter so the problems seen will not occur on slave
+counters.
+
+Solution - Helpdesk
+
+No fix planned for Horizon given the relative rarity of the problem. However, should the problem start occurring more often then the need for a
+fix should be reviewed. Add any cases to list below. <br><br>MSU will need to be informed of what has gone wrong and what we believe needs
+to be done to correct matters. We need to look at impact on counter as well as the impact on POLFS. See PC0152421 as an example of what
+was done in one particular case but be aware that corrective actions in particular will not always be the same and these will need to be
+looked at on a case by case basis.<br> <br><br> List of cases seen...<br><br>Date Peak Reference<br> 12/12/2007 PC0152376 - problem with
+local suspense<br>05/03/2008 PC0155120 - DEF did not rollover auto with the Office 27/12/2007 PC158102 - problem with local suspense
+
+Evidence
+
+Event log Audit log Messagestore
+

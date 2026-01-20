@@ -1,0 +1,1267 @@
+FUJ00084135
+FUJ00084135
+
+Host BRDB Transaction Correction Tool Low Level De sign
+
+Fe)
+FUJITSU Commercial in Confidence
+
+Document Title: Host BRDB Transaction Correction Tool Low Level Design
+Document Reference: DEV/APP/LLD/0142
+
+Document Type: Low Level Design
+
+Release: (Not Applicable)
+
+Abstract: This document is the low level design for the Branch Database
+
+transaction correction tool process that is used to add
+‘compensating correction records to transactional/accounting/stock
+
+tables.
+Document Status: DRAFT
+Author & Dept: Rajesh Shastri
+Internal Distribution: David Harrison
+External Distribution: None
+
+Graham Allen HNG-X Development
+
+Note: See Post Office Account HNG-X Reviewers/Approvers Role Matrix (PGM/DCM/ION/0001) for guidance.
+
+Field Code Changed
+
+Copyright Fujitsu Services Lid 2007 Commercial in Confidence Fer
+Version: )
+
+Date: 13-Nov-07
+“ Page No: 1 of 23
+
+F/425/1
+re) Host BRDB Transaction Correction Tool Low Level De sign q
+FUJITSU Commercial in Confidence
+
+Q Document Control
+
+0.1 Table of Contents
+
+i DOCUMENT CONTROL...
+
+Q.1__ Table of Contents
+0.2 Document History
+0.3 Review Details
+0.4” Associated Documents (Internal & External)
+0.5 Abbreviations ..
+0.6 Glossary
+0.7 Changes Expected
+0.8 Accuracy
+0.9 Copyright ..
+
+4 DESCRIPTION
+
+4.4 Overview
+4.2 Solution Components
+7.3 Assumptions.
+
+2 MODULE POSITIONING .
+
+24 Calling Modules ..
+2.2 Called Modules
+2.3 Business Functions Implemented
+2.4 Objects Used ...
+24.1 Database Objects us
+2.4.2 Files Used oo...
+
+ed.
+
+3 PROCESSING
+
+34
+
+3.2
+
+3.3
+
+3.4 Transaction
+3.4.1 Content.
+
+3.4.2 Constraints
+3.4.3 Templates
+
+4 CORE PROCESSION...
+
+4.1___Error Handling
+
+4.2 Data Structure..
+4.2.4 Global Data
+4.2.2 Static Data.
+4.2.3 System Parameters
+4.2.4” Environment Variables
+4.2.5 Constants
+4.2.6 Command-line parameters
+
+‘Copyright Fujitsu Services Lid 2007 Commercial n Confidence Fer 7
+Version: 0
+Date: 13-Nov-07
+“ Page No: 2 0f 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/2
+re) Host BRDB Transaction Correction Tool Low Level De sign q
+FUJITSU Commercial in Confidence
+
+Function/Subroutine Call Hierarchy
+
+Validate Parameters cnc
+
+Process Audit Log
+
+Read Transaction File...
+
+Validate Transaction File
+
+4.3.5 Audit SQL Statement
+
+Execute SQL Statement
+
+‘Commit Transaction
+
+Process Audit Log
+
+Move Transaction File
+
+TRANSACTION CORRECTION JOURNAL AUDITING...
+
+Module Usage ..
+
+Database objects used
+
+Environment variables ..
+
+‘System parameters,
+
+Files created
+
+Processing details.
+
+SCopyrigh Fujteu Services Ld 2007 ‘Commerciatin Confidence Ret [IRRELEVANT
+Version: 7”
+Date: 13-Nov-07
+“ Page No: 3 0f28
+
+“Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/3
+FUJ00084135
+FUJ00084135
+
+re) Host BRDB Transaction Correction Tool Low Level De sign q
+FUJITSU Commercial in Confidence
+
+4 CORE PROCESSION. seve 46
+4ct-—Error Hand 46
+42—Data Struct 48
+~4.2.4-—Global Data a 4
+
+Field Code Changed
+
+‘Copyright Fujitsu Services Lid 2007 Commercial n Confidence Fer
+Version:
+Date: 13-Nov-07
+“ Page No: 4 0f 23
+
+FI425/4
+Fe)
+FUJITSU
+
+Host BRDB Transaction Correction Tool Low Level De
+
+Commercial in Confidence
+
+0.2 Document History
+
+Version No. Date Summary of Changes and Reason for Issue Associated Change -
+CP/PEAKIPPRR
+Reference
+
+04 10-Oct-07 Draft Version
+
+02 Of-Nov-2007 _I Fox design issues
+
+03 Of-Nov-2007 I incorporate HLD changes
+
+04 ¥8-Nov-2007 _I Amend section 2.4.1 and 3.1 to provide more detal Is
+
+05 03Jur2008 _I Revise to reflect major revisions made for PCO178207
+
+0.3 Review Details
+
+ew Comments by
+
+‘31-Oct-2007
+
+Review Comments to
+
+Review
+
+Mandato
+Role
+
+Rajesh shastrif””
+
+PostOt
+
+ficeAccoul
+
+Name
+
+Solution Design / Infrastructure Design
+
+Nasser Siddiqui
+
+Harjinder Hothi
+
+‘System Test
+Mik Peach
+Name
+
+Security Bill Membery
+
+Business Continuity Tony Wicks
+
+‘Service Support
+
+Peter Thompson
+
+HING-X Service Transition
+
+Steve Godson
+
+‘SV&I Manager
+
+‘Service Network Alex Kemp
+Data Centre Migration Manin Brett
+Sheila Bamber
+
+Hamish Munro
+
+Tester
+RV Manager James Brett (POL)
+Vi Manager Peter Rickson
+
+TE Manager Peter Rickson
+Development Host Team Manager David P Harrison
+Development Host Team Member Graham Allen
+Development Host Team Member David Pooley
+
+Development Host Team Member
+
+‘Anona Stevens
+
+Development Host Team Member Wing Pang
+‘©Copyright Fujitsu Services Ltd 2007 Commercial in Confidence Ret
+Version: “(Way
+Date: 13-Nov-07
+“ Page No: 5 of 23
+
+FUJ00084135
+
+FUJ00084135
+
+Field Code Changed
+
+F/425/5
+o Host BRDB Transaction Correction Tool Low Level De sign
+FUJITSU Commercial in Confidence
+
+Development Host Team Member Steve Goddard
+
+Issued for Information ~ Please restrict this
+
+distribution list to a minimum
+
+Position/Role Name
+
+(*)= Reviewers that returned comments
+
+0.4 Associated Documents (Internal & External)
+
+Reference Version Date Title Source
+PGM/DCM/TEM/0001 I 2.0 16-Apr-07 Fujitsu Services Post Office Account I Dimensions
+(DO NOT REMOVE) HNG-X Document Template
+
+DES/APP/HLD/0020 I 0.5 29-Oct-07 Branch Database HLD Nasser
+Siddiqi
+
+Unless a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+0.5 Abbreviations
+
+HNG-X Horizon Next Generation X
+SSC Support Service Centre
+
+0.6 Glossary
+
+Term Definition
+
+Database ‘A collection of records stored in a systematic way. The software used to manage
+and query records is known as the Database Management System. This document
+uses the term ‘Database’ to cover both meanings.
+
+Instance ‘An instance is composed of memory structures and the Oracle background
+processes that run on a server.
+
+0.7 Changes Expected
+
+0.8 Accuracy
+
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, whilst every
+effort is made to ensure the accuracy of such information, it accepts no liability for any loss (however caused)
+sustained as a result of any error or omission in the same.
+
+Copyright Fujitsu Services Lid 2007 Commercial in Confidence Ref
+Version: )
+
+Date: 13-Nov-07
+“ Page No: 6 of 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/6
+FUJ00084135
+FUJ00084135
+
+o Host BRDB Transaction Correction Tool Low Level De sign
+FUJITSU Commercial in Confidence
+
+0.9 Copyright
+
+© Copyright Fujitsu Services Limited (2007). All rights reserved. No part of this document may be reproduced,
+stored or transmitted in any form without the prior written permission of Fujitsu Services.
+
+Field Code Changed
+
+Copyright Fujisu Services Lid 2007 Commercial n Confidence Fer To REET
+Version:
+Date: 13-Nov-07
+
+“ Page No: 7 of 23
+
+F/425/7
+ee)
+FUJITSU
+
+Host BRDB Transaction Correction Tool Low Level De sign
+
+Commercial in Confidence
+
+1
+
+1.1
+
+Description
+
+Overview
+
+This document provides the low level design for the branch database transaction correction tool module.
+The utility will allow SSC to correct transactions by inserting balancing records to transactional /
+accounting / stock tables in the BRDB system. It will also audit the changes made. There will be no
+updating / deleting of records in the Branch database.
+
+1.2
+
+I There are 53. main components to the solution:
+
+Solution Components
+
+IRRELEVANT.
+
+Unix shell script! IRRELEVANT which is in the}. J directory. It is
+deliberately kept'Separate WOtT"the standard $BRDB_SH directory so that access to the script
+and the associated components can be restricted to authorised users. The shell script calls the
+Hl IRRELEVANT. i]
+
+PL/SQL package PKG_BRDB_TXN_ CORRECTION, which, resides within.the Branch Database
+and is owned by Oracle user T The tuwnetevenr{ package is the
+component that validates, creates arid aiidifs the balancing Trai $action.
+
+A set of template files, one for each transaction table for which balancing transactions are
+allowed to be inserted. Each file contains a template for a SQL INSERT statement for the table in
+question. This makes it easier for users to produce new transaction files by basing them on the
+template files
+
+Branch ‘seeding’ -as_part of it's processing, the Transaction Correction Too! _uses_table«
+
+T IRRELEVANT. ‘o.allow new branches tobe processed by the Tool, the estate
+management interface has been modified to add a ‘seed’ record to this table for each new
+
+branch. The ‘seed’ records have a node_id of 99 and current jsn of zero.
+
+Transaction correction journal auditing — a new process generates audit files for the input day's
+
+1.3
+
+‘auditable transaction correction records. See section 5 for details.
+
+Assumptions
+
+It is assumed that the insert statement being passed in to balance the record is a valid SQL statement
+and is not more than 32K in size. If not, the process will fail with error code 1
+
+‘Copyright Fujitsu Services Lid 2007 Commercial n Confidence Fer TRRELEVANT,
+Version:
+Date: 13-Nov-07
+“ Page No: 8 of 23
+
+I Formatted: Bullets and Numbering
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+I Formatted: Bueted + Level: 1+ Algned at:
+[Ost Tab ater: 05 + Indent,
+
+0.5"
+
+F/425/8
+Host BRDB Transaction Correction Tool Low Level De sign
+
+Fe)
+FU} ITSU Commercial in Confidence
+
+2 Module Positioning
+
+2.1 Calling Modules
+
+No calling modules. The BRDBX015 will be initiated manually.
+
+2.3 Business Functions Implemented
+[IRRELEVANT ‘Branch Database High Level Design V0.4 Section 7.2.12
+
+2.4 Objects Used
+
+2.4.1 Database Objects used
+
+Object Name Object I Ins I Sel Upd I Del I Oth
+Type
+~ IRRELEVANT. Table I x I I ®
+Table x
+Table x
+Table I X x x
+Seq x
+Table I x x x
+Table x
+Table IX x x
+os Table x
+i Seq x
+
+The following transaction tables have been granted
+
+The transaction correction statement is only allowed to insert into these tables,
+
+INSERT privileges to OPS$SUPPORTTOOLUSER.
+
+‘Object Name
+
+Object I ins I Sel I Upd I Del I Oth
+Type
+
+] Table I X
+H Table I x
+Table x
+
+ECopyright Fujteu Services Lid 2007 Commercatin Confidence Ret
+
+Version:
+Date: 13-Nov-07
+Page No: 9 of 23
+
+ld Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/9
+Host BRDB Transaction Correction Tool Low Level De sign
+
+Fe)
+FU} ITSU Commercial in Confidence
+
+I IRRELEVANT I Table IX
+IRRELEVANT i Tape Tx
+
+I IRRELEVANT Table IX
+Table x
+
+Table x
+
+Table x
+
+The BRDBX015.sh script logs into Oracle as ‘/ (i.e. OPS$<SSCusername>), therefore in order to run, all
+of the Oracle OPS$ users for the SSC users require database privileges on objects in OPS$BRDB as
+
+follows:
+
+‘Object Name Object [ins I Sel I Upd I Del] Exe
+Type
+Package x
+
+Note that the create_db_user.sh script has been changed to grant the above privilege to new SSC Oracle
+users when they aré created. Existing SSC Oracle users will need to have the privilege granted to them
+
+manually
+
+2.4.2 Files Used
+
+The process uses the following files:
+
+* Transaction file containing a SQL INSERT statement that creates the required balancing transaction.
+The file must be placed in this directory:
+
+IRRELEVANT
+
++ Ifthe process completes successfully, th
+
+[~ IRRELEVANT
+
+‘Log file will be written to:
+
+ie transaction file will be moved to:
+
+rectory is referenced by an Oracle directory object ~
+that the READ privilege on this object must be granted to the
+
+@ granted to the
+
+Copyright Fujitsu Services Lid 2007
+
+Commercial in Confidence
+
+Ret T IRRELEVANT J
+Version: VO -
+Date: 13-Nov-07
+
+Page No: 10 of 23
+
+FUJ00084135
+FUJ00084135
+
+Field Code Changed
+
+F/425/10
+Commercial in Confidence
+
+oO Host BRDB Transaction Correction Tool Low Level De sign
+FUJITSU a &
+
+3. Processing
+
+3.1. Method
+
+Having logged into their own Unix user, the SSC team members will change directory to the
+“Ldifectory and place their transaction
+
+sub-directory. They
+
+ibe owned by the Unix user
+
+.-The.madle will read the contents ofthe input transaction fle, which willbe in the form of ai
+
+[ips.svarr'statement. Only a single jnsert_statement is allowed and (after an optional introductory
+coinimeMt) it must start with the I IRRELEVANT clause. The tables referred to in the insert
+statement must be prefixed with the’ i
+
+The module will rst validate the transaction file (see below for details of the specific validation
+carried out). If the file is valid, then the module will log the SQL statement in the
+table, execute it as:
+finally. commit. It the. process. completes, successfully, the input ifanSaction file wil BS moved to
+LEVANT
+
+Example:
+
+* Login to the Unix box as an authorised user
+
+where the first parameter is the transaction file name and the second parameter is the
+branch code where the balancing transaction is going to be applied. Note that the branch
+code must exist in the database, and must not be for a closed branch. If this is not the
+case, then an error message will be shown and the run aborted
+
+The transaction file is tightly constrained in terms if what it may contain. Details of these
+
+constraints together with template transaction files for each of the tables for which
+
+balancing transactions are allowed are provided later in this document.
+
+If valid, the SQL statement is modified by substituting actual values for bind variables,
+
+and the modified SQL statement is executed and logged in the journal as an XML string.
+_More details on the
+
+rocess and the risks will be defined in the Branch Database Support Guide
+
+3.2 Initialisation
+
+Initialise the process by writing process audit information to}
+
+Copyright Fujisu Services Lid 2007 Commercial n Confidence Fer
+Version: )
+Date: 13-Nov-07
+Page No: 11 of 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/11
+FUJ00084135
+FUJ00084135
+
+o Host BRDB Transaction Correction Tool Low Level De sign q
+FUJITSU Commercial in Confidence
+
+3.3 Recovery
+
+If an Oracle node/instance failure occurs, the utility will fail with an error code of 99. For all other
+n..estor..gode of 1 and log an operational exception in
+
+Note that the tool does not use the standard process control handling since the nature of the tool
+makes its use inappropriate.
+
+Field Code Changed
+
+Copyright Fujisu Services Lid 2007 Commercial n Confidence Fer
+Version:
+Date:
+Page No: 12 of 23
+
+F/425/12
+FUJ00084135
+FUJ00084135
+
+ee) Host BRDB Transaction Correction Tool Low Level Design
+FU} ITSU Commercial in Confidence
+
+3.4 Transaction File
+
+3.4.1 Content
+
+The transaction file contains a SQL statement that, when executed, will insert a balancing transaction. The SQL must be a single INSERT statement with a
+standard form and layout. Additionally, the tool can be configured to enforce certain values for certain fields. Templates for the different INSERT statements
+that are required for the different transaction tables are provided. The following example illustrates a valid transaction file
+
+P
+
+The following SQL is a template for the SQL to be placed in a transaction file
+
+{or the BRDB Transaction Correction tool (BRDBX01S5) to apply to the BRDB.
+
+Unless otherwise specified, please replace the harc-coded values specified below
+with the values you wish to insert. Please take great care that the values are
+correct, as incorrect values can seriously affect the integrity ofthe system,
+
+‘The values listed below are illustrative only and are not to be treated as,
+default values for the fields.
+
+All rows inserted are audited.
+
+Date Author Purpose
+
+IRRELEVANT
+
+Field Code Changed
+
+eLsevis
+
+‘Copyright Fujitsu Services Ltd 2007 ‘Commercial in Confidence Ref im 7
+Version: (V0.4)
+Date: 13-Nov-07
+“ Page No: 13 of 23,
+vLiStvid
+
+Host BRDB Transaction Correction Too! Low Level Design
+
+Fe)
+
+Copyright Fujisu Services Ltd 2007 ‘Commercial in Confidence Ref
+Version:
+Date:
+Page No:
+
+(vo.4)
+13-Nov-07
+14 of 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+SbiStpis
+
+ee) Host BRDB Transaction Correction Tool Low Level Design
+FU} ITSU Commercial in Confidence
+
+As can be seen from the above example, the statement, begins. with a, comment deserbing the SQL. This, should.be tallored as appropriate. The SQL. itself
+must be a single insert statement of the form I. I Therefore only a single
+balancing transaction can be created per run of the correction tool
+
+The sub-query fetches values for some important columns based upon the branch code passed as an argument to BRDBX015, and must be present in the
+SQL. Where these important values are used, they must not be changed. Any values that must remain unchanged are commented as such in the supplied
+templates.
+
+The SQL also includes a number of bind variables (e.g ‘} Actual values for these fields will be substituted into the SQL before it is
+executed. The available bind variables are listed below, together details of the values that will be substituted for them if they appear in a transaction fil
+
+. : Substituted with the values of the branch code argument off.
+
+: substituted with the Oracle user that is carrying out the actual inserti.e.f” IRRELEVANT I
+: substituted with the name of the Oracle instance upon which the tool is run
+
+3.4.2 Constraints
+
+The correction tool places a number of constraints on the contents of the transaction file. These are necessary in order to provide a defined baseline upon
+which it can base its operation. The constraints are as follows:
+
+* The transaction file must be less than 32K in size
+
++The transaction file must only contain Unix-style end of line markersjes=="" “ewmormat end of line markers
+
+* The transaction file can only contain a single SQL statement. If more than one balancing transaction is required then more than one transaction file
+must be created, each of which is executed with a separate run of the tool
+
+* If the transaction file contains an introductory comment, then it must be a
+FIRRELEVANT!
+, not ‘/, and must have a trailing space”
+
+tyle comment, not a style comment
+
+* The closing “*/' of the introductory comment must have a trailing spac:
+
+* The run symbol at the end of the SQL must be a ‘
+
+* The SQL must be a valid SQL statement according to the normal Oracle SQL parsing rules (e.g. valid syntax, objects accessible etc)
+
+Copyright Fujitsu Services Ltd 2007 ‘Commercial in Confidence Ref PIRRELEVANT
+Version: ay
+Date: 13-Nov-07
+
+“ Page No: 15 of 23,
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+9LStpis
+
+ee) Host BRDB Transaction Correction Tool Low Level Design
+FU} ITSU Commercial in Confidence
+
+[IRRELEVANT
+e Tl
+
+the tables named in the
+“Jeonfiguration parameters
+
+or
+
++ Allof the columns that exist on the table in question must be explicitly named. It is not necessary for every listed column to be on a separate line, but
+this is advisable for readability.
+
++ The values to be inserted must be provided by the i. ual ...'. Each value must be on a separate line. Trailing comments are
+allowed, but must be a ‘-- .....' style comment. Any such comment must not include any commas. All columns must have values provided for them
+(even if that value is NULL).
+
+* Certain columns are common between a subset of the transaction tables. In some cases, these columns should be set to the same value no matter
+what table is in use. With the exception of the bind variables listed earlier, the value that the SQL will try to insert is under the control of the user (i.e. it
+is determined by the value specified in idate that the value specified in the SQL matches that
+expected. In order to do this, set th ponfiguration parameter to include the field and the
+required value.
+
+The parameter is populated as a comma-delimited list of name/value pairs, where the name is the name of the column name, and the value is the
+value to be enforced. As released, this configuration parameter is set to:
+
+which, for example, ensures that if a ‘node_id’ column exists on the transaction table, it's value is specified as 99. If there is no ‘node_id’ on the
+transaction table, then no value is enforced for that field. Note that if the parameter does not exist, then no values are enforced in the SQL.
+
+3.4.3 Templates
+
+Each of the transaction tables that are allowed to have balancing transactions inserted on them has an associated template file. Each file contains a template
+of an INSERT statement for that table, in the required format, and listing all of the columns on the table. Users should create their own transaction file based
+upon the relevant template file, substituting the values they require into the SQL. Note that some of the column values specified in the template should not be
+changed — these are annotated with comments as appropriate.
+
+The collection of template files are available from source control along with the other components.
+
+Copyright Fujitsu Services Ltd 2007 ‘Commercial in Confidence Ref
+Version:
+Date: 13-Nov-07
+
+“ Page No: 16 of 23,
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+FUJ00084135
+FUJ00084135
+
+o Host BRDB Transaction Correction Too! Low Level De sign a
+FUJITSU Commercial in Confidence
+
+4 Core Procession
+
+4.1 Error Handling
+
+led bys tandard exception handler
+
+it the tool does not use the standard process control handling since the nature of the tool
+makes it's use inappropriate.
+
+4.2. Data Structure
+
+4.2.1 Global Data
+
+Variable Name Usage
+NA
+
+4.2.2 Static Data
+
+4.2.3 System Parameters
+
+a Parameter Name Select [ Update I Delete
+I IRRELEVANT x
+Single-digit Integer Number : Mandatory
+
+Determines the level of debugging messages that
+the PL/SQL process should output. Allowed values:
+0 (minimum) to 3 (maximum).
+
+H TRRELEVANT ~ T x
+
+Character String : Optional
+
+Contains a comma-delimited list of name/value pairs
+for fields that may exist in the transaction files. The
+tool validates that if a configured name exists in the
+field list of the SQL, the configured value matches
+that in the SQL.
+
+If the parameter does not exist, then no values are
+
+enforced
+x
+Field Code Changed
+Copyright Fujisu Services Ud 2007 ‘Commercial n Confiaence Ret —
+Version: (VO-a)
+Date: 18-Nov-07
+
+Page No: 17 of 23
+
+F/425/17
+Host BRDB Transaction Correction Too! Low Level De sign
+
+0
+FUJITSU Commercial in Confidence
+
+Character String : Mandatory
+
+Contains a comma-delimited list of tables on which
+the tool is allowed to insert balanced transactions
+
+r IRRELEVANT _ {x
+
+Contains a comma-delimited list of tables on which
+the tool is allowed to insert balanced transactions
+
+4.2.4 Environment Variables
+Standard environment variables used by:
+
+“I user.
+4.2.5 Constants
+
+4.2.6 Command-line parameters
+
+Position Description Possible Values
+T (Mandatory) I Transaction File Name Character
+2 (Mandatory) I Branch Code Numeric
+
+4.3. Function/Subroutine Call Hierarchy
+Validate Parameters
+Process Audit Log
+Read Transaction File
+Validate Transaction File
+Audit SQL Statement
+Execute SQL Statement
+Commit Transaction
+Process Audit Log
+Move Transaction File
+
+4.3.1 Validate Parameters
+Pseudo-code:
+
+then
+
+fewer than or m
+
+han 2 parame pa:
+
+Print ‘Invalid number of command-line parameters’
+
+Return 1
+
+Copyright Fujisu Services Ud 2007 ‘Commercial n Confiaence Ret
+Version:
+Date:
+Page No:
+
+18-Nov-07
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/18
+rel Host BRDB Transaction Correction Too! Low Level De sign
+FUJITSU Commercial in Confidence
+
+Fi
+Check that the transaction file name exists and is readable
+
+Tf error then
+Print ‘Could not open transaction file name identified by <name>!
+
+Return 1
+Fi
+
+check that the transaction file name is not empty
+
+error then
+Print ‘Transaction file is empty’
+
+Return 1
+
+Fi
+
+Check that the transaction file size does not exceed 32K chars
+
+If error then
+Print ‘Transaction file size exceeds
+
+mit of 32K"
+
+Return 1
+
+4.3.3 Read Transaction File
+
+Read the transaction file usin “Fhis file contains the SQL insert statement to
+
+create the correction record in the BRDB database.
+
+4.3.4 Validate Transaction File
+
+The SQL in the transaction file is validated as follows. Any validation failures are displayed to
+standard output and logged to the log file.
+
+* Check that the file does not contain any carriage returns, indicating DOS format EOL
+markers
+
++ Check that the SQL in the transaction file parses according to the standard O:
+(e.g. syntax, privileges etc). This is done using the standard Oracle f~
+procedure.
+
+* Check that there is only a single SQL statement in the transaction file. Note that in most
+cases, this will be detected by the previous parsing step. However, the fact that the
+parsing does this is not described in the Oracle documentation, so it may be changed in
+future releases of Oracle. Therefore, this validation provides security if the behaviour of
+the Oracle procedure is changed at a later date.
+
+* Check that the SQL begins with} ~— IRRELEVANT.
+« Check that the table named in the SQL is one of the tables listed in the two
+
+i IRRELEVANT } configuration parameters. Note
+DCopyrignt Fujisu Services Lid 2007 “Cominercial in Contdencs Ret
+Version: “(VO.d)
+Date: 18-Nov-07
+“ Page No: 19 of 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/19
+o Host BRDB Transaction Correction Too! Low Level De sign
+FUJITSU Commercial in Confidence
+
+that as long as the privileges are set up correctlyf_ only
+has insert privileges on the allowed tables), any attempt to insert a balancing transaction
+on a non-allowed table will cause the previous parsing step to fail (because the user
+would not have the necessary privileges). Therefore, this validation provides security in
+case the privileges are not correctly set up.
+
+* Check that all the columns named in the SQL exist on the table, and that all the columns
+on the table are named in the SQL
+
+* Check that the values to be inserted are provided by a
+e. not a VALUES
+
+e/vali
+
+jpairs that are listed in the
+} configuration parameter are present
+
+4.3.5 Audit SQL Statement
+
+The SQL statement being executed will be logged in the table!
+The format of the data to be written to the column.
+
+IRRELEVANT
+
+* Unix User Name is the Unix user name under which the user logged in
+
+* Oracle User Name is Oracle user that is carrying out the actual insert ie.
+i IRRELEVANT i
+
+* SQL Statement is the final (ie. after substituting actual values for bind variables) SQL
+that is executed to insert the balancing transaction
+
+4.3.6 Execute SQL Statement
+
+The SQL statement is executed using the EX
+privileges of the PL/SQL package owner
+inserted will be written to standard output.
+
+Mand and run under the
+
+IRRELEVANT The number of rows
+
+4.3.7 Commit Transaction
+
+Commit all transactions. An Oracle error at this point will be trapped by the standard exception
+handler.
+
+4.3.8 Process Au
+
+Process. audit log_at the.
+
+IRRELEVANT
+
+Log
+
+nd, of process execution by calling standard package procedure
+audit
+
+Copyright Fujisu Services Ud 2007 ‘Commercial n Confiaence Ret t
+Version: (V0.8)
+Date: 13-Nov-07
+“ Page No: 20 of 23
+
+Field Code Changed
+
+FUJ00084135
+FUJ00084135
+
+F/425/20
+rel Host BRDB Transaction Correction Too! Low Level De sign a
+FUJITSU Commercial in Confidence
+
+4.3.9 Move Transaction File
+
+_ IRRELEVANT
+(e.g. transaction Tie is fou 1 be invalid), then the
+I moved and an error message will be written to standard output
+
+will not be
+
+Field Code Changed
+
+Copyright Fujisu Services Ud 2007 ‘Commercial n Confiaence Ret
+
+Date: 13-Nov-07
+Page No: 21 of 23
+
+FUJ00084135
+FUJ00084135
+
+F/425/21
+FUJ00084135
+FUJ00084135
+
+rel Host BRDB Transaction Correction Too! Low Level De sign
+FUJITSU Commercial in Confidence
+
+5___ Transaction Correction Journal Auditing <
+
+The transactions.thal,are applied via the Transaction Correction Tool are audited via_a new process,
+namely! IRRELEVANT his process is essentially the same as the existing audit process! [IRRELEVANT I and
+has been cféated using the same program code (with minor adaptations)
+
+lote
+
+The following sections detail the specifics of the new process, and do not duplicate the documentation
+{or the main mechanisms and processes already found in’ IRRELEVANT I
+
+5.1 Module Usage
+
+The new module is called BRDBCO33 and is written in Pro*C. It is initiated (typically from the BRDB
+schedule) as follows
+
+IRRELEVANT
+
+‘The Business-Day is mandatory e.gi !RRELEVANT;
+
+‘The FAD-Hash is optional and allows the program to be executed for a specific FAD hash value. e.g. 27
+
+1nd Numbering
+
+5.2__Database objects used
+
+‘The new process makes a new reference to the following database object (s)
+
+Object Name Object I ns I Sel] Upd I Del] om 4) —
+Type
+IRRELEVANT: fable x
+
+5.3_ Environment variables
+
+‘The new process uses the following new environment variables:
+
+Environment Variable Name. ‘Typical value 7
+
+IRRELEVANT I IRRELEVANT —
+
+5.4 System parameters
+
+‘The new process uses the following new system parameters: (all are mandatory)
+
+Parameter Name Description Type Typical]
+value
+Field Code Changed
+BCopyright Fujitsu Services Lia 2007 Commercial n Confidence Ref IRRELEVANT. i) SS
+Version:
+Date” Sano. 07
+“ Page No: 22 0f 23
+
+F/425/22
+Host BRDB Transaction Correction Too! Low Level De sign
+
+2
+FUJITSU
+
+Commercial in Confidence
+
+Indicates the debug level I Number
+
+for the program, and
+controls the amount of
+
+‘output that is generated
+Indicates the maximum
+
+byte size of a
+Transaction
+
+Number
+
+IRRELEVANT
+
+Indicates whether journal TRUE 4
+sequence number
+
+checking is required.
+
+5.5 Files created
+
+‘The new process creates audit files with the following nam ing convention: +
+
+IRRELEVANT ;
+
+For example: AUDIT TCT 20090814 036 001.aud
+where.
+
+5.6 Processing details
+
+IRRELEVANT'S Scheduled to run on one node within the RAC cluster, and
+Single fui
+
+‘The process extracts data from table: brdb_txn_corr_ tool journal where journal date is between 00:00
+and 23:59 of the business day being processed _and where column is_auditable = 'Y’
+
+rocesses all FAD hashes in a
+
+The output files are initially cre
+successful completion
+
+Unlike the files produced by BRDBC002, the files produced by
+
+ated in the ‘TEMP’ directory, and then moved to the ‘OUTPUT’ directory_on
+
+Tiare not compressed.
+
+‘The output files produced will be subsequently processed by the existing audit mechanism.
+
+Copyright Fujisu Services Ud 2007 ‘Commercial n Confiaence Ret
+Version: “(WO'4)
+Date: 18-Nov-07
+“ Page No: 23 of 23
+
+FUJ00084135
+FUJ00084135
+
+(Formatted: Left
+
+(Formatted: Left
+
+{Formatted Left
+
+(Formatted: Indent: Left: 0°
+
+(Formatted: Bullets and Numbering
+(Formatted: Indent: Left: 0°
+
+— [Formatted Indent Let 0, Fist tne: 05°
+
+Formatted: Numbered + Level: 1 +
+Numbering Style: 1, 2, 3, .. + Start at: 1+
+I Alignment: Left + Aligned at: 0.25 + Tab
+I after: 0.5" + Indent at: 0.5"
+
+I Formatted: Indent: Left: 0.25"
+
+I Formatted: Numbered + Level: 1+
+
+I Numbering Style: 1, 2, 3, .. + Start at: 1+
+I Alignment: Left + Aligned at: 0.25" + Tab
+I after: 0.5" + Indent at: 0.5"
+
+(Formatted: Bullets and Numbering
+
+I Formatted: Numbered + Level: 1 +
+
+I Numbering Style: 1, 2,3, .. + Start ats 1 +
+
+I Alignment: Left + Aligned at: 0.25" + Tab
+after: 0.5" + Indent at: 0.5"
+
+I Formatted: Bullets and Numbering
+
+‘Formatted: Indent: Left: 0°
+
+(Formatted: Bullets and Numbering
+
+Field Code Changed
+
+F/425/23

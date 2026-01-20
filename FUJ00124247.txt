@@ -1,0 +1,1354 @@
+FUJ00124247
+FUJ00124247
+
+ce] Horizon Data integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+
+PREJUDICE
+
+Document Titie: Horizon Data integrity CRS I \
+Document Reference: ARCIGEN/REP/0004
+
+Document Type: Report (REP}
+
+Release: NIA
+
+Abstract: This document ceserbes the measures that are built into Horizon to
+
+ensure data integrity
+Note that it only covers Horizon and not HNG-X (Horizon: Oniine)
+Document Status: Final Draft
+
+Author & Dept: Gareth I Jenkins
+
+External Distribution:
+
+Approval Authorities:
+
+Role
+
+Date
+
+I Suzie Kirkham
+
+Nole: See Post Office Account HNG-X Reviewers/Approvers Role Matrix (PGM/OCMAQN/000 1} for guidance.
+
+SG Copyright Fuptsu Services Ltd 2009 COMMERCIAL IN CONF! AND Ref ARCIGENREP/0004
+WITHOUT Version 10
+Uncontrolled 4 Printed or Distributed Date: 08
+
+“eo
+
+Page No
+FUJ00124247
+FUJ00124247
+
+eo Horizon Data integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+0 Document Control
+
+0.1 Table of contents
+
+0 DOCUMENT CONTROL
+
+@1 Table of contents
+0.2 Figures and Tables ..
+024 Table of Tables
+0.3 Document History
+0.4 Review Detail
+0.5 Associated Documents (interna
+06 Abbreviations
+
+0.7 Glossary...
+
+0.8 Changes Expecte:
+69 Accuracy...
+0.40 Copyright
+
+4 PURPOSE
+
+2 HORIZON DATA INTEGRITY...
+
+3 SCENARIOS...
+3.
+
+1 Acounter faits.....
+
+3.1.4 The Counter is Successfully Restarted .
+
+3. The Counter is Physically Replaced. 000.
+
+34.3 Transaction Recovery .
+3.2 Acounter has a “Blue Screen of Death"...
+3.3 There are package collisions on network:
+
+& Copynght Fuytsu Services (t¢ 2059 COMMERCIAL IN CONFIDENCE AND Ref ARC/GENREPIOO04
+WITHOUT PRE Version 18
+Uncentrolied if Printed or Distributed Date. 92/19/2009
+
+Page No 2018
+FUJ00124247
+FUJ00124247
+
+eS] Horizon Data Integrit
+
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+0.2 Figures and Tables
+0.2.4 Table of Tables
+
+None
+
+0.3 Document History
+Version No. Summary of Changes and Reason for Issue Associaied Change -
+CPR/PEAKIPPRR
+Reference
+
+his} with stakeout for significant deletions
+
+F140 / I Version for release to F
+
+0.4 Review Details
+
+Review Comments by barig/2009
+Review Comments to - Gareth Jenkins
+
+Optional Review
+
+Role
+
+I Guy Wilkerson
+ith ial _ .
+
+Head of Commercial, Retail, Royal Mail
+
+Past Office
+
+issued for information — Please restrict
+this distribution list fo & minirum
+
+Positio/Role Name
+
+eviewers that returned comments:
+
+is
+
+(1) = Reviewers that returned no comments
+
+0.5 Associated Documents (Internal & External)
+
+Reference Version Date Tite Source
+
+I PGM/DCM/TEM/0001 Fujitsu Services Post Office Account Dimensions
+HNG-X Docurrent Template
+
+Dimensions
+
+HNG-X Glossary
+
+‘onyright Fujisu Services Li
+
+009 COMMERCIAL IN CONFIDENCE AND Raf
+WITHOUT PREJUDICE ‘Version
+
+Uncontrolled if Printed or Distributed date
+Page No
+
+FUJ00124247
+FUJ00124247
+
+oO Horizon Data integrity
+
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+Uniess a specific version is referred to above, reference should be made to the current approved
+versions of the documents.
+
+0.6 Abbreviations
+
+Abbreviation Definition
+
+AP I Automated Payments
+
+oro
+
+Cyclic Redundancy Chec
+
+i
+
+0.7 Glossary
+
+See also document ARC/GEN/REP/0001
+
+I Replication ‘The mechanism by which data is reliably copied between the local system and other
+i systems (6. olher counters, extemal storage in a single counter branch and the data
+cantre}
+
+0.8 Changes Expected
+
+Review comments ets.
+
+0.9 Accuracy
+Fujttsu Services endeavours to ensure that the information contained in this document is correct but, whist every
+
+effort 1s made to ensure the accuracy of such information, it accepts no flability for any loss (however caused)
+sustained as a result of any error oF omission in the same
+
+0.10 Copyright
+
+© Copyright Fulitsu Services Limited 2009. Ai rights reserved. No pari of this document may be reproduned, stored
+oc transmitted in any form without the prior written permission of Fujitsu Services.
+
+‘ Copynght Fuyttsu Sennces Lid 2008 COMMERCIAL IN CONFIDENCE AND Ret ARCIGENREP AS
+WITHOUT PREJUDICE Version 10
+Uncontroited if Printed or Distributed Sate
+
+PageNo 4 of 8
+FUJ00124247
+FUJ00124247
+
+oO Horizon Data Integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+1 Purpose
+
+This document is submitted to Post Office for information purposes only and without prejudice In the
+event that Post Office requires information in support of a legai case Fujitsu will issue a formal statement
+
+This document is a technical description of the measures that are built into Horizon to ensure data
+integrity, including @ description of several failure scenarios, and descriptions as to how those measures
+apply in each case.
+
+Note that this document only covers Horizon. It does not cover HNG-X (Horizon Online}.
+
+G Copyright Furtsu Senices Ud 2009 COMMERCIAL IN CONFIDENCE AND Ref ARCIGENREPOGG4
+WITHOUT P UGICE Version: 18
+Uncontrolled if Printed or Distributed Date: 02/194
+
+PageNe Sof 8
+FUJ00124247
+FUJ00124247
+
+_ Horizon Data Integrity
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+
+PREJUDICE
+
+2 Horizon Data Integrity
+
+The Horizon system is designed to store ail data locally on the counter’s hard disk. Once the data has
+been successfully stored there i is then replicated (copied) to the hard disks of any other counters in the
+branch (and in the case of a single counter branch to the additional external storage on the single
+counter}, Data is also passed on from the gateway counter to the Horizon data centre using similar
+mechanisms.
+
+The replication process is designed such that should the data fail to be copied immediately (for example
+due to a failure on the local {T network within the branch or another counter being switched off or the
+branch being disconnected from the data centre), then further attempts are made to replicate the data at
+regular intervals until it is finally copied successfully. Once the data reaches the Data Centre a further
+copy iS taken and added into the audit trail where it is available for retrieval for up to 7 years. Data in the
+audit tral! is “sealed” with a secure checksurn that is held separately to ensure that it has not been
+tampered with or corrupted
+
+Every record that is written to the transaction log has a unique incrementing sequence number, This
+means itis possibie to detect if any transitions records have been lost
+
+While a customer session is in progress, details of the transactions for that customer session are
+normally held in the computers memory until the customer session (often known as the “stack’} is
+settied At that point all details of the transactions (including any methods of payment used) are written to
+the local hard disk and replicated (as described above) [tf should be noted that double entry
+bookkeeping is used when recording ail financial transactions, ie for every sale of goods or services,
+there is @ corresponding entry to cover the method of payment that has been used. When a “stack” is
+secured it is written in such a way that either all thé data is written to the local hard disk or none of itis
+written. This concept of “atomic writes” is also taken into account when data is replicated to other
+systems (ie other counters, external storage or the data centre).
+
+The data ter @ stack will have been successfully secured to the local hard disk before the screen is
+updated indicating that a new customer session can be started. Note that although an attempt will have
+been made to replicate the data to an external system at this time, there is no guarantee at this point that
+such replication will have been successful, For example if there is a Network Failure followed by a
+Terminal failure there is a slight risk that transactions in the intervening period could be ‘ost.
+
+All data that is written includes a “checksum” value (known as a CRC) which is checked whenever the
+data is read to ensure that it has mot been corrupted. Any such corruptions detected on reading will result
+in failures being recorded in the event fogs which are held on the local hard disk for a few days for
+immediate diagnosis and aisc immediately sent through to the data centre where they are heid for 7
+years.
+
+Any failures to write to a hard disk (after appropriate retries) will result in the counter failing and needing
+to be restarted and so will be immediately visible to the user
+
+Whenever data is retrieved for audit enquiries a number of checks are carried out
+1. The audit Hes have not been tampered with (ie the Seals on the audit files are correct)
+
+2 The individual transactions have their CRCs checked to ensure that they have not been
+corrupted
+
+3. A check is made that no records are missing. Each record generated by a counter nas an
+incremental sequence number and a check is made that there are no gaps in the sequencing
+
+@ Copyright Fujitsu Services Lig 2009 COMMERCIAL IN CONF! ‘CE AND Ref ARC/GEN/REP/O004
+WITHOUT PREJUDICE Version: 19
+Uncontrolled if Printed or Distributed Date
+
+Page No
+FUJ00124247
+FUJ00124247
+
+Horizon Data Integrity
+
+POST
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT OFFICE
+PREJUDICE
+
+3. Scenarios
+
+it should be noted that these scenarios are all to do with equipment failures and these will always be
+visible to Fujitsu through the event logs which are retained
+
+3.1. Acounter fails
+
+Wher a counter fails, there are two possible scenarios:
+
+» itcan be successfully restarted
+
+« itcannot be successfully restarted, so needs to be physically replaced
+
+in each case the Data Integrity considerations are different and so are described separately below.
+
+Once the counter has been restarted (regardiess of whether or not it has been replaced) recovery may be
+carried out if recoverable transactions are detected on the counter. This is aiso discussed below.
+
+3.1.1. The Counter is Successfully Restarted
+
+in this case ail the data that had been secured prior to the failure is sti present on the counter and so is.
+avaliable for use. If the User is in any doubt as to whether a transaction had been completed or not orior
+to the failure they can use the transaction lags to confirm one way or the other.
+
+3.1.2 The Counter is Physically Replaced
+
+in this case there is no data on the local hard disk of the replacement counter. However, since the data
+should have been replicated to other counters in the branch (or in the case of a single counter branch to
+the external storage — which should have been physically moved to the replacement counter), then the
+data should be retrieved and copied to the new counter. if for some reason the data were not available
+locally in the branch, then if will be copied back from the data centre. This all happens automatically as
+part of the counter replacement procedure
+
+Note that the hard disks are encrypted so there is no danger of data protection issues once the old
+counter has been removed (or if it is stolen).
+
+When a counter is physically replaced, there is a possibility that not ali dala has been successfully
+replicated to another system prior to the failure. in this scenario it is essential that the user confirms what
+the last successful transaction on that counter was, again by using the transaction jogs
+
+3.1.3. Transaction Recovery
+
+Some classes of transaction generate recovery data as they go along, so as to ensure that In the event of
+a failure between the transaction starting and the basket being secured, there is sufficient information
+available to enable the transaction to be recovered. On Horizon there are two separate mechanisms to
+cover different classes of transaction
+
+« Banking Recovery
+» AP Recovery
+
+Goth these mechanisms are automatically invoked during Log On. should the system detect that there
+has been a possible failure. These are described below.
+
+© Copyright Fujisu Services Utd 2008 COMMERCIAL IN CONFIDENCE AND Rel ARCIGENRE P/0Go4
+WITHOUT PREJUDICE Version 10
+Uncontrotied if Printed or Distributed Date: 02/10/2009
+
+PageNo 7 of B
+FUJ00124247
+FUJ00124247
+
+Honzon Data integrity
+
+O
+FUJITSU COMMERCIAL IN CONFIDENCE AND WITHOUT
+PREJUDICE
+
+3.1.3.1 Banking Recovery
+
+This covers credit card and debit card transactions and e-Top-Up transactions as well as online banking
+transactions
+
+A check is carried out to see if any incomplete banking style transactions {.e. network banking, credit /
+debit card or e-Top-Up) exist in the transaction logs for that counter. An incomplete transaction is one
+where an authorisation request has been sent to the financial institution, and there is no corresponding
+compietion message which is normally secured as part of settlement at the end of the Customer session
+
+in most cases, recovery information stored in the transaction log can be used te ascertain the outcome of
+the transaction being recovered and a suitable compietion record is then recorded at the time of recovery
+in some cases the user is prompted to confirm whether or not the transaction has completed successfully
+and the response from that prompt is used to generate the completion recard
+
+3.1.3.2 AP Recovery
+
+in the case of Automated Payments (AP), the user is asked if they wish to carry out AP recovery and they
+have the option of doing so immediately or leaving it until later
+
+if the user carries out recovery they will be asked about the last successful AP transaction (which can be
+seen from the branch copies of the AP receipts that are printed) and the system will then check to see if it
+has been completed in the system. If it has not been completed in the system. then the system will use
+the AP Recovery data stored in the transaction logs to ensure that ali incomplete AP transactions on the
+counter up until the one specified by the user are completed at recovery time, To assist with this process,
+each AP transaction has a unique, incrementing sequence number which is printed on the receipt.
+
+Fujitsu understand that these processes are defined in Post Office's Horizon User Guides.
+
+3.2. Acounter has a “Blue Screen of Death"
+
+This is just a special case of a counter failure, so please see section 3.1 above.
+
+3.3. There are package collisions on networks
+
+The replication protocols used to copy details of transactions between counters and also between the
+gateway counter and the data centre ensure that the date is copied successfully. Should packets collide
+on the network (or should there be any other network issues such as the IT communications tink falling)
+then the replication protocols will ensure that the data is re-sent. Such retries will continue unt! the data
+is finally successfully transmitted.
+
+© Copynght Fujitsu Services Lt¢ 2008 COMMERCIAL IN CONFIDENCE AND Ref. ARC/GENIREP/0004
+WITHOUT PREJUDICE Version 10
+Uncentrofted if Printed or Distributed Date. oe/10/2009
+
+PageNo 8 of 8
+FUJ00124247
+
+FUJ00124247
+oe Horizon Online Data Integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+Document Title: Horizon Online Data integrity for Post Office Lid
+
+Document Reference: Qa I ) { ra
+
+Release: NA
+
+Abstract: This document describes the measures that are built into Horizon
+
+Online to ensure data integrity
+Document Status: Draft
+Author & Dept: Gareth I Jenkins
+
+External Distribution:
+
+Security Risk YES, security risks have been assessed, see section 0.10 for
+Assessment Confirmed — 4#t2!'s
+
+SCapyight Fujitsu Sewices lid 2013 FUSS RESTRICTED - COMMERCIAL IN” Ref
+CONFIDENCE Version = Gb
+Uncontrolled if Printed or Distributed Date 9204/2012
+PageNo 1 of 14
+
+FUJ00124247
+FUJ00124247
+
+co Horizon Online Data Integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+0 Document Control
+
+0.1 Table of contents
+
+0 DOCUMENT CONTROL...
+
+0.1 Table of contents
+0.2 Figures and Tables .
+
+0.2.4 Table of Figures.
+
+0.2.2 Table of Tables
+0.3 Document History
+0.4 Associated Documents {internal
+0.5 Abbreviations
+0.6 Glossary...
+0.7 Changes Expecte:
+08 Accuracy...
+0.9 Security Risk Assessment
+
+1 PURPOSE
+
+2 HORIZON ONLINE DATA INTEGRITY
+
+2.4 Overview of Normal Operation
+2.2 Detail of Normal Processing.
+2.3 Error Scenarios...
+Recoverable Transactions
+Failures.
+
+Time Outs ...
+
+Forced Log Out
+Terminal Failure...
+
+3. Recovery.
+
+24 Database Characteristics...
+
+3. AUDIT SYSTEM
+
+0.2 Figures and Tables
+
+0.2.1 Table of Figures
+
+Figure 1~ Primary message flows . . 6
+
+0.2.2 Table of Tables
+
+None.
+
+S Copynght Fujiteu Services Lid 2012 FUJITSU RESTRICTED - COMMERCIAL IN” Ref
+CONFIDENCE Version
+Uncontroited if Printed or Distributed Date
+Page No
+
+FUJ00124247
+FUJ00124247
+
+o Horizon Oniine Data Integrity for Post Office Lid
+
+UJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+0.3 Document History
+
+Version No. Date Summary of Changes and Reason for issue Associated Change -
+CP/PEAKIPPRR
+Reference
+
+This is a new document
+
+Version Date e Source
+
+PGM/OCM/TEM/0001
+0 NOT REN MOV] )
+
+I Fulitsu Services Post Office Account. Dimensions
+I HNG-X Document Tempiaie
+
+Dimensions
+
+Branch Database
+
+igh Level Design Dimensions.
+LHNG: x HUD Settlement Funct ons
+
+I DESAPPIAIS(OO TB iv Message Aud between Counter
+
+and BAL/OSR:
+
+1
++
+i Dimensions
+
+Unless a specific version is referred to above, reference shouid be made to the current approved
+versions of the documents.
+
+0.5 Abbreviations
+
+Abbreviation
+AP-ADC
+
+finition
+
+ulomated Payments ~ Advanced Data Capture. A mechanism that allows Post I
+Office Lie te produce scripts for specific transaction process
+
+Automated bil Payments Service
+
+Bran! Access Layer. The component that handles the inter face from the counter
+and updated BROB
+
+BROB Branch Database
+
+I
+
+Data Reconciliation Service. A system used to reconcile ansactions carried out with
+Fir ai lnstit tutions.
+
+Financial Accounting Dt
+
+I
+I
+4
+I
+4
+I
+I
+I
+I
+I
+
+Pinas
+4
+
+Horizon Next
+
+instifution
+
+known as Hori.
+
+fn Online i
+
+HR SAP An SAP system used by Royal Mail Group to remunerate sub-postmastes
+Logistics Feeder System. A System used to interface with Post Office Ltd's Cash
+gement services in POL SAP
+
+I
+I and Stock Mi
+I
+
+/
+I
+
+I jan Journat Sequence Number, Unique identifier far an audited message from a specific I
+Branch and Counter Position /
+i: I
+i
+
+i
+
+/
+
+i
+
+Overnight Gash on Hand. The amount of held in a Post Office Branch:
+his is used fo predict future cash requirements fo
+
+the Branch.
+
+An 5 SAP system that carries out Post Office Lid’s accounting a
+functions
+
+cash management
+
+MMERCIALIN Ret
+
+ob
+onrar201Z
+Sofia
+
+Uncontrofied if Printed or Distributed
+
+oO Horizon Online Data Integrity for Post Office Lid
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+Abbreviation Definition
+Real Application Cluster
+Or
+
+Request, Authorisation, Confirmation. The mechanism used for interfacing to
+Financial institutions
+
+The standard communications protacol used for comr
+Counter and the Data Centre.
+
+Transaction Processing System
+
+nunications between the
+
+0.6 Glossary
+
+See aiso document ARC/GEN/REP/O001
+
+FUJ00124247
+FUJ00124247
+
+Term Definition
+
+I Back Office Administrative Functions carried out in a Post Office Lid Branch such as Remitting In
+
+Cash / Stock
+
+Basket I The set of Yansactions which are processed together. For example aif the
+transactions associaled wi
+
+Post Office Ltd provides Motor Vehicle licences to customers on behal
+
+Unique identifier for a Post Office Ltd €
+
+‘Those transactions that represent the payment by the Customer for geods or
+Services or to the customer in respect of Out Pay transactions such as Cash
+Withdrawals.
+
+0.7 Changes Expected
+
+Review comments etc.
+
+0.8 Accuracy
+
+Fujitsu Services endeavours to ensure that the information contained in this document is correct but, wht
+effort is made to ensure the accuracy of si
+sustained as a resuil of any error or omission in
+
+ne sammie.
+
+0.9 Security Risk Assessment
+
+No identified security rieks.
+
+ustomer {including those used for Settlement).
+
+An organisation for which Post Office Ltd acts as an Agent, for example DVLA where
+VLA
+
+information, & accepts no lability fer any loss (however cau
+
+© Copyright Fujitsu Services. RESTRICTED <COMMERCIALIN: Rell
+CONFIDENCE Version O1b
+Uncontrolied if Printed or Distributed Date O2/84/2012
+
+PageNo 4 of 14
+FUJ00124247
+FUJ00124247
+
+ne] Horizon Online Data integrity for Post Office Lid
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+1 Purpose
+
+This document is a technical description of the measures that are built into Horizon Online (also known:
+as HNG-X) to ensure data integrity and descriptions as to how those measures apply in each case.
+
+Note that this document only covers Horizon Online (HNG-X). it does not cover the original Horizon
+system, which is specifically excluded from this exercise. There is a separate document covering the
+original Riposte-based Horizon system
+
+Section 2 describes the measures taken in the design of the Counter, Branch Access Layer (BAL) and
+Branch Database (BRDB) to ensure integrity. Section 3 describes the audit system used to preserve the
+auditable messages sent from the counter to the Data Centre for use in Litigation Support
+
+The scope of this paper is restricted to showing the Integrity of the Audit trail and that it accurately refiects
+the transactions entered at the counter.
+
+© Copyright Fujtsu Senices Lid 2012 FUSASU RESTRICTED - COMMERCIAL IN” Ref
+CONFIDENCE Version 0.4
+Uncontrolled if Printed or Distributed Date. 02042012
+PageNo Sof 4
+FUJ00124247
+FUJ00124247
+
+Ge) Horizon Online Data integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+2 Horizon Online Data Integrity
+
+2.1 Overview of Normal Operation
+
+Honzon Online is designed to store ali data in an online database known as the Branch Database
+(BRDB). This database is a high’y resifient Oracle database implemented using Oracle Real Application
+Cluster RAC (see also section 2.4) In particular no data concerning Business Transactions is retained at
+the counter other than in the memory of the Counter Business Application '
+
+Audit
+Write
+
+Oracie:
+Write
+
+Audit Store
+
+BAL Message Audit Retivval
+
+Figure 1 ~ Primary message flows
+
+Transactions are carried out locally on the Horizon Online counters and a Basket is built up during a
+Customer Session. Each transaction will result in a Basket Entry consisting of one or more Accounting
+Lines. At the end of a Customer Session when the Basket has been completed and aii Settlement items
+{or Tender lines) have been processed and added into the Basket as further Accountin: yes, such that
+the tota! value of the Basket is zero. the entire Basket is sent to the Data Centre as a BAL Message
+where the Branch Access Layer (BAL) processes the message and all the Accounting Lines are recorded
+and committed to the BRDB as part of a single Oracle Commit. This means that either all the
+transactions within a Basket are successfully written or none of them are. Once the Accounting Lines
+have been successfully committed @ response is returned to the counter indicating this success and this
+then allows any receipts fo be printed The Basket is deemed to be fully completed once ail relevant
+receipts have been successfully printed. Note that if there are no receipts to be printed. then the screen
+is updated to show the top jeve! menu indicating successful completion of the previous Basket.
+
+The Oracle Commit aise includes an Audit of the data originally transmitted from the counter to the
+BRDB. This data is digitally signed at the counter using a key generated as part of the Log On process.
+
+* in order to support recovery as described in section 23.6, the identifier of the fast successfully
+
+completed Basket is recorded on the Hard disk at the counter However this is not classed as Business
+Data
+
+& Copyright Fujitsu Servoes Lid 2072 FUMITSU RESTRICTED - COMMERCIAL IN Ref
+CONFIDENCE Version 0.18
+Uncontrolied if Printed of Distributed Date: 2/04/2012,
+PageNo Bat 14
+FUJ00124247
+FUJ00124247
+
+oO Horizon Online Data integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+it is this audit record that is used to provide the extract of bansactions used for Litigation support.
+Section 3 describes how this audit record is managed after it is committed to BROB.
+
+The audit record may also include application events that have been accurnulated at the counter since
+the last auditable message was sent to the Data Centre All major activities that affect the Branch aise
+have an audit of the data sent from the counter to the Data Centre included in the audit log. Such
+activities include:
+
+« Log On / Log Off of Users at the counter
+« Creation / modification of User Accounts (including change of password)
+» Attaching Users to Stock Units
+« Balancing a Stock Unit
+« Producing the Branch Trading Statement.
+Each Audit record includes the following identification:
+« Branch identifier (1e FAD Code)
+« Counter identifier
+« Sequence Number (known as a Journal Sequence Number or jsn)
+* Counter timestamp
+
+Within any counter (6. for a given Branch Id / Counter Id combination), the jsn will always increase by
+exactly one for each successive audit record. This enables a check to be made that there are no records
+missing from the audit trali when they are retrieved
+
+The transactions in a basket are constructed using the principle of double-entry bookxeeping. This
+means that in addition to the Accounting Lines that relate to the actual business transactions, separate
+Accounting Lines are also generated for the tender items (such as Cash, Cheques or Credit / Debit
+Cards), resulting in the totai vaiue of all Accounting Lines in a Basket adding up to zero. When the
+contents of a Basket are written to BRDB a check is made that the net value of ali the accounting lines is
+indeed zero and should it not be, then an alert is raised and the basket is discarded and an error
+response returned to the counter.
+
+Note that this contd only happen as a rent of a bug in the code and this check is included
+
+specifically to vheck for any such bugs.
+
+Baskets are also built up during Back Office Sessions and such Back Office baskets are handied in a
+ar way to Customer Baskets.
+
+2.2 Detail of Normal Processing
+
+The purpose of this section is to expand on the summary in Section 2.1 and identify other documents
+where more detaii of the various steps are covered
+
+As outlined in section 2.1 above. the following is the key behaviour of the handling of a Basket.
+
+1. The Clerk carries out one or more business transactions. Each Business transaction will
+construct a Basket Entry which is held in the memory of the counter and the value of which is
+visible on the screen
+
+2. When ail the transactions for a customer have been completed. the clerk selects either the Fast
+Cash of the Seliie functions on the screen
+
+SCopyrght Fupisu Services Lis 2012” FLUVSU RESTRICTED - COMMERCIAL IN” Ref
+
+CONFIDENCE Version «0.1
+
+Unceontrotied if Printed or Distributed Date. 4, 42
+PageNo: 7 af 14
+
+FUJ00124247
+FUJ00124247
+
+oO Horizon Online Data Integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+[Nore that if the 1otal basket value is zero at this pon then either button will result ie immediately
+
+a. Selecting Fast Cash results in the system calculating the amount to required to take the
+total value of the transactions in the basket to zero and constructs a Basket Entry for the
+Cash Product for this amount and adds it into the Basket. By definition, the total value of
+the basket at this point will be zero.
+
+b Selecting Settie results in the system displaying a menu of permissible settlement
+options The allowable settlement options are configurable and depend on various
+Business Rules, however are likely to include the following:
+
+i Cash
+
+This allows @ specific amount of cash to be entered (which may or may not be
+the full amount). It will take a sign based on attempting fo move the Basket [otal
+nearer to zero,
+
+A corresponding Basket Entry is created and added to the in memory and
+On-screen basket display with an updated total.
+
+i. Cheque
+This allows a specific amount for a Cheque to be entered (which may or may not
+
+be the full amount) Its sign will always reflect the fact that a cheque is payable
+to Post Office Ltd (other than for Reversals)
+
+A corresponding Basket Entry is created and added to the in memory and
+On-screen basket display with an updated total
+
+i Chip and PIN
+
+This allows Chip and PIN transaction to be processed. The amount to be taken
+is entered. but defaults te the maximum amount allowable by business rules
+(which may or may not be the full amount). its sign will always reflect the fact
+that a payment is being made to Post Office Ltd (other than for Reversals),
+
+I The details of the Business Rutes are not relevant to the Integrity of the system,
+
+A corresponding Basket Entry is created and added to the in memory and
+On-screen basket display with an updated total
+
+lv. Swipe
+
+This allows magnetic swipe payment card to be processed. Note that if the
+Magnetic stripe indicates that the card is a Chio and PIN card then the
+tvansaction will be ebandoned at this pot. The amount to be taken is entered,
+but defaults to the maximum amount allowable by business rules (which may or
+may not be the full arnount). [ts sign will always reflect the fact that a payments
+being made to Post Office Ltd (other than for Reversais)
+
+The details of the Businesy Rules are not relevant to the bnegrity of the system.
+
+A corresponding Basket Entry is created and added to the in memory and
+On-screen basket display with an updated total
+v. Fast Cheque
+
+This allows Cheque transaction to be processed. However in this case the
+system calculates the amount required to take the total value of the transactions:
+in the basket to zero and constructs a Basket Entry for the Cheque Product for
+
+‘© Cooyrght Fujisu Services itd 2012 FUJITSU RESTRICTED - COMMERCIAL IN” Ref
+CONFIDENCE Version «Gt
+Uncontrolled if Printed or Distributed Date 927042012
+Page No: B of 16
+FUJ00124247
+FUJ00124247
+
+Horizon Online Data integrity for Post Office Lid
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+this ammount and adds it into the Basket. By definition, the total value of the
+basket at this point will be zero
+
+vi Fast Gash
+This is the equivalent of the Fast Cash Button described at point a above
+
+¢. The User is then able to select any of the available options and add appropriate
+settlement items into the In memory and On-screen basket as descried. Should the
+Total value of the Basket not be zero after processing the settlement transaction, the
+settlement menu is re-displayed allowing further settlement transactions to be selected
+unti the net value of the Basket becomes zero.
+
+3. Once the Basket Total becomes zero, a message is constructed to send the entire basket
+content to the BAL. The structure of the message sent is defined in (DES/APP/AIS/0018). Anew
+connection is established fo the BAL in order to send this message. The message sent is
+defined as being an auditable message and so will include a jsn. it may also pick up any
+outstanding Audit Events and Statistical data that have been accumulated at the counter since
+the jast auditable message was sent from the counter to the BAL. This message will be signed
+by the counter using 2 Digital Signature constructed using a key that has been generated as part
+of the Log On process. This Digitai Signature is sent as part of the message to the BAL.
+
+4. When the BAL receives the message it detects that there is an associated jsn. This means that
+the Audit Filter is invoked which results in the entire data sent from the counter being added to
+the BRDB table BRDB_RX_MESSAGE_ JOURNAL
+
+5. The BAL then processes the message and updates other tables in BRDB.
+
+6. fall these updates are successful, then the BAL invokes a COMMIT to Cracie on BRDB which
+will commit ail the changes at steps 4 and 5. Should there be any failure, then the BAL will issue
+an Oracle ROLLBACK which results in none of the changes in steps 4 and 5 being saved and it
+is then as if the interaction from the counter didn't take place. In either case a suitable response
+is returned to the counter and the connection tot the counter is closed.
+
+7. When the counter has sent the message to the BAL (at step 3), it waits for a Response. There
+are 3 possible responses that can occur,
+
+a The BAL update was successful {this is the normal case}
+b. There was a failure from the BAL
+c¢ No response is received within a configurable timeout period (usually 30 seconds)
+
+The first case is normal. The last 2 cases are considered to be Error Scenarios and are
+considered further in section 2.3, but are considered to be out of scope of the normal processing.
+
+& When the response is received, any receipts required are printed and then the in-memory and
+On-screen baskets are cleared and the screen is updated to the “Home” screen ready for a new
+Basket to be started
+
+Overnight. the content of the labile BRDB_RX_MESSAGE JOURNAL is copied to a set of serial files and
+passed to the Audit system. There is more information on this audit process in section 3 of this
+document
+
+2.3 Error Scenarios
+
+2.3.1 Recoverable Transactions
+
+Simplistically ¢ could be assumed that if a Basket f
+be discarded.
+
+to commit then the content of that basket can just
+
+S Copyright Fujitsu Services Lid 2012 FUITTSU RESTRICTED - COMMERCIAL IN Ret
+CONFIDENCE Version 0.1
+Uncontrotied if Printed or Distributed Date 02/08/2012
+PageNo 9 at 14
+FUJ00124247
+FUJ00124247
+
+oO Horizon Oniine Data Integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+This is similar to the normal model presented with on-line shopping, in that if your browser fails after
+trying to commit the basket, you are uncertain as to whether your purchase has been processed or not.
+You then need to carry out some other activity (e.g. phone the provider or check your Credit Card
+account the next day} before knowing whether or not to re-attempt the transaction.
+
+However this is not really appropriate in a Post Office environment. For many transactions if can be
+assumed that the Basket has failed to commit and so the transactions in the basket are discarded and
+they can be re-attempted at some ‘ater date. However in some cases this is not appropriate since the
+Transaction may have nad an impact on some external system. An example of this is a Banking Cash
+Withdrawal. in this case the Bank has been informed of the Transaction during the processing of the
+Banking Transaction and has removed the funds from the Customer's account. Therefore it is important
+that this transaction is completed. Such transactions are considered to be Recoverable Transactions.
+
+If a transaction is to be Recoverable, then information about that transaction is recorded in the SRDB
+when the transaction is first initiated (and before the transaction is sent to the Fl) allowing the transaction
+to be recovered should there be a failure. Note that this recovery information is not audited
+
+There are many types of Recoverabie Transaction:
+» Ail Banking transactions
+* All Credit / Debit Card transactions
++ All E-Top up transactions
+* All Reversais
+* Selected AP-ADC transactions (as defined in the transaction script)
+
+2.3.2 Failures
+
+Any failures in committing Auditable activities at the Data Centre wil result in an error response being
+returned to the counter Such an error response will be displayed to the User, thus informing them of the
+situation. The next action then depends upon the Auditable activity
+
+« If it relates to @ basket settlement where the basket that contains 1 or more Recoverable
+Transactions, then a Forced Log Out is mitiated and the normal Recovery process will tidy things
+up
+
+* if it relates to @ basket settlement where the basket doesn’t contain any Recoverable
+Transactions, then the content of the basket is discarded and the User is returned to the Menu to
+continue working
+
+« if it relates to a non-basket activity, then activity Is abandoned and the User is returned to the
+Meru to continue working
+
+in all cases the User is informed of what is happening.
+Such fallures will not be visible im the transaction audit, put may be visible in the system Event Log
+
+2.3.3 Time Outs
+
+Should there be no response from the Data Centre following an attempted commit of an auditable activity
+within @ timeout period (currently set to 30 seconds), an automatic retry is invoked. This sends identical
+business data to the Data Centre where a check is made to see if the Audit data has already been
+committed to BRDB
+
+* lf t has been committed, then this means that the origina! activity was successful, but the
+response cid not reach the counter in me. Therefore no action is taken in terms of updating the
+BRDB and @ Success response is returned to the counter
+
+Copyright Fujdsu Sewvoes Lid 2012 FUTSU RESTRICTED - COMMERCIAL IN Ref
+CONFIDENCE Version 0.48
+Uncontrolted if Printed of Distributed Date og/eai2012
+PageNo 12 of 14
+FUJ00124247
+FUJ00124247
+
+oO Horizon Online Data integrity for Post Office Lid
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+« Jfit has not been committed, then the original activity either didn’t reach the Data Centre, or it
+failed to be processed. in either case it is safe to re-process the data and the appropriate
+response is returned to the counter after the data has been processed which will be handled as if
+it was from the original request. Note that re-processing the data will include recording an audit
+of the data if the reprocessing is successful
+
+Shouid the retry also tmeout, then the User is prompted and asked whether they wish to Retry or Can:
+the Activity
+
+* Selecting Retry results in the Activity being retried once more as described above. If this also
+times out, then a further automatic retry is attempted and if this is stil unsuccessful, then the
+User is again prompted as to whether to Retry or Cancel, This cycle then continues unt! either
+there is success, or the User finally gives up and selects Cancel
+
+e Selecting Cancel results in a Forced Log Out being invoked.
+
+Such time-outs and any retries will not be visible in the transaction audit, but may be visible in the system
+Event Log,
+
+2.3.4 Forced Log Out
+
+Continual failures to Update the Database at the Oata Centre mean that it is not clear at the counter
+whether or not the database accurately reflects the situation in the Branch. Therefore the safest thing is
+to force a Log Off at the counter and ensure that when communications are re-established, that the
+Recovery process is invoked to reconcile the counter view with that on BRDB.
+
+if there is a basket currently being processed, then a special Disconnected Session Receipt will be
+produced showing which transactions nave been discarded and which are to be recovered making it clear
+what money needs to be exchanged with the Customer.
+
+2.3.5 Terminal Failure
+
+Clearly a counter terminal can fail at any time. However the situation is not very different from that where
+a failure to contact the Data Centre has occurred as described above. Therefore the behaviour of the
+User needs to be as follows:
+
+4. Work out the value of any Recoverable Transactions (there ought to be norinted receipts
+associated with all of these}
+
+From this work out what is owed to, or due from the customer
+Consider whether any Credit / Debit Card payments may have been successful
+From this work out any cash due to / from the customer.
+
+Write out any necessary receipts by hand
+
+On ON
+
+Keep a record of exactly what happened to be used at Recovery time.
+Clearly in this case the system is unable to assist the User in guiding them as to what to do.
+
+2.3.6 Recovery
+
+Recovery after a failure must always take place on the same counter position. Note that if the terminal
+has failed and needs to be replaced by an engiweer, then recovery cannot be carried out until the
+replacement terminal is working correctly.
+
+At every Log On a check is made in the Central Oatabase to see if any Recovery is required. The
+following checks are carried out
+
+@ Copyright Fujitsu Services Lid 2012 FUJITSU RES
+
+GTED- COMMERCIAL IN” Ref
+CONFIDENCE Version, «0.1
+
+Uncontrotied if Printed or Distrisuted Date: 02/04/2012
+
+PageNo ft afta
+FUJ00124247
+FUJ00124247
+
+nS] Horizon Online Data integrity for Post Office Ltd
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+1. Is there any outstanding Recovery Data associated with this terminal?
+
+lf so return the outstanding Recovery Data to the counter so that the transactions can be
+recovered using Rollfonward Recovery
+
+2. Did the last session carried out on this terminal have a tidy Log Off?
+
+if not, return details of the last Basket (if any) that was successfully written from the last Log On
+session to the counter so that further recovery checks can be made
+
+Otherwise ail is well and No Recovery is required (ie. the normal case)
+
+During the Log On process. if the counter receives an indication that recovery may be required (1e. one
+of the two cases described above), then the following occurs before the Log On is completed:
+
+1. If Roliforward Recovery is requested, then for each Transaction with associated Recovery Data,
+then the appropriate Recovery script is executed, which will result in a Rollforward Recovery
+Basket being produced which is then settled to the Branch Database as normal and this will
+generate a recovery Receipt. This will normally match any Discannected Session receipt (or
+other information recorded at the time of failure)
+
+2. If there was no Basket Details of a Last successful Basket returned, then No Recovery is
+required
+
+3. If further checks are requested, then the following checks are made at the counter.
+a What was the identifier of the last successful Basket sent from the counter?
+
+The identifier of the last successful Basket is written to the Counter Hard Disk at the
+completion of the basket (/e. after all Receipts have been successfully printed).
+
+Therefore, provided that the Terminal has not been replaced, then this is available to be
+checked for automatically
+
+Where the terminal has been physically replaced, a dialogue is invoked to get the user to
+confirm the identity of the last Successfu! session which may involve displaying the last
+basket known to the Data Centre
+
+b. if this matches the identifier of the Last Successful Basket that was returned from the
+Data Centre, then No Recovery is required and ail is well
+
+ec ff they don’t match (Le. the Basket returned from the Data Centre was the one that the
+counter was trying to save at the time of failure). then the Forced Log Off process will
+have assumed that the Basket failed Therefore the Recovery process needs to
+generate a Basket that reverses any non-recoverable transactions in that basket (since
+the forced Log Off would have discarded them). This is known as Rollback Recovery.
+This wil aiso produce a Receipt. However it will not match the Disconnected Session
+Receipt exactly.
+
+2.4 Database Characteristics
+
+The database uses Oracle version 10gR2_ It uses an Oracle Real Application Cluster (RAC), whi
+the database over multiple nodes (servers). in practice there are normally 4 such database nodes
+
+Partitioned tables store branch specific data This provides high performance and scalability
+Appiications need to know in which partitions data is stored and which nodes manage these partitions.
+They use a convention based on Branch codes
+
+uns
+
+The design of the Branch Database supports non-stop trading during core hours.
+
+ight Pujtsu Services Utd 2012 FUJITSU RESTRICTED - COMMERCIAL IN Ref
+
+CONFIDENCE Version Ot
+Uncontroiied if Printed or Distributed Date oaroaro12
+PageNo: 12 0f 14
+FUJ00124247
+FUJ00124247
+
+oO Honzon Online Data integrity for Post Office Lid
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+« Oracie RAC is resilient. If one node fails, the remaining nodes carry on running and the
+database remains available for use. The database can meet its performance targets if one nade
+fais.
+
+« The standby database allows very fast recovery if there is a data corruption that takes the live
+database offline. The maintenance of the standby database is automatic.
+
+A disaster recovery site remotely mirrors the date. The mirroring of data is synchronous. This guarantees
+that no date is lost if there is a catastrophic site failure
+
+Data associated with a Basket is stored in ¢ separate areas of the Branch database:
+
+1 A copy of the actual Basket data as transmitted from the counter together with the associated
+digital signature is held in a table known as the message journal.
+
+Use of the data in the message journal is described further in section 3.
+
+2. Individual accounting lines are extracted from the basket and each accounting line is written to
+two separate tables
+
+a} Detailed transaction information for passing to Post Office Ltd Back end systems
+
+This data is retained for sufficient time to ensure it has been successtully passed to Post
+Office Ltd's back end systems (in practice it is held for about 4 days)
+
+6} Surmrnary transaction information to support reporting and Branch accounts
+
+This data is retained to allow it to be used for any reporting and accounting period within
+the branch (in practice it is held for about 60 days)
+
+Each night the reporting data is summarised within the branch database to provide daily totais for
+transactions based on product, mode, stock unit and accounting period. This summarised data is used
+(together with transactions for the current day) when balancing a stock unit, thus minimising the amount
+of data that needs to be considered
+
+Although the data used for generating the counter reports and passing to Post Office Ltd’s back end
+systems is taken from the tables described in point 2 above, any data provided by Fujitsu in order to
+support litigation is based on the Audit taken at point 1 above. Since the processing for producing any
+report is based on the same source of data (ie the audited data sent from the counter) it is asserted that
+any report could be regenerated based solely on the audited data. As described in section 2.1, the
+audited data consists not only of the Basket information, but also any other significant events and in
+particular the Opening Figures (ie cash and stock levels) calculated at the start of a new period based on
+the balancing of en accounting period
+
+lt should be noted that such data is not presented as evidence as purt of the nermal litigation support
+service. Similarly we da not have tools that extract data 8 as € ing Figures tito a readable
+form ar to be able to ve-generate reports based on the andit trail. However suck dana is available in
+the audit tail, and if required, id technically be developed to resolve any dispute in
+area (Though dere are clearly conpnercial fderations in terms of the cost and effart
+
+snekt foals ¢
+
+sad
+
+© Copyight Fujitsu Services Lid 2072 FUJITSU RESTRICTED - COMMERCIAL IN” Ref
+CONFIDENCE Version «=O 1b
+Uncontrolled if Printed or Distributed Date 92/04/2012
+PageNo 13 of 18
+FUJ00124247
+FUJ00124247
+
+Oo Horizon Ontine Data integrity for Post Office Lid
+
+FUJITSU FUJITSU RESTRICTED - COMMERCIAL IN CONFIDENCE
+
+3. Audit System
+
+As outlined in section 2.1 and described in section 2.4, any auditable message from the counter is stored,
+together with its Digital Signature and other key attributes in an “Audit table” (known as the Message
+Journal) in BRDB.
+
+To ensure that the message is not tampered with after being sent from the counter, each message has
+an associated Digital Signature. The mechanism for creating this Digital Signature ‘s as follows:
+
+1. AtLog On, the Counter creates an RSA Public / Private key pair.
+
+2. The Public key is sent to the BAL as part of the audited Log On message
+
+3. The Log On message is concatenated with the Digital Signature and the BAL's signing certificate
+for tts Public Key and signed by a BAL Private key (held in the data Centre Key Store) and added
+to the audit trail with a BAL generated jsn
+
+4 All subsequent messages are digitally signed by the counter using the private key established at
+Log Gn.
+
+5. Digitally Signing a message involves taking a SHA-1 Hash of the message and digitally signing
+the Hash vaiue using RSA
+
+6. The Digital signature is stored alongside the message in the Journal table and is extracted with it
+into the Audit file as described below
+
+Each night after midnight, the contents of this table for the previous day are copied from the BRDB to a
+number of serial fles
+
+d each day. All data from a given
+ase of retrieval.
+
+A inunber of files ave generated due to the volwne of date proces:
+Branch will be conventrated into a sotal aumber of the
+
+At this point a check is made that indeed there are no missing or duplicate jsns for any counter and
+should any be found an alert is raised
+
+Note that this could only happen as a resslt of a bug tn the code ur by somebody tampering with the
+date in BRDB and this check is included sp. ily te check for any yuch bugs / tampering.
+
+These files are then copied to the Audit system where they are seaied with digital seals. They are held
+there for a period of 7 years during which time they may be retrieved and filtered to produce the relevant
+audit data for a particular Branch
+
+The Digital Seai is caiculated using an MDS hash of the entire content of the file being sealed. This value
+is stored in a separate “Seals Database” held on the Audit Server.
+Whenever data is retrieved for audit enquiries a number of checks are carried out:
+
+a) The audit fies have not been tampered with (1e. the Seals on the audit files are correct}
+b) The individual Baskets (and other records) have their digita! signatures checked to ensure that
+they have not been corrupted.
+
+inding die Public Key which has saved with the
+ty of the Log On message using the Public Key Certif
+das part of the Log On audit message.
+
+1g On message and alse
+‘the BAL’s signing
+
+©) Acheck is made that no records are missing or duplicated. Le. a check is made that there are no
+gaps or duplicates in the jsn sequence for any counter.
+
+it should be noted that this same Audit system was used to hold similar data from the old Horizon system
+However on the old Horizon system the audit point was the message journal on the Riposte
+Correspondence Servers and thus the technology used for producing the audit of data is completely
+different between the old Horizon system and Horizon Oniine.
+
+© Copyright Fujitsu Services Lid 2012 FUJITSU RESTRICTED - COMMERCIAL IN Ref.
+CONFIDENCE Versian. Qik
+Uncontroited if Printed or Distributed Date. 02/04/2012
+PageNo: 14 of 14

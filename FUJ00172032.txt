@@ -1,0 +1,244 @@
+FUJ00172032
+FUJ00172032
+
+From: Ballantyne John[/O=EXCHANGE/OU=ADMINGROUP1/CN=RECIPIENTS/CN=BALLANTYNEg]
+Sent: Mon 12/04/2010 8:21:51 AM (UTC)
+To: Jenkins Gareth Gif ; Parker Steve
+
+(PostOfficeAccoun'
+
+Holmes Alani”
+
+Cc:
+“1G
+Beardmore AndyI
+
+Subject: I RE: Peak PC0196948
+Attachment: 278311.zip
+
+All,
+
+Preserving the evidence is a support first principal. Still have the logs attached, attached (unobfuscated).
+Regards
+John
+
+From: Jenkins Gareth GI
+
+Sent: 08 April 2010 09:23
+
+To: Parker Steve (PostOfficeAccount); Wright Mark; Holmes Alan
+
+Cc: Ballantyne John; Simpkins John; Turner Ian T; Allen Graham (BRAO1); Goddard Steve SD; Beardmore Andy;
+Porter Steven
+
+Subject: RE: Peak PC0196948
+
+Steve,
+Thanks for following this up and I appreciate how busy your guys are.
+
+I accept that as far as Peak PC0196948 is concerned there is probably nothing further that we can do, assuming that
+John Ballantyne no longer has the Counter Logs. However as the scenario is quite different from that in PC0196949,
+I think it would be worth passing the Peak across to GDC to see if we can find out what is going wrong. In particular
+for PC0196948, the issue is that the JSN seems to be calculated incorrectly on the Log On the following day when the
+User session failed on Log Out the previous day. (I'm speculating here, but could the Log Out with the missing jsn
+which failed at the counter, have resulted in the BRDB_BRANCH_NODE_INFO being updated with the JSN and the
+BRDB_RX_MESSAGE_JOURNAL not being updated due to some database glitch in Rollback? That could explain
+the situation, but if that can happen it is very worrying.) However for PC0196949, the issue is completely different in
+that the missing JSN is in a 10 minute gap on one afternoon and seems to be due to a failed BRDB rollback.
+
+I've now picked up Mark’s voicemail, and perhaps it is worth my explaining what the BRDB issue is for Peak
+PC0196948. (However Alan’s email below shows that there is now nothing we can do easily to fix this issue.)
+
+The JSN is used as a unique Audit sequence (just like the Riposte Num attribute). Part of our Integrity position is that
+we never have a missing / lost / duplicate JSN (in a similar way to Riposte Nums). There is an overnight process that
+extracts all records from the BRDB_RX_MESSAGE_JOURNAL table to a file for audit purposes. This process checks
+whether there are any missing / duplicate JSNs since that implies an Integrity issue. Therefore what I wanted to know
+was why this process hadn't picked up the fact that there was a missing JSN. Alan has pointed out that as the missing
+JSN was the last JSN from that counter for that day, then the BRDB process can’t pick it up as “missing”, so this is
+something we need to reconsider from a design point of view.
+
+However the same question needs to be asked about why the overnight process did not detect the gap (or perhaps did
+detect the gap but nobody noticed) when archiving the branch in Peak PC0196949. Is it too late to check that out with
+the Maestro logs from the BRDB Archive process on 26/3/10?
+
+Is there any point in considering altering the Counter Log archiving period to a longer period if we can’t get logs back in
+FUJ00172032
+FUJ00172032
+
+time? There's plenty of space on the Hard Disk! I gather that archiving wasn’t working for the first month or so of
+HNG-X Counters!
+
+Regards
+
+Gareth
+
+Gareth Jenkins
+Distinguished Engineer
+
+Applications Architect
+Royal Mail Group Account
+
+_http://uk fujitsu.com
+
+sh Please consider the environment - do you really need to print this email?
+
+Fujitsu Services Limited, Registered in England no 96058, R
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be privileged. Fujitsu Services does
+not guarantee that this e-mail has not been intercepted and amended or that it is virus-free.
+
+From: Parker Steve (PostOfficeAccount)
+
+Sent: 07 April 2010 14:07
+
+To: Holmes Alan; Jenkins Gareth GI; Turner Ian T; Allen Graham (BRAO1); Goddard Steve SD; Beardmore
+Andy
+
+Cc: Ballantyne John; Simpkins John; Wright Mark
+
+Subject: RE: Peak PC0196948
+
+Gents,
+
+I appreciate the importance of this problem. At the moment we are trying to manage a work in progress of
+309 calls.
+
+Neither of the Peak calls you mention here are with the SSC for any action to be taken (like gathering
+additional evidence)
+No request has been made for additional evidence via the ad-hoc process
+
+Please work with us on this and make a specific request, that I can manage, via some part of the support
+process.
+
+Alan: Can I ask that PC0196948 is returned to the SSC.
+Gareth: Can you update PC0196948, is it just the BRDB harvesting for the audit trail that you want us to
+check?
+
+Steve
+
+From: Holmes Alan
+Sent: 07 April 2010 12:28
+To: Jenkins Gareth GI; Turner Ian T; Parker Steve (PostOfficeAccount); Allen Graham (BRAO1); Goddard
+FUJ00172032
+FUJ00172032
+
+Steve SD; Beardmore Andy
+Subject: RE: Peak PC0196948
+
+Gents
+
+There is another Peak PC0196949, which is also about a JSN gap at another branch. This does seem to have
+collected some evidence along the way, but is currently with team TfS DBA who have been asked to gather
+additional evidence from the BRDB before forwarding to development.
+
+These two problems occurred at around the same time 26th March, which I am told coincides with the BRDB
+having one of it's "I want to be alone" moments. I have no idea whether the two occurrences have the same
+root cause
+
+The situation with the BRDB harvester picking up the error is much more interesting in the case of
+PC0196948. The gap occurs between two days harvested data. I discussed this with Steve Goddard & Andy
+Beardmore yesterday. They confirmed that the current design of the harvester is such that it would not pick up
+a JSN gap in these circumstances. Changing it to remember where it left off the previous day for each
+counter would be not insignificant but, I think, needs looking into.
+
+Just to reiterate Gareth's statement below, the integrity of the JSN sequences are absolutely vital to the
+overall integrity of this data.
+
+Alan
+
+From: Jenkins Gareth GI
+
+Sent: 07 April 2010 11:26
+
+To: Turner Ian T; Parker Steve (PostOfficeAccount)
+
+Cc: Allen Graham (BRAQ1); Holmes Alan
+
+Subject: RE: Peak PC0196948
+
+lan,
+
+As discussed, you beat me to this, as I'd spotted this Peak and was concerned about it too.
+Steve:
+
+Reading through the Peak, Alan Holmes asked 2 questions:
+
+1. Why was JSN 1156187 missing?
+2. Had the BRDB Harvester picked it up?
+
+It would appear that John Ballantyne did extract the logs on 1/4/10, so are these logs still available or has John
+deleted them?
+
+Also is it possible to find out if the BRDB Harvester picked this up (and if it did why nobody was made aware
+of this?
+
+A missing JSN indicates a major flaw in the overall design and Integrity of HNG-X. If we can’t explain this,
+then we will be unable to assert that HNG-X is a robust system in court so it is important that we get to the
+bottom of this.
+
+Please can we have this Peak re-opened and progressed.
+
+Regards
+FUJ00172032
+FUJ00172032
+
+Gareth
+
+Gareth Jenkins
+Distinguished Engineer
+
+Applications Architect
+Royal Mail Group Account
+
+b: http://uk fujitsu.com
+
+BA Please consider the environment - do you really need to print this email?
+
+This e-mail is only for the use of its intended recipient. Its contents are subject to a duty of confidence and may be privileged. Fujitsu
+Services does not guarantee that this e-mail has not been intercepted and amended or that it is virus-free.
+
+From: Turner Ian T
+
+Sent: 07 April 2010 08:06
+
+To: Jenkins Gareth GI; Parker Steve (PostOfficeAccount)
+Cc: Allen Graham (BRAO1)
+
+Subject: Peak PC0196948
+
+Gareth,
+
+peak PC0196948 identified a gap in JSN numbers that occurred between 26th and 27th Mar.
+this eventually got to the GDC as A priority on 6th April.
+
+GDC needed evidence to progress, but there was none as the 7 day limit had passed for evidence
+retention.
+
+The peak is now in final so no action is being taken because of lack of evidence.
+is this a big issue - or is the priority inappropriate? It looks like we are possibly losing data?
+Steve,
+
+I am concerned that A priority peaks can be treated like this and that logs are not captured and
+secured as a matter of course for this sort of incident, at least until we have had a chance to analyse?
+This may be at the SMC or at the SSC?
+
+This could be tip of the iceberg or could be red herring, I would have at the very least expected some
+sort of follow up check of JSNs recorded in the peak to assertain if there is a problem?
+
+anyway, I would value your views on this and would like to know if there is a need for some better
+mechanism for capturing logs and promoting A priorities so we don't have issues like this?
+
+lam sorry if this seems like a rant, but I am concerned that we may have a gap here in the way we
+deal with incidents?
+
+Thanks
+regards
+
+lan
+
+lan T Turner
+
+Application Services
+
+FUJ00172032
+FUJ00172032
