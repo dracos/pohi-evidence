@@ -1,0 +1,2768 @@
+FUJ00232486
+
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+
+Version: 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+Document Title: Network Banking End to End Reconciliation Reporting
+Document Type: Reconciliation Report Specification (AIS)
+Release: N/A
+Abstract: This document specifies the reconciliation report output to satisfy
+
+the end to end reconciliation of the Network Banking Stream
+
+Document Status: APPROVED
+Originator & Dept: Richard Brunskill: ICL Pathway Management Support
+Contributors: Richard Hicks: ICL Pathway, Linda Austin: PON
+Reviewed By: POL: Linda Austin: Bob Booth: Peter Jones: Sue Harding: Glenys
+
+Latham; Clive Reed: Steve Grayston, Claire Bennett, Jayne
+Widdowson
+ICL Pathway: Richard Hicks: Roger Donato: John Pope: Pete
+Chandler:: Dave Johns: Michael King, Nathan Monk, Dina
+Chauhan, Angela Shaw
+
+Comments By:
+
+Comments To:
+
+Distribution: Reviewers & PVCS
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: I of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+0.0 Document Control
+0.1 Document History
+\Version No. Date [Reason for Issue (Associated
+(CP/PinICL
+(0.1 16/06/01 First draft for review
+(0.2 20/06/01 Second draft for review following POL discussion
+\workshop and other comments from reviewers.
+0.3 2/08/01 [Third draft for review following POL discussion
+vorkshop and other comments from reviewers.
+0.4 27/09/01 [Fourth draft for review following POL discussion
+orkshop and other comments from reviewers.
+0.5 3/12/01 Fifth draft for review following POL discussion
+lworkshop and other comments from reviewers.
+1.0 19/12/01 Fifth draft for approval following POL discussion
+vorkshop and other comments from reviewers.
+0.2 Approval Authorities
+jame Position Signature [Date
+john Pope ICL Pathway
+‘Sue Harding IPON / BDA
+(Clive Reed IPON / TDA
+0.3 Associated Documents
+Reference Version [Date (Title Source
+INB/SPE/002 etwork Banking DRS On- {ICL Pathway
+ine Workstation Specification [PVCS
+INB/SDS/004 ‘System Design Specification I[CL Pathway
+for Network Banking PVCS
+[Reconciliation
+(CR/SPE/028 etwork Banking — ICL Pathway
+(Transaction States and Data PVCS
+Flows
+INB/PRO/002 etwork Banking ICL Pathway
+Reconciliation & Incident PVCS
+janagement
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 2 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+Ref: CS/SPE/O11
+Version: 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+0.4 Abbreviations/Definitions
+
+(Abbreviation
+
+[Definition
+
+[Authorised Client
+\Transaction Awaiting
+(Confirmation (ACTAC)
+
+[From a ‘Client’ perspective, a transaction that has been authorised
+lbut within the NBE has not yet been matched with the Counter
+(Confirmation. This signifies projected settlement awaiting the
+(Confirmed Client Transaction. From a system perspective, an ‘S’
+itransaction.
+
+(Column Date
+
+[For Reports NB101a and NB101b the Reconciliation Date applicableI
+jto each column of the reports.
+
+(Confirmed Client
+\Transaction (CCT)
+
+From a ‘Client’ perspective, a transaction that has been authorised to
+either debit or credit an account. From a system perspective, a ‘C4’
+itransaction.
+
+(Counter Confirmations
+
+[From an outlet / PON perspective, a successfully completed
+transaction at the counter. From a system perspective, a ‘C12’
+itransaction.
+
+IExceptioned Client
+\Transaction (ECT)
+
+From a Client perspective, a transaction reconciliation difference
+ighlighted within the NBE and notified to Horizon. From a system
+erspective, a ‘D’ transaction.
+
+[Exception Types
+
+IWithin all reports the ‘Exceptions’ category will include:
+
+le ‘Incomplete States’, i.e. those transactions where one or more
+transaction component is missing — a C4 without a C12 etc
+
+le Genuine exceptions where transaction components belonging to
+the same high level transaction have been exceptioned, i.e. C12
+(amount) not = to C4 (amount) etc.
+
+le NBE/ DRS corruption’s
+
+‘New’ Transactions
+
+\Transactions that have had a change of state since they were last
+reported, or have never been reported except in NB102 section 11.
+
+ote that if a transaction appears in NBO12 section 11 it is future
+\dated as is reported in that section for information only. Once future
+\dated transactions become current dated, they must be reported as
+thought they have not appeared on the reports before.
+
+‘Old’ Transactions
+
+(Transactions that have NOT had a change of state since they were
+llast reported.
+
+[Reconciliation Date
+
+IThe Reconciliation Date is the date attributed to a transaction to
+allow PON to reconcile. It will be set the first available Bank
+Settlement date from the transaction elements (C112, C12, C4, S &
+ID) that make up a Network Banking transaction. If no Bank
+Settlement date is available, the Reconciliation Date will be set to the’
+processing date that the Data Reconciliation Service first recorded
+
+ny element of the transaction being received. If a Settlement date
+subsequently becomes available, the first available Bank Settlement
+\date will replace the processing date. However, once a transaction
+lhas been accounted for on the reconciliation reports, the
+[Reconciliation Date will never change.
+
+[Routing Gateway
+
+[This refers to the Routing_Gateway as defined in Network Banking
+
+- Transaction States and Data Flows (CR/SPE/028)
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE Page: 3 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+[Run Date [This is the System Processing Date for which the report refers, i.e.
+lall transaction components processed by the DRS on System
+[Processing Date dd/mm/yyyy are accounted for on this report.
+Settlement Date Settlement Date is often the same as Run Date but some Financial
+Institutions will assign a Settlement Date in the future: e.g. the
+following Monday may be set on transactions processed on the
+receding Friday, Saturday and Sunday.
+
+ITIP Transactions [From an outlet / POL perspective, a transaction that has been sent
+from TPS to POL TIP. From a system perspective, a ‘C112’
+itransaction.
+
+B/F [Brought Forward
+C/E (Carried Forward
+(CAP (Cash Account Period
+(CBDB (Counters Business Data Base (POL)
+ICS (Customer Service (ICL Pathway)
+IDRS [Data Reconciliation Service
+IEPOSS Electronic Point Of Sale Service
+SU janagement Support Unit (ICL Pathway)
+POL Post Office Limited
+(TIP (Transaction Information Processing (POL)
+(TPS [Transaction Processing Service
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 4 of 1
+FUJ00232486
+
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+0.5 Changes in this Version
+
+\Version ‘Changes
+
+0.2 (Changes to report layouts and format following discussions with POL
+& inclusion of revised state table.
+
+0.3 (Changes to report layouts and format following discussions with POL
+& inclusion of revised state table.
+
+0.4 e Clarification provided following review comments from POL.
+
+Major revision of NB101a data definition to explain both in a
+business and technical sense the progression of transaction
+components throughout the reporting cycle. The final
+reconciliation and settlement in accordance with the requirements
+has not been amended.
+
+¢ Inclusion of Incomplete State and Exception state matrices to
+
+identify report population for specific error types. Section 3.1.4.14
+
+715.
+
+C2 transaction components have now been renamed C12.
+
+Revised System State Table
+
+Cl transaction components have now been renamed C112
+
+Revised System State Table — now section 5
+
+New sections, 11 & 12 added to NB102 to allow for Future Dated
+
+Transactions
+
+Transaction flow diagram removed from section I
+
+New R.A.C diagram included as section 4
+
+Definition of ‘Today’ removed from document.
+
+Definition of ‘New’, ‘Old’ and ‘Settlement Date’ included in
+
+document.
+
+Removal of exception states E15 — E19 from all reports following
+revision to State Table.
+
+ie New fields inserted into NB102 series reports & revision of format
+of cleared reports (sections 7 — 10)
+
+¢ Incomplete and Exception state amendments to some reports
+
+where inconsistencies were evident.
+
+Re-ordering of NB102 sections
+
+Review following detailed check of system states
+
+New sub total lines included in NB100a and NB100b
+
+Detailed rules added to NB103
+
+Discrepancy reason codes added to NB102
+
+0.5
+
+ve ele.
+
+v7. ee
+
+verre
+
+0.6 Changes Expected
+
+\Changes
+jo further changes expected
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 5 of I
+FU.
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+0.7 Table of Contents
+
+1.0
+
+2.0
+
+3.0
+
+INTRODUCTION..
+
+SCOPE...
+
+2.1.1 Reconciliation Reports Specified.
+
+GENERAL REPORT SPECIFICATIONS.
+
+3.1.1 NB100a: NBE/ DRS Reconciliation Statement.
+1.1.1 NB100a: Rules.
+1.1.2 NB100a: Report Layout
+-1.1.3 NB100a: Data Definition.
+1.2 NB100b: TIP / DRS Reconciliation Statement.
+3.1.2.1 NB100b: Rules.......
+3.1.2.2 NB100b: Report Layou
+3.1.2.3 NB100b: Data Definition.
+3.1.3. NB101a: Network Banking Settlement Statement
+3.1.3.1 NB101a: Rules.
+3.1.3.2 NB101a: Report Layout
+3.1.3.3 NB101a: Data Definition.
+3.1.3.4 NB101a: Worked Example showing reconciliation date allocation
+3.1.4 NB101b: Network Banking Settlement Statement > 5 day:
+3.1.4.1 NB101b: Rules
+3.1.4.2 NB101b: Report layout & Data Definition.
+3.1.5 NB102: Exception Summaty....................
+3.1.5.1 NB102: Rules...... cescecececeeecenesesescacacececaceeeeeeeeeeeeeee
+3.1.5.2 NB102: Section 1: Uneleared Confirmed, Unconfirmed & TIP. exceptions <24
+hours 28
+3.1.5.3 NB102: Section 2: Uncleared Exceptioned Client Transaction:
+3.1.5.4 NB102: Section 3: Uncleared NBE / DRS Corruption’s. 1
+3.1.5.5 NB102: Section 4: Uncleared Timing Differences 33
+3.1.5.6 NB102: Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24
+hours
+35
+3.1.5.7 NB102: Section 6: Uncleared Future Dated Transactions by Client................37
+3.1.5.8 NB102: Section 7: Cleared Confirmed, Unconfirmed & TIP exceptions < 24
+hours
+38
+3
+3.
+41
+3.1.5.11 NB102: Section 10: Cleared Timing Differences. :
+3.1.5.12 NB102: Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions ° > > 24
+hours
+45
+
+29
+
+5.9 NB102: Section 8: Cleared Exceptioned Client Transactions..
+5.10 NB102: Section 9: Cleared NBE / DRS Corruption’s
+
+5.13 NB102: Section 12: Cleared Future Dated Transactions by Client............... 47
+3.1.5.14 Incomplete State: Report Matrix.
+3.1.5.15 Exception State: Report Matrix..
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 6 of I
+
+FUJ00232486
+IJ00232486
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+3.1.6 NB103: Settled transaction / Cash Account Reconciliation Statement.
+3.1.6.1 NB103: Rules....
+3.1.6.2 NB103: Report Layout..
+3.1.6.3 NB103: Data Definition.
+
+4.0 TRANSACTION FLOW (R.A.C DIAGRAM).
+
+5.0 SYSTEM STATES...
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 7 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+1.0
+
+2.0
+
+Introduction
+
+This document has been compiled to specify all ICL Pathway outputs from the Data
+Reconciliation Service (DRS) to enable a generic end to end reconciliation of Network
+Banking transaction processing.
+
+All reports specified are required to ensure client transactions, counter confirmations
+and Network Banking EPOSS (TIP) transactions sent to POL / TIP are completely
+reconciled and any exceptions are identified and resolved.
+
+Section 4 identifies the transaction flows within the Network Banking model
+
+Scope
+
+This document defines the format and content of all reconciliation reports, which
+satisfy the Network Banking reconciliation requirement. It does not attempt to define
+within the operating systems, including the Network Banking Engine, (NBE) how the
+transactions are processed.
+
+The following Network Banking requirements are satisfied by this document:
+
+© Reconciliation: [NBR0040], [NBR0042], [NBR0183], [NBR0212], [NBR0227],
+[NBR0229], [NBR0278], [NBR0294], [NBR0389].
+
+© Settlement: [NBR0230], [NBR0456].
+
+e Error Resolution: [NBR0260]
+
+It is assumed that each of the PON clients, as dictated by Routing _Gateway (assumed
+to be at this point the Banks / LINK) will require a separate reconciliation report set.
+
+Within this report set, separate reports will be provided as per the following table:
+
+Report Number Deposit Transactions _ [Withdrawal Transactions Balance Enquiries
+(B100a Combined Report Separate Report
+B100b Combined Report Separate Report
+B10la Y Y Not Required
+B1O1b Y Y Not Required
+B102 Combined Report Not Required
+B103 Y I Y Not Required
+
+NB: Where there is either a deposit or withdrawal with balance, they are to be treated
+as deposits or withdrawals without balances respectively.
+
+The format and content of each client’s report is considered to be identical when
+allowing for these specific requirements. It should therefore be understood that the
+specifications documented here are applicable to each client report set. (Specific client
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 8 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+requirements outside of this reporting specification are not covered within this
+document)
+
+There must be a separate set of reports to provide for transactions for which the
+Routing Gateway and/or Transaction Type is not known.
+
+No report will mix currency, so if ever the transactions selected to appear on a set of
+reports are not of a single currency, then a separate set of reports will be produced for
+each currency. All the amounts in a single transaction will always use the same
+
+currency
+2.1.1 Reconciliation Reports Specified
+
+e NB100a: NBE/ DRS Reconciliation Statement
+
+* NB100b: TIP/DRS Reconciliation Statement
+
+e NB1Ola: Network Banking Settlement Statement <=5 days
+
+e NBIOIb: Network Banking Settlement Statement > 5 days
+
+e NBI02: Exception Summary
+
+* NBI103: Settled Transaction / Cash Account Reconciliation Statement
+
+Rows and columns are described in detail, together with the mathematical calculations
+required to achieve reconciliation.
+
+All general aspects relating to the production and transmission of the reports are
+described.
+
+This document does not attempt to define the business processes undertaken within
+ICL Pathway and POL with respect to the resolution of any exceptions, which may
+arise, nor does it scope the requirement for any systems that may be required to assist
+in this process. This information can be found in the associated documents, reference:
+
+e¢ NB/SPE/002: Network Banking DRS On-line Workstation Specification
+NB/PRO/002: Network Banking Reconciliation & Incident Management
+
+NB: It should be noted that where a system ‘state’ definition is quoted, this takes
+precedence over any narrative which has only been provided to help understand the
+business processes.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 9 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+3.0 General Report Specifications
+
+A separate set of reports is produced for each POL client as identified by the
+Routing Gateway. (LINK being a single client). The specification is general to all
+reports sets.
+
+1. For volumes and values the accounting sense for reporting purposes to allow
+settlement totals to be correctly derived, will be:
+
+Absolute volume
+
+Net value
+
+Where no value reported show “[Currency] 0.00”
+Where no volume reported show 0
+
+2. Each report will show the following general information:
+
+Report title — including the client name (derived from Routing_Gateway.)
+Transaction Type — (if applicable)
+
+Report ‘Run Date’ - i.e., the period for which the report refers
+Production date and time
+
+ICL Pathway report number
+
+ICL Pathway reference and contact point
+
+3. Where ‘Received’ and ‘Reconciliation Date’ are quoted against time parameters:
+
+e ‘Received = New’: defines transactions that have had a change of state since
+they were last reported, or have never been reported, except in NB102 section
+ll
+
+e ‘Received = Old’: defines transactions that have NOT had a change of state
+since they were last reported
+
+4. Reports: NB100a, NB100b, NB101a, NB101b, NB102, will be produced DAILY,
+NB103 will be produced WEEKLY after Friday’s and prior to Saturdays TPS
+processing schedule. They will be delivered by 08.00hrs the day following the Run
+Date to:
+
+e POL/ TIP gateway: The Host writes the reports to a directory. These are
+picked up by FTMS and posted to the TIP gateway. (As per other Host to
+external systems applications)
+
+e ICL Pathway CS / MSU, DRS Workstation.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 10 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+5. Within all reports the ‘Exceptions’ category will include:
+e ‘Incomplete States’, i.e. those transactions where one or more transaction
+component is missing — a C4 without a C12 ete
+e Genuine exceptions where transaction components belonging to the same high
+level transaction have been exceptioned, i.e. C12 (amount) not = to C4
+(amount) etc.
+e¢ NBE/ DRS corruption’s
+
+6. For clarity within this document, field sizes are shown within ‘Report Layout’ and
+not within the ‘Data Definition’
+
+7. All reports are run against a consistent data set.
+
+8. ‘Currency’ is implied by date on the basis that POL will define the cut off date
+from £ Sterling to Euro.
+
+9. All reports will be produced as ASCII text files — one for each report. The report
+layout will be fixed format with space characters providing the blank space. This
+will allow for ‘Excel’ input, using fixed field width facilities. The formatting (lines
+& shading referred to in this document) will not be included within the file.
+
+10. See also comments in Section 2: ‘Scope’
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 11 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+3.1.1
+
+NB100a: NBE / DRS Reconciliation Statement
+
+This report is a critical requirement as it allows the reconciliation of data between the
+NBE and the DRS, giving a clear view of the number and value of exceptions at the
+beginning and end of each day. It also gives an indication of the values paid / received
+from the customer as compared to the values processed by the POL client.
+
+3.1.1.1 NB100a: Rules
+
+_
+
+NB100a is run daily
+
+NB100a is repeated for each Routing Gateway.
+
+For reporting purposes only: To gain an NBE view of the client settlement position,
+the ‘Matching’ process should only match ‘C4’ & ‘C12’ type transactions in their
+appropriate system states, i.e. states: 2-3, 18-19, (report line 12)
+
+For reporting purposes only:, ‘S’ type transactions in their appropriate system states
+must always be exceptioned, i.e. states: 8-11, (report line 8)
+
+For reporting purposes only: ‘D’ type transactions in states 12, 13, 14, 15, 20, 21, 22,
+23 will report ‘Amount_Authorised’
+
+For reporting purposes only: for states 16 — 19, show the value of the ‘C4’
+
+For reporting purposes only: for states E28 — E31, if the value is corrupt, use £0.00
+
+8. For exception reporting, (report lines 1 & 12):
+
+e For exception states E21, E22, E23, E24, E26, E33 report the DIFFERENCE in
+the two values
+e For state E32 show the value of the ‘C4’
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 12 of I
+11.2
+
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+NB100a: Report Layout
+NB100a: NBE / DRS Reconciliation Statement Client: Barclays etc Produced on: _dd/mm/yyyy at_hh:mm:ss
+Run Date: —dd/mm/yyyy Transaction Type: Deposit & Withdrawal / ICL Pathway MSU
+Balance Enquiries
+Volume Value
+
+1. NBE/ DRS exceptions outstanding from previous days 999999999 9999999999.99.
+2. NBE/ DRS exceptions manually cleared 999999999 9999999999.99.
+3. Sub Total 9999999999. 99999999999.99
+4. NBE/ DRS corruption’s outstanding from previous days 999999999 9999999999.99.
+5. NBE/ DRS corruption’s manually cleared 999999999 9999999999.99.
+6. Sub Total 9999999999. 99999999999.99
+7._CCT processed today (C4) 999999999 9999999999.99.
+8. ACTAC processed today (S) 999999999 9999999999.99
+9. ECT processed today (D) 999999999, 9999999999.99
+10. Sub Total 9999999999. 9999999999999
+11. Counter confirmations processed today (C12) 9999999999 9999999999999
+12. CCT / Counter confirmations matched today (C4 / C12) 9999999999 99999999999.99
+13. NBE / DRS exceptions outstanding today 9999999999 99999999999.99
+14. NBE / DRS corruption’s outstanding today 9999999999 99999999999.99
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 13 of 1
+113
+
+ICL Pathway Ltd NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232486
+
+FUJ00232486
+
+Ref: CS/SPE/011
+Version: 1.0
+Date: 19/12/01
+
+NB100a: Data Definition
+
+NB100a: NBE / DRS Reconciliation Statement
+
+Client: (Derived from Routing Gateway.) Produced on: (Date / time of report production)
+
+Run Date: (The period for which the report refers)
+
+Transaction Type: (Derived from Txn_Type) ICL Pathway MSU
+
+Data Description
+
+Absolute Volume Net Value
+
+1. Total of all NBE / DRS exceptions still outstanding from
+previous days
+
+System States: 1, 4, 6-14, 15-17, 20-23, E02-09, Ell-14, E21-24, E26, E32-33, E35-38
+Received = Old, Reconciliation date: < Run Date
+
+2. Total of all NBE / DRS exceptions manually cleared
+
+Last reported row I exception types
+Set to F99: New
+
+3. Sub Total
+
+Total of Rows 1 +2
+
+4. Total of all NBE / DRS corruption’s still outstanding from
+previous days
+
+System States: E28 —31
+Received = Old, Reconciliation date:< Run Date
+
+5. Total of all NBE / DRS corruption’s manually cleared
+
+Last reported row 4 exception types
+Set to F99: New
+
+6. Sub Total
+
+Total of Rows 4+ 5 Must = previous days NB100a report — row 14
+
+7. Total of all CCT processed by the DRS
+
+2-4, 7, 16-19
+, Reconciliation date: <= Run Date
+
+8. Total of all ACTAC processed by the DRS
+
+System States: 8-11
+Received = New, Reconciliation date: <= Run Date
+
+9. Total of all ECT processed by the DRS
+
+System States: 12-15, 20-23
+Received = New, Reconciliation date: < = Run Date
+
+10. Sub Total
+
+Total of Rows 7 +8 +9
+
+11. Total of all counter confirmations processed by the DRS
+
+System States: 1-3, 6, 10-11, 13, 15, 18-19, 22-23
+Received = New, Reconciliation date: <= Run Date
+
+12. Total of all matched CCT / counter confirmations
+
+System States: 2-3, 18-19
+Received = New, Reconciliation date: <= Run Date
+
+13. Total of NBE / DRS exceptions still outstanding today
+
+System States: 1, 4, 6-14, 15-17, 20-23, E02-09, Ell-14, E21-24, E26, E3:
+Received = New + Old, Reconciliation date: < = Run Date
+
+, E35-38
+
+14. Total of all NBE / DRS corruption’s still outstanding today
+
+System States: E28 —31
+Received = New + Old, Reconciliation date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFID!
+
+ENCE Page: 14 of 1
+3.1.2.1
+
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB100b: TIP / DRS Reconciliation Statement
+
+This report is a critical requirement as it allows the reconciliation of data between PON
+/ TIP and the DRS, giving a clear view of the number and value of exceptions at the
+beginning and end of each day. It also gives an indication of the values paid / received
+from the customer as compared to the values delivered to POL / TIP
+
+NB100b: Rules
+
+1. NB100b is run daily
+
+2. NB100b is repeated for each Routing Gateway
+
+3. For reporting purposes only: To gain a TIP view of the transaction processing
+position, the ‘Matching’ process should only match ‘C12’ & ‘C112’ transaction
+types in their appropriate system states, i.e. states: 3, 6, 11, 15, 19, 23, (report
+line 7)
+
+4. For reporting purposes only: for states 16 — 19, show the value of the ‘C4’
+
+5. For reporting purposes only: for state E28, if the value is corrupt, use £0.00
+
+6. For exception states E20, E21, E22, E25 report the DIFFERENCE in the two
+values
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 15 of I
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.2.2 NB100b: Report Layout
+NB100b: TIP / DRS Reconciliation Statement Client: Barclays etc Produced on: dd/mm/yyyy at hh: mm :ss
+Run Date: —dd/mm/yyyy Transaction Type: Deposit & Withdrawal / I ICL Pathway MSU
+Balance Enquiries
+Volume Value
+1,_TIP/ DRS exceptions from previous days 999999999. 9999999999.99
+2._TIP/ DRS exceptions manually cleared 999999999. 9999999999.99.
+3. Sub Total 9999999999 99999999999.99
+4. Counter confirmations received today (C12) 999999999 9999999999.99.
+5._TIP transactions received today (C112) 999999999. 9999999999.99.
+6. Sub Total 9999999999 99999999999.99
+7._Counter confirmations / TIP transactions matched today (C12 / C112) 9999999999 99999999999.99-
+8._TIP/ DRS exceptions outstanding today 9999999999 99999999999.99.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 16 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.2.3 NB100b: Data Definition
+NB100b: TIP / DRS Reconciliation Statement Client (Derived from Routing Gateway.) Produced on: (date / time of report production)
+Run Date: (The period for which the report refers) Transaction Type: (Derived from Txn_Type) ICL Pathway MSU
+Data Description Absolute Volume I Net Value
+1. Total of all TIP / DRS exceptions still outstanding from previous System States: 1-2, 5, 7, 9-10, 13-14, 17-18, 21-22, E01-02, E10-11, E20-22, E25, E27-28, E34-
+days 35
+Received = Old Reconciliation date: < Run Date
+2. Total of all TIP / DRS exceptions manually cleared Last reported row 1 exception types
+Set to F99: New
+3. Sub Total Total of rows 2 +3
+4. Total of all counter confirmations processed by the DRS System States: 1-3, 6, 10-11, 13, 15, 18-19, 22-23
+Received = New, Reconciliation date: <= Run Date
+5. Total of all TIP transactions processed by the DRS System States: 3, 5-7, 9, 11, 14-15, 17, 19, 21, 23
+Received = New, Reconciliation date: <= Run Date
+6. Sub Total Total of rows 4 + 5
+7. Total of all matched counter confirmations / TIP transactions System States: 3, 6, 11, 15, 19, 23
+Received = New, Reconciliation date: <= Run Date
+8. Total of all TIP / DRS exceptions still outstanding today System States: 1-2, 5, 7, 9-10, 13-14, 17-18, 21-22, E01-02, E10-11, E20-22, E25, E27-28, E34-
+35
+Received = New + Old, Reconciliation date: < = Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 17 of 1
+3.1.3.1
+
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB101a: Network Banking Settlement Statement <= 5 days
+
+This report identifies CCT, ACTAC and ECT transactions received against each
+reconciliation date. The report flows across by reconciliation date with the latest
+reconciliation date, i.e. the date applicable to the run date of the report, being the first
+date listed.
+
+To assist with the understanding of the report, a worked example is shown in section
+3.1.3.4.
+
+NB101a: Rules
+
+NB10la is run daily
+
+NB10la is repeated for each Routing Gateway
+
+NB10la is repeated for each transaction type within Routing Gateway
+
+For reconciliation dates more than 5 days old, use report NB101b
+
+A reconciliation date entry must always be shown across report NB101a or
+
+NB101b if exceptions remain.
+
+6. Within this report, for clarity within the row titles, the following definitions will be
+used:
+
+e Confirmed Client Transactions (CCT) are defined as ‘Confirmed Txns’
+
+e Authorised Client Transactions Awaiting Confirmation (ACTAC) are defined
+as ‘Unconfirmed Txns’
+
+e Exceptioned Client Transactions (ECT) are defined as ‘Exceptioned Txns’
+
+7. A transaction will be posted against its reconciliation date. If it is received later
+than it’s reconciliation date it will be shown as a ‘late’ transaction against this
+reconciliation date on the day it is received.
+
+8. Where an ‘Unconfirmed Txn’ (‘S’) is shown against a reconciliation date, when the
+“Confirmed Txn’ (‘C4’) arrives, the ‘Unconfirmed Txn’ value will be deleted and
+replaced by the C4 value within the ‘Late Confirmed Txn’ row. This concept flows
+throughout the reports as transaction components are replaced during the course
+of processing across a number of days.
+
+9. For reporting purposes only:, ‘S’ type transactions in their appropriate system
+states must always be exceptioned, i.e. states: 8-11
+
+10. For reporting purposes only: ‘D’ type transactions in states 12, 13, 14, 15, 20, 21,
+22, 23 will report ‘Amount_Authorised’
+
+11. For exception reporting:
+
+e For exception states E20 — E26, E32, E33 report the DIFFERENCE in the two
+values
+
+e Incomplete states 16 — 19 will report the value of the ‘C4’ if a difference exists
+between the value of the ‘S’ and the ‘C4’
+
+12. For exception state E39, always report against the reconciliation date.
+
+wae
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 18 of 1
+FUJ00232486
+FUJ00232486
+
+Ref: CS/SPE/011
+
+ICL Pathway Ltd NETWORK BANKING END TO EN!
+RECONCILIATION REPORTING
+
+ersion: 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.3.2 NB101a: Report Layout
+NB101a: Network Banking Settlement Statement <= 5 Client: Barclays ete Produced on: dd/mm/yyyy at hh: mm :ss
+days
+Run Date: _dd/mm/yyyy Transaction Type: Deposits etc ICL Pathway MSU
+Reconciliation Date: Reconciliation Date: Reconciliation Date: Reconciliation Date:
+dd/mm/yyyy dd/mm/yyyy dd/mm/yyyy dd/mm/yyyy dd/mm/yyyy
+Volume Value Volume Value Volume Value Volume Value Volume Value
+
+1. Confirmed Txns (C4) 9999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I _999999999.99 I 9999999 999999999.99
+2. Late Confirmed Txns (C4) 0 0.00 I 9999999 999999999.99 9999999 999999999.99 9999999 I _999999999.99 I 9999999 999999999.99
+3._ Sub Total 99999999 I _9999999999.99 I 99999999 I _9999999999.99 I 99999999 I _9999999999.99 I 99999999 I 9999999999.99 I 99999999 I _9999999999.99
+4. Unconfirmed Txns (S) 9999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I _999999999.99 I _9999999 999999999.99
+5. Late Unconfirmed Txns (S) 0 0.00 I 9999999 999999999.99 9999999 999999999.99 9999999 I _999999999.99 I 9999999 999999999.99
+6. Sub Total 99999999 I _9999999999.99 I 99999999 I 999999999999 I 99999999 I 9999999999.99 I 99999999 I 9999999999.99 I 99999999 I _9999999999.99
+7. Total of Confirmed & 999999999 I 99999999999.99 I 999999999 I 99999999999.99 I 999999999 I 99999999999.99 I 999999999 I 99999999999.99 I 999999999 I 99999999999.99
+
+Unconfirmed Txns
+8. Exceptioned Txns (D) 19999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I 999999999.99 I 9999999 999999999.99
+9. Late Exceptioned Txns (D) 0 0.00 I 9999999 999999999.99 9999999 999999999.99 9999999 I 999999999.99 I 9999999 999999999.99
+10. TOTAL of Confirmed, 999999999 I 99999999999.99 I 999999999 I 99999999999.99 I” 999999999 I —99999999999.99 I 999999999 I ~99999999999.99 I 999999999 I 99999999999.99
+
+Unconfirmed &
+
+Exceptioned Txns
+11. NBE / DRS exceptions O/S 9999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I _999999999.99 I 9999999 999999999.99
+12. TIP / DRS exceptions O/S 9999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I 999999999.99 I 9999999 999999999.99
+13. NBE/ DRS corruption’s 9999999 999999999.99 I 9999999 999999999.99 9999999 999999999.99 9999999 I 999999999.99 I 9999999 999999999.99
+
+O/S
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 19 of 1
+1.3.3
+
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END Ref:
+
+CS/SPE/011
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Version: 1.0
+Date: 19/12/01
+
+NB101a: Data Definition
+
+FUJ00232486
+FUJ00232486
+
+NB101a: Network Banking Reconciliation Statement < 5 days
+
+Client (Derived from Routing Gateway.)
+
+Produced on: (Date / time of report production)
+
+Run Date: (The period for which the report refers)
+
+Transaction Type: (Derived from Txn_Type)
+
+ICL Pathway MSU
+
+Data Description
+
+Reconciliation Date /Column Date = Run Date
+
+Reconciliation Date /Column Date = Run Date- N
+(N=1 to 4)
+
+For each Reconciliation Date / Column Date report Absolute Volume and Net Value
+
+1, Total of all today’s CCT processed by the DRS
+
+2-4, 7, 16-19
+, Reconciliation Date = Run Date
+
+System States: 2-4, 7, 16-19
+Received = Old, Reconciliation Date = Column Date
+
+2. Total of late CCT processed by the DRS
+
+Zero Volume and Values
+
+System Stat 4, 7, 16-19
+Received = New, Reconciliation date = Column Date
+
+3. Sub Total
+
+Total rows 1 & 2
+
+Total rows 1 & 2
+
+4. Total of all today’s ACTAC processed by the DRS
+
+System States: 8-11
+Received = New. Reconciliation Date = Run Date
+
+System States: 8-11
+Received = Old, Reconciliation Date = Column Date
+
+5. Total of all late ACTAC processed by the DRS
+
+Zero Volume and Values
+
+System States: 8-11
+Received = New, Reconciliation date = Column Date
+
+6. Sub Total
+
+Total rows 4 & 5
+
+Total rows 4 & 5
+
+7. Total of all CCT and ACTAC processed by the DRS
+
+Total rows 3 & 6
+
+Total rows 3 & 6
+
+8. Total of all today’s ECT processed by the DRS
+
+System States: 12-15, 20-23
+Received = New, Reconciliation Date = Run Date
+
+System States: 12-15, 20-23
+Received = Old, Reconciliation Date = Column Date
+
+9. Total of late ECT processed by the DRS
+
+Zero Volume and Values
+
+System States: 12-15, 20-23
+Received = New, Reconciliation date = Column Date
+
+10. Total of all CCT, ACTAC & ECT processed by the
+DRS
+
+Total rows 7, 8 & 9
+
+Total rows 7, 8 & 9
+
+11. Total of all NBE / DRS exceptions O/S
+
+1, 4, 6-14, 15-17, 20-22,
+El 1-14, E21-24, E26, E32-39
+Received = New, Reconciliation Date = Run Date
+
+02-09,
+
+System States: 1, 4, 6-14, 15-17, 20-23, E02-09, E1l-14,
+21-24, E26, E32-33, E35-39
+Received = New +Old, Reconciliation Date = Column Date
+
+12. Total of all TIP / DRS exceptions O/S
+
+System States: 1-2, 5, 7, 9-10, 13-14, 17-18,
+21-22, E01-02, E10-11, E20-22, E25, E27-28,
+E34-35
+
+Received = New, Reconciliation Date = Run Date
+
+System States: 1-2, 5, 7, 9-10, 13-14, 17-18, 21-22,
+E01-02, E10-11, E20-22, E25, E27-28, E34-35
+Received = New +Old, Reconciliation Date = Column Date
+
+13. Total of all NBE / DRS corruption’s O/S
+
+System States: E28 —31
+Received = New, Reconciliation Date = Run Date
+
+System States: E28 —31
+Received = New +Old, Reconciliation Date = Column Date
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 20 of 1
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+FUJ00232486
+
+FUJ00232486
+
+1.3.4 NB101a: Worked Example showing reconciliation date allocation
+41 Day 1: Run Date 01/01/2001
+[NB101a: Network Banking Settlement Statement <= 5 days (Client: Barclays [Produced on: 02/01/2001 03:15:22
+[Run Date: 01/01/2001 [Transaction Type: Deposits ICL Pathway MSU
+Reconciliation Date: Reconciliation Date: Reconciliation Date:
+01/01/2001 31/12/2000 30/12/2000 Transactions r
+Volume Value Volume Value Volume Value Txn ‘AA’ ‘C4? £100.00 reconciliation date
+01/01/2001, received run date 01/01/2001
+1. Confirmed Txns (C4) 1 I (AA) £100.00 0 £0.00 0 £0.00 I Txn ‘BB’ ‘C4’ £50.00 reconciliation date
+2. Late Confirmed Txns (C4) 0 £0.00 1 I (BB) £50.00 1 I (CO) £25.00 I 31/12/2000, received run date 01/01/2001
+3. Sub Total 1 I (AA) £100.00 1 I (BB) £50.00 1 I (CO) £25.00 I Txn ‘CC’ “C4” £25.00 reconciliation date
+4. Unconfirmed Txns (S) 1I WD) £34.00 0 £0.00 0 £0.00 I 30/12/2000, received run date 01/01/2001
+3,_Late Unconfirmed Txns (S) 0 £0.00 1 I (EE) £45.00 0 £0.00 I Tx ‘DD* S’ £34.00 reconciliation date
+Sub Total 1 I (Db) £34.00 1) (EE) £45.00 0 £0.00 I 01/01/2001, received run date 01/01/2001
+. ; Ei “99 I Pxn ‘EE’ ‘S’ £45.00. reconciliation date
+7. Total of Confirmed & g (AA DD) 2 (BB EE 1I (CC) £25.00
+Wacoafiraed' ‘tas K £134. Hey ‘ £95, ip cS 31/12/2000, received run date 01/01/2001
+8. Exceptioned Txns (D) 1 I (HA) £200.00 0 £0.00 0 £0.00 nm i , an ae qeconeitiation date
+9. La i 2 3 , received fe 01/01/
+9. Late Exceptioned Txns (D) 0 £0.00 0 £0.00 0 £0.00 Txn ‘GG “E01 £65.00 reconciliation date
+10. Total of Confirmed, 3I (AA DD HA) 2 (BB EE) 1 I (CG £25.00 I 37/12/2000, received run date 01/01/2001
+Unconfirmed & £334.00 £95.00 Txn ‘HH; ‘D’ £200.00 reconciliation date
+Exceptioned Txns 01/01/2001, received run date 01/01/2001
+11. NBE / DRS exceptions O/S 0 £0.00 1I (FF) £10.00 0 £0.00 NS creeptions / corruption’s have been set to F99 by
+12. TIP/ DRS exceptions O/S 0 £0.00 1 I (GG) £65.00 0 £0.00 I No exceptions corruption’s have been auto matched by
+the DRS
+13, NBE/ DRS corruption’s 0 £0.00 0 £0.00 0 £0.00
+os
+
+NB: In reality this report would run for five reconciliation dates.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE
+
+Page: 21 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+Day 2: Run date 02/01/2001
+INB101a: Network Banking Settlement Statement <= 5 days IClient: Barclays [Produced on: 03/01/2001 02:17:15
+[Run Date: 02/01/2001 [Transaction Type: Deposits [ICL Pathway MSU
+Reconciliation Date: Reconciliation Date: Reconciliation Date: Notes for example
+02/01/2001 01/01/2001 31/12/2000
+Volume Value Volume Value Volume Value Transactions received:
+Txn ‘J ‘C4? £90.00 reconciliation date
+1. Confirmed Txns (C4) 1 (JJ) £90.00 I 1 (AA) £100.00 I 1 (BB) £50.00 I 02/01/2001, received run date 02/01/2001
+2. Late Confirmed Txns (C4)_I 0 £0.00 1 (DD) £34.00 I 2 (KK) £80.00 I Txn “KK” “C4 £80.00 reconciliation date
+3. Sub Total 1 (JJ) £90.00 I 2 (AA DD) 2 (BB KK) 31/12/2000, received run date 02/01/2001
+£134.00 £130,00 Txn ‘EE’ ‘C4’ £45.00 reconciliation date
+4. Unconfirmed Txns (S) 0 £0.00. 0 £0.00 0 £0.00 01/01/2001, received run date 02/01/2001 (replaces ‘S’
+5._Late Unconfirmed Txns (S) I 0 £0.00 0 £0.00 0 £0.00 and is exceptioned due to timing error)
+6. Sub Total 0 £0.00 0 £0.00 0 £0.00 Txn ‘DD’ ‘C4’ £34.00 reconciliation date
+= = 5 = 01/01/2001, received run date 02/01/2001 (replaces ‘S’)
+7. Total of Confirmed & 1 (JJ) £90.00 3 AA DD) 2 BB KK)
+Unconfirmed Tine ay a oe OF 00 ) Txn ‘FF’ ‘E04’ £10.00 reconciliation date 31/12/2000
+8._ Exceptioned Txns (D) 0 £0.00 1 (HH £200.00 I 0 £0.00 set to state F99 by MSU on 02/01/2001
+9. Late Exceptioned Txns D) I 0 £0.00 0 £0.00 0 £0.00 Txn ‘GG’ ‘E01) £65.00 reconciliation date
+: : : : 31/12/2001 set to state F99 by MSU on 02/01/2001
+10. Total of Confirmed, 1 (JJ) £90.00 3 (AA DD HH) I 2 (BB KK)
+Unconfirmed & £334.00 £130.00
+Exceptioned Txns
+11. NBE/ DRS exceptions O/S I 0 £0.00 1 (EE) £45.00 I 0 £0.00
+12. TIP / DRS exceptions O/S 0 £0.00 0 £0.00 0 £0.00
+13. NBE / DRS corruption’s 0 £0.00 0 £0.00 0 £0.00
+O/S
+
+NB: In reality this report would run for five reconciliation dates.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 22 of 1
+FUJ00232486
+
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB101b: Network Banking Settlement Statement > 5 days
+
+This report identifies CCT, ACTAC, & ECT transactions received against each
+reconciliation date more than 5 days older than the run date of the report. The report
+flows across by reconciliation date with the latest reconciliation date, i.e. the next
+reconciliation date required following the cessation of NB10la.
+
+For example:
+The final reconciliation date listed on NB101a, report date 05/01/2001 would be
+01/01/2001.
+
+For the report date 06/01/2001, if the reconciliation date of 01/01/2001 has exceptions
+outstanding, this reconciliation date would disappear.
+
+3.1.4.1 NB101b: Rules
+
+weYNr
+
+no
+
+12
+13
+14.
+
+NB1O1b is run daily
+
+NB1OIb is repeated for each Routing_Gateway
+
+NB1O0Ib is repeated for each transaction type within Routing_Gateway
+
+Where there is no data to report, produce a file with report headers only
+
+Where there are more than 5 reconciliation dates being reported, the text within the file to
+be repeated indefinitely to the right.
+
+For reconciliation dates less than 5 days old, use report NB101la
+
+. A reconciliation date entry must always be shown across report NB101a or NB101b if
+
+exceptions remain.
+
+Within this report, for clarity within the row titles, the following definitions will be used:
+
+e Confirmed Client Transactions (CCT) are defined as ‘Confirmed Txns’
+
+e Authorised Client Transactions Awaiting Confirmation (ACTAC) are defined as
+“Unconfirmed Txns’
+
+e Exceptioned Client Transactions (ECT) are defined as ‘Exceptioned Txns’
+
+Where an ‘Unconfirmed Txn’ (‘S’) is shown against a reconciliation date, when the
+
+“Confirmed Txn’ (‘C4’) arrives, the ‘Unconfirmed Txn’ value will be deleted and replaced
+
+by the C4 value within the ‘Late Confirmed Txn’ row. This concept flows throughout the
+
+reports as transaction components are replaced during the course of processing across a
+
+number of days.
+
+For reporting purposes only:, ‘S’ type transactions in their appropriate system states must
+
+always be exceptioned, i.e. states: 8-11
+
+. For reporting purposes only: ‘D’ type transactions in states 12, 13, 14, 15, 20, 21, 22, 23
+
+will report ‘Amount_Authorised’
+
+. For exception reporting:
+. For exception states E20 — E26, , E32, E33 report the DIFFERENCE in the two values
+. Incomplete states 16 — 19 will report the value of the ‘C4’ if a difference exists between
+
+the value of the “S’ and the ‘C4’
+
+. For exception state E39, always report against the reconciliation date.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 23 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+3.1.4.2 NB101b: Report layout & Data Definition
+
+NB101b report layout follows report NB101a. However it commences on
+Reconciliation Date / Column Date = Run Date — N where N = 5. There is no
+maximum number of days within report NB101b. NB101b reports as many
+Reconciliation Dates / Column Dates as necessary subject to the rules identified within
+section 3.1.4.1
+
+For example, if on 06/01/2001 subject to the rules identified within section 3.1.3.1 for
+NB101a, either an exception remains or a new transaction is received for reconciliation
+date 01/01/2001 or earlier, the appropriate reconciliation date would be included
+within NB101b until no exceptions remained. In effect NB101b could run for an
+indefinite number of Reconciliation Dates / Column Dates if exceptions remained or
+late transaction components were received.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 24 of I
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+3.1.5
+
+3.1.5.1
+
+NB102: Exception Summary
+
+This report is divided into twelve sections:
+
+Section 1: Uncleared Confirmed, Unconfirmed & TIP exceptions <24 hours
+Section 2: Uncleared Exceptioned Client Transactions
+
+Section 3: Uncleared NBE / DRS corruption’s
+
+Section 4: Uncleared Timing Differences
+
+Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+Section 6: Uncleared Future Dated Transactions by Client
+
+Section 7: Cleared Confirmed, Unconfirmed & TIP exceptions <24 hours
+Section 8: Cleared Exceptioned Client Transactions
+
+Section 9: Cleared NBE / DRS corruption’s
+
+Section 10: Cleared Timing Differences
+
+Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+Section 12: Cleared Future Dated Transactions by Client
+
+Liability issues are not covered within this document, nor are the business
+processes involved in the resolution of any exception.
+
+NB102: Rules
+
+NB102 is run daily
+
+2. NB102 is repeated for each Routing Gateway.
+
+3. For each report section, the column ‘Values’ will be partitioned into 8 sub columns
+to contain the values for: ‘C12’, ‘S’, ‘C4’, ‘C112’ & the four values from a ‘D’
+which are: Amount Requested, Amount Authorised, Amount Confirmed, Amount
+Discrepancy. The reports will populate all values that are available.
+
+4. For reporting purposes within NB102 sections 2,3,4,5,8,9,10,11, the column
+
+headed ‘Discrepancy Type’ will report the ‘D’ discrepancy type and be populated
+
+with the following codes:
+
+© 01 - [E2] not received by maximum number of retries or at close of next
+business day - Business Rule BR — 054
+
+e (02 - Mismatch of value between [R2] and [C2] BR - 021
+
+© 03 - [C2] approve for [A1] Decline BR -033
+
+© 04 - [C2] approve with no R or A messages i.e. orphan [C2] - BR - 026
+
+NB: “BR-nnn” refers to a business rule in the NBE Business Rules Catalogue,
+reference [12].
+
+5. Where an exception is set to F99 by ICL Pathway, clearance of this exception
+within the appropriate NB102 section, (e.g. section 2 exceptions shown as cleared
+within section 8), will always refer to the previously reported state regardless of
+any change of state which may have occurred within the DRS.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 25 of I
+
+FUJ00232486
+FUJ00232486
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+10.
+
+1
+
+14.
+15.
+16
+17.
+
+18.
+
+20.
+
+2
+
+1
+
+Within this report, for clarity within the row titles, the following definitions will be
+
+used:
+
+¢ Confirmed Client Transactions (CCT) are defined as ‘Confirmed Txns”
+
+e Authorised Client Transactions Awaiting Confirmation (ACTAC) are defined
+as ‘Unconfirmed Txns’
+
+e Exceptioned Client Transactions (ECT) are defined as ‘Exceptioned Txns’
+
+Uncleared Confirmed, Unconfirmed & TIP exceptions <24 hours are reported as
+
+summary totals by exception type - (NB102 section 1)
+
+Uncleared Exceptioned Client Transactions are listed individually - (NB102
+
+section 2)
+
+Uncleared NBE/ DRS corruption’s exceptions are listed individually - (NB102
+
+section 3)
+
+Uncleared Timing Differences are listed individually — (NB102 section 4)
+
+Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours are listed
+
+individually — (NB102 section 5)
+
+. Uncleared Future Dated Transactions are reported as summary totals by Client
+
+identified by Routing_Gateway — (Section 6)
+
+. Cleared Confirmed, Unconfirmed & TIP exceptions <24 hours are reported as
+
+summary totals by exception type - (NBE102 section 7)
+
+Cleared Exceptioned Client Transactions are listed individually — (NB102 section
+8)
+
+Cleared NBE / DRS corruption’s are listed individually — (NB102 section 9)
+Cleared Timing differences are listed individually — (NB102 section 10)
+
+Cleared Confirmed, Unconfirmed & TIP exceptions >24 hours are listed
+individually — (NB102 section 11)
+
+Cleared Future Dated Transactions are reported as summary totals by Client
+identified by Routing_Gateway — (Section 12)
+
+. Where both volume and value are zero within sections 3 and 9, the appropriate line
+
+is suppressed
+
+Within each section, exception summary totals / individual transactions are to be
+grouped and sub totalled by reconciliation date with a total provided for the entire
+section.
+
+. For reporting purposes:
+
+¢ Timing Differences: relate to differences in the reconciliation date / settlement
+date allocated where a settlement date on a transaction element is not the same
+as the reconciliation date first reported on that transaction.
+
+¢ Future Dated Transactions: relate to those transactions that have a
+Reconciliation Date ahead of the Run Date of the report. For example, most
+Clients will settle Friday, Saturday and Sunday transactions on the following
+Monday. This means that each transaction completed on these days will have a
+Reconciliation Date ahead of the Run Date of the report. These transactions
+are expected to clear naturally once the Reconciliation Date and the Run Date
+are in sync, however in the rare eventuality that a Reconciliation Date is
+considerably ahead of the Run Date, POL may wish to clear the exception
+manually. In this case, ICL Pathway will set the transaction to ‘F99’.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 26 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+22. For reporting purposes, within NB102 sections 2,3,4,5,8,9,10.11, the column
+headed ‘Transaction Type’ will be populated by the following codes:
+© 03 — Withdrawal (With PIN)
+04 — Withdrawal with balance (With PIN)
+05 — Withdraw all (With PIN)
+13 — Withdrawal (With signature)
+14 — Withdrawal with balance (With signature)
+15 — Withdraw all (With signature)
+22 — Deposit (No verification)
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 27 of I
+15.2.1
+
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232486
+
+FUJ00232486
+
+Ref: CS/SPE/O11
+
+Version: 1.0
+Date: 19/12/01
+
+3.1.5.2 NB102: Section 1: Uncleared Confirmed, Unconfirmed & TIP exceptions <24
+
+hours
+
+NB102: Section 1 - Report Layout
+
+NB102 Section 1: Confirmed,
+Unconfirmed & TIP exceptions <
+24 hours
+
+Client: Barclays ete
+
+Produced on:
+dd/mm/yyyy at hh:mm:ss
+
+Run Date: dd/mm/yyyy
+
+Transaction Type: Deposit &
+Withdrawal
+
+ICL Pathway MSU
+
+Exception Reconciliation Volume Values ( 8 sub columns)
+Type Date
+State 1 ete dd/mm/yyyy 99999999 99999999.99
+State 2 ete dd/mm/yyy: 99999999 99999999.99.
+Sub total 999999999 999999999.99.
+State E02 ete dd/mm/yyyy 99999999 99999999.99.
+Sub total 999999999 999999999.99.
+Total Section 1 9999999999, 9999999999.99.
+NB102: Section 1 - Data Definition
+NB102 Section 1: Confirmed, Client: (Derived from Produced on:
+Unconfirmed & TIP exceptions < I Routing_Gateway.) (Date and time of report
+24 hours production)
+Run Date: (The period for which Transaction Type: (Derived ICL Pathway MSU
+
+the report refers)
+
+from Txn_ Type)
+
+Exception Type / Reconciliation
+Date
+
+Volume
+
+Values (8 sub columns)
+Value of each transaction
+component
+
+One row for each system state
+where exceptions are being
+reported grouped within
+reconciliation date with a sub total
+for each reconciliation date and a
+grand total for the section. Where
+no data is being reported against
+and exception state, the row for
+that exception state is to be
+suppressed. Where dates are shown
+for the same exception type, list in
+descending order
+
+‘System State: 1-2, 4-11, 16-18.
+E20-24, E32, E34 -E36, E38
+Received = New + Old
+Reconciliation date: <= Run Date
+
+E01-02 E04-06, E10-12, E14,
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 28 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.5.3 NB102: Section 2: Uncleared Exceptioned Client Transactions
+3.1 NB102: Section 2 — Report Layout
+INB102 Section 2: Uncleared lient: — Barclays ete Produced on:
+IExceptioned Client Transactions \dd/mm/yyyy_at_hh : mm : ss
+[Run Date: dd/mm/yyyy [Transaction Type: Deposit & ICL Pathway MSU
+Withdrawal
+Exception Type Horizon Txn Id ITransaction Type} Bank Txn Id Receipt Date Receipt Time [Discrepancy Type] Values ( 8 sub
+columns)
+E13 kid/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+E13 kid/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99]
+State 12 dd/mmi/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999.99I
+E13 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999.99)
+Total Section 2 9999999999,99)
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 29 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+3.2 NB102: Section 2 — Data Definition
+INB102 Section 2: Uncleared lient: (Derived from Produced on:
+Exceptioned Client Transactions Routing Gateway.) Date and time of production)
+[Run Date: (The period for which the Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date Horizon Txn Id I Transaction Bank Txn Id Receipt Date Receipt Time Discrepancy Values ( 8 sub
+Type Type columns)
+One row for each exception, with specific [Horizon_Txn_Nu ITxn_Type [Bank_Transactio \Receipt_TransactiIReceipt_Transacti[Discrepancy_ReasIValue of each
+system states listed in order, grouped within jm n_Id n_Date n_Time n_Codes ransaction component
+reconciliation date with a sub total for each
+reconciliation date and a grand total for the
+section. Where dates are shown for the same perstem State: 12°15 107% B08, BOT B09, E13, £25 ~ £26, E33, B37
+exception type, list in descending order. IReconciliation date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 30 of 1
+1.5.4
+
+41
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB102: Section 3: Uncleared NBE / DRS Corruption’s
+
+NB102: Section 3 — Report Layout
+
+FUJ00232486
+FUJ00232486
+
+INB102 Section 3: Uncleared NBE / (Client: Barclays etc [Produced on:
+IDRS Corruption’s \dd/mm/yyyy at hh: mm : ss
+[Run Date: dd/mm/yyyy [Transaction Type: Deposit & ICL Pathway MSU
+(Withdrawal
+Exception Type Reconciliation I Horizon Txn Id ITransaction Type! Bank Txn Id Receipt Date Receipt Time IDiscrepancy Type] Values ( 8 sub
+Date columns)
+
+[E28 kid/mm/yyyy Char G2) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+[E29 kid/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+
+E31 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+
+E31 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+(Total Section 3 9999999999.99I
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 31 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+4,2 NB102: Section 3 — Data Definition
+INB102 Section 3: Uncleared NBE / (Client: (Derived from Produced on:
+IDRS corruption’s [Routing Gateway.) Date and time of production)
+[Run Date: (The period for which the Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date Horizon Txn Id Transaction Type) Bank Txn Id Receipt Date Receipt Time Discrepancy Values ( 8 sub
+Type columns)
+One row for each corruption, with specific IHorizon_Txn_Nu [Txn_Type [Bank_Transaction IReceipt_Transacti IReceipt_Transacti IDiscrepancy_Reas Value of each
+system states listed in order, grouped within jm [Id n_Date n_Time n_Codes ransaction
+reconciliation date with a sub total for each omponent
+reconciliation date and a grand total for the
+section. Where dates are shown for the same S¥stem State: E27
+exception type, list in descending order. IReconciliation date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 32 of 1
+15.5
+
+5.1
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB102: Section 4: Uncleared Timing Differences
+
+NB102: Section 4 - Report Layout
+
+FUJ00232486
+FUJ00232486
+
+INB102 Section 4: Uncleared \Client: Barclays ete [Produced on:
+ITiming Differences \dd/mm/yyyy at hh: mm : ss
+[Run Date: dd/mm/yyyy [Transaction Type: Deposit & ICL Pathway MSU
+(Withdrawal
+Exception Type Reconciliation I Horizon Txn Id ITransaction Type! Bank Txn Id Receipt Date Receipt Time IDiscrepancy Type] Values ( 8 sub
+Date columns)
+
+[E39 kid/mm/yyyy Char G2) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+[E39 kid/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+
+E39 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+
+E39 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+(Total Section 4 9999999999.99I
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 33 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+5.2 NB102: Section 4 — Data Definition
+INB102 Section 4: Uncleared lient: (Derived from Produced on:
+[Timing Differences [Routing Gateway.) Date and time of production)
+[Run Date: (The period for which the Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date / Horizon Txn Id I Transaction Bank Txn Id Receipt Date Receipt Time Discrepancy Values ( 8 sub
+Settlement Date Type Type columns)
+One row for each timing difference, grouped —_IHorizon_Txn_Nu IT'xn_Type IBank_TransactionIReceipt_Transacti IReceipt_Transacti IDiscrepancy_ReasIValue of each
+within reconciliation date with a sub total form [Id n_Date n_Time n_Codes ransaction
+each reconciliation date and a grand total for {component
+the section. Where dates are shown for the System State. E39
+same exception type, list in descending order. Revcived = N, d= New +Old
+Reconciliation date: < = Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 34 of 1
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+CS/SPE/011
+
+Version: 1.0
+
+Date:
+
+19/12/01
+
+1.5.6 NB102: Section 5: Uncleared Confirmed, Unconfirmed & TIP exceptions >24 hours
+
+6.1 NB102: Section 5 — Report Layout
+
+FUJ00232486
+FUJ00232486
+
+lexceptions >24 hours
+
+INB102 Section 5: Uncleared
+\Confirmed, Unconfirmed & TIP
+
+\Client: Barclays ete
+
+Produced on:
+\dd/mm/yyyy at hh : mm: ss
+
+[Run Date: dd/mm/yyyy
+
+[Transaction Type: Deposit &
+
+ICL Pathway MSU
+
+(Withdrawal
+Exception Type I Reconciliation I Horizon Txn Id [Transaction Type] Bank Txn Id Receipt Date I Receipt Time [Discrepancy Type] Values ( 8 sub
+Date columns)
+State 1 \dd/mmi/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+State 2 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+State 6 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999.99)
+State 6 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999}
+(Total Section 5 9999999999.99I
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 35 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+6.2 NB102: Section 5 — Data Definition
+INB102 Section 5: Uncleared lient: (Derived from Produced on:
+‘onfirmed, Unconfirmed & TIP — [Routing_Gateway.) Date and time of production)
+lexceptions >24 hours
+[Run Date: (The period for which the [Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Ixn_Type)
+Exception Type / Reconciliation Date Horizon Txn Id I Transaction Bank Txn Id Receipt Date Receipt Time Discrepancy Values ( 8 sub
+Type Type columns)
+One row for each critical exception, with lHorizon_Txn_Nu ITxn_Type Bank_TransactionIReceipt_Transacti[Receipt_Transacti IDiscrepancy_ReasIValue of each
+specific system states listed in order, grouped Im [Id n_Date n_Codes ransaction component
+within reconciliation date with a sub total for
+
+each reconciliation date and a grand total for
+the section. Note: an extra constraint for
+system state 18 is that the outlet must have
+harvested (TPS) successfully. Should an outlet
+be confirmed as non-polling, system states 2
+&18 for that outlet on the date(s) in question
+should not be included on this report. Where
+dates are shown for the same exception type,
+list in descending orders
+
+System State: 1, 2,4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18, E01-02 E04-06, E10-12, El4, E20-24, E32, E34 -E36, E38
+Received = Old
+
+Reconciliation date: < Run Date
+
+i.e. where transaction components have remained in the above incomplete states for >24 hours)
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 36 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+NB102: Section 6: Uncleared Future Dated Transactions by Client
+15.7.1 NB102: Section 6 - Report Layout
+NB102 Section 6: Uncleared All Clients Produced on:
+Future Dated Transactions by dd/mm/yyyy at hh:mm:ss
+Client
+Run Date: dd/mm/yyyy Transaction Type: Deposit & ICL Pathway MSU
+Withdrawal
+Client Reconciliation Date Volume Values ( 8 sub
+columns)
+Barclays dd/mm/yyy: 99999999 99999999.99
+Lloyds dd/mm/yyyy 99999999 99999999.99
+Total Section 11 9999999999 9999999999.99.
+NB102: Section 6 - Data Definition
+NB102 Section 6: Uncleared All Clients Produced on:
+Future Dated Transactions by (Date and time of report
+Client production)
+Run Date: (The period for which I Transaction Type: (Derived ICL Pathway MSU
+the report refers) from Txn_Type)
+Client / Reconciliation Date Volume [L__Values (8 sub columns)
+
+One row for each Client derived from System State: All States
+Routing_Gateway where transactions have I Reconciliation date: > Run Date
+been received with a reconciliation date
+ahead of the run date. Where dates are
+shown for the same exception type, list in
+descending order.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 37 of I
+15.8.1
+
+‘1.5.8.2
+
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+8 NB102: Section 7: Cleared Confirmed, Unconfirmed & TIP exceptions < 24
+hours
+NB102: Section 7 — Report Layout
+NB102 Section 7: Cleared Client: Barclays etc Produced on:
+Confirmed, Unconfirmed & TIP dd/mm/yyyy at hh : mm: ss
+exceptions < 24 hours
+Run Date: dd/mm/yyyy Transaction Type: Deposit & ICL Pathway MSU
+Withdrawal
+Exception Reconciliation Volume Values ( 8 sub columns)
+Type Date
+State 1 ete dd/mm/yyyy 99999999 99999999.99
+State 2 ete dd/mm/yyy’ 99999999 99999999.99.
+Sub total 999999999 999999999.99.
+State E02 etc dd/mm/yyy’ 99999999 99999999.99.
+Sub total 999999999. 999999999.99.
+Total Section 1 9999999999, 9999999999.99.
+
+NB102: Section 7 - Data Definition
+
+NB102 Section 7: Cleared
+Confirmed, Unconfirmed & TIP
+exceptions < 24 hours
+
+Client: (Derived from
+Routing_Gateway.)
+
+Produced on:
+(Date and time of report
+production)
+
+Run Date: (The period for which__I Transaction Type: (Derived ICL Pathway MSU
+the report refers) from Txn_ Type)
+Exception Type / Reconciliation Volume Values (8 sub columns)
+
+Date Value of each transaction
+component
+One row for each system state For last reported System States: 1-2, 4-11, 16-18, E01-02, E04-06,
+where exceptions are being E10-12, El4, E20-24, E32, E34 -36, E38
+reported grouped within Set to F99: New
+reconciliation date with a sub total I Reconciliation date: <= Run Date
+for each reconciliation date and a
+grand total for the section. Where
+no data is being reported against
+and exception state, the row for
+that exception state is to be
+suppressed. Where dates are shown
+for the same exception type, list in
+descending order.
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 38 of 1
+1.5.9
+
+91
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB102: Section 8: Cleared Exceptioned Client Transactions
+
+NB102: Section 8 — Report Layout
+
+FUJ00232486
+FUJ00232486
+
+INB102 Section 8: Cleared \Client: Barclays ete [Produced on:
+IExceptioned Client Transactions \dd/mm/yyyy at hh: mm : ss
+IRun Date: dd/mm/yyyy [Transaction Type: Deposit & ICL Pathway MSU
+Withdrawal
+Exception Type I Reconciliation I Horizon Txn Id [Transaction Type] Bank Txn Id Receipt Date I Receipt Time [Discrepancy TypeI Values ( 8 sub
+Date columns)
+
+E13 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 9999999999}
+IE13 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+State 12 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999.99)
+E13 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999 .99)
+(Total Section 8 9999999999.99}
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 39 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+9.2, NB102: Section 8 — Data Definition
+INB102 Section 8: Cleared (Client: (Derived from Produced on:
+[Exceptioned Client Transa s__IRouting_Gateway.) Date and time of production)
+IRun Date: (The period for which the Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date I Horizon Txn Id] Transaction I Bank Txn Id I Receipt Date I Receipt Time I Discrepancy Values ( 8 sub
+Type Type columns)
+One row for each exception, with specific [Horizon_Txn_NuITxn_Type Bank_Transactio IReceipt_Transacti[Receipt_Transacti[Discrepancy_ReasIValue of each
+system states listed in order, grouped within jm n_Id jon_Date n_Time jon_Codes ransaction component
+reconciliation date with a sub total for each
+reconciliation date and a grand total for the - - ——
+section, Where dates are shown for the same ear last reported System States: 12-15, 20-23, E03, E07 - E09, E13, E25 — E26, E33, E37
+exception type, list in descending order. Reconciliation Date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 40 of 1
+ICL Pathway Ltd NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+Ref:
+
+CS/SPE/011
+
+Version: 1.0
+
+FUJ00232486
+FUJ00232486
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.5.10 NB102: Section 9: Cleared NBE / DRS Corruption’s
+10.1 NB102: Section 9 — Report Layout
+INB102 Section 9: Cleared NBE/ (Client: — Barclays etc [Produced on:
+IDRS Corruption’s \dd/mm/yyyy at hh: mm : ss
+IRun Date: dd/mm/yyyy [Transaction Type: Deposit & ICL Pathway MSU
+(Withdrawal
+Exception Type Reconciliation I Horizon Txn Id ITransaction Type! Bank Txn Id Receipt Date Receipt Time IDiscrepancy Type) Values ( 8 sub
+Date columns)
+IE28 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+IE29 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99}
+E31 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+E31 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999 .99)
+(Total Section 9 9999999999.99}
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 41 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+10.2 NB102: Section 9 — Data Definition
+INB102 Section 9: Cleared NBE/ (Client: (Derived from Produced on:
+IDRS corruption’s [Routing Gateway.) Date and time of production)
+IRun Date: (The period for which the Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date I Horizon Txn Id [Transaction Type] Bank Txn Id I Receipt Date I Receipt Time I Discrepancy I Values ( 8 sub
+Type columns)
+One row for each corruption, with specific [Horizon_Txn_Nu ITxn_Type Bank_Transaction [Receipt_Transacti [Receipt_Transacti IDiscrepancy_Reas IValue of each
+system states listed in order, grouped within jm I Id n_Date n_Time mn_Codes ransaction
+reconciliation date with a sub total for each component
+reconciliation date and a grand total for the - - ——
+section. Where dates are shown for the same oF last reported System States: E27 —31
+exception type, list in descending order Set to F99: New
+. . Reconciliation Date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 42 of 1
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+Ref:
+
+CS/SPE/011
+
+Version: 1.0
+
+Date: 19/12/01
+
+15.11 NB102: Section 10: Cleared Timing Differences
+
+ALL NB102: Section 10 - Report Layout
+
+FUJ00232486
+FUJ00232486
+
+Differences
+
+INB102 Section 10: Cleared Timing
+
+lient: — Barclays ete
+
+Produced on:
+\dd/mm/yyyy _at_hh : mm: ss
+
+[Run Date: dd/mm/yyyy
+
+[Transaction Type: Deposit &
+
+ICL Pathway MSU
+
+[Withdrawal
+Exception Type Reconciliation I Horizon Txn Id ITransaction Type! Bank Txn Id Receipt Date Receipt Time IDiscrepancy Type] Values ( 8 sub
+Date columns)
+
+[E39 kid/mm/yyyy Char G2) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+[E39 kid/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+
+E39 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+
+E39 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+(Total Section 10 9999999999.99I
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 43 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+11.2 NB102: Section 10 — Data Definition
+INB102 Section 10: Cleared Timing IClient: (Derived from Produced on:
+Differences Routing Gateway.) Date and time of production)
+[Run Date: (The period for which the [Transaction Type: (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date/ I Horizon Txn Id I Transaction I Bank TxnId I Receipt Date I Receipt Time I Discrepancy I Values ( 8 sub
+Settlement Date Type Type columns)
+One row for each timing difference, grouped IHorizon_Txn_Nu ITxn_Type [Bank _TransactionIReceipt_Transacti Receipt_Transacti [Discrepancy_ReasIValue of each
+within reconciliation date with a sub total for jm IId n_Date n_Time jon_Codes transaction
+each reconciliation date and a grand total for component
+
+the section. Where dates are shown for the
+py nan For last reported System States: E39
+same exception type, list in descending order. ISet to F99: New
+
+Reconciliation Date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 44 of 1
+1.5.12
+
+12.1
+
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END Ref:
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+CS/SPE/011
+
+Version: 1.0
+
+Date: 19/12/01
+
+NB102: Section 11: Cleared Confirmed, Unconfirmed & TIP exceptions > 24 hours
+
+NB102: Section 11 — Report Layout
+
+FUJ00232486
+FUJ00232486
+
+INB102 Section 11: Cleared
+\Confirmed, Unconfirmed & TIP
+xceptions > 24 hours
+
+lient: — Barclays ete [Produced on:
+Kdd/mm/yyyy at hh : mm: ss
+
+[Run Date: dd/mm/yyyy
+
+[Transaction Type: Deposit &
+
+ICL Pathway MSU
+
+[Withdrawal
+Exception Type Reconciliation I Horizon Txn Id ITransaction Type} Bank Txn Id Receipt Date Receipt Time [Discrepancy Type] Values ( 8 sub
+Date columns)
+
+State 1 kid/mm/yy: Char (G2) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+State 2 \dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 9999999999}
+
+State 6 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 999999999.99I
+
+State 6 dd/mm/yyyy Char (32) Code (99) Char (12) dd/mm/yyyy hhmmss Code (99) 99999999.99
+Sub Total 99999999999)
+{Total Section 11 9999999999.99I
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 45 of 1
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+12.2 NB102: Section 11 — Data Definition
+INB102 Section 11: Cleared (Client: (Derived from Produced on:
+\Confirmed, Unconfirmed & TIP IRouting_Gateway.) Date and time of production)
+exceptions > 24 hours
+[Run Date: (The period for which the Transaction Ty (Derived from [ICL Pathway MSU
+report refers) [Txn_Type)
+Exception Type / Reconciliation Date Horizon TxnId I Transaction Bank Txn Id Receipt Date Receipt Time Discrepancy Values ( 8 sub
+Type Type columns)
+One row for each critical exception, with [Horizon_Txn_Nu ITxn_Type [Bank_TransactionIReceipt_TransactiIReceipt_Transacti IDiscrepancy_ReasIValue of each
+specific system states listed in order, grouped jm I Id jon_Date n_Time jon_Codes (ransaction component
+within reconciliation date with a sub total for
+
+each reconciliation date and a grand total for
+the section. Note: an extra constraint for
+system state 18 is that the outlet must have
+harvested (TPS) successfully. Should an outlet
+be confirmed as non-polling, system state 2
+& 18 for that outlet on the date(s) in question
+should not be included on this report. Where
+dates are shown for the same exception type,
+list in descending orders
+
+[For last reported System States: 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18, E01-02 E04-06, E10-12, El4, E20-24, E32, E34 -E36,
+IE38
+
+Set to F99: New
+
+Reconciliation Date: <= Run Date
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 46 of 1
+3.1.5.13
+
+'1,5,13.1
+
+',1,5.13.2
+
+NB102: Section 12 - Data Definition
+
+NB102 Section 12: Cleared All Clients Produced on:
+Future Dated Transactions by (Date and time of report
+Client production)
+Run Date: (The period for which I Transaction Type: (Derived ICL Pathway MSU
+the report refers) from Txn_Type)
+
+Client / Reconciliation Date Volume [Values (8 sub columns)
+One row for each Client derived from System State: All States
+Routing_Gateway where transactions have I All transactions that were included on report NB102 Section 6
+been received with a reconciliation date on ‘yesterday’s’ reports and are not included in NB102 Section
+ahead of the run date. Where dates are 6 on ‘today’s’ reports.
+
+shown for the same exception type, list in
+descending order.
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 47 of 1
+
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+NB102: Section 12: Cleared Future Dated Transactions by Client
+NB102: Section 12 - Report Layout
+NB102 Section 12: Cleared All Clients Produced on:
+Future Dated Transactions by dd/mm/yyyy at hh:mm:ss
+Client
+Run Date: dd/mm/yyyy Transaction Type: Deposit & ICL Pathway MSU
+Withdrawal
+Client Reconciliation Date Volume Values ( 8 sub
+columns)
+Barclays dd/mm/yyy: 99999999 99999999.99
+Lloyds dd/mm/yyyy 99999999 99999999.99
+Total Section 11 9999999999 9999999999.99.
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+Incomplete State: Report Matrix
+
+This table identifies reports NB100a / b where an incomplete state is exceptioned and
+the NB102 series report section where this is reported in detail.
+
+Incomplete Transaction Components Report I Exception report NB102
+State Number Section
+C112 C12 C4 s D Uncleared I Cleared
+1 Vv 100a/b 1&5 T&1
+2 Vv v 100 1&5 T&1l
+4 Vv 100a 1&5 7&ll
+5 V 100b 1&5 7T&ll
+6 Vv Vv 100a 1&5 7T&11
+7 V Vv 100a/b 1&5 7T&ll
+8 V 100a 1&5 7T&ll
+9 v Vv 100a/b 1&5 T&I
+10 V V 100a/b 1&5 7&1l
+ul v v V 100a 1&5 T&11
+12 V 100a 2 8
+1B Vv Vv 100a/> 2 8
+14 V V 100a/b 2 8
+15 Vv Vv Vv 100a 2 8
+16 Then V V 100a 1&5 T&11
+17 Vv Then V V 100a/b 1&5 T&L
+18 Vv Then V V 100b 1&5 T&M
+20 Vv Then V 100a 2 8
+21 Vv V Then V I 100a/b 2 8
+22 V V Then V [I 100a/b 2 8
+23 Vv Vv Vv Then ¥ 100a 2 8
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 48 of 1
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+3.15.15 Exception State: Report Matrix
+
+This table identifies reports NB100a / b where a true exception appears and the NB102
+series report section where this is reported in detail.
+
+Exception Description Report Exception report NB102
+
+State Number Section
+Uncleared Cleared
+
+E01 \Additional C112 100b 1&5 7T&ll
+E02 (Additional C12 100a/b 1&5 7T&ll
+E03 IAdditional D 100a 2 8
+E04 \Additional C4 100a 1&5 7T&ll
+E0S IAdditional S 100a 1&5 7&l
+E06 S after C4 100a 1&5 7&ll
+E07 S after D 100a 2 8
+E08 (C4 after D 100a 2 8
+E09 [D after C4 100a 2 8
+E10 112 after final state 100b 1&5 7T&ll
+Ell (C12 after final state 100a/b 1&5 7T&ll
+E12 IC4 after final state 100a 1&5 7T&l
+E13 ID after final state 100a 2 8
+El4 S after final state 100a 1&5 7&ll
+E15 lot Used.
+E16 ot Used
+E17. lot Used
+EIs8 lot Used
+E19 lot Used
+E20 ‘Amount of C112#C12 100b 1&5 7T&ll
+E21 [Amount of C112#C4 100a/b 1&5 7T&ll
+E22 [Amount of C112#S & C1#0 100a/b 1&5 7&ll
+E23 [Amount of C12#C4 100a 1&5 7T&ll
+E24 [Amount of C12#S & C12#0. 100a 1&5 7T&ll
+E25 IAmount of C112#D 100b 2 8
+E26 IAmount of C12#D. 100a 2 8
+E27 Incomplete/corrupt C112 100b 3 9
+E28 [Incomplete/corrupt C12 100a/b 3 9
+E29 IIncomplete/corrupt C4 100a 3 9
+£30 IIncomplete/corrupt D 100a 3 9
+E31 lIncomplete/corrupt S 100a 3 9
+E32 ‘Amount of C4#S & C4#0 100a 1&5 7T&ll
+E33 [Amount of D#S 100a 2 8
+E34 (C112 arrived after state F99 100b 1&5 7T&ll
+E35 (C12 arrived after state F99 100a/b 1&5 7&l
+E36 (C4 arrived after state F99 100a 1&5 T&L
+E37 D arrived after state F99 100a 2 8
+E38 \S arrived after state F99 100a 1&5 T&L
+E39 Settlement Date # Reconciliation Date N/A 4 10
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 49 of 1
+3.1.6
+
+3.1.6.1
+
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+NB103: Settled transaction / Cash Account Reconciliation Statement
+
+This report allows POL to reconcile the settlement stream against the Outlet Cash
+Account stream. This reconciliation is required as settlement with the individual POL
+clients is based upon the reconciliation date, i.e. the business day upon which the
+transaction took place — this is carried right through the ‘C4’, ‘S’ & ‘D’, transaction
+components. To complete a full reconciliation, it is important to know which Cash
+Account the settled transaction was posted to, to enable a reconciliation of settlement
+to be made with the outlet records. This report reconciles the transactions by
+reconciliation date and Cash Account record.
+
+NB103: Rules
+
+1. NB103 is run weekly: In order to align with internal POL / TIP processing it is
+required that this report is produced AFTER TPS processing on Friday and
+BEFORE TPS processing on Saturday. The report should include all C4, S and D
+transaction components where:
+¢ reconciliation date = run date and,
+
+e reconciliation date = run date — ‘N’ (where ‘N’ = I to 13).
+
+2. Where a C112 is available and the CAP is known, the transaction will be posted
+against the appropriate CBDB applicable to the reconciliation date — (see rules 8 &
+9).
+
+3. Where no C112 is available and therefore the CAP is unknown:
+
+e the C4, S and D transaction components should be posted to “No Cash
+Account Allocated’ (Column 7
+
+e then, when the C112 becomes available, the entry should be deleted from ‘No _
+Cash Account Allocated’ (Column 7) and posted to the appropriate CBDB
+week applicable to the reconciliation date on the C112 (see rules 8 & 9)
+
+e  ifno C112 has been received after 14 days, the entry within ‘No Cash
+Account Allocated’ (Column 7) should remain until the C112 becomes
+available even if this exceeds 14 days
+
+4. If a transaction is posted to the row ‘No C/A to TIP’ (according to it’s
+reconciliation date):
+¢ the transaction should remain in this row until the Cash Account has been
+
+delivered to TIP and then move up into the row ‘C/A to TIP’
+
+e  ifno Cash Account has been delivered to TIP after 14 days, the entry within
+‘No C/A to TIP’ should remain until the Cash Account is delivered to TIP
+even if this exceeds 14 days
+
+5. As the report is run each week, the transactions should move across the report
+according to the CAP and the reconciliation date; for example, a transaction posted
+to CBDB>=plus 2 in the first week, will move to CBDB plus 1 the second week
+and then appear in CBDB the third week, until disappearing off the report after 14
+days
+
+6. NBI03 reports on VALUE only
+
+7. Only system states for settled transaction types (C4, S & D) to appear on this
+report
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 50 of I
+FUJ00232486
+FUJ00232486
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/O11
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+
+8. Five CAP’s will be shown, the ‘CBDB’, the ‘CBDB’ minus 1, the ‘CBDB’ <=
+minus 2, the ‘CBDB’ plus I and the ‘CBDB’ >=plus 2. In addition, those settled
+transactions which currently have not been allocated a Cash Account will be
+shown.
+
+9. The ‘CBDB’ Cash Account period (CAP) equates to TWO CAP’s prior to the
+CAP applicable to the run date of the report. For example: If the report was run on
+Saturday 20" January within CAP42 (CAP 42 commenced on Thursday 17"
+January), the ‘CBDB’ CAP would be CAP40 (CAP40 commenced Thursday 3"
+January, ended Wednesday 9" January)
+
+10. Where the CAP in which the Outlet is trading is numerically more than 2 weeks
+prior to the ‘CBDB’ CAP, if this takes the Outlet CAP into the previous year, this
+will be reported as such. For example: The ‘CBDB’ CAP is CAP I and the Outlet
+is trading in CAP 51, this is assumed to be CAP 51 of the previous year,
+(therefore ‘CBDB’ <=minus 2) and not reported ahead in the current year.
+
+. For exception reporting:
+¢ For states: 16 — 19_use the ‘C4’ value
+For states: 12 — 15, 20 - 23 use value on ‘D’ ‘Amount Confirmed’
+
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 51 of I
+FUJ00232486
+
+FUJ00232486
+ICL Pathway Ltd NETWORK BANKING END TO END Ref: CS/SPE/011
+RECONCILIATION REPORTING
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+1.6.2 NB103: Report Layout
+INB103: Settled Transaction / Cash Account (Client: Barclays ete [Produced on: dd/mm/yyyy at hh:mm:ss
+[Reconciliation Statement
+[Run Date:_dd/mm/yyyy [Transaction Type: Deposits etc ICL Pathway MSU
+Settled Transaction CAP ‘XX’ <=-2 CAP ‘XX? -1 CBDB CAP ‘XX? +1 CAP ‘XX’ >= +2 I No Cash Account I Total Value of
+Reconciliation Date CAP ‘XX’ Allocated Confirmed /
+Unconfirmed Txns
+
+\dd/mmi/yyyy (C/A to TIP. 99999999.99} 99999999.99) 9999999999} 99999999.99} 999999999: 99999999 .99} 9999999999.99I
+
+io C/A to TIP 99999999.99} 99999999,99) 9999999999} 99999999.99} 99999999.9' 99999999 99} 9999999999.99I
+\dd/mm/yyy: V/A to TIP 99999999.99} 99999999.99I 9999999999} 99999999.99} 99999999.99 99999999 .99} 9999999999.99I
+
+lo C/A to TIP 99999999.99} 99999999.99) 99999999.99} 99999999.99} 99999999.99 9999999999} 9999999999.99I
+\dd/mmi/yyyy (C/A to TIP 99999999.99} 99999999.99) 9999999999} 99999999.99} 999999999) 9999999999} 9999999999.99I
+
+lo C/A to TIP 99999999.99} 99999999.99) 9999999999} 99999999.99} 99999999.99 9999999999} 9999999999.99I
+\dd/mm/yyyy (C/A to TIP 99999999.99} 99999999.99I 9999999999} 99999999.99} 99999999.99 9999999999} 9999999999.99I
+
+lo C/A to TIP 99999999.99} 99999999.99I 9999999999} 99999999.99} 99999999.99) 9999999999} 9999999999.99I
+
+[Repeat for 14 reconciliation dates + any reconciliation dates where there are settled transactions where the Cash Account has not been delivered to POL TIP or ‘No Cash
+(Account Allocated’ (Column 7)
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page:
+
+52 of 1
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END Ref: CS/SPE/011
+
+RECONCILIATION REPORTING
+
+Version: 1.0
+
+FUJ00232486
+FUJ00232486
+
+COMMERCIAL IN CONFIDENCE Date: 19/12/01
+113 NB103: Data Definition
+INB103: Settled Transaction / Cash Account (Client: (Derived from Routing_Gateway) [Produced on: (Date and time of production)
+[Reconciliation Statement
+IRun Date: (The period for which the report refers — post {Transaction Type: (Derived from Txn_Type) ICL Pathway MSU
+IFriday pre Saturday TPS processing)
+
+Settled Transaction
+Reconciliation Date
+
+CAP ‘XX’ <=-2 CAP ‘XX? -1 CBDB CAP ‘XX? +1 CAP ‘XX’ >= +2 I No Cash Account
+CAP ‘XX’ Allocated
+
+Total Value of
+Confirmed /
+Unconfirmed Txns
+
+\Unconfirmed
+jtransactions
+ompleted where
+he Cash Account
+lhas not been
+(delivered to PON
+
+(TIP
+
+\dd/mm/yyyy (Confirmed & Total value of all settled transactions (C4, S & D), according to reconciliation date as allocated (or otherwise — column 7) to [Sum Columns
+nconfirmed he appropriate CAP — where ‘Reported CAP? is as section 3.1.6.1: NB103 Rules. b,3.4,5,6,7 for this
+
+ransactions reconciliation date
+completed where [System State: 2-4, 7-23
+ithe Cash Account [Reconciliation date = Run date & Run date—N (N= 1 to 13)
+has been delivered and
+io PON / TIP Reconciliation date = Run date — N (N = 14+) where ‘No Cash Account Allocated’ (Column 7) — See NB103 rule 3 bullet 3
+
+\dd/mmi/yyyy ‘onfirmed and _ {Total value of all settled transactions (C4, S & D), according to reconciliation date as allocated (or otherwise — column 7) to [Sum Columns
+
+fhe appropriate CAP — where ‘Reported CAP” is as section 3.1.6.1: NB103 Rules.
+
+System State: 2-4, 7-23
+
+Reconciliation date = Run date & Run date—N (N= 1 to 13)
+
+jand
+
+Reconciliation date = Run date — N (N = 14+) - See NB103 rule 4 bullet 2
+
+2,3,4,5,6,7 for this
+reconciliation date
+
+[Repeat for 14 reconciliation dates + any reconciliation dates where there are settled transactions where the Cash Account has not been delivered to POL TIP or ‘No Cash
+IAccount Allocated’ (Column 7)
+
+4.0 Transaction Flow (R.A.C Diagram)
+
+© 2001 ICL Pathw
+
+Client
+
+3 of 1
+
+ICL Pathway Ltd NETWORK BANKING END TO END Ref:
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+CS/SPE/011
+
+1.0
+19/12/01
+
+Lo Ae
+
+mah
+
+AIS UF 2 _ecers
+
+ASE?
+
+FUJ00232486
+FUJ00232486
+
+POCL
+a cm TIP AIS
+s c111
+client ( (within normal
+xc) TIP feed)
+
+n
+Agent
+
+‘Authorisatio —
+
+i
+Vata Recon
+
+Outle
+
+A
+¢
+RipostéMessaging/& Desktop EOD
+\ ¥ Process
+
+(C2 message elem)
+
+4. Logical And_Split (handled through multiple message harvesting into C11 & C12 And_Split
+2. Logical ents are extracted from C12 as signed
+3. Logical Or_Split. (explicit reporting, implicit reporting with error notification,
+
+implicit reporting normal path without error; internal to NBE)
+4, Logical And_Split (handled through TPS host table extract & transfer, separate
+
+(Reconciliation Processing Tables) C112
+Natian Garvi (inc. CAP)
+Host C11 os
+(within
+Existing normal
+TP Agent EOD harvest)
+inc, CAP
+Campus
+Notes
+
+subset for onward transfer to NBE via interface agent)
+
+subsets transferred to DRSH as C112 and to TIP as C111)
+
+© 2001 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE
+
+Page: 54 of 1
+ICL Pathway Ltd
+
+NETWORK BANKING END TO END
+
+RECONCILIATION REPORTING
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232486
+FUJ00232486
+
+Ref: CS/SPE/O11
+Version: 1.0
+Date: 19/12/01
+
+5.0 System States
+
+Wen
+crc ce Ds
+Prewldtion Jarves, then prevaldte
+(On compete/Corupt enor got: E27 £28 £29 £90 E31
+Vaile on erry to State (#means not equal)
+State_Conf Agent _N3E_TPS When vaid goto Ste_I _AmountActon AmountActin I AmountActon I _ Settement DateActon Raise let hen in State
+sat bia a2 8 :
+1 ct 6a 2 8 0 : : Vi repo NBY02 Seaton 5
+2 ce oC 3. 02 E04 E02 E08] — craKcHEZD : CA Sete Dec OtE39 I Via epot NBIO2 Section 5
+Find 3 C2 C4 cH E10 Ett E12 E13 EM) crtaAcrzE20 crrzacaeat A Sete DtRec Dt E39 No
+4 a 7 2 E04 E02 E06 : A Sete Dec OtE39 Immediate i> 100
+5 ona er 6 7 4 8 : : Immediate > 100,
+6 CR org cot eu 3 15 11 I crraictaez0 : Via report NB102 Section 5
+7 cA cite Eo 3 604 coo €06I — crratceezt - (A See Dec DEE39 Immediate > 100,
+8 s 9 10 16 20 E06 : Sette DtRecDLES9 I Via report NBIO2 Seaton 5
+9 s ci EO Ht 17 21 E05 I crams crraHM.Ez S Sette Dt#Rec DLES9 Immedate i> 100
+cz $s tt 602 18 2 £05) crasacramen Sette DtRecDtEs9 I Via report NBI02 Seaton 5
+tt cs cre Ent e02 19 23 605) ciiaici2e20 — crzasa cr2MDED Sette DtRecDLEG I Vierepart NBIO2 Seaton 5
+2 D 14 13 €08 £03 E07 - Dette DtRec LES I Via report NBIO2 Secon 2
+cD 15 02 08 E03 E0r I creADIC2}E26 Dette DtfRec LEGS I Via report NBI02 Seaton 2
+“4 D cre Ent 15 e08 €03 E07 I crr2mYC12}€25 Dette DtRec LEIS I Via reprt NBI02 Section 2
+% cD crt Ent E02 eos €03 E07 I criaici2é20 —crt2HNC12) 25, Delle DtRec LEG I Vie reprt NBIO2 Section 2
+6 sic 17 18 £04 £09 £05] caHs a CHES? S orCé Sette Dec DtE39.} Via report NB102 Secon 5
+7 ics crt Et 19 eos €02 £05] criamceer: cans a CHHDERD S orCt Sette Difec DCE39. I Vie report NB102 Secon 5
+ec Slee 19 €02 E04 09 E05] © CICHEZS «CaS CHHLER S orC4 Sette Dec DLE39. I Vie report NB102 Secon 5
+Fin 19 C12 Sica Cra E10 Ett E12 E13 EM) crtaicrzE20 Ci2HCHEZ3 CAH CHHDER2 IS or 4 Sete DsRec DERE No
+Ey so 21 2 E06 E03 £05} — DAASERS SorD Sete DeRec OLE39 I Vie rept NBIO2 Section 2
+a sD crt EDt 23 €08 €03 £05 Icr12Hs acr12HE22 —_DIAWSESS SorD Sette DiRec OLE39 I Vie report NBI02 Section 2
+2 ce so 23 602 E08 E03 E05 I CIA ACIDE DAWES SorD Sete DtRec LE39 I Vie report NBI02 Section 2
+2% cso ci Ent eu? coe 603 205] criaicizen _crimsacti2wer  OIAWSES I SorDSette Dec OtE30 I Via report NBIO2 Seaton 2
+jon sos
+EO1 Additonal 112 ~ B Tmimediate> 100,
+02 Additonal C12 : : : Immedate i> 100
+£03 Additional - : - : Immedateit> 100,
+604 Adtional : : : : Immediate i> 100
+£05 Additonal S : : : : Immediate i> 100,
+606 Sater Ct immedate > 100,
+£07 Sater Immediate i> 100,
+608 Cf afer : : : : Immedate i> 100,
+£09 Dater C4 : : : : Immediate i> 100
+E10 C12 ater al sate Tmmedateit> 100
+Ett Cater finalsite Immediate > 100,
+E12 Ch ater final state : : : : Immedate i> 100,
+E13 Daler state : : : : immediate i> 100
+E14 Sater Sina state : : : : Immediate i> 100
+E15 Notused -
+16 Notused - - - -
+EIT Notused .
+8 Notused : : : :
+E19 Nolused : : : :
+E20 Amount of CHACT2Z a immediate > 100,
+E21 Amount of C1124CA Immedate i> 100,
+E22 Amount of C1124 & C1120 : : : : Immedteit> 100,
+£23 Amount of C1244 : : : : Immediate i> 100
+E24 Amount of C1248 & C1280 : : : : Immediate > 100,
+£25 Amountof C1124 : : - : Immedate i> 100
+£26 Aunt of C1240 Immediate i> 100,
+E2T Incomplete Compt C12 immedate t> 100
+28 IncompletelCorupt C12 : : : : Immediate i> 100
+£29 IncompleteCorupt C4 : : : : Immediate > 100,
+£30 Incomplet!CoruptD Immediate > 100,
+31_Incomplet/Corugt S : : : : Immedate i> 100
+E32 Amount of CAS & C480 - - - - immediate i> 100
+E33. Amount of DAS : : : : Immediate i> 100
+E34 C112 arved afer sla FOS > immediate > 100,
+£35 C2 anved ater slate F992 - - : - Immediate t> 100,
+36 Ch arved ater state F99 : : Immediate i> 100,
+E37 D anved ater sate 99 - - - : Immedate i> 100
+£38  anived aftr state FOO : : : : Immediate i> 100
+EW Setlement Dae # Recondition Date 5 5 3 Vi repo NBT02 Sesion
+Final_F8S_ MSU escved Et 635 636 ESTEE 3 3 3 No
+© 2001 ICL Pathway Ltd COMMERCIAL IN CONFIDENCE Page: 55 of 1
+

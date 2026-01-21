@@ -1,0 +1,2481 @@
+FUJ00118194
+
+FUJ00118194
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+Reconciliation Controls Version: os 12109
+Document Title: Logical Design for EPOSS/TIP Reconciliation Controls
+Document Type: Design Specification
+Abstract: This document describes the processes which will be put
+
+in place to reconcile that the EPOSS transactions
+processed at the Counter are passed through to POCL
+TIP; and that they are accounted for in the weekly cash
+account statements prepared at the Outlets and in the
+Cash Account details passed through to POCL TIP
+
+Status: Draft
+
+Distribution: Alan Ward Peter Wiles
+Dick Long Ann Cooper
+John Dicks Lorraine Holt
+John Pope Roger Donato
+Chris Humphries David Jones
+Gareth Jenkins Stephen Doyle
+Steve Warwick Janet Dore
+Phil Hemingway Stefan Robson
+Rex Dixon Dennis Sandor
+Richard Brunskill Dave Cooke
+Duncan MacDonald Peter Chandler
+Nikki O'Sullivan
+Library Calum Craig
+
+Author: Roger Donato / Steve Warwick / Phil Hemingway
+
+Comments to: Roger Donato
+
+Comments by:
+
+© 1999 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE Page 1 of 41
+FUJ00118194
+
+FUJ00118194
+ICL Pathway Logical Design for EPOSS/TIP vl Ref.: pypesion2
+iliati ersion:
+Reconciliation Controls Date. 22/12/99
+0 Document Control
+0.1 Document History
+Version Date Reason
+0.1 - First Draft in WORD 95 format (with lost section
+numbers)
+0.2 - First Draft WORD 97 format as presented to POCL
+03/09/99
+0.3 10/09/99 Application of feedback from version 0.2
+Absolute values change to Actuals in Daily Cash
+Account Control Totals
+Inclusion of brought forward totals in Reconciliation
+Addition of transaction errors detected by Counters
+0.4 14/09/99 Same as version 0.3
+0.5 16/09/99 Scope Section added
+Handling of failure scenarios added
+Specification of Changes to Counters in the Detailed
+Design
+Corrections / Changes arising from V0.3 feedback
+Data item Transaction Date removed from report of
+Host Detected Transaction Control Errors
+CA Table “"XX” for error totals
+0.6 17/09/99 Data Flow diagrams added
+0.7 20/09/99 Comments added following review by TDA and
+Acceptance Workshop at Gavrelle House on 17/09/99
+0.8 22/12/99 Host Generated Cash Account Line Comparisons
+Report added
+0.2 Associated/ Documents
+Reference Ver Date Title Source
+sio
+n
+1 TIMFS/001 5.7. 05/07/99 Pathway to TIP AIS POCL
+PCSTIPIS
+2 TD/DES/016 0.7 11/10/99 EPOSS End of Day Service High Pathway
+
+Level Design
+
+COMMERCIAL IN CONFIDENCE Page 2 of 41
+FUJ00118194
+
+FUJ00118194
+ICL Pathway Logical Design for EPOSS/TIP v Ref.: pypesion2
+iliati ersion:
+Reconciliation Controls Date. 22/12/99
+0.3 Abbreviations
+CA Cash Account
+CAP Cash Account Period
+EPOSS _ Electronic Point of Sale System
+OPS Outlet Processing System
+POCL Post Office Counters Limited
+TIP Transaction Information Processing
+TPS Transaction Processing Service
+0.4 Standard Terms
+CA Table Number The number of the table as it appears on the Cash
+Account: e.g. table 00 contains Receipts, table 10
+contains Payments
+Trading Date Trading Date is the period of time between
+consecutive public end of day markers in message
+store. Normal end of day is Outlet closing time (as
+specified in Reference Data) plus half an hour or
+19:00 hours whichever is the earlier. Where an
+outlet has end of day at 19:00 then a Trading Date
+of 07/12/99 covers the period of time between
+19:00 hours 06/12/99 to 19:00 hours 07/12/99. It
+should be noted that where an outlet has differing
+closing times on consecutive days, the ‘Trading
+Day’ may represent more or less than a 24-hour
+period.
+0.5 Changes Forecast
+Report Layouts to be modified in line with Low Level Design.
+Other corrections and comments as necessary.
+0.6 Approval authorities
+
+To be defined
+
+COMMERCIAL IN CONFIDENCE Page 3 of 41
+FUJ00118194
+
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+0.7 Table of content
+
+1 SCOPE...
+
+2 INTRODUCTION
+
+3 OVERVIEW.
+
+3.1 Daily Transaction Control Totals......
+
+3.2 Daily Cash Account Control Totals..
+
+3.3 Weekly Cash Account Control Totals.....
+
+3.4 Weekly Cash Account Control Total Reconciliatiot
+
+4 DETAILED DESIGN PROPOSAL
+
+44 Changes to Message Store......
+4.1.1 Daily Transaction Control Totals...
+4.1.2 Daily Cash Account Control Total:
+
+4.1.3 Transaction Errors Detected by Counters,
+
+4.1.4
+
+4.1.5
+
+Weekly Cash Account Control Totals.
+Cash Account Reconciliation Errors.
+
+42 Changes to Counters.
+4.2.1 End of Day Architecture.
+4.2.2 Normal End of Day Processing.
+4.2.3 Cash Account Processing..
+4.2.4 End of Day Processing Following Cas!
+
+43 Changes to the Oracle Database.
+4.3.1 Daily Transaction Totals.
+4.3.2 Cash Account Total Line:
+4.3.3 Stock Detail Total Lines.
+4.3.4 Exception Messages.
+4.3.5 Control Exceptions..
+
+44 Changes to TPS Agen’
+4.41 Daily Processing...
+4.4.2 Processing of Cash Account Data.
+
+45 Changes to TPS Host..
+4.5.1 Daily Processing
+4.5.2 Processing of CAP Stream Control Totals.
+4.5.3 Processing of Office Stock Holding Control Totals.
+
+46 Exception Reports...
+4.6.1 Host Detected Transaction Control Errors.
+
+4.6.2 Message Store Errors... .
+
+46.3 Host Detected Cash Account Control Errors.
+
+46.4 Counter Detected Reconciliation Errors...
+
+4.6.5 Host Generated Cash Account Line Comparisons Report.
+
+COMMERCIAL IN CONFIDENCE Page 4 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+5 DATA FLOW DIAGRAMS
+
+5.41 Daily Processin:
+
+5.2 Cash Account Processing...
+
+6 REPORT LAYOUTS.
+
+6.1 Host Detected Transaction Control Errors.....
+
+6.2 Message Store Errors....
+
+6.3 Host Detected Cash Account Control Errors...
+
+6.4 Counter Detected Reconciliation Errors...
+
+6.5 Host Generated Cash Account Line Comparisons Repott......
+
+7. FAILURE SCENARIOS.
+
+COMMERCIAL IN CONFIDENCE Page 5 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+1 Scope
+
+This document describes the processes to be introduced to the POCL
+Infrastructure products to reconcile the transaction details and cash account
+details passed to POCL TIP against the details captured at the counters.
+
+The level of detail given is adequate to enable POCL to ascertain that the
+solution will deliver the business requirement, which is to report all incidents
+in which either transactions recorded at the counter are not both sent to TIP
+and brought to account in the outlet Cash Account, or that the outlet cash
+account is not correctly transmitted to TIP.
+
+This document is the principle vehicle for communicating the reconciliation
+design to POCL and will be re-issued as necessary.
+
+2 Introduction
+
+This document describes the processes that will be put in place to ensure
+that:
+
+@ The accounting transaction data recorded by the EPOSS system on the
+OPS can be reconciled with the accounting transaction data returned to
+the POCL TIP system across the TIP interface
+
+# The accounting transaction data written each day at the OPS can be
+reconciled with the Cash Account data written at the OPS when the Cash
+Account is produced
+
+@ The Outlet Stock Holdings generated at the end of a Cash Account Period
+at the OPS can be reconciled with the Outlet Stock Holdings transferred to
+TIP across the TIP Interface
+
+«# The Cash Account Line records generated at the OPS can be reconciled
+with the Cash Account Line records returned to TIP across the TIP
+Interface
+
+The processes to be put in place will be delivered through the implementation
+of new software functionality at both the OPS and TPS Host systems. Where
+anew OPS function is delivered to generate control totals, the function will be
+designed to calculate the totals by a means different to that used in the
+current OPS functionality which generates balancing and Cash Account data.
+This approach is being taken to ensure that if the same total is calculated by
+two separate logical processes then there can be a high level of assurance in
+the integrity of the data.
+
+3 Overview
+
+The reconciliation processes will be split into two separate sets of activity,
+Daily reconciliation tasks and Weekly (or more accurately at the end of each
+CAP) reconciliation tasks.
+
+The daily tasks will ensure that the base transaction data recorded at the
+counter matches the base transaction data transferred to TIP for that day. At
+COMMERCIAL IN CONFIDENCE Page 6 of 41
+
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+3.1
+
+the same time, the transactions will be used to generate control totals for the
+Cash Account tables to which the transaction will report at the end of the
+CAP.
+
+At the end of the CAP, the daily control totals generated for each Cash
+Account table will be accumulated and the resulting value calculated for the
+Payments and Receipt tables will be compared with the Cash Account line
+records generated by the Cash Account production process. If there is a
+discrepancy in this comparison then the system will validate each of the
+accumulated daily control totals with the corresponding Cash Account line
+records to identify the table which does not reconcile and record an error
+message in the Riposte message store.
+
+The existing functions in the system which create the outlet stock holding
+records and the Cash Account Line records will also be amended to
+accumulate a control total for each set of records which will be written into the
+message store at the end of each set. These control total records will be
+harvested and inserted into the TPS Host database. The TPS Host system
+will compare the Stock Holding records (‘STX’ records) and the Cash Account
+Line records (‘CAC’ records) output to the TIP Cash Account sub-file with the
+control totals received from the OPS system. In the event that the TPS
+harvester fails to locate either the Stock Holding records (‘STX’ records) or
+the Cash Account Line records (‘CAC’ records) or the control totals calculated
+by the TPS Host system differ from the control totals received from the OPS,
+then a reconciliation error report will be produced.
+
+Daily Transaction Control Totals
+
+At the end of each logical day (Trading Day) an End of Day process runs to
+insert a marker into the Riposte Message store. This marker records the
+precise point in the message store (for each node in the group) at which the
+End Of Day process ran. The marker is used by the TPS Harvester process
+to delineate the transactions which will be extracted from the message store
+and sent, via the TPS Host System, to the POCL TIP system across the TIP
+Interface.
+
+The End of Day process will be extended to include an additional set of
+functions to:
+
+@ Calculate control totals of all accounting transactions recorded since the
+last End of Day marker. The control total will be made up of just those
+transactions which get passed through to TIP: (thus “transfers” and
+“remittance settlements” will not be included since they are not passed to
+TIP. The full list of transaction types not passed to TIP are listed in section
+4.2.1). The control total will include the following fields/attributes:
+
+1. Trading Date (Date of current EOD Marker)
+2. Total number of transactions
+3. Total of absolute value of transaction ‘Quantity’ field
+4. Total of absolute value of transaction ‘SaleValue’ field
+The control totals written by the OPS system will be harvested by the TPS
+
+COMMERCIAL IN CONFIDENCE Page 7 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+3.2
+
+Harvester (or another specific Harvester process) and will be inserted into a
+new table within the TPS Host Database. When the TPS Host system
+creates the TIP sub-file for an outlet a new process will be added that
+independently calculates the control totals from the records being generated
+in the sub-file and then compares them with the control totals harvested from
+the OPS. If there is a discrepancy between the TPS and OPS generated
+control totals, the following information will be written to an Exception Report:
+
+1. Outlet FAD code
+2. The values calculated by the OPS
+3. The values calculated by the TPS Host
+
+Daily Cash Account Control Totals
+
+At the same time that accounting transactions are read for the creation of the
+daily transaction control totals (see 3.1 above), a further new function within
+the End of Day process will cause the value of the transaction to be
+accumulated in an appropriate control total(s) to facilitate reconciliation of the
+Cash Account at the end of the Cash Account Period. This process will
+determine, for each transaction processed, which Cash Account period is
+appropriate to the transaction (there may be transactions for more than one
+CAP on any given day) and to which Cash Account Table(s) control total the
+transaction is relevant. The determination of which Cash Account Table
+control total is relevant will be based on the ‘Transaction Mode’ and ‘Product
+Number’ contained in the transaction message that will then be used to
+access the appropriate Cash Account Mapping reference data to determine
+the table number to which the transaction relates. The control total record will
+include:
+
+1. CAP Number
+
+2. CA Table Number
+
+3. Total number of transactions
+4
+
+. Total of signed value of transaction ‘Qty’ or ‘SaleValue’ field (only one of
+these attributes is present in each CA Line message).
+
+Use of the Transaction Mode, Product Number and Cash Account Mapping
+data to determine the appropriate CA Table control total will ensure that the
+total is derived by a separate logical process from that used during the
+production of the Cash Account itself. Cash Account production relies on the
+use of product ‘Primary Mappings’ and ‘Secondary Mappings’ to aggregate
+transactions at the stock unit and office levels before the Cash Account
+mappings are used to generate the final Cash Account values.
+
+If any transactions are found which are not possible to map to a CA Table,
+their details are added together and included in a Control Total for CA Table
+Number “XX”. These are exceptions. The corresponding error transactions
+will be flagged in message store from where they will be harvested as
+Counter detected errors. Harvested errors will be written to an Exception
+Report for action via the normal RED processes. The report will contain:
+
+4. Outlet FAD code
+
+COMMERCIAL IN CONFIDENCE Page 8 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+Version: 0.8
+
+Reconciliation Controls Date. 22/12/99
+
+3.3
+
+The unique message number of the failed transaction
+The Mode in which the transaction took place
+
+The stock unit in which the transaction took place
+The product number of the failed transaction
+
+The Sale Value of the failed transaction
+
+The reason that the transaction failed to be mapped
+
+NQaPR WON
+
+Weekly Cash Account Control Totals
+
+At the time that the Cash Account ‘Trial Report’ is produced the OPS system
+creates a set of ‘Cash Account Line’ records (which reflect the line by line
+content of the hard-copy print of the Cash Account).
+
+For each set of records produced, an additional message will be written which
+contains control totals. The control totals will include the following fields:
+
+CAP Number
+Total absolute number of transactions
+Total of absolute value of transaction ‘Qty’ or ‘SaleValue’ field (only
+
+one of these is present in each message, separate totals will be maintained for
+
+‘Qty’ and ‘SaleValue’)
+
+At the time that the Office is ‘rolled over’ in to the next CAP, the ‘Final Cash
+Account Report’ is produced and the OPS system creates a set of ‘Office
+Stock Holding’ records (which reflect the accumulation of the stock unit
+holdings at the end of the CAP).
+
+For each set of records produced, an additional message will be written which
+contains control totals. The control totals will include the following fields:
+
+1. CAP Number
+
+2. Total absolute number of transactions
+
+3. Total absolute value of transaction ‘Quantity’ field
+
+4. Total of absolute value of transaction ‘SaleValue’ field
+
+The Stock Holding and Cash Account Line Control Total records will be
+harvested at the same time as the Stock Holding and Cash Account
+transactions are harvested and will be written to a new table in the TPS Host
+System database. When the TPS Host system creates the TIP Cash Account
+sub-file for an outlet a new process will be added that independently
+calculates the control totals from the records being generated in the sub-file
+and then compares them with the control totals harvested from the OPS. If
+there is a discrepancy between the TPS and OPS generated control totals,
+the following information will be written to an Exception Report:
+
+1. Outlet FAD code
+2. CAP Number
+
+COMMERCIAL IN CONFIDENCE Page 9 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+3.4
+
+2. The values calculated by the OPS
+3. The values calculated by the TPS Host
+
+Weekly Cash Account Control Total Reconciliation
+
+The end of day procedure which follows the Cash Account Period Rollover
+will retrieve the Daily Cash Account Reconciliation Control Totals (see 3.2
+above) for the current Office CAP (including any that took place on the day of
+the CAP rollover). These totals will be accumulated to derive a single total
+for each Cash Account Table and totals of appropriate tables (such as the
+Remittance tables and the balance brought forward for the Receipts table)
+will be added to the Stock, Payments and Receipt table control totals. The
+values generated for the control total of each of the tables will then be
+compared with the values generated for the lines recorded for the table
+during the production of the Cash Account. Any difference will be identified in
+a message written to the message store.
+
+Any error messages will be subsequently harvested and inserted into a new
+table in the TPS Host Database. Errors will be output to an error report.
+
+NOTES
+
+1. The reconciliation process will work for normal and extended cash
+accounts. Extended CAPs are the same as a normal CAP except that
+CAP Number increases by more than 1 and the period covered is
+more than 7 days
+
+2. The reconciliation process will be unaffected by days when the Outlet
+is not trading because processing is covered by resilience already built
+into the end of day process.
+
+COMMERCIAL IN CONFIDENCE Page 10 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+Detailed Design Proposal
+
+Changes to Message Store
+
+The following new messages will be written by the Counters to support the
+Reconciliation process:
+
+¢ Daily Transaction Control Totals
+
+Daily Cash Account Control Totals
+
+@ Transaction Errors Detected by Counters
+
+«@ Weekly Cash Account and Stock Holding Control Totals
+
+@ Cash Account Reconciliation Errors
+
+Daily Transaction Control Totals
+
+This message will be written by the normal end of day procedure and will
+contain control totals that will be harvested and used in the TPS Host to
+check that the transactions passed through to TIP reconcile against the totals
+generated at the outlet. The message will contain the following attributes:
+
+<Groupld:ffffff> FAD Code
+<Id:nn> Node
+<Num:mmmmmmmm>_ Message number
+<Date:dd-mmm-ccyy> Date of message
+
+<Time:hh:mm:ss> Time of message
+<Expiry:nnn> Retention period in days
+<EPOSSTransaction: Group attribute for EPOSS Transactions
+<TranType:DailyTxnCT> Transaction Type for Daily Control
+Totals
+
+<TradingDate:dd-mmm-ccyy> Date of EOD Marker
+<MessageCount:nnnnnnnn> Number of transaction messages
+
+<QtyCount:nnnnnnnn> Total of absolute value of
+Transaction Quantity field
+
+<ValueCount:nnnnnnnn.nn> Total of absolute value of
+Transaction ‘SaleValue’ field
+
+COMMERCIAL IN CONFIDENCE Page 11 of 41
+ICL Pathway
+
+FUJ00118194
+
+FUJ00118194
+
+Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.1.2 Daily Cash Account Control Totals
+
+This message will be written by the normal end of day procedure and will
+contain control totals for each Cash Account Table. The totals will be added
+
+together at the end of the Cash Account Period and used to reconcile against
+the details on the Cash Account. The message will contain the following
+attributes:
+
+<Groupld:ffffff> FAD Code
+
+<Id:nn> Node
+
+<Num:mmmmmmmm>__ Message number
+
+<Date:dd-mmm-ccyy> Date of message
+
+<Time:hh:mm:ss> Time of message
+
+<Expiry:nnn> Retention period in days
+<EPOSSTransaction: Group attribute for EPOSS Transactions
+
+Note: 1.
+
+<TranType:DailyCACT > Transaction Type for Daily Cash
+Account Control Totals
+
+<CAP:cc> Cash Account Period
+
+<CATable:tt> Cash Account Table No
+
+<MessageCount:nnnnnnnn> Number of transaction messages
+
+<QtyCount:nnnnnnnn> Total of absolute value of
+Transaction Quantity field
+
+<ValueCount:nnnnnnnn.nn> Total of absolute value of
+Transaction ‘SaleValue’ field
+
+Where a product reports to both a quantity and a value table on the
+cash account the quantity and value in the transaction record will be
+accumulated separately into the respective Cash Account Table.
+
+. Although the above structure contains both quantity and value
+
+counts the majority of Cash Account Tables have only one or the
+other value (the exception being Table 12). On Quantity-only tables
+the control total for value will be zero. On Value-only tables the
+control total for quantity will be zero.
+
+CATable “XX” will be a special table set up to hold control totals for exception
+transactions that do no map against a valid CA Table entry.
+
+COMMERCIAL IN CONFIDENCE Page 12 of 41
+ICL Pathway
+
+FUJ00118194
+FUJ00118194
+
+Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.1.3. Transaction Errors Detected by Counters
+
+This message will be output where the counter is unable to analyse the
+transaction in message store. A new message is output containing the
+following attributes:
+
+<Groupld:ffffff> FAD Code
+
+<Id:nn>
+
+Node
+
+<Num:mmmmmmmm>__ Message number
+
+<Date:dd-mmm-ccyy> Date of message
+
+<Time:hh:mm:ss> Time of message
+
+<Expiry:nnn> Retention period in days
+<EPOSSTransaction: Group attribute for EPOSS Transactions
+
+>
+
+<TranType:DailyCAErr > Transaction Type for Daily Cash
+Account Control Total Errors
+
+<Txnid: Transaction in error - formatted as
+Groupld / Id / Num
+
+<Group: ffffff> Group Id (FAD Code)
+<Id:nn> Node Id
+<Num:mmmmmmmm> Message Number
+
+>
+
+<Reason:ttttttt> Reason for rejection (e.g.
+<Reason:No CA Mapping> )
+
+Weekly Cash Account Control Totals
+
+This message will be written when the Cash Account is produced and will
+contain control totals that will be harvested and used in the TPS Host to
+check that the cash account details and stock details passed through to TIP
+reconcile against the totals generated at the outlet. The message will
+contain the following attributes:
+
+<Groupld:ffffff> FAD Code
+
+<Id:nn>
+
+Node
+
+<Num:mmmmmmmm>__ Message number
+
+<Date:dd-mmm-ccyy> Date of message
+
+<Time:hh:mm:ss> Time of message
+<Expiry:nnn> Retention period in days
+<EPOSSTransaction: Group attribute for EPOSS Transactions
+
+COMMERCIAL IN CONFIDENCE Page 13 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP
+Reconciliation Controls
+
+FUJ00118194
+FUJ00118194
+
+Ref.: PI/DES/002
+Version: 0.8
+Date: 22/12/99
+
+<TranType:WeeklyttCT >
+<CAP:cc>
+<MessageCount:nnnnnnnn>
+<QtyCount:nnnnnnnn>
+
+<ValueCount:nnnnnnnn.nn>
+
+4.1.5 Cash Account Reconciliation Errors
+
+Transaction Type for Weekly Cash
+Account (tt=CA)/Stock Holding
+(tt=SH) Control Totals
+
+Cash Account Period
+
+Number of CA Line/Stock Holding
+messages
+
+Total of absolute value of
+Transaction Quantity field
+
+Total of absolute value of
+Transaction ‘SaleValue’ field
+
+This message is output where the end of day procedure following the Cash
+Account finds that the sum of the Daily Cash Account Control Totals (see
+section 4.1.2) captured during the Cash Account Period does not agree with
+the totals on the Cash Account. A message will be written where there is an
+
+error in the totals for a CA table.
+
+The message will contain the following attributes:
+
+FAD Code
+Node
+
+<Groupld:ffffff>
+<Id:nn>
+<Num:mmmmmmmm>
+<Date:dd-mmm-ccyy>
+<Time:hh:mm:ss>
+<Expiry:nnn>
+<EPOSSTransaction:
+<TranType:WeeklyCAErr >
+
+<CAP:cc>
+<CATable:tt>
+<CAQtyTot:nnnnnn>
+
+<CAValueTot:nnnnnn.nn>
+
+<ControlQtyTot:nnnnnn>
+
+Message number
+
+Date of message
+
+Time of message
+
+Retention period in days
+
+Group attribute for EPOSS Transactions
+
+Transaction Type for Weekly Cash
+Account Errors
+
+Cash Account Period
+Cash Account Table No
+
+Total of signed values of the
+Quantity field accumulated from the
+Cash Account Line records
+
+Total of signed values of the Sale
+Value field accumulated from the
+Cash Account Line records
+
+Total of signed values of the
+Quantity field accumulated from the
+Daily Cash Account Control Total
+records
+
+COMMERCIAL IN CONFIDENCE
+
+Page 14 of 41
+FUJ00118194
+
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.2
+4.2.1
+
+4.2.2
+
+<ControlValueTot:nnnnnn.nn> Total of signed values of the Sale
+Value field accumulated from the
+Daily Cash Account Control Total
+records
+
+CATab “XX” will be a special table set up to hold control totals for exception
+transactions that do no map against a valid CA Table entry. If a message is
+written for <CATable:XX>, <CAQtyTot:> and <CAValueTot:> will be null, but
+<ControlQtyTot:> and <ControlValueTot:> will contain values.
+
+Changes to Counters
+
+End of Day Architecture
+
+In order to ensure that the record set on which the Daily Control Totals are
+calculated is fixed at a point in time, the processes for calculating the totals
+will need to run AFTER the EOD Marker has been inserted into the message
+store (since this delineates the messages for the day). The calculation of the
+totals will therefore be carried out within the EOD process using the
+architecture developed for CSR+ for the creation and management of
+‘Harvest Trailers’ (see Ref. 2). This will result in the Control Total messages
+being written after the EOD Marker but before the EOD Harvest Trailer
+message. The resilience of the process remains unchanged since the EOD
+process itself will continue to ensure that if the process is interrupted for any
+reason, then the generation of the Control Totals and the Harvest Trailer will
+be carried out when the system is re-started.
+
+Normal End of Day Processing
+
+The end of day procedure will be extended to scan message store to
+calculate control totals and write messages for:
+
+« Daily Transaction Control Totals (see section 4.1.1), making sure that
+absolute values and quantities are used. These totals will be
+subsequently harvested and used by TPS Host to reconcile against the
+number transactions passed through to TIP. Some transactions are not
+passed through to TIP so these will not be included in the control totals:
+the following transactions will not be included:
+
+- Transfers
+
+- Transfer settlements
+
+- Remittance settlements
+
+- Non accounting data settlements
+- Parcel traffic settlements
+
+The identification of the products to be excluded in this way will be
+controlled by the use of a piece of reference data (persistent object) in the
+message store.
+
+COMMERCIAL IN CONFIDENCE Page 15 of 41
+FUJ00118194
+
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.2.3
+
+4.2.4
+
+Daily Cash Account Control Totals (see section 4.1.2), making sure that
+signed values and quantities are used. These totals will subsequently be
+used by the counter software to reconcile the Cash Account. Totals will
+be written for the following CA Tables
+
+- 00 Receipts (Values)
+- 10 Payments (Values)
+- 07 Discrepancies (Values)
+
+- 20 Cash Stock and Vouchers in Hand (Table 5)
+(Values)
+
+- 30 Receipts (Quantities)
+- 40 Payments (Quantities)
+
+- 50 Stock in Hand Breakdown (Table 5b) and
+Suspense Account Tables (Values)
+
+- 60 Remittances from other Offices (Values)
+- 61 Receipt of stock from SSO (Values)
+
+- 70 Stock Returns to SSO (Values)
+
+- 80 Remittances to other Offices (Values)
+
+- 90 Girobank Transaction Breakdown (Table 10f) and
+Parcel Traffic (Table 12) (Values and Quantities)
+
+- 91 Number of Transactions (Table 10g) (Quantities)
+
+A new message will be written to message store (before the EOD Harvest
+Trailer) for any transaction that is found to be in error (see section 4.1.3).
+
+Totals for error transactions are added together and included in a special
+Daily Cash Account Control total for CA Table “XX”.
+
+Cash Account Processing
+
+When the Cash Account ‘Trial Report’ is produced the processing will be
+extended to calculate control totals and write a message for:
+
+«@ Weekly Cash Account Control Total (see section 4.1.4), making sure that
+signed values and quantities are used. This total will be subsequently
+harvested and used by TPS Host to reconcile against the number of cash
+account lines passed through to TIP.
+
+When the Cash Account ‘Roll-Over’ is executed the processing will be
+extended to calculate control totals for the outlet stock holdings and write a
+message for:
+
+«@ Weekly Outlet Stock Holding Control Total (see section 4.1.4), making
+sure that signed values and quantities are used. This total will be
+subsequently harvested and used by TPS Host to reconcile against the
+number of stock holding records passed through to TIP.
+
+End of Day Processing Following Cash Account
+The end of day procedure will be extended as described in Section 3.4 to
+
+COMMERCIAL IN CONFIDENCE Page 16 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.3
+
+4.3.1
+
+retrieve the Daily Cash Account Reconciliation Control Totals (see section
+4.1.2). The total for each table on each day will be accumulated to give a
+single total for each table for the Cash Account Period. The system will then
+perform the following additional calculations:
+
+1. The totals of Table 5(b), 2 and 2(a) will be added to the control total for
+Table 5;
+
+2. The total of Table 3 will be deducted from the control total for Table 5;
+
+The Table 5 Control Total from 1&2 above will be added to the Control
+Total of the Payments Table (Table 10);
+
+4. The Control Total of the Discrepancy Table (Table 07) will be added to
+the Control Total of the Payments Table (Table 10);
+
+5. The Control Total for Tables 6 and 6(a) will be added to the Control
+Total of the Receipts Table (Table 00);
+
+6. The Balance Brought Forward value for the Current CAP will be added
+to the control total of the Receipts Table (Table 00);
+
+7. The Control Total of Tables 8 and 9 will be added to the Control Total
+of the Payments Table (Table 10).
+
+These values will then be compared against each Cash Account Table total
+accumulated from the Cash Account line records written during the
+production of the Cash Account.
+
+An error messsage will be written (see 4.1.5) when the total for any table
+does not match the Control Total against which it is being compared.
+Changes to the Oracle Database
+
+The following tables will be added to the database which is populated by the
+Harvester and processed by TPS Host:
+
+¢@ Daily Transaction Totals
+
+« Cash Account Total Lines
+@ Stock Detail Total Lines
+« Exception Transaction
+
+¢@ Control Exceptions
+
+Daily Transaction Totals
+
+This is a table of control totals which will be populated nightly by the
+harvester from the Transaction Stream Control Total message. It will contain
+the following data items:
+
+«@ FAD Code
+@ Trading Date
+« Total Number of Transactions
+
+¢ Total of absolute value of transaction “Quantity” field
+
+COMMERCIAL IN CONFIDENCE Page 17 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+Version: 0.8
+
+Reconciliation Controls Date. 22/12/99
+
+4.3.2
+
+4.3.3
+
+4.3.4
+
+4.3.5
+
+¢ Total of absolute value of transaction “Sale Value” field
+Cash Account Total Lines
+
+This is a table of control totals which will be populated by the harvester from
+the weekly CA Stream Control Total message. It will contain the following
+data items:
+
+«@ FAD Code
+
+«# CAP Number
+
+¢ Total Number of lines
+
+¢ Total of absolute value of transaction “Qty” field
+
+¢ Total of absolute value of transaction “Sale Value” field
+Stock Detail Total Lines
+
+This is a table of control totals which will be populated by the harvester from
+the weekly Office Stock Holding Control Total message. It will contain the
+following data items:
+
+«@ FAD Code
+
+«# CAP Number
+
+¢@ Total Number of messages
+
+¢ Total of absolute value of transaction “Quantity” field
+
+¢ Total of absolute value of transaction “Sale Value” field
+Exception Messages
+
+This table will be used to hold details of messages where exception
+conditions have been detected by the Counters and/or the Harvester. For
+example:
+
+@ End of Day process may not be able to map a particular transaction into
+one of the CA tables (see section 4.1.3)
+
+@ The Harvester is unable to convert a particular data item because the
+content in Message Store is not compatible with its definition in the Oracle
+database
+
+The table will contain the following data items:
+«# FAD Code
+
+¢@ Transaction Date
+
+Transaction Time
+
+¢@ Transaction Identifier
+
+@ Reason for rejection
+
+Control Exceptions
+
+This table will be used to hold details where the Cash Account Totals
+calculated by the Counters do not correspond to the Control Totals captured
+
+COMMERCIAL IN CONFIDENCE Page 18 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.4
+
+4.41
+
+44.2
+
+by the Counters from the transactions processed during the Cash Account
+Period. It will contain the following data items:
+
+«# FAD Code
+«# CAP Number
+
+«@ CA Table Number
+
+«@ Accumulated signed total of ‘Qty’ values from Cash Account Line Records
+«# Accumulated signed total of ‘Sale Value’ values from Cash Account Line
+Records
+
+«@ Accumulated signed total of ‘Qty’ values from Daily Cash Account Control
+Totals
+
+«# Accumulated signed total of ‘Sale Value’ values from Daily Cash Account
+Control Totals
+
+CA Table Number “XxX” will be a special table set up to hold control totals for
+exception transactions that do no map against a valid CA Table entry: Cash
+Account attribute entries will be null, but Control Total entries will contain
+values.
+
+Changes to TPS Agent
+
+The Harvester will populate the new tables in the Oracle database: there may
+be several entries for each FAD code.
+
+Daily Processing
+
+For each outlet that is harvested TPS Agent will process the Transaction
+Stream Control Totals from message store and will populate the Daily
+Transactions Totals table in the Oracle database.
+
+Any transaction which it cannot harvest (because of invalid data) will be
+written to the Exception Messages table (see section 4.3.4).
+
+Any Transaction Error detected by the counter (see section 4.1.3) will also be
+written to the Exception Messages table (see section 4.3.4).
+
+Processing of Cash Account Data
+For each outlet that is harvested TPS Agent will:
+
+# process Weekly Cash Account Stream Control Total(s) from message
+store to populate the Cash Account Total Lines table in the Oracle
+database
+
+# process Office Stock Holding Control Total(s) from message store to
+populate the Stock Detail Total Lines table in the Oracle database
+
+Any line which it cannot harvest (because of invalid data) will be written to the
+Exception Messages table (see section 4.3.4).
+
+Any reconciliation error detected by the Counters (see 3.4 above) will be
+written to the Control Exceptions table.
+
+COMMERCIAL IN CONFIDENCE Page 19 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.5
+4.5.1
+
+4.5.2
+
+4.5.3
+
+Changes to TPS Host
+
+Daily Processing
+For each outlet, TPS Host will
+«@ Add up number of EPOSS transactions which have been harvested
+
+¢@ Add up absolute value of transaction quantity field in the harvested
+transactions
+
+«@ Add up absolute value of transaction sale value field in the harvested
+transactions
+
+«@ Compare calculated totals against the control totals in the Daily
+Transaction Totals total
+
+¢@ Output an exception report for those outlets which don’t balance
+containing both sets of totals for each outlet (see 4.6.1 below)
+
+¢ Output an exception report of exception transactions reported by the
+Harvester (see 4.6.2 below)
+
+NOTES:
+
+1. For control purposes a reversal will be treated in the same way as the
+transaction being reversed. E.g. if the original transaction was for quantity
+6 at a sales value of £1.20, then the combination of the reversed and
+reversal transactions would increment the number of transactions by 2,
+transaction quantity by 12, and sales value by £2.40.
+
+2. “Event” transactions will be ignored from the totals
+
+Processing of CAP Stream Control Totals
+
+For each outlet, TPS Host will
+
+@ Add up number cash account lines which have been harvested
+
+«@ Add up absolute value of cash account line
+
+«# Compare calculated totals against Weekly CAP Stream Control Totals
++
+
+Output an exception report for those outlets which the Host detects as not
+balancing (see 4.6.3 below)
+
+¢@ Output an exception report for those outlets which Counter has reported
+as not balancing (see 4.6.4 below)
+
+« Output an exception report of exception cash account lines reported by
+the Harvester (see 4.6.2)
+
+¢ Output an exception report of outlets where payment and receipt
+totals are not equal (see 4.6.5).
+
+Processing of Office Stock Holding Control Totals
+For each outlet, TPS Host will
+
+@ Add up number of stock detail lines
+
+¢ Add up absolute quantity of stock detail lines
+
+COMMERCIAL IN CONFIDENCE Page 20 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.6
+
+«@ Add up absolute value of stock detail lines
+
+@ Compare calculated totals against Weekly Office Stock Holding Control
+Totals
+
+Output an exception report for those outlets which the Host detects as not
+balancing (see 4.6.3 below)
+
+Output an exception report of exception stock detail lines reported by the
+Harvester (see 4.6.2)
+
+Exception Reports
+
+The following reports will be produced by the TPS Host:
+« Host Detected Transaction Control Errors
+
+« Harvester Detected Errors
+
+« Host Detected Cash Account Control Errors
+
+« Counter Detected Reconciliation Errors
+
+¢ Host Generated Cash Account Line Comparisons Report
+
+All these reports will be routed to the Business Support Unit within ICL
+Pathway who will investigate each error. Any lost / missing transactions will
+be communicated to POCL.
+
+COMMERCIAL IN CONFIDENCE Page 21 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.6.1
+
+4.6.2
+
+4.6.3
+
+Host Detected Transaction Control Errors
+
+This report is produced daily showing details for any outlet where the control
+totals for the transactions output by the Host to POCL TIP do not match the
+Daily Transaction Totals calculated by the Counters. The following data is
+reported for each exception:
+
+« FAD Code
+
+@ Trading Date
+
+¢ Control Totals calculated by Host
+Control Totals calculated by Counter
+
+An “END OF REPORT” message will appear at end of the report even if there
+are no errors reported.
+
+Message Store Errors
+
+This report is produced to list exception conditions detected by the Harvester
+and/or Counter when failing to process one of the messages in message
+store. The following data is reported for each exception:
+
+«@ FAD Code
+
+@ Trading Date
+
+@ Transaction Time
+
+# Content of message
+¢@ Reason for Rejection
+
+An “END OF REPORT” message will appear at end of the report even if there
+are no errors reported.
+
+Host Detected Cash Account Control Errors
+
+This report is produced daily showing details for any outlet where the Control
+totals for the number of entries on the Cash Account output by the Host to
+POCL TIP do not match the Control Totals calculated by the Counters.
+
+The following data is reported for each exception:
+FAD Code
+Trading Date
+Cash Account Period
+
++
++
+
++
+
+« Absolute Control Totals for Cash Account Lines calculated by Host
+
+@ Absolute Control Totals for Cash Account Lines calculated by Counter
+¢@ Absolute Control Totals for Stock Detail Lines calculated by Host
+
+«@ Absolute Control Totals for Stock Detail Lines calculated by Counter
+
+An “END OF REPORT” message will appear at end of the report even if there
+
+COMMERCIAL IN CONFIDENCE Page 22 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+4.6.4
+
+4.6.5
+
+are no errors reported.
+Counter Detected Reconciliation Errors
+
+This report is produced daily showing details for any outlet where the
+accumulated Daily Transaction Control totals for the cash account period do
+not match the totals on the Cash Account produced by the Counters.
+
+The following data is reported for each exception:
+
+«# FAD Code
+
+@ Trading Date
+
+«# Cash Account Period
+
+«@ Cash Account Table Number
+
+«# Cash Account Details calculated by Counter
+
+¢@ Control Totals for Cash Account calculated by Counter
+
+CA Table Number “XX” will be used to report control totals for exception
+transactions that do no map against a valid CA Table entry.
+
+An “END OF REPORT” message will appear at end of the report even if there
+are no errors reported.
+
+Host Generated Cash Account Line Comparisons Report
+
+This report is produced daily showing details for any outlet which has
+produced a Cash Account where the totals for payments (CA line 1700)
+and receipts (CA line 700) are not equal, or when either is not present.
+
+The following data is reported for each exception:
+« FAD Code
+Trading Date
+
++
+
+«@ Cash Account Period
+
+«@ Cash Account Line Number
++
+
+Amount
+
+COMMERCIAL IN CONFIDENCE Page 23 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+Data Flow Diagrams
+
+Daily Processing
+
+The following diagram illustrates the data flow of the daily reconciliation
+processing:
+
+« Counter End of Day will process the transactions in Message Store and
+generate additional messages for Daily Transaction Control Totals and
+Daily Cash Account Control Totals
+
+« Amessage will also be written to Message Store for any transaction
+which cannot be mapped into one of the cash account tables in the Daily
+Cash Account Control Totals
+
+The Daily Transaction Control Totals will be harvested and passed
+through to TPS Host where they will be compared against the transactions
+output to TIP. Any discrepancy will be reported as Host Detected
+Transaction Control Errors
+
+@ Any transactions which cannot be extracted by the Harvester will be
+posted to an error table in the host database. This will also contain
+Counter Detected Transaction Errors. This table will be processed by the
+host and they be reported as Message Store errors.
+
+COMMERCIAL IN CONFIDENCE Page 24 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.: PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+Post OFFICE
+
+‘Transactions
+
+@_]1PS Daily Processing
+‘Tes
+
+Daly Tans er Detected
+Transaction Cento Totals
+
+Counter Detects
+a Errors
+
+Message Store
+Erore
+
+Host Detected Tansactx
+_ Conti Erore oo
+
+1
+
+T-SYSTEM BUSINES eon)
+ANON
+
+COMMERCIAL IN CONFIDENCE Page 25 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Ref.:  PI/DES/002
+
+iliati Version: 0.8
+Reconciliation Controls Date. 22/12/99
+
+5.2
+
+Cash Account Processing
+
+The following diagram illustrates the data flow at the time of Cash Account
+Period rollover
+
+@ The Counters will generate additional control messages representing the
+Cash Account Lines and Stock Details
+
+@ Counter End of Day will compare the Cash Account against the
+accumulated totals for the Daily Cash Account Control Totals. Any
+reconciliation errors are reported to Message Store
+
+¢ Counter Detected Reconciliation Errors will be harvested and passed
+through to the TPS Host where they will reported
+
+# The Control Messages for the Cash Account Lines and Stock Details will
+be harvested and passed through to TPS Host where they will be
+compared against the Cash Account Details output to TIP. Any
+discrepancy will be reported as Host Detected Cash Account Control
+Errors
+
+« Any Cash Account Line or Stock Details Line which cannot be extracted
+by the Harvester will also posted to an error table in the host database.
+This table will be processed by the host and they be reported as Message
+Store errors.
+
+COMMERCIAL IN CONFIDENCE Page 26 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP
+Reconciliation Controls
+
+Ref.:
+Version:
+Date:
+
+FUJ00118194
+FUJ00118194
+
+PI/DES/002
+0.8
+22/12/99
+
+fol ean cant Praca
+
+[aleenomr ) (raileso )
+lt comnaccouPaod Ralivehe Cour E00 fooning Roovr compares Cash
+Scene eos resage se cag ore sans be scurs Cres Toe (ang,
+
+Fat iasageoeacrcng ens SR rs dy esa er erga
+
+imey co
+
+crete ly Caan
+sro ara Ze cont un
+pore, I Ret
+/ /
+
+ia i aaa
+
+Snes fies I Sais eter Dea
+fais \ Serochten fron
+
+——
+
+asso Soe Es
+
+teitdeeesea Séeoreason Eros
+
+az nso tn
+
+COMMERCIAL IN CONFIDENCE
+
+Page 27 of 41
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls Ref: PI/DES/002
+
+Version: 0.8
+Date: 22/12/99
+
+FUJ00118194
+FUJ00118194
+
+REPORT LAYOUTS
+
+Host Detected Transaction Control Errors
+
+° ° ° ° ° ° ° ° ° 1 1 1 1
+1 2 3 4 5 6 7 8 9 ° 1 2 3
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012
+
+TPS RECONCILIATION REPORTS RUN DATE / TIME: dd/mm/yyyy hh:mm:ss PAGE NO: 22229
+PROGRAM: NNNN
+
+Host Detected Transaction Control Errors
+
+Outlet Trading Date Number Absolute Quantity Absolute Value
+XXXXXX dd/mm/yyyy TPS Total XXXAXXXX XXXAXKXXXX XXXXXXAXXX
+counter Total so0o0000 soounnEI0R yosnno0000.
+soon00 d/mn/yyvy TPs Total 2200000 22220, yonnn90o00
+counter Total soon sooo soxmnan0n
+
+*** END OF REPORT ***
+
+Notes
+The report details lines will be in the following sort sequence:-
+Ascending Outlet / Trading date / Transaction Date
+
+COMMERCIAL IN CONFIDENCE Page 28 of 41
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls Ref: PI/DES/002
+
+Version: 0.8
+Date: 22/12/99
+
+FUJ00118194
+FUJ00118194
+
+6.2
+
+Message Store Errors
+
+° 0 0 0 0 0 ° ° 0 1 1 1 1
+1 2 3 4 5 6 7 8 9 ty) 1 2 3
+
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012
+
+TPS RECONCILIATION REPOE RUN DATE / ‘TIME: dd/mm/yyyy hhimm:ss PAGE NO: 22229
+
+PROGRAM: NNNN
+
+Message Store Errors
+
+Outlet ‘Trading Transaction Transaction Reject Message
+Date Date Time Reason
+XXxXxxxX — dd/mm/yyyy dd/mm/yyyy hh:mm:ss AXXXAKXXXKKAXMAKAR — KXXMAKXNMAKNAAKKNHAKKH KAA H HAA H HH KH HHH A KKH HHI HH RHA,
+
+HXKXXKANA NAA AKAKAXARAAA HA HH KKK KKK N AHHH HH KK KKK HHH HHI
+HXKXXKAN AK AHH KKKKKAA AH HHH KKK KAKA HHH HH HHI II RHA HH HHI II
+
+xxxxxx — dd/mm/yyyy dd/mm/yyyy hh:mm:ss AXXXAMAKXXAKKXMAKK — KXXM KKH AKA AAR HAKKAR HHH HARE HRI HHH HRI HH HI,
+HK KAKK AAR K HARA HARK HARA HK RH HK RK HHH HH KRHA HERI HK ERI HIE,
+XXX KKAKX KAKA AA KKK HK KKK HH RH HK RH HK REA HK KKH HK KH HH RRA HI RK HHI,
+
+HXXXXAAAAAK AKA KK AXAAAAAAAA AA KKK KAA HK KKH HAHAHA KI
+
+*** END
+
+Notes
+
+COMMERCIAL IN CONFIDENCE Page 29 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: Bypesioo2
+ersion: E
+
+Date: 22/12/99
+
+The report details lines will be in the following sort sequence:-
+Ascending Outlet / Trading date / Transaction Date / Transaction Time
+
+COMMERCIAL IN CONFIDENCE Page 30 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: Bypesioo2
+‘ersion: E
+Date: 22/12/99
+
+6.3 Host Detected Cash Account Control Errors
+
+° ° 0 0 0 0 ° ° ° 1 1 1 1
+1 2 3 4 5 6 7 a 9 0 1 2 3
+
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012
+
+s PAGE NO: 22229
+
+TPS RECONCILIATION REPORTS RUN DATE / TIME: dd/mm/yyyy hh:mm
+PROGRAM: NNNN
+
+Host Detected Cash Account Control Errors
+
+outlet ading Date CAP Number Number Absolute Quantity Absolute Value.
+KXXXXX dd/mm/yyyy xx CAC Lines - TPS Total XXXXKXXX XXXXKXXXXK
+CAC Lines - Counter Total XXXXKXKX XXXXKXXXXX
+STX Lines - TPS Total XXXXKXKX AXXXAXXXXX XXAKXXXXX
+STX Lines - Counter Total XXXXKXXX AXXXAKXXRX XXXKKXXKX
+XXXXXX dd/mm/yyyy xx CAC Lines - TPS Total XXXXKXKX XXXXKKXAX
+CAC Lines - Counter Total XXXXKXKX XXXXAXXXAX
+STX Lines - TPS Total XXXXXXKX AXXXAXXXRX XXXAAXXXAX
+STX Lines - Counter Total XXXXXXXX XXXXXXXXXX XXXXXXXXXK
+
+*** END OF REPORT ***
+
+COMMERCIAL IN CONFIDENCE Page 31 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: Bypesioo2
+ersion: E
+
+Date: 22/12/99
+
+Notes
+The report details lines will be in the following sort sequence:-
+Ascending Outlet / Trading date / Transaction Date
+
+COMMERCIAL IN CONFIDENCE Page 32 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: iia
+‘ersion: E
+Date: 22/12/99
+6.4 Counter Detected Reconciliation Errors
+° 0 0 0 ° ° 0 0 0 1 1 1 1
+1 2 3 4 5 6 7 8 9 0 1 2 3
+
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012
+TPS RECONCILIATION REPORTS RUN DATE / TIME: dd/mm/yyyy hh:mm:ss PAGE NO: 22229
+PROGRAM: NNNN
+
+Counter Detec
+
+Reconciliation Errors
+
+outlet Trading Date CAP Number CAP Table Number Signed Value Total
+
+KXXXXX dd/mm/yyyy xx xx Cash Account XXXXKXXX XXXXXKXXXX
+control XXXXKXKX XXXXAXXXXX
+
+AXXXXX da/mm/yyyy xx xx Cash Account XXXXKXXX AXXXAKXXRX
+control XXAKXAXX AXXXKKXXRX
+
+sss END OF REPORT ***
+Notes
+
+The report details lines will be in the following sort sequence:-
+Ascending Outlet / Trading date / Transaction Date
+
+COMMERCIAL IN CONFIDENCE Page 33 of 41
+FUJ00118194
+FUJ00118194
+
+Logical Design for EPOSS/TIP Reconciliation Controls Ref: PI/DES/002
+Version: 0.8
+
+ICL Pathway
+Date: 22/12/99
+
+6.5 Host Generated Cash Account Line Comparisons Report
+
+TPS RECONCILIATION REPORTS RUN DATE/TIME: 17/12/1999 16:29:50
+
+HOST GENERATED CASH ACCOUNT LINE COMPAR
+
+Org Unit Id Group Id Trading Date CAP Line No Line Name Amount
+
+15950 501680 29/12/1999 40 700
+
+NULL 1700 Paymen
+
+442496.98
+
+17924 7261 29/12/1999 40 700 Receir
+
+1700 Payments Total Not Received
+
+Total Number of records = 2
+
+*** End of Report ***
+
+COMMERCIAL IN CONFIDENCE Page 34 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP Reconciliation Controls Ref: PI/DES/002
+
+Version: 0.8
+
+Date: 22/12/99
+
+FUJ00118194
+
+FUJ00118194
+
+7. Failure Scenarios
+
+This section describes how the Reconciliation Process will function under various failure scenarios.
+
+Failure Condition
+
+Scenario when failure occurs prior to
+Initiation of Process
+
+Scenario when failure occurs during the
+Execution of Process
+
+Scenario when failure occurs for
+protracted period
+
+1. End of Day -
+Non gateway
+node failure
+
+Note that the most
+common scenario
+for this is the
+Postmaster turning
+off the power to an
+unused counter PC.
+
+End of Day will run in the nodes which
+are running::
+
+@ Private end of day markers will be
+written for each live node
+
+@ No public end of day markers are
+written
+
+@ No Daily Transaction Control Totals
+written
+
+@ No Daily Cash Account Control
+Totals written
+
+@ No CA Reconciliation is carried out if
+it is a Cash Account day
+
+@ No transactions are harvested
+
+@ No transaction details are output to
+TIP.
+
+If the node is restored before midnight
+(local time) EOD will run as normal for
+that day. It may be that such “late EODs”
+will not be harvested until the next day
+since the EODs may miss the 20:30 TPS
+harvester cut-off time. (See also 4 - Wan
+failures)
+
+If a non -gateway node fails whilst EOD
+is running then EOD fails to complete
+and
+
+@ No private end of day markers will be
+written for node that dies
+
+@ No public end of day markers are
+written
+
+@ No Daily Transaction Control Totals
+written
+
+@ No Daily Cash Account Control
+Totals written
+
+@ No CA Reconciliation is carried out if
+it is a Cash Account day
+
+@ No transactions are harvested
+
+@ No transaction details are output to
+TIP.
+
+If the node is restored before midnight
+(local time) EOD will run as normal for
+that day. It may be that such “late
+EODs” will not be harvested until the
+next day since the EODs may miss the
+20:30 TPS harvester cut-off time. (See
+also 4 - Wan failures)
+
+Whilst node is down:
+
+@ No private end of day markers will be
+written for dead node
+
+@ No public end of day markers are
+written
+
+@ No Daily Transaction Control Totals
+written
+
+@ No Daily Cash Account Control
+Totals written
+
+@ No CA Reconciliation is carried out
+@ No transactions are harvested
+
+@ No transaction details are output to
+TIP.
+
+Note that if a node is down when EOD is
+attempted on the gateway no further
+attempt to write EOD will be made until
+“tomorrow's EOD time”
+
+When the node is restored a private
+EOD marker will be inserted at the
+normal EOD time.
+
+System recovers when all nodes restored
+as described below.
+
+COMMERCIAL IN CONFIDENCE
+
+Page 35 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP Reconciliation Controls Ref:
+
+Version: 0.8
+
+Date: 22/12/99
+
+PI/DES/002
+
+FUJ00118194
+FUJ00118194
+
+If node is restored after midnight EOD
+will run on the day it is restored at the
+normal time for EOD
+
+If node is restored after midnight EOD
+will run on the day it is restored at the
+normal time for EOD
+
+2. End of Day -
+Gateway node
+failure
+
+End of Day will not run if gateway server
+is down:
+
+@ No public end of day markers are
+written
+
+@ No Daily Transaction Control Totals
+written
+
+@ No Daily Cash Account Control
+Totals written
+
+@ No CA Reconciliation is carried out if
+it is a Cash Account day
+
+@ No transactions are harvested
+
+@ No transaction details are output to
+TIP.
+
+If the node is restored before midnight
+(local time) EOD will run as normal (see
+above)
+
+If node goes down then end of day will
+fail:
+
+@ No public end of day markers are
+written
+
+@ No Daily Transaction Control Totals
+written
+
+@ No Daily Cash Account Control
+Totals written
+
+@ No CA Reconciliation is carried out if
+it is a Cash Account day
+
+@ No transactions are harvested
+
+@ No transaction details are output to
+TIP.
+
+If the node is restored before midnight
+(local time) EOD will run as normal (see
+above)
+
+As above
+
+System recovers when all nodes
+
+restored:
+
+@ Public end of day markers will be
+inserted at appropriate places
+
+@ Daily Transaction Control Totals
+written for each end day that node
+was down
+
+@ CA Reconciliation is carried out if it is
+a Cash Account day
+
+@ = Daily Cash Account Control Totals
+written for each end day that node
+was down
+
+@ All missing days will be harvested
+
+@ Daily Transaction Control Totals will
+be checked by TPS Host
+
+Transaction files will be passed onto TIP.
+(All “missing” Transactions will be
+harvested with the “correct” Trading
+date)
+
+3. End of Day -
+LAN failure
+
+Same as for failure in non-gateway node
+(see 1 above)
+
+Same as for failure in non-gateway node
+(see 1 above)
+
+Same as for failure in non-gateway node
+(see 1 above)
+
+4. End of Day -
+WAN failure
+
+End of Day will run if WAN is down:
+
+@ End of Day will continue to run if
+WAN goes down:
+
+@ During period of WAN failure:
+
+COMMERCIAL IN CONFIDENCE
+
+Page 36 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP Reconciliation Controls
+
+Ref:
+Version: 0.8
+Date:
+
+PI/DES/002
+22/12/99
+
+FUJ00118194
+FUJ00118194
+
+This condition is not
+detected at the
+counter. It is only
+visible at the data
+Centre
+
+Public end of day markers will be
+inserted at appropriate places
+
+Daily Transaction Control Totals
+
+written
+
+Daily Cash Account Control Totals
+written
+
+Reconciliation checks will be carried
+out if CA day
+
+No transactions are harvested
+
+No transaction details are output to
+TIP.
+
+When WAN recovers:
+
++
+
+°
+
+All missing days will be harvested
+
+Daily Transaction Control Totals will
+be checked by TPS Host
+
+Transaction files will be passed onto
+TIP
+
+°
+
+°
+
+Public end of day markers will be
+inserted at appropriate places
+
+Daily Transaction Control Totals
+
+written
+
+Daily Cash Account Control Totals
+written
+
+Reconciliation checks will be carried
+out if CA day
+
+No transactions are harvested
+
+No transaction details are output to
+TIP.
+
+When WAN recovers:
+
+o
+
+°
+
+All missing days will be harvested
+
+Daily Transaction Control Totals will
+be checked by TPS Host
+
+Transaction files will be passed onto
+TIP
+
+°
+
+°
+
+Public end of day markers will be
+inserted at appropriate places
+
+Daily Transaction Control! Totals
+
+written
+
+Daily Cash Account Control Totals
+written
+
+Reconciliation checks will be carried
+out if CA day
+
+No transactions are harvested
+
+No transaction details are output to
+TIP.
+
+When WAN recovers:
+
+o
+
+°
+
+All missing days will be harvested
+
+Daily Transaction Control Totals will
+be checked by TPS Host
+
+Transaction files will be passed onto
+TIP.
+
+5. End of Day -
+Node rebuilding
+following failure
+
+N/A
+
+Node rebuilding for a non gateway node
+will have no effect on end of day and
+details will be harvested to TIP in the
+normal way
+
+Node rebuilding of gateway node will
+delay end of day processing until
+rebuilding is complete. Then end of day
+
+will
+
+run and harvesting will run as
+
+normal.
+
+N/A
+
+6. End of Day -
+
+N/A
+
+Messages are not physically committed
+until EOD has completed successfully.
+
+N/A
+
+COMMERCIAL IN CONFIDENCE
+
+Page 37 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: iia
+fersion: 0.
+Date: 22/12/99
+Application l.e. When the last message has been
+failure written to the message store.
+
+Service will automatically restart when
+the system is re-booted or the overnight
+reload of desktop takes place
+
+7. Cash Account
+Production and
+Rollover - Non-
+gateway node
+failure
+
+Cash Account Production can proceed on
+gateway node so long as:
+
+@ All stock units have been rolled over
+
+@ User says OK to proceed when
+warned that all nodes are not
+available
+
+But subsequent end of day will not run.
+
+Thus:
+
+@ Outlet will roll over and process as
+normal
+
+@ Cash Account will be produced
+
+@ Weekly Cash Account Control Totals
+written
+
+@ No cash account details will be
+harvested
+
+@ No cash account details will be
+
+output to TIP.
+
+@ Failure of a non-gateway node during
+the production of the cash account will
+cause Cash Account to fail
+
+@ However production of the Cash
+Account can be restarted on the gateway
+node: (or this node when back on line).
+
+@ But subsequent end of day will not
+run. Thus:
+
+@ Outlet will roll over and process as
+normal
+
+@ = Cash Account will be produced
+
+@ Weekly Cash Account Control Totals
+written
+
+@ No cash account details will be
+harvested
+
+@ No cash account details will be
+output to TIP.
+
++
+
+During period of node failure:
+
+Outlet can roll over and process as.
+normal (see column 1)
+
+Cash Account can be produced
+
+Weekly Cash Account Control Totals
+can be written
+
+No cash account details will be
+harvested
+
+No cash account details will be
+output to TIP.
+
+When non-gateway node is restored the
+system recovers when next EOD is run:
+
+°
+
+All missing cash account details and
+totals will be harvested
+
+Stock Holding and Cash Account
+Line Control Totals will be checked
+by TPS Host
+
+Cash account details will be output to
+TIP.
+
+CA Reconciliation is carried out if it is
+a Cash Account day
+
+COMMERCIAL IN CONFIDENCE
+
+Page 38 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls v Ref: Bypesioo2
+fersion: 0.
+Date: 22/12/99
+8. Cash Account I N/A CA production can proceed on any other I As for 7 above
+
+Production and
+Rollover
+gateway node
+failure
+
+node.
+
+As for 7 above.
+
+9. Cash Account I As for (7) above
+Production and
+Rollover - LAN
+failure
+10.Cash Account I During period of WAN failure: Same as column 1 During period of WAN failure:
+
+Production and
+Rollover - WAN
+failure
+
+@ Outlet will roll over and process as
+normal
+
+@ Cash Account will be produced
+
+@ Weekly Cash Account Control Totals
+written
+
+@ No cash account details will be
+harvested
+
+@ No cash account details will be
+output to TIP.
+
+When WAN recovers:
+
+@ All missing cash account details and
+totals will be harvested
+
+@ Stock Holding and Cash Account
+Line Control Totals will be checked
+by TPS Host
+
+°
+
+°
+
+Outlet will roll over and process as
+normal
+
+Cash Account will be produced
+
+Weekly Cash Account Control Totals
+written
+
+Weekly cash account reconciliation
+will be carried out at outlet
+
+No cash account details will be
+harvested
+
+No cash account details will be
+output to TIP.
+
+When WAN recovers:
+
+°
+
+°
+
+All missing cash account details and
+totals will be harvested
+
+Stock Holding and Cash Account
+
+COMMERCIAL IN CONFIDENCE
+
+Page 39 of 41
+ICL Pathway
+
+Logical Design for EPOSS/TIP Reconciliation Controls
+
+Ref:
+Version:
+Date:
+
+PI/DES/002
+0.8
+22/12/99
+
+FUJ00118194
+FUJ00118194
+
+@ Cash account details will be output to
+
+@ Line Control Totals will be checked
+
+TIP. by TPS Host
+@ = Cash account details will be output to
+TIP.
+11.Cash Account I N/A Node rebuilding for a non gateway node I N/A
+Production and will have no effect on CAP rollover and
+Rollover - details will be harvested to TIP in the
+Node rebuilding normal way
+following failure Node rebuilding of gateway node will
+delay CAP rollover until rebuilding is
+complete.
+12.Cash Account I N/A If these do not complete successfully, I N/A
+Production and then they can be re-invoked
+Rollover - Since harvesting is based on ‘trailer
+Application messages” written at the end of the
+failure process, then the harvester should only
+pick up the successfully completed
+Rollovers and cash Account reports.
+There are checks to prevent 2 Rollovers
+being done for the same week and 2
+cash Accounts to be produced.
+13. Agent & Harvesters consider the following types I N/A
+Harvester of failure :-
+processing - Riposte failures. If these failures are
+application “expected” failures such as Riposte has
+failure p
+
+died, then the agent will die leaving
+another instance of the agent to tidy up
+The chunk may well be marked as
+“Failed” (thus requiring manual
+intervention by CFM before recovery),
+since if Riposte has died it is likely that
+other instances of the agent would have
+
+COMMERCIAL IN CONFIDENCE
+
+Page 40 of 41
+FUJ00118194
+FUJ00118194
+
+ICL Pathway Logical Design for EPOSS/TIP Reconciliation Controls Ref: PI/DES/002
+Version: 0.8
+Date: 22/12/99
+the same problem
+Oracle failures. If these failures are
+“expected” failures such as Oracle
+having died then the agent will die
+leaving another instance of the agent to
+tidy up The chunk may well be marked
+as “Failed” (thus requiring manual
+intervention by CFM before recovery),
+since if Oracle has died it is likely that
+other instances of the agent would have
+the same problem
+Unexpected Oracle failures. These are
+assumed to be data failures, and so a
+message is logged to the Oracle
+database and reported by the Host (see
+5.2)
+14. Agent &
+Harvester
+processing -
+normal
+interface failure
+15.File transfer - I To be supplied To be supplied To be supplied
+application
+failure
+
+COMMERCIAL IN CONFIDENCE
+
+Page 41 of 41

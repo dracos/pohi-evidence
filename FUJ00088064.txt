@@ -1,0 +1,1227 @@
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Originator & Dept:
+
+Contributors:
+
+Internal Distribution:
+
+External Distribution:
+
+Approval Authorities:
+
+Platform Physical Design for the Secure Access Server
+Platform Physical Design Specification
+BI
+
+This document specifies the platform physical design for the Secure
+Access Server platform. Using Microsoft Terminal Server and
+SSH software, it provides a secure and auditable access mechanism
+between support groups and operational platforms. The support
+platforms will access the supported platforms through the Secure
+Access Server.
+
+APPROVED
+
+Kristine Neiras— IPDU DA
+
+Pathway Library and Reviewers
+Internal distribution only
+
+(See PA/PRO/010 for Approval roles)
+
+lame Position Signature Date
+[an Morrison IPDU Manager
+[Debbie Richardson IPDU Integration and Tes
+Manager
+(Alan D’ Alvarez IPTU Manager
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE Page: I of 1
+FUJ00088064
+
+FUJ00088064
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+0 Document Control
+0.1 Document History
+\Version No. Date [Reason for Issue [Associated
+(CP/PinICL
+0.1 26/9/02 Initial Draft
+
+0.2 Review Details
+
+Review Comments by: [24/10/2002
+
+[Review Comments to: Kristine Neiras
+
+Mandatory Review Authority
+
+Name
+
+Chief Architect
+
+TBD
+
+‘Security Development Manager
+
+ark Ascott *
+
+IPDU Security Design Authority
+
+Peter Robinson
+
+IPDU Resilience Design Authority
+
+Simon Fawkes
+
+Estate Management Manager (Colin Mills
+ITechnical Integration and Test Manager IDebbie Richardson *
+SSC Manager ik Peach *
+
+PIT (Christian Rota
+Optional Review / Issued for Information
+IASD Manager ITony Drahota
+
+ASD Security
+
+\Geoffrey Vane
+
+IASD Systems Management
+
+\Glenn Stephens
+
+Estate Management Development
+
+Peter Lawrowitsch
+
+Performance Design Authority
+
+james Stinchcombe
+
+(Maestro Schedule Development [Andy Scott
+Quality & Audit jan Holmes *
+SMC [an Bowen
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 2 of 1
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+\Core Services [Warren Welsh
+IPDU Audit Design Bryan Muir
+IIPDU Cryptography Design Will Dawson
+[Keith Simons
+IIPDU System Test (Chris Rayner
+( * ) = Reviewers that returned comments
+0.3. Associated Documents
+Reference Version (Date Title Source
+1 TD/ARC/001 (Technical EnvironmentPVCS
+Description
+2 TD/ARC/012 (Technical EnvironmentPVCS
+implementation for Release 2
+3 RS/REQ/022 Secure Role Definitions forPVCS
+SSECURENT Build
+4 NB/SDS/001 System Design Specification forPVCS
+the Network Banking)
+Application.
+5 TD/SDS/001 System Design Specification forPVCS
+letwork — Banking ServiceI
+Infrastructure Enhancements.
+6 NB/SDS/007 System Design Specification forPVCS
+etwork Banking End-to-End,
+Service
+(7 NB/SDS/006 System Design Specification forPVCS.
+etwork Banking Commodit;
+Products
+8 SY/SOD/009 Secure Support  SystemsPVCS
+Outline
+9 RS/DES/010 IKMS HLD IPVCS
+10 PA/TEM/001 {7.0 2/4/02 Fujitsu Services Document PVCS
+(Template
+11 RS/DES/082 Pathway Live Estate NT Server [PVCS
+james
+
+Unless a specific version is referred to above, reference should be made to the current
+
+approved versions of the documents.
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: 3 of I
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref:
+
+Version:
+
+COMMERCIAL IN-CONFIDENCE Date:
+
+SD/DES/224
+1.0
+24-Oct-2002
+
+FUJ00088064
+FUJ00088064
+
+0.4 Abbreviations/Definitions
+The following are any terms specifically included in this document.
+0.4.1 Abbreviations
+
+Abbreviation Definition
+
+ACDB AutoConfiguration Database
+
+ACF AutoConfiguration File
+
+APDU Application Products Delivery Unit
+
+ATE Automatic Targeting Engine
+
+BI3 Banking Increment 3 (stage 3 of the Network Banking Project)
+BOC Belfast Operations Centre
+
+BSD Berkley Software Design Inc
+
+BSF Boot Server File
+
+CHAP Challenge Handshake Authentication Protocol
+CNIM Counter Network Infrastructure Manager
+COTS Commercial Off The Software
+
+cs Pathway Customer Services
+
+DCAK Debit Card Service Audit Key, double length 3-DES symmetric key
+DCP Debit Card Project
+
+DCS Debit Card Service, changed to DCP
+
+DMZ De-militarised zone
+
+EFTPoS Electronic Funds Transfer at the Point Of Sale
+FAD Post Office Outlet unique identification number
+GPL GNU General Public License
+
+TETF Internet Engineering Task Force.
+
+IPDU Infrastructure Products Delivery Unit
+
+ISD Infrastructure Services Division
+
+KMA Key Management Application
+
+MS Microsoft
+
+MSS
+
+NWB Network Banking
+
+OBC Operational Business Change
+
+OCMS Outlet Change Management Service
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: 4 of I
+Fujitsu Services
+
+FUJ00088064
+
+FUJ00088064
+
+Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+ocP Operational Change Proposal
+
+OMDB Operational Management Database (database at the heart of the Tivoli
+System)
+
+PIN Pads Touch button pads for keying in a customers Personal Identification
+Number (PIN) - required for Network Banking.
+
+PKI Public Key
+
+POL Post Office Ltd
+
+PVCS Product Version Control System
+
+QoS Quality of Service (for the network)
+
+RDMC Reference Data Management Centre
+
+RMS Riposte Message Store
+
+SMC Systems Management Centre
+
+SMDB Systems Management Database
+
+SOD System Outline Design
+
+SAS Secure Access Server see SAS
+
+SSAS Secure Support Access Server
+
+SSC Systems Support Centre
+
+TID Terminal Identifier (for EFTPoS)
+
+TK Traffic Key
+
+TRC Tivoli Remote Console
+
+TS Terminal Server
+
+TSC Terminal Server Client
+
+TSS Terminal Server Server
+
+TWC TeamWare Crypto. Product used on Pathway to encrypt file store
+
+UAR Unattended reboot
+
+VNC Visual Network Computing
+
+VPN Virtual Private Network
+
+0.4.2 Definitions
+
+Term
+
+Definition
+
+Cygwin
+
+Cygwin is a UNIX environment for Windows. It consists of: a UNIX
+emulation layer providing substantial UNIX API functionality; a
+collection of tools which provide UNIX/Linux look and feel.
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE Page: 5 of 1
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref:
+Version:
+COMMERCIAL IN-CONFIDENCE Date:
+
+SD/DES/224
+1.0
+24-Oct-2002
+
+FUJ00088064
+FUJ00088064
+
+0.5 Changes in this Version
+
+\Version Changes
+
+1.0 ipdates from reviews.
+
+Submitted for approval.
+
+0.6 Changes Expected
+
+(Changes
+
+\Changes to the hardware and sofiware requirements during integration.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE
+
+Page: 6 of I
+FUJ00088064
+
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+0.7 Table of Contents
+
+1.0 INTRODUCTION..
+
+1.1 PURPOSE......
+1.2 READERSHIP.
+1.3 SCOPE..........
+1.3.1 Document Set
+1.3.2. Contents...
+
+2.0 OVERVIEW....
+
+2.1 BUSINESS CONTEXT.......
+2.2 TECHNICAL CONTEXT.
+
+23 ‘DE SIGN PRINCIPLES............. . seseeeneeeenetennsenneeeenee
+2.4 OVERVIEW OF SAS ARCHITECTURE
+
+3.0 HARDWARE.
+
+3.1 OVERVIEW...
+3.1.1 External Certification
+3.2 HARDWARE INVENTORY.
+3.2.1 Extra Hardware Items. see .
+3.3 SOFTWARE INTERFACES. 14
+3.3.1 Driver Software....
+
+4.0 SOFTWARE.
+4.1 OVERVIEW. 14
+5.0 SECURITY FACILITIES.
+
+5.1 ENCRYPTION SOFTWARE.
+5.2. WINDOWS OPERATING S)
+5.3. COMMUNICATIONS
+5.4 USABILITY FEATURES. 15
+
+6.0 RESILIENCE AND RECOVERY FEATURES. 15
+7.0 AUDIT PROVISION...
+
+7.1 FILE/OBJECT AUDITING...
+8.0 PLATFORM COMPONENT STRUCTURE.
+
+8.1 PLATFORM SOFTWARE Parts LIst
+8.2. PVCS Paris...
+
+9.0 POTENTIAL FOR CHANGE
+
+9.1 HARDWARE ENHANCEMENT
+9.2. SYSTEM SOFTWARE ENHANCEMENT...
+9.3 THIRD PARTY PRODUCT SOFTWARE ENHANC
+
+ENT,
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 7 of 1
+FUJ00088064
+
+FUJ00088064
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+9.4 APPLICATION SOFTWARE ENHANCEMENT. 18
+
+10.0 PLATFORM BUILD...
+
+11.0 PLATFORM MIGRATION..
+
+12.0 PLATFORM INTER-WORKING DEPENDENCIES
+
+APPENDIX L
+
+CONFIGURATION DETAILS. 20
+TBD. 7
+Disc configuratior
+Shares.....
+
+APPENDIX 2.......cce000e
+CHANGES REL $30.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 8 of 1
+FU.
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+FUJ00088064
+IJ00088064
+
+1.0 Introduction
+
+1.1 Purpose
+
+This document is the Platform Physical Design Specification for the Secure Access Server
+which provides a secure and auditable mechanism to those units that support the Horizon
+system. The document describes hardware and software contents for the platform. It is to be
+used in conjunction with the documents listed in section 0.3.
+
+1.2. Readership
+
+This document is intended for delivery unit personnel, and the support staff within Pathway
+and Core Services. It has been developed to give an overview of the platform design structure
+and the detailed contents of the specified platform. The intention is to enable developers to
+plan the development of new applications and to allow Core Services staff to support the
+platforms forming part of the Pathway solution. It also provides a list of those facilities
+included as part of the delivered solution, enabling formal Build and Validation of the release
+contents.
+
+1.3 Scope
+
+Refl provides an overall description of the program down to the level needed for each type of
+platform and its position within the system architecture. The detailed functions required as
+part of the specification of this platform are covered as part of [8].
+
+Several items of information within this document have been extracted from reference [8].
+
+1.3.1 Document Set
+
+This document forms part of the set that defines Pathway’s secure support environment. For
+further detail, the reader should refer to the documents in 0.3.
+
+1.3.2 Contents
+
+This document is organised as follows:
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 9 of 1
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+Section Contents
+
+Section 1 Introduces the document and its position within the document
+lset.
+
+Section 2 (Gives an overview of the context within which secure support
+loperates and a brief description of the architecture of secureI
+support in terms of its hardware and software.
+
+Section 3 [Describes the hardware components and architecture
+
+Section 4 [Describes the software components and architecture
+
+Section 5 [Describes the security facilities and provides a summary of their}
+operation.
+
+Section 6 [Describes resilience and recovery features.
+
+Section 7 [Describes the provisions for performing Audits in the server.
+
+Section 8 [Details the software contents in the form of tables of componentsI
++ table I describing the COTS applications purchased specificall
+for use on this platform, and table 2 listing those applications}
+\developed internally.
+
+Section 9 [Describes the potential for change both to the hardware andj
+software.
+
+Section 10 Lists any Platform build special requirements
+
+Section 11 [Describes the platform migration requirements (if any) and the}
+
+ethod by which they will be achieved.
+
+Section 12 [Describes any platform inter-working dependencies.
+
+Appendix [After Approval, where change applies only to components andI
+mot to the body of the document, eg version upgrade or additional
+WP, only the Appendix A and B will be circulated for comment}
+land information.
+
+[Appendix A Specific configuration detail.
+
+[Appendix B (Component changes for specific releases.
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE Page: 10 of 1
+FUJ00088064
+
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+2.0 Overview
+
+This section provides an overview of the design of secure support and the context in which it
+operates.
+
+2.1 Business Context
+
+Full details of the business context of the entire Horizon project are defined in [1]. This
+platform enhances the security and audit on support tasks required for the new Network
+Banking Service and Debit Card System at BI3 and $30.
+
+The introduction of this platform will overcome some of the security issues that have been
+under manual control, and so at risk from deliberate or unintentional actions by support staff.
+As a result of the lack of access restriction and audit by the support groups, there is the
+opportunity to perpetrate fraud and to make changes to the operational systems that will
+impact on the integrity, resilience and security of the systems and their data.
+
+2.2. Technical Context
+
+The documents in section 0.3 provide the technical context. Two platforms are present on
+each campus site. There are three main issues resolved in this platform.
+
+© Control access to operational platforms
+e Audit access and changes
+
+« Give remote access to tool sets on the operational platform
+
+2.2.1 Access
+
+All access to operational platforms will be controlled through the Secure Access Server. This
+is built using the Microsoft Windows 2000 system software which includes the Terminal
+Server products which monitor and restrict access to authorised roles with passwords from
+authorised platforms. The Secure Shell software (SSH) is present as a client on the Secure
+Access Server, affording access between the SSH servers on the operational platforms and the
+SSH clients on the support terminals.
+
+2.2.2 Audit
+
+All transactions conducted through the Secure Access Server are audited. A command
+logging service will create the audit logs in a predefined file. This data will be collected by the
+Audit system and from a known file.
+
+2.2.3 Tool sets
+
+Tool sets to manipulate the data and systems on the operational platforms is being provided by
+work packages to the SSH clients on those platforms and the support workstations. The
+active product on the SAS is a mechanism to allow the support users access to operational
+platforms.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 11 of 1
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+2.3 Design Principles
+
+The general design principles intended for deployment in all platforms, is the maximum re-use
+of existing hardware platforms when software upgrades are required. It is an intention that
+minimal new software shall be designed and written — maximum use of existing COTS
+applications shall be made. In order to assist the production of the integration of COTS
+applications and the ready production of what few applications are required, the Horizon
+system will by default, look to use applications written for use with Microsoft NT4.0, SPéa.
+Use of UNIX operating system and applications will be minimised.
+
+In order to provide a more resilient system, the Windows 2000 operating system has been
+chosen for the SAS platform. The facilities provided are limited to the SAS platform and all
+other platforms remain at their current operating system.
+
+2.4 Overview of SAS Architecture
+
+Ref [1] contains a detailed description of the entire Horizon architecture. Ref [8] provides the
+Secure Support System outline.
+
+! Campus
+
+SSC/SMC
+
+3.0 Hardware
+
+3.1. Overview
+
+The Fujitsu Primergy provides the base Secure Access Server platform. For resilience there
+are 2 SAS platforms at each campus site, in a separate security domain, accessed over the
+Pathway LAN. The SAS acts as a secure an auditable router between the support units and
+the operational platforms.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 12 of 1
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref:
+
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+SD/DES/224
+
+FUJ00088064
+FUJ00088064
+
+3.1.1 External Certification
+
+All hardware used on the Horizon project is certified by the suppliers, to be conformant to
+EN54014 as indicated by the presence of a “CE” mark. All platforms used shall be specified as
+
+Validated to meet the requirement of Microsoft, and shall be listed in Microsoft’s HCL.
+
+3.2 Hardware Inventory
+
+lachine Name
+
+[Fujitsu-Siemens Primergy F250 BU RH XEON Server
+
+anufacturer
+
+Fujitsu-Siemens
+
+IReference No.
+
+IS26361-K644-V302
+
+IProcessor/Speed
+
+IXEON DP Processor 1.8GHz
+
+0. Of Processors
+
+Memory fitted
+
+IS12kb
+
+ILAN controller
+
+Intel 10/100
+
+ISCSI controller
+
+[Fast-IDE controller
+
+(On-board Fast-IDE(ATA) controller for 2 x2 drives
+
+Hard Disc
+
+36GB, 10k, U160,hot plug, 1”
+
+(Graphics controller
+
+(On-board PCI graphics ATI 8Mb
+
+IPCI slots
+
+D-ROM/Writer
+
+CD-ROM, ATAPI
+
+[Floppy Disc
+
+(Option $2636 1-F2575-E1
+
+3.2.1 Extra Hardware Items
+
+[Quantity
+
+Description Reference No. Manufacturer
+
+1
+
+RAID ctrl, Ix U160)S26361-F2405-E32 IFujitsu-Siemens
+int/ext, 32Mb Adaptec!
+2100S
+
+Fast Ethernet 10/100TX 2}S26361-F2643-E1  IFujitsu-Siemens
+port IPsec
+
+Hard Disc 36GB,10kJSNP:SY-F2336E136Fujitsu-Siemens
+'U160,hot plug, 1” iP
+
+Flexi-bay Option FD IS26361-F2575-E1 — IFujitsu-Siemens
+
+Power Supply Upgrade/S26113-F453-E10 Fujitsu-Siemens
+400W(hot plug)
+
+Mounting kit 19” FSC\IS26361-F2734-E30 IFujitsu-Siemens
+
+racks £.F2x0/Hxx0
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE Page: 13 of 1
+FUJ00088064
+
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+1 Fans upgrade kit hot-plugiS26361-F2544-E1 — IFujitsu-Siemens
+redundant
+2 1Gb DDR-RAM PC 1600IS26361-F2550-E524IFujitsu-Siemens
+
+ECC
+
+3.3. Software Interfaces
+
+3.3.1 Driver Software
+
+Device Filename \Version No. (Comment
+TBD IAs required
+
+4.0 Software
+
+4.1 Overview
+
+Ref] provides the complete picture of the entire Horizon architecture, including the software
+content. The architecture of the Secure Access Server environment is shown below.
+
+The platform base software is Windows 2000. This supports the Terminal Server provided as
+part of the Windows 2000 Server software. The Open Secure Shell or OpenSSH facilities are
+provided by the COTS product which has been customised for Pathway’s use as part of the
+CYGWIN environment. The platform security will be based on an enhanced version of Secure
+NT Secure build and include Tivoli, Triage and Athene Acquire.
+
+Terminal Server is a product that can be configured to provide comprehensive access or denial
+options. It can be used to allow and deny access at specific times, by specific users, roles and
+through specific platforms and sub-nets to files, discs, platforms and devices. Some of these
+features will be used to support access between the support workstations and the operational
+platforms. The Command Logger will log all access and commands for future use by the
+Audit system.
+
+Each campus will have 2 Secure Access Servers, built to the same specification.
+5.0 Security Facilities
+
+5.1 Encryption Software
+No KMS keys will be used. TeamWARE Crypto is not used on the platform.
+
+5.2. Windows Operating System
+
+This platform is built with Windows 2000 Server with Service Pack 2 plus security hot-fixes.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 14 of 1
+FUJ00088064
+
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+5.3. Communications
+All communication is through the Campus 100Mbit LAN.
+
+5.4 Usability Features
+
+The service has been designed on Microsoft Terminal Server. Although this provides a GUI
+for interactive use, the system will not be used interactively except for SAS platform set up
+and maintenance. Users from SSC, SMG and ISD, will log on through the Terminal Server
+Client on the local Support Workstation, and be given access through the SSH, and through
+the Terminal Server profile to the target system, application or file.
+
+The system has system management requirements limited to support for Tivoli, which will be
+used to download new versions of the software and to monitor the Application Event Log
+(which is used as the system audit trail). It also provides a command logger file for use by the
+Audit Server.
+
+6.0 Resilience and Recovery Features
+
+6.1 Hardware Resilience
+
+Two Secure Access Servers are available on each Campus. There are no specific resilience
+features built into the systems.
+
+7.0 Audit Provision
+7.1 File/Object Auditing
+
+This platform is designed to provide Audit information on access by support personnel to the
+operational platforms. Command Logger will provide the files for the Audit Server to
+retrieve.
+
+Tivoli events will be raised.
+
+NB The event log production will correspond to the Windows 2000 system implementation
+not the Windows NT4 implementation. As events are automatically logged to Tivoli, the
+Event Logs will be cycled as in the standard server builds.
+
+8.0 Platform Component Structure
+
+8.1 Platform Software Parts List !
+
+' The tools/applications identified in this list have been sourced from the AS/REP/002 SY/SOD/009.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 15 of 1
+Fujitsu Services
+
+Platform Physical Design for the Secure Access Server Ref:
+
+FUJ00088064
+FUJ00088064
+
+SD/DES/224
+
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+Part Name [Version [Supplier Dependency
+
+Tivoli IBM Licence required
+
+Tivoli Generic ServiceI TBD may not worl
+
+Monitor with Windows 2000}
+
+Tivoli Desktop 3.7 IBM
+
+Tec Java Console 3.7.1 TBM
+
+MANTOOLS TBD may not worl
+with Windows 2000}
+
+MANEVENT Filter] TBD may not wor!
+
+Server with Windows 2000
+
+MANNTEP TBD may not worl
+with Windows 2000
+
+ServerView Fujitsu Siemens Delivered witl
+Server
+
+ServerStart Fujitsu Siemens Delivered witl
+Server
+
+Generic 2000 Platform] PIT New for 2000
+
+install routines
+
+Admin Tools including} Microsoft
+
+Adminpak (partial) I
+
+Browmon, Dommon,
+
+Netdom
+
+Internet Explorer 5.5 Microsoft
+
+Windows 2000 Server ISP2 Microsoft Licence with server
+purchase
+
+Windows 2000 Terminal] Microsoft Licence with server
+
+Server purchase Config)
+parameter
+
+SecureNT PIT
+
+Default File Security PIT
+
+Support tools — ResourceI PIT
+
+Kit
+
+Support tools -CYGWIN
+
+IPDU Estate Management
+
+Common File Set
+
+IPDU
+
+W2K Common File Set
+
+IPDU
+
+Under development
+
+SSH Client
+
+GNU -customised br
+IIPDU Estate Management
+
+Freeware
+SY/SOD/009
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: 16 of 1
+FUJ00088064
+
+FUJ00088064
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+SSH Server W2K GNU -customised br
+
+IPDU Estate Management
+Command Loggei IIPDU Estate Management
+Service
+Oracle Client Tools for7.3 Oracle Different to
+FJ Primergy Compaq
+Seagate Backup ExecI7.3 Seagate
+Admin Interface
+Support Tools WP IPDU
+Triage Client 3.1 IMetaquest Licensed
+Athene Acquire 17.30 Metron Global Licence
+
+8.2. PVCS Parts
+
+The structure is defined down to, but not including the level of individual files that make up
+the platform; maintenance of the file level structure is the responsibility of the relevant
+development teams.
+
+9.0 Potential for Change
+
+Potential for change is a measure of the ability of the Platform Service to adapt to changing
+requirements or to new technology. This platform is currently being developed.
+
+The following sections describe the facilities for changes to:
+© Hardware
+
+e System Software
+
+e = Third Party Product Software
+
+¢ Applications Software
+
+9.1 Hardware Enhancement
+
+This is a new platform and changes may arise during integration. Hardware purchases have
+been made to cover the life of the hardware, to protect against changes in manufacture.
+
+Hardware enhancements will only be permitted under rigid Change Control processes,
+following approval by the CCB. This includes all changes, whether they are to provide
+additional functionality or improved performance. The design aim is to minimise all such
+changes.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 17 of 1
+FUJ00088064
+
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+9.2 System Software Enhancement
+
+The software is aimed to be released at S30. Changes may occur in the development and
+integration phases. Any future enhancements will be the subject of formal Change Proposal,
+approved by the CCB in the normal way.
+
+9.3 Third Party Product Software Enhancement
+
+The software is aimed to be released at S30. Changes may occur in the development and
+integration phases of the Retail Logic products and other product software which could be
+accommodated within the development plans. Any other changes or future enhancements will
+be the subject of formal Change Proposal, approved by the CCB in the normal way.
+
+9.4 Application Software Enhancement
+
+The software is aimed to be released at S30. Changes may occur in the development and
+integration phases of the Retail Logic Products and other product software which could be
+accommodated within the development plans. Any other changes or future enhancements will
+be the subject of formal Change Proposal, approved by the CCB in the normal way.
+
+10.0 Platform Build
+
+This is one of the first Windows2000 implementations. Also the platform is a new server type
+which will require some specific build, configuration and integration scripts. An initial build
+has been produced and this will be enhanced as development progresses.
+
+11.0 Platform Migration
+
+This is a new platform at S30. Initial software delivery and the upgrading of software will be
+carried out using the Tivoli System Management services.
+
+12.0 Platform Inter-working dependencies
+
+Each of the servers has a dual port NIC. This enables the connections to the local and the
+remote Campus LAN.
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 18 of 1
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+
+Where there is no change to the body of the document, system concept or interaction with
+other platforms the changes to components, only the Appendixes showing the changes will be
+circulated for information and review.
+
+Appendix 1
+
+This section will be to capture any specific usage or configuration detail. It is hoped that the
+reviewers will define what would be useful, eg port configs, share names, file names for
+standard or static files.
+
+Operational Service
+
+Configuration details
+
+TBD
+
+Disc configuration
+Cc:
+
+D:
+
+TBD
+
+Shares
+
+C= system disc
+Support tools
+
+D=__ Pathway Applications
+Terminal Server user profiles
+Audit Logs
+Command Logs
+
+TBD
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 19 of 1
+FUJ00088064
+
+FUJ00088064
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+Appendix 2
+Changes rel S30
+
+Part Name [Version Supplier Dependency
+
+Tivoli BM Licence required
+
+Tivoli Generic ServiceI TBD may not worl
+
+Monitor with Windows 2000
+
+Tivoli Desktop 13.7 IBM
+
+Tec Java Console 3.7.1 TBM
+
+MANTOOLS TBD may not worl
+with Windows 2000}
+
+MANEVENT Filtey TBD may not wor!
+
+Server with Windows 2000
+
+MANNTEP TBD may not worl
+with Windows 2000
+
+ServerView Fujitsu Siemens Delivered witl
+Server
+
+ServerStart Fujitsu Siemens Delivered witl
+Server
+
+Generic 2000 Platform] PIT New for 2000
+
+install routines
+
+Admin Tools including} Microsoft
+
+Adminpak (partial) I
+
+Browmon, Dommon,
+
+Netdom
+
+Internet Explorer 5.5 Microsoft
+
+Windows 2000 Server ISP2 Microsoft Licence with server
+purchase
+
+Windows 2000 Terminal Microsoft Licence with server
+
+Server purchase Config)
+parameter
+
+SecureNT PIT
+
+Default File Security PIT
+
+Support tools — ResourceI PIT
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 20 of 1
+FUJ00088064
+FUJ00088064
+
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+Kit
+Support tools -CYGWIN IPDU Estate Management
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 21 of 1
+FUJ00088064
+
+FUJ00088064
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 24-Oct-2002
+Common File Set IPDU
+W2K Common File Set IPDU Under development
+SSH Client IGNU  -customised _ by; Freeware
+PDU Estate Management I SY/SOD/009
+SSH Server W2K GNU -customised — b
+IPDU Estate Management
+Command Loggei IIPDU Estate Management
+Service
+Oracle Client Tools for7.3 Oracle Different te
+FJ Primergy Compaq
+Seagate Backup ExecI7.3 Seagate
+Admin Interface
+Support Tools WP IPDU
+Triage Client 3.1 IMetaquest Licensed
+Athene Acquire 17.30 [Metron Global Licence
+Part Name [Version ‘Supplier Dependency
+Tivoli IBM Licence required
+Tivoli Generic Service}
+Monitor
+TeamWARE Crypto 4.0 Licence required
+ServerView Fujitsu Siemens
+ServerStart Fujitsu Siemens
+Generic 2000 Platform] New for 2000?
+install routines
+Windows 2000 Server ISP2 Microsoft Licence with server
+purchase
+Windows 2000 Termina! Microsoft Licence with server
+Server purchase
+SecureNT PIT
+Default File Security PIT
+Supporttools PIT TBD
+Common File Set IPDU
+W2K Common File Set PDU
+SSH Client IGNU customised _ by; Freeware
+
+© 2002 Fujitsu Services COMMERCIAL IN-CONFIDENCE Page: 22 of 1
+Fujitsu Services Platform Physical Design for the Secure Access Server Ref: SD/DES/224
+
+COMMERCIAL IN-CONFIDENCE
+
+Version: 1.0
+
+Date: 24-Oct-2002
+
+FUJ00088064
+FUJ00088064
+
+IPDU
+TBD
+Support Tools WP PDU
+Time Service 5.00.1399.1  IMicrosoft Licence with server
+Webtrends Security/4.1 IWebtrends
+Analyser Client
+Triage Client 3.2 IMetaquest Licensed
+Athene Acquire 17.30 [Metron Global Licence
+
+© 2002 Fujitsu Services
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: 23 of 1

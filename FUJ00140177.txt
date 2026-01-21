@@ -1,0 +1,2130 @@
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+Document Title:
+
+Document Type:
+
+Release:
+
+ABSTRACT:
+
+Document Status:
+
+ORIGINATOR &
+DEPT:
+Contributors:
+Reviewed By:
+
+Comments By:
+
+Comments To:
+
+Distribution:
+
+Business Incident Management Service High Level Design
+High Level Design
+N/A
+
+This document contains the High Level Design Specification for
+the Business Incident Management Service required to support
+the activities of Customer Services Management Support Unit in
+the area of resolving Horizon incidents.
+
+DRAFT
+
+Julie Slocombe, Infrastructure Products Delivery Unit
+
+Lesley Gourrier, Infrastructure Products Delivery Unit
+Paul Steed, SSC
+27/11/01
+
+Originator
+
+ICL Pathway Document Management
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence Page: 1 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+0.0 Document Control
+0.1 Document History
+Version No. I Date Reason for Issue Associated
+CP/PinICL
+0.1 14/01/00 Draft for review CP2352
+0.2 28/01/00 2° draft incorporating review comments and I CP2415
+POCL Reporting Changes.
+1.0 15/02/00 Incorporating final review comments.
+Ll 18/08/00 Draft for review. CP2628
+2.0 22/09/00 Incorporating final review comments.
+21 21/11/01 Discrepancy correction prior to handover to
+SSC
+0.2 Approval Authorities
+Name Position Signature Date
+P Dreweatt Manager, IPDU Design
+and Development
+M. Peach System Support Centre
+Manager
+0.3 Associated Documents
+Reference Version I Date Title Source
+PA/TEM/001 ICL Pathway Document I PVCS
+Template
+1 TD/REQ/003 I 1.0 15/11/99 I Requirements for a Business ICL Pathway
+Incident Management Service
+2 CS/SPE/008 1.0 05/01/99 I Reconciliation Exception ICL Pathway,
+Database APS/EPOSS Customer
+Services BSU
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents.
+
+0.4 Abbreviations/Definitions
+
+Abbreviation Definition
+APS Automated Payment Service
+BIMS Business Incident Management Service
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 2 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd Business Incident Management Service High Level Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+BSM Business Service Management
+EPOSS Electronic Point of Sale Service
+HAPS Host Automated Payment System
+HSH Horizon Service Helpdesk
+MER Manual Error Report
+MSU Management Support Unit
+NR2 New Release 2
+RED Reconciliation Exception Database
+SLA Service Level Agreement
+TDA Technical Design Authority
+TIP Transaction Information Processing
+0.5 Changes in this Version
+Version Changes
+0.2 As a result of meetings with POCL a set of changes has been
+
+identified and approved in CP2415. The changes will affect layout
+and content of forms and reports but have no effect on the design
+fundamentals. Consequently the only sections affected are 5.1
+through 5.4. The changes requested in the CP are listed below.
+
+e The service code field needs removing, whereas incident type
+remains the same / replaces the aforementioned field. The data
+for this field will be one of the following options: ‘APS,
+EPOSS, OBCS’.
+
+e ‘Exception Total’ needs changing to ‘Exception Value’.
+
+e Several new fields need adding under the ‘BIMS heading / area’
+are ‘Transaction Date’, ‘FAD’ and ‘CAP’ (these are non-
+compulsory fields).
+
+e Under the ‘Other References’ heading, ‘TIP reference’ needs
+changing to ‘TIP/TP/OSG Reference’.
+
+e Under the ‘System Incident References’ remove the ‘D’ from
+HSHD so that it is shown as ‘HSH’.
+
+e Liability heading to be re-titled ‘Transaction Liability’.
+e ‘Transaction credit’ field is to be removed.
+¢ Under settlement details:
+
+The heading ‘Investigation Cost Settlement’ is replaced with
+“Manual Error Report Charge’.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 3 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+e The fields below MER Charge require amending to the
+following:
+
+Number of chargeable MER
+MER Settlement Amount (replaces IC Settlement Amount)
+MER Invoice Number (replaces IC Invoice Number)
+MER Invoice Date (replaces IC Inv Date)
+e ‘Transaction’ heading requires changing to ‘Transaction Detail’.
+
+e Then a subheading adjacent to ‘Transaction Detail’ is required
+stating ‘Manual Error Report’, with a Yes / No facility.
+
+e All hard coded ‘Predefined Transaction’ fields to be removed
+and replaced by 20 ‘Definable Transaction’ fields.
+
+e For each ‘Definable Transaction’ that is listed, the user needs to
+be able to select the type which will be:
+
+e Transaction error
+
+e Cash account error (this could be done as a drop down where
+one of the 2 is selected).
+
+1.0
+
+Minor corrections for review comments.
+
+A new field, Txn Cost, has been added to the Transactions table and
+therefore to the transactions subform. The sum of the transaction
+costs for an incident is now used to populate the MER Set Amt field
+in the Incidents table. The TXN Error Type field now becomes
+redundant. A Charging Summary report has been introduced for
+MSU use.
+
+2.0
+
+None, approved version.
+
+21
+
+Correction of discrepancies between the HLD and the live system
+found during the handover process between IPDU and SSC. The
+document has also been reformatted with the latest Pathway
+Document Template to avoid the problem of the old ICL fonts not
+being present on individual PCs.
+
+0.6 Changes Expected
+
+Changes
+
+Requirements are being formulated for support of Network Banking Incidents.
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence Page: 4 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+0.7. Table of Contents
+
+1.0 INTRODUCTION..
+
+2.0 SCOPE...
+
+3.0 DESIGN PRINCIPLES
+
+4.0 REQUIREMENTS...
+
+4.1 FUNCTIONAL REQUIREME!
+Incident Logging.
+Incident Enquiry
+Progress Reporting...
+Reference & Static Data
+Internal Reporting
+
+Access
+
+Performance.
+Resilience...
+Service Levels.
+
+4.3. REQUIREMENTS FOR CP2628....
+5.0 SYSTEM COMPONENTS...
+
+5.1 APPLICATION COMPONENTS .
+5.1.1 Static Data Maintenance ..
+.1 BIMS Calendar Maintenance
+FAD Code Maintenance. 0
+Resolution Category Maintenance _ os
+Incident Type Maintenance............ ceceteeeeee .
+Incident Class and Investigation Cost Maintenance a
+Transaction Label Maintenance ..
+User Maintenance,
+5.1.2 Incident Maintenance.
+.1 Access Permissions
+Operational Details.......
+Basic Details — All Tabs...
+Incident Summary Tab
+Action Log Tab...
+5.1.2.6 Transactions Tab
+5.1.2.7 Affected Outlets Tab
+5.1.2.8 Settlement Tab
+5.1.2.9 Evidence Tab.
+5.1.3. Predefined Reports....
+5.1.3.1 SLA Status
+5.1.3.2 Liability Settlement
+5.1.3.3 Incident Report.
+5.1.3.4 Charging Details
+5.1.4 System Functions.
+5.1.4.1 " Incident Housekeeping
+5.2 INTERFACE
+5.2.1 User Interface - Menu Selection
+Top-level Menu...
+Second-level Menus
+5.2.2. Custom Menu Bat......
+
+Wan
+
+Qauk bi
+
+Ll
+1.1
+1d
+ll
+1.
+Ll
+11
+
+an
+
+S.A
+Si
+Sl
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 5 of 38
+FU.
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+FUJ00140177
+}J00140177
+
+§.3 DISTRIBUTED APPLICATION SERVICES.
+5.4 INFORMATION MANAGEMEN
+5.4.1 BIMS Database...
+54.1.1 Affected Outlets Table . . wo oo 24
+5.4.1.2 I Analysts Tab!
+5.4.1.3 BIMS Calendar Table.
+5.4.1.4 Evidence Boxes Table..
+5.4.1.5 Incident Classes Table..
+5.4.1.6 Incident Types Table
+5.4.1.7 Incidents Table
+5.4.1.8 Investigation Ci
+5.4.1.9 Logged Actions Table
+541.10 Outlets Table...
+54.1.11 PO Regions Tabl
+
+5.41.12 Resolution Categories Table 30
+S4113 Switchboard Items Table .. . oo coe 30
+541.14 Transactions Table 30
+S41.15 TXN Labels Table... 31
+
+$41.16 Table Summary.....
+BIMS Reporting
+External Reporting
+Internal Reporting .
+Liability Settlement
+SLA Status Report
+4.2.2.3 Charging Details Summary...
+WORKING SERVICES .
+5.6 PLATFORMS
+
+6.0 SYSTEMS MANAGEMENT...
+
+‘eport.
+
+7.0 APPLICATION DEVELOPMENT...
+
+8.0 SYSTEM QUALITIES.
+
+8.1 AVAILABILITY .
+8.1.1 Resilience
+8.1.2 Recovery.
+8.1.3 Support.
+
+8.2. USABILITY.
+
+8.3 FORMA
+
+8.4 SECURITY...
+
+8.5 POTENTIAL FOR CHA
+
+9.0 SOLUTION IMPLEMENTATION STRATEGY
+
+10.0 RISKS AND TIMESCALES.
+
+10.1
+10.2
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 6 of 38
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+1.0 Introduction
+
+The purpose of this document is to specify the High Level Design for the Business Incident
+Management Service to be implemented for Customer Services Management Support Unit
+(MSU). The requirements for the service are stated in the document ‘Requirements for a
+Business Incident Management Service’, [1]. The scope of these requirements is limited by
+CP2352. The design has been prototyped with the help of Angela Shaw of Customer
+Services MSU.
+
+2.0 Scope
+
+CP2352 states that it introduces the first phase of a 2-stage implementation of BIMS. Stage
+one of the implementation covers the functionality to support logging, tracking and hard-copy
+reporting of incidents. The solution is to be a direct replacement for the existing RED
+database. The second phase was to be covered by a further CP, requesting the
+implementation of a solution for delivery of reports to POCL. This second stage is not now
+expected to be implemented.
+
+CP2628 introduces changes to the reporting of transaction costs, following a change of
+procedure agreed with POCL.
+
+3.0 Design Principles
+
+A main priority for the TDA solution to the MSU’s requirements was to achieve minimum
+cost, whilst still providing an adequate service. To this end it was decided that the
+architecture for the service should be the same as for the existing RED database, i.e. a
+Microsoft Access database residing on a Customer Services server, subject to the existing
+access restrictions (see later section).
+
+A prototype has been developed as part of the design process. This was further developed to
+become a first version of the system.
+
+The original requirement to provide a report delivery facility is not now expected to be
+implemented. Should the requirement for electronic delivery of incident reports to POCL be
+revisited at a later date the solution should form part of a wider solution to cover all of
+MSU’s reports for POCL. This is outside the scope of the current version of the document.
+
+4.0 Requirements
+
+The following requirements have been extracted from the Requirements Catalogue in the
+requirements scope document [1]. Where a requirement has been limited by CP2532 or held
+back for later implementation a comment has been attached in italics.
+
+4.1 Functional Requirements
+
+4.1.1 Incident Logging
+
+a) A facility is required to enable the receipt, progress and resolution of incidents to be
+logged. Each incident must be uniquely identifiable for subsequent enquiry.
+
+b) It must be possible to attach evidence such as a scanned document to an incident.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 7 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design rcs
+Version: 2.1
+
+Company In Confidence Date: 21/11/01
+c) It must be possible to cross-reference incidents of a similar nature.
+4.1.2 Incident Enquiry
+a) It must be possible to view the entire history of an incident, including individual
+
+actions and final conclusion.
+
+b) It must be possible to group incidents into categories for subsequent analysis.
+c) It must be possible to monitor progress against a Service Level Agreement. A
+
+reminder must be issued on loading the system for any incidents that must be cleared
+by close of business that day.
+
+d) The new service must cut-over at the start of a calendar month. Information regarding
+APS and EPOSS incidents captured in the existing RED database from the start of
+NR2 does not have to be accessible via the new service but must be available for
+update of outstanding incidents and for viewing of old incidents.
+
+4.1.3 Progress Reporting
+
+a) The receipt, progress and resolution of an incident must be reported to POCL.
+Incident updates must be delivered on a daily basis, normally at the end of the
+working day, to HAPS(Farnborough), TIP(Chesterfield) and BSM(Sheffield).
+
+b) Provision must be made to replace the current practice of faxing/posting updates.
+With the volumes expected it will no longer be practical to deliver reports in this way.
+The MSU’s preferred method is for POCL to have read-only access to the database
+(or a copy) as no information is held that should not be seen by POCL. Alternatively,
+a solution where updates are posted to an intranet website to which POCL have access
+would be acceptable provided the extra work involved in transferring the information
+is minimal.
+
+This requirement is to be satisfied in the second stage of the implementation. In the interim, a hard-
+copy facility must be available to allow the current practice of posting updates to continue.
+
+c) It must be possible to carry out ad hoc enquiries by incident in order to answer
+immediate queries, e.g. telephone queries, data-protection queries.
+4.1.4 Reference & Static Data
+
+a) Where an incident is related to an outlet it must be possible to record the FAD Code
+and use it for subsequent analysis.
+
+b) It must be possible for MSU staff to maintain the static data tables, to introduce new
+analysis codes, etc., as necessary.
+
+c) A charge may be applied to incidents to cover investigation costs. An investigation
+cost base value needs to be held so that a new rate can be applied to an individual
+incident, where applicable, without the need for reprogramming.
+
+4.1.5 Internal Reporting
+
+a) A report of Liability settlements is required, showing invoice details where final
+liability has been assigned.
+
+b) An SLA Status report is required to enable performance against SLAs to be tracked.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 8 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+c) An ad hoc reporting facility is required to enable MSU staff to generate their own
+
+additional reports and enquiries. Access to the database from both Microsoft Access
+and Business Objects is required.
+
+4.2 Non-functional Requirements
+
+Note: the Audit and Security requirements included here were originally drawn up for RED.
+It has been confirmed that these requirements still stand and should also apply to BIMS.
+
+4.2.1 Audit
+
+It has been decided that the BIMS database should be included in the standard audit
+procedures. This needs to be taken into account in both the choice of platform and the system
+design.
+
+BIMS-IAR2_ All records of exceptions handled, investigated and resolved by MSU and
+recorded on BIMS must be retained for a period not less than 18 months.
+
+BIMS-IAR6 Each change or input to BIMS must be associated with the person carrying out
+the change or input.
+
+4.2.2 Security
+
+BIMS-IAR4_ The BIMS facility must be physically secure and access to it limited to those
+personnel specifically authorised.
+
+BIMS-IARS Logical access to the BIMS facility must be password controlled. Effective
+password management must be practised.
+
+4.2.3 Access
+
+a) The service must allow for multi-user access. This is necessary to cater for possible
+peaks in incident occurrence and for increased staffing levels in the event of
+significant increase in incident volumes during Roll Out.
+
+b) The client application should reside on the PCs of the individual users.
+The intention of this requirement was for provision of access to the service from the
+user’s PCs rather than from a standalone box. The requirement has been satisfied by
+placing the client application on the MSU server in a folder restricted to the
+authorised users. The application is then accessed by the users from their own PCs.
+This solution avoids having to load enhancements on several boxes and allow better
+sharing of queries, etc.
+
+c) Access to the database must be provided for use with Business Objects for MIS
+reporting purposes.
+4.2.4 Performance
+
+a) The service must be capable of supporting 10 users processing an estimated 70
+incidents per day at full Roll Out. Each incident may be updated an average of three
+times after creation, including final closure.
+
+b) A clear-down process must be provided to remove incidents which have been closed
+for 18 months.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 9 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+4.2.5 Resilience
+
+a) The MSU needs a properly supported service. The existing system is currently
+supported by staff with limited knowledge of Access.
+
+b) The service should provide for daily backups to ensure manageable levels of re-input
+effort in the event of system failure. For loss of the database alone, a restore to the last
+dump will be sufficient based on current volumes. They may need to put some kind
+of manual procedure in place to aid re-input should it be necessary.
+
+4.2.6 Service Levels
+
+a) The MSU feel they could cope for 2 days in the event of loss of the system. A longer
+period of downtime could cause a backlog that couldn’t be caught up. The impact of
+a loss of service would vary according to the type of incidents being reported. A
+series of incidents requiring lots of updates to HAPS would be a problem. A manual
+procedure has been defined for use in overload situations but this does have the
+disadvantage that detailed information for subsequent analysis will be lost.
+
+4.3 Requirements for CP2628
+
+The functional requirements are changed as a result of CP2628.
+
+e Transactions (MERs) for an incident may now be mixed, in that cash account errors and
+transaction errors may be logged for the same incident. The transaction error type is
+therefore redundant and can be removed from the screen.
+
+e There is now no requirement to add an indicator to the transaction record to show the
+transaction type.
+
+e An additional field is required against each individual transaction record, in order to hold
+the cost which will be entered manually. The value will not be defaulted to the next
+transaction.
+
+e The transaction (MER) amount for an incident is to be calculated as the sum of the
+transaction costs for the incident.
+
+e An additional monthly summary report for export to POCL is required, which lists all
+MERs for agreement.
+
+5.0 System Components
+
+5.1 Application Components
+5.1.1 Static Data Maintenance
+
+5.1.11 BIMS Calendar Maintenance
+
+A function will be provided to allow the BIMS Calendar table to be updated. Dates may be
+added and their associated details changed as required. If the details are changed after any
+reports have been run for the month in question it is the responsibility of the user to ensure
+that a replacement report is produced if required.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 10 of 38
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+Dates may be added automatically by clicking on the Add Dates button. A pop-up screen is
+displayed to enable an end date to be selected. Rows are then added to the table for each
+calendar date between the current highest date and the date selected. The columns are set to
+the default values defined below but may be amended as necessary. In particular the Day
+Status must be updated for holidays (*H’).
+
+Day Status “S’ (for Mon-Fri) or ‘W’ (for Sat & Sun)
+Day of Week Mon, Tue, Wed, Thur, Fri, Sat, Sun
+Cash Account Week 5199, etc.
+
+Month Text “99/01 Jan’, ete.
+
+Quarter “99/1”, etc.
+
+The value set in the Cash Account Week field is the same for Thursday to the following
+Wednesday. The value is determined for the current highest date and incremented each
+following Thursday. When the week number reaches 53 a message box is displayed asking
+whether the current year is a 53-week year. If the answer is ‘no’ the week number is set to 1
+and the year number incremented. If the answer is ‘yes’ the year is incremented
+automatically following week 53.
+
+5.1.1.2 FAD Code Maintenance
+
+This function allows new FAD codes to be added against their associated region code. FAD
+codes may also be deleted but only if there are no incidents recorded against it.
+
+5.1.1.3 Resolution Category Maintenance
+
+This function will enable new resolution categories to be added or changed. Categories may
+also be deleted provided there are no incidents that reference the category in question.
+
+5.1.1.4 Incident Type Maintenance
+
+This function will allow new Incident Types to be added or changed. It should be noted
+however that if a description is amended the change will apply to all previous incidents as
+well as new ones. A type may only be deleted if there are no Incidents or Incident Classes
+that refer to it.
+
+5.1.1.5 Incident Class and Investigation Cost Maintenance
+
+This function will allow Incident Classes and related Investigation Costs to be maintained. If
+there are Incident Classes related to an Incident Type but no incidents that reference the
+Incident Class, deleting the Incident Class will allow the incident type to be deleted.
+
+An investigation cost may be specified for an Incident Class, to be applied from a specific
+date. A cost may be deleted provided the effective date is in the future.
+
+5.1.1.6 I Transaction Label Maintenance
+
+This function will allow a set of labels to be maintained for use in formatting transaction
+information. It will be possible to delete a label from this table even if there are transactions
+on the system that reference it. The table provides a list of currently agreed headings which
+may change with time. It must be possible to take a label out of use by deleting it from the
+table whilst retaining its presence in any Incident for which it was valid.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 11 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.1.7 User Maintenance
+
+This function will allow the names of MSU analysts to be added to the Analyst table. The
+analyst name is recorded each time an update is made to an incident. The system knows the
+analyst’s NT Username, the table is used to translate it into his/her real name. It also defines
+the status of valid users, either Analyst or Supervisor. Some functions are accessible only to
+users with Supervisor status.
+
+5.1.2 Incident Maintenance
+
+5.1.2.1 Access Permissions
+
+Primary access to the service is via NT Username and password. In addition a user will only
+be allowed access to the function if his/her name has been set up in the Analysts table. This
+is needed so that the NT Username can be translated into a proper name when the system
+automatically records the analyst responsible for entering incident details.
+
+5.1.2.2. Operational Details
+
+The incident maintenance function comprises a single screen with a set of tabs giving access
+to the various sections of incident detail. The basic details of the incident appear on every
+tab. The first tab contains the summary information, including dates and references. The
+remaining tabs give access to the repeating information, namely logged actions, transactions,
+affected outlets, settlement information and evidence.
+
+Navigation through the incident data will be via a set of buttons with the following functions:
+
+New - create new incident;
+
+Cancel New - cancel incident being created;
+
+Get First - go to first incident;
+
+Get Previous - go to previous incident;
+
+Get Next - go to next incident (note this will not give a blank record
+at end of file but will remain at last record);
+
+Get Last - go to last incident;
+
+Find by Field - go to first record with the value specified in the field
+specified;
+
+Find next - go to next record with field value specified;
+
+Save - save the updates just made;
+
+Print - produce a print of the current incident;
+
+Export to Word - produces a Word document for the current incident.
+
+Exit - exit to main menu.
+
+These buttons are accessible from each of the tabs.
+
+On Entry to the maintenance function a pop-up screen appears listing any incident whose
+SLA expires today (see later paragraph, Last Day Reminder).
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 12 of 38
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.3 Basic Details — All Tabs
+
+The basic incident information listed below is shown on all tabs.
+
+BIMS Reference
+Incident Type
+Incident Class
+
+Originator
+
+Exception Value
+Transaction Date
+
+CAP
+
+FAD
+
+Status
+
+Resolution Category
+
+Version
+
+Last Updated
+
+Created
+
+Final Update Flag
+
+This is the Horizon Service Helpdesk Reference prefixed by
+“BE/’.
+A high-level code for grouping incidents, APS, EPOSS or
+OBCS.
+
+A more detailed code for grouping incidents both for analysis
+and for assigning investigation costs.
+
+Indicates the source of the incident report.
+
+Shows the total value of discrepancies associated with the
+incident, where appropriate.
+
+Date of the transaction(s) affected by the incident. May hold
+the date of a report if there are no transactions.
+
+Cash Account Period. This will be set automatically to the
+Cash Account Week held in the BIMS Calendar that
+corresponds to the Transaction Date.
+
+FAD Code to which the Incident relates if there is only one.
+May be used even if further affected Outlets are included.
+
+Shows whether the incident is still open or whether it has been
+closed. Also shows whether the fault was in the Horizon
+service.
+
+Can be used to describe the action taken as a result of resolving
+the incident, etc.
+
+Updated for each action logged against an incident.
+
+Shows the date the incident was last updated and the analyst
+responsible.
+
+Shows the date the incident was first logged on the system and
+the analyst responsible. (The date could be different from the
+received date if for example the system were unavailable at the
+time.)
+
+Set when the final update to be sent to POCL has been entered.
+(Note: the use of this field will have to be reviewed if POCL
+are provided with subsequent updates as a result of the stage
+two CP.)
+
+Where fields are updated automatically they are displayed in red and cannot be overwritten.
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence Page: 13 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.4 Incident Summary Tab
+
+Each of the reference fields can be set from this tab. A Service Level Agreement period can
+be entered, the SLA date being calculated automatically from the date received. The
+calculation takes into account non-working days, which are defined in the BIMS Calendar. If
+the SLA is suspended for any reason the SLA date is recalculated when the ‘unsuspend’
+action is logged.
+
+The dates in the Incident History column are all set via pop-up screens that are triggered
+when the related action is selected on the Action Log tab.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 14 of 38
+FU.
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+FUJ00140177
+}J00140177
+
+5.1.2.5
+
+Action Log Tab
+
+BIM S - Incident Maintenance
+
+This tab is the means of recording actions taken during the active life of the incident. The
+relevant action type is selected and any associated notes entered. For certain action types a
+pop-up screen appears to collect additional information. The analyst’s name and date/time of
+entry are inserted automatically. Access to the complete set of actions for an incident is via
+the navigation buttons.
+
+The actions provided are listed below. Where an action is described as requiring supervisor
+status the status of the user is checked against the Analyst table to ensure the correct authority
+
+is held.
+
+Describe Incident — allows additional information to be entered if Incident
+Class doesn’t fully describe it. Must be the first action used and can only be
+used once.
+
+Update Incident — used to record information gathered as the investigation
+proceeds. May be used at any stage after the incident has been described until
+it has been cleared.
+
+Suspend SLA — requires supervisor status. Used to suspend the Service Level
+Agreement where circumstances arise that have been agreed with POCL. A
+pop-up screen appears to capture the suspend date which defaults to today.
+This action cannot be used if an SLA period has not been set and cannot be
+used more than once. May be used at any stage after the incident has been
+described until it has been cleared.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 15 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+4. Unsuspend SLA — requires supervisor status. Restarts the SLA and
+
+recalculates the SLA date. Displays a pop-up screen as for Suspend SLA.
+This action cannot be used unless the SLA has been suspended and may only
+be used until it has been cleared. The unsuspend date may not be earlier than
+the suspend date.
+
+5. Set Final Update - sets the flag used to control printing of the ‘Final Update’
+text on the reports sent to POCL. May be used at any stage after the incident
+has been described up until it has been cleared.
+
+6. Clear Incident — the pop-up screen captures the date (default today) the
+incident was cleared. This action cannot be used if the incident SLA has bee
+suspended but not unsuspended. May be used at any time after the incident
+has been described up until the incident has been closed.
+
+7. Close Incident — pop-up screen captures the date the incident was closed,
+default today. This action cannot be used if the incident has not been cleared;
+may only be used once unless the incident has been re-opened.
+
+8. Re-open Incident — requires supervisor status. Clears the Cleared and Closed
+dates. This action cannot be used if the incident has not been closed or
+cleared; will reset the Final Update Flag and the Cleared and Closed dates.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 16 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.6 Transactions Tab
+
+This tab allows details of transactions related to the incident in question to be recorded. Up
+to 20 variable text fields may be entered each related to a variable label field. The labels can
+be selected from the user-maintained TXN Labels table or can be entered directly. Whilst the
+table provides a set of currently agreed headings which should normally be used, there may
+be occasions when an alternative is needed. For each new transaction after the first for an
+incident the label fields are defaulted from the previous transaction. A cost can be entered for
+each transaction. The sum of the costs for all transactions for the incident is used to populate
+the MER Settlement Amount on the Settlement tab.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 17 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.7 Affected Outlets Tab
+
+This tab allows details of outlets related to the incident to be recorded. A set of label/text
+fields have been provided to allow variable information to be stored.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 18 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.8 Settlement Tab
+
+The Settlement Tab allows entry of liability and settlement information for the incident.
+
+the transactions associated with the incident. Similarly the Number of Chargeable Errors is a
+count of the transactions for the incident. The other fields are entered by the user as they
+become available.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 19 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.1.2.9 Evidence Tab
+
+The Evidence Tab allows one or more pieces of evidence to be stored for an incident.
+Evidence can take the form of any file type for which viewing software is available on the
+user’s PCs, e.g. WORD, EXCEL, etc. A double click on the icon will load the appropriate
+application for viewing the file.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 20 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+§.1.2.10 Last Day Reminder
+
+This is a pop-up screen displayed on entry to the incident maintenance function which lists
+incidents whose SLA expires today.
+
+Last Day Reminder
+
+a a SCL
+
+seal Bihom vewot roe I Maven ire
+If the list is to long to deal with visually it can be printed using the print button.
+
+5.1.3 Predefined Reports
+
+A fuller definition of these reports is contained in the Information Management Section.
+
+5.1.3.1 SLA Status
+
+This report shows the status of all uncleared incidents. They are grouped into two categories,
+namely those which have failed the SLA and those which are still within their SLA period.
+The following information will be shown.
+
+HSH Reference
+
+Date Received
+
+Suspend Date (if present)
+Unsuspend Date (if present)
+SLA Date.
+
+5.1.3.2 Liability Settlement
+
+The report has two parameters, start and end date. Incidents which have been cleared
+between the parameter dates are grouped by Final Liability (POCL=>PW, PW or
+PW=>POCL) and the total number and value are shown for each group. Also the total
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 21 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+number and value of incidents cleared within the period is shown. Details shown for
+individual incidents are as follows.
+
+HSH Reference
+Date Received
+
+Date Cleared
+Provisional Liability
+Invoice Date
+Invoice Number
+Settled Amount
+
+5.1.3.3 Incident Report
+
+The Incident Report contains all the information to be communicated to POCL about an
+incident. It can be run either from the report menu or by clicking the print button on the
+Incident Maintenance screen. The report is divided into four sections. The first contains all
+the non-repeating information about the incident, classification details, date history,
+references, SLA and liability and settlement details. The second section lists the actions
+carried out, the third the transactions in error and the fourth the associated outlets.
+
+5.1.3.4 Charging Details Report
+
+The Charging Details Report lists all incidents cleared in a given month where a manual error
+report contains chargeable errors. It shows details of the number and value of transactions
+that generated the charge. The report is requested by entering month and year and so can be
+tun for historic as well as current data. It is output to a Word document to enable free-format
+text to be entered in the POCL Agreed column.
+
+5.1.4 System Functions
+
+5.1.4.1 Incident Housekeeping
+
+This function deletes any incidents that have been closed for more than 18 months, i.e. whose
+Date Closed is over 18 months ago. A message is displayed showing the number of incidents
+about to be deleted.
+
+The function will be initiated from the user menu. It will be the MSU’s responsibility to
+ensure that the service is not in use when the facility is actioned.
+
+5.2 Interface
+
+5.2.1 User Interface - Menu Selection
+
+5.2.1.1 Top-level Menu
+
+The application functions will be accessible via a series of menus. At the top level the main
+functional areas are as follows:
+
+1. Incident Maintenance
+2. Static Data Maintenance
+3. Predefined Reports
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 22 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+4. System Functions
+
+The final option on the menu will be to exit from the service completely. Access to Static
+Data Maintenance and System Functions will be restricted to users with Supervisor status.
+The menus will be accessible on exit from Incident Maintenance.
+
+5.2.1.2 Second-level Menus
+
+Selection of option 2 will display a second-level menu giving access to the individual static
+data maintenance functions:
+
+1, BIMS Calendar Maintenance
+2 FAD Code Maintenance
+3 Resolution Category Maintenance
+4. Incident Type Maintenance
+5 Incident Class Maintenance
+6 Transaction Label Maintenance
+7. User Maintenance
+The final entry on the menu returns the user to the Main Menu Screen.
+
+Selection of option 4 will display a second-level menu giving access to the housekeeping
+function:
+
+Incident Housekeeping
+
+The final entry on the menu returns the user to the Main Menu Screen.
+
+5.2.2 Custom Menu Bar
+The Access service will have a customised menu bar with the following sub-menus.
+
+File Save Record
+Print
+Print Preview
+Page Setup
+Compact Database
+Linked Table Manager
+
+Exit
+Edit Undo
+Cut
+Copy
+Paste
+
+Insert Insert Object
+
+Help Standard Access Help Facilities
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 23 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.3. Distributed Application Services
+N/A
+
+5.4 Information Management
+
+5.4.1 BIMS Database
+
+The Logical Data Model defined in the Requirements Specification, [1], will be implemented
+in the BIMS database by the following set of tables.
+
+LDM Entity: Database Implementation:
+
+Client Will appear only as a text field for an incident
+
+Evidence Box Evidence Boxes table
+
+BIMS Calendar Date BIMS Calendar table
+
+Incident Incidents table
+
+Incident Class Incident Classes table
+
+Incident Type Incident Types table, values now changed in line with
+service codes, i.e. APS, EPOSS and OBCS.
+
+Investigation Cost Investigation Costs table
+
+Logged Action Logged Actions table
+
+OLA Has reverted to SLA (service level agreement) and has been
+incorporated in the Incidents table.
+
+Outlet Outlets table with a link to the new PO Regions table.
+
+Resolution Category Resolution Categories table
+
+Service Removed, replaced by Incident Types
+
+Settlement Incorporated in the Incidents table.
+
+Transaction Transactions table
+
+The relationship in the original model between the Incident and Outlet entities has now been
+identified as many to many. This has resulted in the need for an additional table, Affected
+Outlets. Also three tables have been introduced for system control purposes, namely
+Analysts, TXN Labels and Switchboard Items.
+
+The content of each table is described below. The primary key of each table is highlighted.
+
+5.4.1.1 Affected Outlets Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+
+Volumes: Unknown, potentially several thousand.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 24 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+HSH Y Text I Reference assigned to the incident by
+Reference the Horizon Service Helpdesk.
+Code” Y Text 6 Code assigned to an outlet by the PO
+fe Accounting System.
+FlexID : N Long Int - This field is not used.
+User Label 1 N Text 25 Aset of free-format fields to allow
+User Text T WN Text 35 node information to be
+User Label 2 N Text 25
+User Text 2 N Text 25
+User Label 3 N Text 25
+User Text 3 N Text 25
+User Label 4 N Text 25
+User Text 4 N Text 25
+User Label 5 N Text 25
+User Text 5 N Text 25
+User Label 6 N Text 25
+User Text 6 N Text 25
+5.4.1.2 Analysts Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+
+Volumes:
+
+10.
+
+Username Y Text 12 NT logon id of the user.
+
+‘Analyst Y I Text 20 I Name of the analyst
+
+Type Y Text 10 Indicates status of the analyst. Analyst/
+Supervisor
+
+5.4.1.3. BIMS Calendar Table
+Used By: Business Objects Report
+
+Volumes: 365 per year.
+mmn/yy
+Date
+Day Status Y Text 1 Status of the day for SLA calculation I S — standard
+purposes. W - weekend
+H - holiday
+Day of week Y Text 4 Day of week text. MON, TUE, etc.
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence
+
+Page: 25 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+
+Cash Account Y Int 4 POCL Cash Account Week LYY-S3YY
+
+Week
+
+Month Text Y Text 9 Text used for the associated month. e.g. 98/08 Aug
+
+Quarter Y Text 4 Quarter of the year. e.g. 99/1
+
+5.4.1.4 Evidence Boxes Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+
+Volumes: Required for up to 10% of incidents, i.e. 2600.
+
+Evidence Box Y Long Int 4 Unique identifier for the table entry. Auto-number
+Id
+HSH Reference Y Text 11 Reference assigned to the incident by
+
+the Horizon Service Helpdesk.
+
+Evidence Box Y Ole Object - Used to store additional evidence in
+support of an incident.
+
+5.4.1.5 Incident Classes Table
+
+Used By: Static Data Maintenance, Incident Maintenance, Incident Report, Ad hoc
+Reports.
+
+Volumes: approx. 200.
+
+Class Code Y Text 6 Code representing an Incident Class
+Class Y Text 255 Description for an Incident Class
+Description
+
+5.4.1.6 Incident Types Table
+
+Used By: Static Data Maintenance, Incident Maintenance, Incident Report, Ad hoc
+Reports.
+Volumes: 4.
+Type Code Y Int Code representing an Incident Type 1-3
+Type Y Text 30 Textual Description of an Incident 1-APS
+Description Type 2-EPOSS
+3 -OBCS
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 26 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+5.4.1.7 Incidents Table
+Used By: Static Data Maintenance, Incident Maintenance, Incident Report, Ad hoc
+
+Reports.
+
+Volumes: 26,000 based on 70/day for 18 months.
+
+HSH Reference Y Text 11 Reference assigned to the incident by
+the Horizon Service Helpdesk
+Type Code Y Tot 2 Code representing an Incident Type
+Date_Time Y Date/ Time 8 Date incident record created Auto-generated
+Created
+User Created Y Text 20 Name of the analyst who created the I Auto-generated
+incident
+Date_Time Y Date/ Time 8 Date incident last updated Auto-generated.
+Updated
+User Updated Y ‘I Text 20 I Name of the analyst who last updated I Auto-generated
+the incident
+Version Y Int 2 Version number of the incident, Auto-generated.
+Number incremented each time an action is
+logged.
+Date Received Y Date/ Time 8 The date the incident was reported to
+or discovered by the MSU.
+Originator Y Text 15 Person or organisation that raised the I Outlet
+incident. POCLTP/TIP
+PW-MSU,
+PW-SSC,
+POCL,
+OSG
+PinICL N Text 9 Reference assigned to the incident by
+Reference the PinICI system.
+TIP Reference N Text 20 Reference from POCL’s Transaction
+Interface Processing system.
+Incident Xref N Text 15 Used to hold either the Incident Id,
+HSH Reference or PinICL reference
+of a related incident.
+SysInc HSH N Text 11 HSH Reference assigned when an
+Reference associated system incident raised.
+SysInc PinICL N Text 9 PinICL Reference assigned when an
+Reference associated system incident raised.
+Date Cleared N Date/ Time 8 Clearance is authorised by the MSU
+once incident resolution has been
+agreed with POCL.
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence
+
+Page: 27 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+Date Closed N Date/ Time 8 Closure normally takes place after
+any invoice adjustments have
+occurred and is agreed at the
+Monthly Accounting &
+Reconciliation forum.
+Final Update Y Yes/No 1 Flag set to indicate to POCL that this
+Flag is the last update for this incident
+Closure Code N Tnt 4 Indicates whether the incident was 0 — Open,
+caused by a fault in Horizon. 1 = Fault in
+Horizon System,
+2—No fault in
+Horizon System
+Provisional N Text 15 Organisation that has provisionally POCL=>PW
+Liability been assigned liability for the PW=>POCL
+incident.
+Final Liability N Text 15 Organisation that has been assigned =I POCL=>PW
+liability for the incident. PW=>POCL
+Exception N Currency 1s Total exception value of all
+Value transactions in error related to this
+incident.
+Class Code Y Text 6 Code representing an Incident Class
+Resolution N Text 50 Category which describes the
+Category resolution of the incident for analysis
+purposes,
+SLA Period N Byte 2 Number of days assigned under the
+SLA.
+SLA Date N Date/ Time 8 Date by which the incident must be Calculated from
+cleared to satisfy the SLA. the Received
+Date and the
+SLA period
+Suspend Date N Date/ Time 8 Date when incident suspended in
+agreement with POCL.
+Unsuspend N Date/ Time 8 Date SLA period restarted following
+Date suspension.
+Settled Amount Y Currency 8 Value of the settlement.
+Invoice Number Y Text 15 I Invoice Number supplied by ICL
+Pathway Finance Dept.
+Invoice Date Y Date 8 Date of the Invoice.
+MER Set N Currency 8 The sum of Txn Cost for each related I Calculated
+Amount transaction.
+MER Inv No N Text 15 Invoice Number for the Investigation
+Cost settlement, supplied by ICL
+Pathway Finance Dept
+MER Inv Date N Date 8 Date of the Investigation Cost ddmmmyy
+invoice.
+Chargeable Nine 4 I Number of transaction errors being I Auto-generated
+Errors charged for relating to this incident
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 28 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+Transaction N Date 8 Date of related transactions or
+Date associated report.
+CAP Y Long Int 4 Cash Account Period to which Auto-generated
+Transaction Date belongs. from Calendar
+FAD N Text 6 FAD Code related to incident.
+Manual Error N Yes/No 1 Set to Yes if transactions recorded
+Report constitute a repair report.
+TXN Error N Text 20 [Indicates type of transactions Transaction
+Type affected.] No Longer in use. Error, Cash
+Account Error
+5.4.1.8 Investigation Costs Table
+Used By: Static Data Maintenance. No longer used in Incident Maintenance but still
+
+available for Ad hoc Reports.
+
+Volumes: Max 2 or 3 per Incident Class, < 500, probably much less.
+
+Class Code Y I Text 6 I Code representing an Incident Class
+
+Cost Date Y Date /Time Date from which this cost value
+applies.
+
+Cost Value Y Currency Cost value to be applied.
+
+5.4.1.9 Logged Actions Table
+
+Used By: Static Data Maintenance, Incident Maintenance, Incident Report, Ad hoc
+Reports.
+
+Volumes: 5 per incident, i.e. 130,000.
+
+HSH Reference Y Text ll Reference assigned to the incident I Auto-generated
+by the Horizon Service Helpdesk
+Action Y Date/ Time Date/Time log entry created Auto-generated
+Date_Time
+Analyst Y Text 20 Name of the user who created the Auto-generated
+entry from the Analyst table
+Action Notes N Memo Free-format notes fields for
+additional information.
+Action Type Y Text 20 Description of the type of action Describe Incident
+carried out. Update Incident
+Suspend SLA
+Unsuspend SLA
+
+Set Final Update
+Clear Incident
+Close Incident
+Re-open Incident
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 29 of 38
+FUJ00140177
+
+FUJ00140177
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+5.4.1.10 Outlets Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+Volumes: Potentially 19,000. May be restricted to those for which an incident has been
+
+reported if MSU only load them as required.
+
+FAD Code Y Text 6 Code assigned to an outlet by the PO
+Accounting System.
+
+PO Region Y Text 30 PO Region to which the Outlet
+belongs
+
+5.4.1.11 PO Regions Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+
+Volumes: 3.
+
+PO Region Y Text 30 A Post Office region
+
+5.4.1.12 Resolution Categories Table
+Used By: Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+Volumes: Probably less than 100.
+
+Resolution Y Text 50 Category which describes the
+category resolution of the incident for analysis
+purposes,
+
+5.4.1.13 Switchboard Items Table
+Used By: BIMS Menu (automatically generated by Access Switchboard Manager
+
+function).
+Volumes: 23
+Switchboard Id Y I Long Int 4 I All these fields are m ed
+automatically by the Access
+Hem Number Y [int 2 I switchboard Manager facility.
+Tem Text Y ‘I Text 255
+Command Y [int 2
+Argument Y I Text 30
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 30 of 38
+ICL Pathway Ltd
+
+Business Incident Management Service High Level Ref:
+Design
+
+Company In Confidence Date:
+
+Version:
+
+FUJ00140177
+FUJ00140177
+
+TD/DES/129
+
+21/11/01
+
+5.4.1.14 Transactions Table
+
+Used By:
+Reports.
+
+Volumes:
+
+Static Data Maintenance, Incident Maintenance,
+
+Incident Report, Ad hoc
+
+Unknown. Some incidents will require transaction details to be logged but it
+is not known how many. Likewise it is not known how many individual
+transactions may be affected by a single incident. It is reasonable to assume
+that there may be several thousand over an 18-month period.
+
+Txn Id Y I Long Int 4 I Unique identifier for the table entry. I Auto-number
+HSH Reference Y ‘I Text I] I Reference assigned to the incident by
+the Horizon Service Helpdesk.
+
+Txn Cost N I Currency 8 I Cost of transaction error.
+TXN Label 1 N I Text 25 I 20 sets of free-format fields to allow
+
+- for additional information to be
+TXN Text I N I Text 25 I ontered.
+TXN Label 20 N I Text 25
+TXN Text 20 N I Text 25
+
+5.4.1.15 I TXN Labels Table
+Used By:
+Volumes:
+
+Static Data Maintenance, Incident Maintenance, Ad hoc Reports.
+probably < 100.
+
+TXN Label Y Text
+
+20 Label for use when formatting
+transaction information.
+
+5.4.1.16 Table Summary
+
+I Affected Outlets Several thousand
+‘Analysts 10
+BIMS Calendar 1825, based on 365 per year if not deleted
+Evidence Boxes 2600, based on 10% of incidents
+Incident Classes 200
+Incident Types 4
+Incidents 26,000, based on 70/day for 18 months
+
+Investigation Costs
+
+Predicted < 500, currently not used
+
+Logged Actions
+
+130,000 (based on 5 per incident)
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence
+
+Page: 31 of 38
+ICL Pathway Ltd
+
+Company In Confidence
+
+Business Incident Management Service High Level
+Design
+
+Ref: TD/DES/129
+Version: 2.1
+Date: 21/11/01
+
+FUJ00140177
+FUJ00140177
+
+Outlets 19,000
+PO Regions 3
+Resolution Categories < 100
+Switchboard Items 23
+Transactions Several thousand
+TXN Labels < 100
+Predicted Peak Sizing 180Mb
+5.4.2 BIMS Reporting
+5.4.2.1 External Reporting
+
+During the first phase of the implementation a hard copy report of individual incidents will be
+provided for onward transmission to POCL. This will also be available for local use longer
+term. [Phase 2 of the implementation will provide a delivery strategy for all of MSU’s output
+which is destined for POCL, including incident reports, probably based around an intranet
+solution. Note: There are no plans to introduce a second phase at present.]
+
+BIMS Reference
+
+Incidents. HSH Reference, prefixed by ‘BE/”.
+
+Final Update Text
+
+Present if Incidents.Final Update Flag = Yes
+
+Incident Type
+
+Incidents. Type Code
+
+Incident Type Description
+
+Incident Types. Type Description
+
+Incident Class
+
+Incident Classes.Class Code
+
+Incident Class Text
+
+Incident Classes.Class Description
+
+Originator
+
+Incidents.Originator
+
+Transaction Date
+
+Incidents. Transaction Date
+
+CAP Incidents.CAP
+
+FAD Incidents.FAD
+
+Status Incidents.Closure Code
+
+Status Text Translated from Closure Code: 0 - Open, I - Fault in
+Horizon Service, 2 - No Fault in Horizon Service
+
+Version Incidents. Version Number
+
+Last Updated Incidents.Date_Time Updated
+
+Exception Value Incidents. Exception Value
+
+Other References:
+
+PinICL Reference Incidents. PinICL Reference
+
+Incident XRef Incidents.Incident XRef
+
+TIP/TP/OSG Ref
+
+Incidents. TIP Reference
+
+System Incident References: I Incidents.SysInc HSH Reference
+HSH
+© 2001 ICL Pathway Ltd Company In Confidence Page: 32 of 38
+ICL Pathway Ltd —_ Business Incident
+
+Management Service High Level Ref:
+Design Version:
+Company In Confidence Date:
+
+FUJ00140177
+FUJ00140177
+
+TD/DES/129
+21
+21/11/01
+
+System Incident
+
+PinICL
+
+References:
+
+Incidents.SysInc PinICL Reference
+
+Incident History:
+
+Date Received
+
+Incidents.Date Received
+
+Date Cleared Incidents.Date Cleared
+
+Date Closed Incidents. Date Closed
+Liability
+
+Provisional Incidents. Provisional Liability
+Final Incidents. Final Liability
+Settlement Details
+
+Transaction Settlement:
+
+Settled Amount
+
+Incidents.Settled Amount
+
+Invoice Number
+
+Tncidents.Invoice Number
+
+Invoice Date
+
+Incidents. Invoice Date
+
+Manual Error Report Charge:
+
+Chargeable Errors. Incidents.Chargeable Errors
+MER Set Amt IncidentsMER Set Amt
+MER Inv No Incidents. MER Inv No
+MER Inv Date Incidents. MER Inv Date
+
+Action Date/Time
+
+Logged Actions.Date_Time
+
+Action Type Logged Actions. Action Type
+Analyst Logged Actions. Analyst
+Action Notes Logged Actions.Action Notes
+
+User Defined Fields (1-20)
+Label 1-20 Transactions. TXN Label 1-20
+Text 1-20 Transactions. TXN Text 1-20
+
+5.4.2.2 Internal Reporting
+
+Only two internal predefined reports have been specified for BIMS, the Liability Settlement
+Report and the SLA Status Report. Other, ad hoc, reporting requirements are to be met by
+
+User-defined Access and Business
+
+5.4.2.2.1
+
+Objects reports.
+
+Liability Settlement Report
+
+From Date dd/mm/yy
+To Date dd/imm/yy
+© 2001 ICL Pathway Ltd Company In Confidence Page: 33 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level Ref: TD/DES/129
+Design Version: 2.1
+Company In Confidence Date: 21/11/01
+
+Final Liability
+
+Incidents. Final Liability
+
+HSH Reference
+
+Incidents. HSH Reference
+
+Date Received
+
+Incidents. Date Received
+
+Date Cleared
+
+Incidents. Date Cleared
+
+Provisional Liability
+
+Incidents. Provisional Liability
+
+Invoice Date
+
+Incidents.Invoice Date
+
+Invoice Number
+
+Incidents. Invoice Number
+
+Settled Amount
+
+Incidents.Settled amount
+
+Final Liability Text
+
+Incidents.Final Liability (first occurrence in group
+
+Settled Amount
+
+Sum of Incidents.Settled Amount for all incidents cleared in the
+period with the associated Settlement Action recorded.
+
+Count of incidents cleared in the selected period.
+
+Total Value
+
+Sum of the Incidents.Settled Amount for all incidents cleared in
+the selected period.
+
+5.4.2.2.2. SLA Status Report
+
+with ‘today’.
+
+All incidents which have not yet been cleared, grouped into sections by comparison of SLA Date
+
+I Within SLA Period
+
+HSH Reference
+
+Incidents. HSH Reference
+
+Date Received
+
+Incidents.Date Received
+
+Suspend Date
+
+Incidents.Suspend Date
+
+Unsuspend Date
+
+Incidents. Unsuspend Date
+
+SLA Date
+
+Incidents.SLA Date
+
+Number of
+Outstanding
+
+Incidents I Count of incidents in the section.
+
+© 2001 ICL Pathway Ltd
+
+Company In Confidence
+
+Page: 34 of 38
+
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+5.4.2.2.3 Charging Details Summary
+
+All incidents which have been cleared within the month and year selected, where the manual
+error report indicator is set to Yes and the MER Set Amt is greater than zero.
+TIP REF Incidents. TIP Reference
+BIMS/HSH REF Incidents. HSH Reference
+CLASS Incidents.Class Code
+DATE RECEIVED Incidents.Date Received
+DATE CLEARED Incidents.Date Cleared
+No OF CHARGEABLE Incidents.Chargeable Errors
+ERRORS.
+TOTAL VALUE Incidents.MER Set Amt
+COMMENTS Incident Classes.Class Description related to Incidents.Class
+Code.
+POCL AGREED Blank to be completed by user in Word document.
+So
+Total chargeable value for all I Sum of Incidents. MER Set Amt for all incidents listed.
+incidents
+
+5.5 Networking Services
+
+No additional networking services will be required for stage one of the implementation. The
+application to be implemented will be a direct replacement for the existing RED database and
+will be sited and accessed in the same way, using the standard network facilities available to
+customer services staff.
+
+5.6 Platforms
+
+The application to be implemented at stage one consists of a Microsoft Access database, sited
+on the customer services drive on the ‘Svbra0Ipwe2n2’ server, accessed via a separate
+Microsoft Access client, also resident on the server.
+
+6.0 Systems Management
+
+System management will be carried out at two levels. Backups of the database will be
+provided by the standard backup procedures for the server. Responsibility for managing
+recovery and other housekeeping will rest with Customer Services MSU staff. Deletion of
+obsolete data will be carried out by a bespoke function invoked from the application user
+menu; compacting/reorganisation of the front-end database will also be available as a user
+function.
+
+The database will be split, separating the data from the application. This will protect the
+tables from accidental structure changes and simplify potential software updates. If for any
+reason back-end database is moved the links held in the front-end database will have to be
+refreshed using the Linked Table Manager Add-in.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 35 of 38
+FUJ00140177
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+7.0 Application Development
+
+The application will be developed in Microsoft Access, based on the existing prototype.
+Consequently no Low Level Design Document will be produced.
+
+8.0 System Qualities
+8.1 Availability
+
+8.1.1 Resilience
+
+The service will be available during the normal working day. Backup of the service will be
+provided by the normal server backup procedures. The backup procedures are described
+below.
+
+Monday - Thursday a differential backup is run which backs up the following devices
+E$, M$ and the Registry. The same job is run on all 4 servers within the Cluster.
+
+Friday a Full backup is run on Friday which backs up the following devices C$, E$
+M$ and the Registry. The same job is run on all 4 servers within the Cluster.
+
+Backups are started at 2000hours. If any of the files are currently in use by any
+applications the ARCServe will NOT back the file up. When the job has finished the
+Last Result in the job queue will display Incomplete, this signifies that some files
+were not backed up due to the fact they were in use.
+
+In order that the service is backed up daily it is imperative that the service is closed down
+completely by all users at close of business.
+8.1.2 Recovery
+
+Should it be necessary to recover the system from back-up tapes the following points should
+be noted:
+
+1. The service comprises two parts, the back-end database and the front-end application.
+
+2. If no software updates have been carried out since the last recoverable dump it is only
+necessary to restore the part of the system which is in error.
+
+3. If software updates have taken place it is essential that both parts of the service are
+recovered from the same date, or at least from dumps where it is known that the
+application and tables are in step.
+
+8.1.3 Support
+
+Support is provided in the first instance by the Workplace 2000 Helpdesk. Where a software
+error is identified in the application, i.e. excluding user-created queries, etc., support will be
+provided by the Internal Infrastructure team of Pathway Development.
+
+8.2 Usability
+
+The system has been designed with input from the user in order that the MSU’s working
+practises are adequately supported. The system will be menu-driven for ease of use. The
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 36 of 38
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+functionality provided is largely self-explanatory although a user guide will also be provided
+giving guidance on how to use the various screens, navigation controls, etc.
+
+Pessimistic locking will be implemented to prevent users carrying out updates which cannot
+subsequently be committed. Note: this can also prevent users from editing adjacent or nearby
+incidents. It was felt that this would be preferable to allowing two users to work on the same
+incident concurrently.
+
+8.3 Performance
+
+No specific performance criteria have been defined for the application. The forecast volumes
+were taken into account when the decision to use Microsoft Access was made and were
+considered to be within the limits which give acceptable performance. The functions will be
+built to give good response times wherever possible. Certain functions, such as housekeeping
+facilities, as a result of the need to scan large parts of the database, may take a significant
+time to run. Increase in run times should be kept to a minimum by regularly compacting the
+database, particularly the front-end. Both of these tasks should be carried out at start of day
+to allow for minimum data loss in the case of failure.
+
+8.4 Security
+
+The first level of security for BIMS is provided by the location in which it will implemented.
+It will reside on a local server within the Customer Services environment which consists of a
+secure office within a secure building.
+
+At the next level the MSU has its own folder structure within the Customer Services drive to
+which only authorised MSU staff have access. BIMS will reside within this structure.
+Access to the service will be controlled by NT username and password. Compliance with
+JARS requires regular password changes to be enforced as per standard build and ideally the
+build should also utilise the facility of obfuscating passwords in the registry.
+
+All MSU staff need the ability to create queries and also have authority to update most of the
+tables. Consequently there are very few limitations on data access that could be put in place.
+Since it is virtually impossible to prevent someone with the correct NT permissions from
+gaining access to full Microsoft Access functionality (or updating via other Microsoft
+utilities) should they really wish to, it was felt that the aim should be to discourage
+experiment and prevent accidents where possible.
+
+Bespoke functionality has been provided for all tasks to be undertaken, removing the need for
+tables to be updated directly. Two levels of authority have been created within the service to
+enable functionality to be classified for use by all staff or solely for supervisor use. The
+system checks the status of the user when any of the restricted facilities is selected. A custom
+menu bar will be provided with a reduced set of standard facilities to avoid update queries
+being generated, tasks being fired off by accident, etc.
+
+With regard to the hard-copy output of incidents it must ensured that manual procedures
+including handling, storage, disposal and contingency arrangements are catered for.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 37 of 38
+FUJ00140177
+
+FUJ00140177
+
+ICL Pathway Ltd —_ Business Incident Management Service High Level __ Ref: TD/DES/129
+
+Design Version: 2.1
+
+Company In Confidence Date: 21/11/01
+
+8.5 Potential For Change
+
+It is not envisaged that changes will be required to the design. Allowance has been made for
+user defined data to be recorded in those areas where information requirements are less
+certain.
+
+An upgrade to the service will be required when the users migrate to Office 2000. Care will
+be required when this occurs as the Office 97 version cannot be accessed by Office 2000
+users and the Office 2000 version will not be accessible to Office 97 users.
+
+The Outlet table will be pre-loaded with a complete set of FAD codes. Further Maintenance
+will be the responsibility of the user — no attempt will be made to maintain the Outlet table
+automatically.
+
+9.0 Solution Implementation Strategy
+
+The total solution to the MSU’s requirements will be implemented in two stages. The first
+stage, as documented in this version of the design specification, consists of the main
+application, which replaces the functionality currently provided by the RED database. This
+will give the users the ability to log, track and print incident details and to monitor SLA
+status. Analysis facilities will be available via Business Objects, as at present.
+
+The second stage of the implementation (yet to be specified) will provide a facility to deliver
+electronic incident reports to POCL. This will be part of an overall solution to cover delivery
+of all of MSU’s requirements for reporting to POCL.
+
+10.0 Risks and Timescales
+10.1 Risks
+
+The design has been produced on the basis of the forecast volumes. If these are exceeded by
+any significant amount there is a risk that the service will degrade. Also, once the system is
+in steady state (after 18 months), housekeeping and database compacting will need to be
+carried out on a regular basis to prevent degradation.
+
+10.2 Timescales
+
+The service needs to go live at the beginning of a calendar month to enable the MSU to
+rationalise its monthly reporting. With the resumption of roll-out implementation of the
+service needs to be carried out as soon as possible.
+
+© 2001 ICL Pathway Ltd Company In Confidence Page: 38 of 38

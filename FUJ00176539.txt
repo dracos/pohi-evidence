@@ -1,0 +1,524 @@
+FUJ00176539
+
+FUJ00176539
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+Document Title: Audit Extractor Support Guide
+Document Type: Support Guide
+Release: CSR+
+Abstract: This is the support guide for the Audit Extractor application.
+Document Status: APPROVED
+Author & Dept: Bryan S. Muir (Pathway Infrastructure Development)
+Contributors: None
+Reviewed By: Richard Laking, Peter Sewell Chris Billings
+Comments By: 07/08/2000
+Comments To: Document Controller & Author
+Distribution: ICL Pathway Library, Richard Laking, Peter Sewell, Chris
+Billings
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 1 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+0.1 Document control
+0.1 Document history
+Version [Date [Reason
+0.1 (02/07/2000 IInitial Draft
+0.2 (26/07/2000 IReady for Review
+1.0 [21/08/2000 IApproved
+0.2 Approval authorities
+Name Position Signature Date
+Peter Sewell Platform Development
+(Authority
+Richard Laking Audit Design Authority
+Chris Billings Audit Security
+0.3 Associated documents
+Reference I Ve I Date Title Source
+rs
+SD/DES/076 1.0 I 30/09/199 I Physical Design for Audit Server PCMS
+9
+SD/DES/072__I 1.0 I 25/06/199 I Audit Data Storage & Retrieval: High PCMS
+9 Level Design
+SD/DES/115__I 1.0 I 25/07/200 I Audit Data Storage & Retrieval: High PCMS
+i?) Level Design
+SD/DES/116 1.0 I 25/07/200 I Audit Data Extraction & Filtering: High PCMS
+0 Level Design
+TD/LLD/O09 1.0 I 25/04/200 I Audit Extractor Low Level Design PCMS
+(¢)
+TSC/AGT/038 I 1.1 I 20/04/199 I High Level Design of Common Agents PCMS
+9 for Release 2
+P/N 22- March Legato Networker Administrator's Guide I Paper
+1877 -01 1998
+TD/MAN/01 I 1.0 I 21/08/200 I Audit Server Support Guide PVCS
+ie)
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 2 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+7
+0.4 Abbreviations
+HLD High Level Design
+LLD Low Level Design
+DLT Digital Linear Tape
+ATG \Audit track gatherer
+ATS Audit track sealer
+ATH Audit track hoarder
+ATD Audit track deleter
+ATR Audit track retriever
+DLL [Dynamic Link Library.
+UNC Universal Naming Convention.
+AT Audit Track
+RFI [Request For Information (Database)
+0.5 Changes in this version
+Comments from the review meeting have been incorporated.
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 3 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+
+0.6 Table of content
+2 Outline of Purpose of Product.
+2.1 FUNCTIONS... cece ec eeeee cece ee eeeeeeeeeeeeceeeeceeeeeeeteeteneeesesieteresesesatineneeees 6
+2.2 Performing the Functions. ..........0.0..0cce cece cece cesee ces ceeceeeeceeeeeeeeeeeeeeneeee 6
+2.2.1 Client Side - AuditExtractorClient.exe.
+2.2.2 Client Side - RemoteFinder.dil
+2.2.3 Server Side - ATLService.exe....... 2... eect eceee eee eee cee eeeeeeeeeeeee 7
+2.2.4 Server Side - AuditExtractServer.dll...........cccceeeeeeeererereererereeeee 7
+2.2.5 Server Side - LegatoListFilesdll dll... 7
+2.2.6 Server Side - MSUtilsdll.dil
+2.2.7 Server Side - LegatoMmiCmd.exe......... : ee A
+2.2.8 Server Side - LegatoNsrCmd.exe...............ecceceeceeeeeseeseeeeeeeeeeeeee 7
+2.2.9Server Side - LegatoRecoverCMd.exe..............eceeceeeceeeeeeseeeeteeeees 8
+2.2.10Server Side - AgentGetID.exe....... ieee cece eeeeeeeeeeeeeeee 8
+2.2.11 Server Side - AgentLoadAuditData.exe.
+2.2.12 Server Side - ResetRiposte.exe
+2.3 Standards and Languages. .................cececeececeeeeeseeeeeeeeeeeeeeeeeeeeeeeeeeeeees 8
+2.3.1 VSS. ocecccccececcceseseseseseseesesesesesavscsesesesevesesesesececseseseeeseescseaeeeeeeseaeseees 8
+3 Code Paths.
+3.1 Main Module..
+3.1.1 AuditExtractorClient.ex
+3.2 Procedure Calls... ececccececeesescseeeeeeeeeessneeeeeeeceseseseneeeesesenereeneeets 9
+3.2.1 Legato Class... ie cceeccececcceesceseeeeseeeseeseeceeeeeeeeeeeeeeseneeeeeeeres 10
+3.2.2 MessageStore Class.
+3.2.3 ServerFile Class.
+3.2.4ConfigFile Class.. -
+4 EQPOPS oo. ees ecec ces eseseceeecececseeeeneseeceeeceeeseeesecsceeesecacatsseeeeensaseneeseeeeeteteteneeees 10
+4.1 Exit COdOS o.oo. cceeeceeeceseeeereecececseeecacacsceceeeeneecececesesateseceeeeenenes 11
+4.1.1 LegatoListFileDII dU... cece cece cee ceeceeeeeeceeeeeeeeneee 11
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 4 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+4.1.2 MSUBIISDIL GN eee eee eeeee es eeeeeeneeeeeeeeeeeeseseseneesereceseneees 11
+4.2 DeFICIENCIES........ eee ceececec ee eteseeeeeesesceeeeeeeecsciesesescetseseeeessesieesueeeeatecees 12
+
+4.3 Clearance Dates
+4.4 Work Rounds
+
+5 Messages.
+5.1 Internal Message Communications. ................:.::cccecceceeeeeeseeseeeeeeeeeeeees 12
+5.2 Run Time Communications..........0.0....ceccceeececeeeeeseeeeeeeeeeeeeeeeeeeneneeeee 12
+GAP Lao eee cece ccc ccceececeeeneceeeeeeeseceeeeceesecenceceeceeseceeaseseceueseseesieeesisetseseeseeeeeeseees 12
+7 Support ROUtC...... eee eecececececeescsesesesesscececeeeencacacaceceeseseeeeceeseseacaceceeseereeses 13
+1 Introduction
+This document is the support guide for the ‘Audit Data Extraction and Filter’
+application.
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 5 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+
+The ‘Audit Data Extraction and Filter’ application is used to:
+
+e Locate audit tracks that conform to specific filtering attributes, such as
+Date Range, Audit Points and Sub Points.
+
+e Extract specified audit tracks from DLT tape.
+« Maintain a database of RFI’s and status information.
+See: SD/DES/116 for design details.
+
+1.4 Scope
+An associated element of the ‘Audit’ solution is the ‘Audit Server’ facility.
+Support guide, TD/MAN/018, does not cover this element it is covered in
+TD/MAN/017.
+In addition, this support guide does not cover the following integral elements
+of the ‘Audit’ solution:
+e Legato Networker. This is a commercial product that is used by the ‘Audit’,
+(and ‘Archiving’) application for the long term storage of audit data,
+e Maintenance of the ‘Legato Networker’ run time configuration,
+e Maintenance of the ‘Audit’ configuration file, i.e. the run time parameters,
+e The standalone graphical configuration tool, ‘Configurer.exe’.
+2 Outline of Purpose of Product
+2.1 Functions
+The main functions of this application are to identify and extract PATHWAY
+generated audit tracks from DLT tapes into file store.
+2.2 Performing the Functions
+These functions are achieved by the use of:
+e A graphical user (client) interface that runs on a Windows NT (Audit)
+workstation,
+e Server mechanisms (dil’s) that run on the ‘Audit’ server platform. These
+dil’s provide ‘wrapper functions for accessing:
+e Legato Networker command line utilities,
+e¢ Common Agent utilities.
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 6 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+
+e A network (client / server) connection mechanism, based on a Windows
+NT service.
+2.2.1 Client Side - AuditExtractorClient.exe
+This is the main GUI module. All user filtering and extraction requests are
+implemented via this application.
+2.2.2 Client Side - RemoteFinder.dll
+
+This module is used to scan the network to locate the ATL service that runs
+on the Audit Server platform.
+
+For an in depth discussion about this element see: TD/LLD/009, Section
+4.1.1.
+
+2.2.3 Server Side - ATLService.exe
+
+This module is a ‘service’ that is installed on the Audit Server platform to
+provide the linkage between the Audit Extractor (client) and the Audit
+Extractor filtering and extraction facilities on the server.
+
+2.2.4 Server Side - AuditExtractServer.dll
+
+This module maps the client side GUI -> the mapping dll calls, to the server
+side dll’s, namely: LegatoListFilesDIl.dll and MSUtilsDIl_.dll.
+
+NOTE: Although this is a ‘Server’ side dil, it is also installed on the ‘Client’.
+
+2.2.5 Server Side - LegatoListFilesdll.dll
+
+This module contains the functions that are used to access the ‘Legato
+Networker’ system.
+
+2.2.6 Server Side - MSUtilsdll.dil
+
+This module contains the functions that are used to access the ‘Agent Utility’
+functions.
+
+2.2.7 Server Side - LegatoMmiCmd.exe
+This module is a wrapper for the ‘Legato Networker’ function ‘mminfo’.
+
+2.2.8 Server Side - LegatoNsrCmd.exe
+This module is a wrapper for the ‘Legato Networker’ function ‘nsrinfo’.
+
+2.2.9 Server Side - LegatoRecoverCmd.exe
+This module is a wrapper for the ‘Legato Networker’ function ‘recover’.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 7 of 13
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+2.2.10 Server Side - AgentGetID.exe
+This module is a wrapper for the ‘Common Agent’ utility
+‘Agent_Get_ClusterlD’.
+2.2.11 Server Side - AgentLoadAuditData.exe
+This module is a wrapper for the ‘Common Agent’ utility
+‘Agent_Load_Audit_Data’.
+2.2.12 Server Side - ResetRiposte.exe
+This module is a wrapper for the ‘Common Agent’ utility
+‘Reset_Riposte_Message_Store’.
+2.3 Standards and Languages
+Visual ‘C’ is used for:
+e the wrapper dil’s on the server,
+e the wrapper functions on the server, (6 off),
+Visual ‘C++’ is used for:
+e the client/server connection service,
+e the service ‘finder’ utility,
+Visual Basic 5.0 is used for:
+e The graphical front end (client).
+The ‘RFI’ database is based on Microsoft's ‘Access’ database.
+2.3.1 VSS
+All code modules are held in Visual Source Safe, under path:
+\\CMServer\VSS-InfDom\Infrastructure\Audit\AuditExtraction_Cl4
+and with the following individual compilable elements:
+e CLIENT (Audit Workstation Platform) executables:
+e AuditExtractorClient.exe,
+e RemoteFinder.dll,
+e SERVER (Audit Server Platform) executables:
+e ATLService.exe,
+e AuditExtractServer.dil,
+e LegatoListFilesdil.dll,
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 8 of 13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+e MSUtilsdll.dll,
+
+e LegatoMmiCmd.exe,
+e LegatoNsrCmd.exe,
+e LegatoRecoverCmd.exe,
+e AgentGetlID.exe,
+e AgentLoadAuditData.exe,
+e ResetRiposte.exe.
+NOTE 1: Also in this tree are 2 test harnesses. These are:
+e LegatoListFilesDIITest,
+« MSUtilsDiITest.
+Neither of these 2 harnesses are released. They are test aids only.
+
+NOTE 2: There is an early release version, known as the Beta-Test version
+that is now no longer supported. This is in VSS under path:
+
+\\CMServer\VSS-InfDom\Infrastructure\Audit\AuditExtraction_BTest
+
+3. Code Paths
+3.1. Main Module
+3.1.1 AuditExtractorClient.exe
+Full details of the forms that are used by this VB5 application are shown in
+TD/LLD/009, Section 4.1.2.
+3.2 Procedure Calls
+Procedures embedded in the following 2 dll’s are used to:
+e identify and list files, I (LegatoListFilesDIl)
+e obtain file status details, (LegatoListFilesDIl)
+« recover files, (LegatoListFilesDIl)
+e reset a message store, (MSUtilsDI!)
+* populate a message store, (MSUtilsDI!)
+e obtain a cluster ID value, (MSUtilsDI!)
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 9 of 13
+
+Last Printed: 21/08/00 09:07
+ICL Pathway Audit Extractor Support Guide
+
+COMMERCIAL IN CONFIDENCE
+
+Ref: TD/MAN/018
+Version: 1.0
+Date: 21/08/2000
+
+FUJ00176539
+FUJ00176539
+
+3.2.1
+
+3.2.2
+
+3.2.3
+
+3.2.4
+
+Legato Class
+
+This class of object exposes the following methods:
+e ListLegatoFiles ();
+
+e ListVolumeData();
+
+e RecoverLegatoFiles();
+
+« LegatoRecoverStatus();
+
+« LegatoRecoverTidy()
+
+MessageStore Class
+
+This class of object exposes the following methods:
+e AgentGetClusterlD();
+
+e ResetRiposte();
+
+« RestoreAuditData();
+
+ServerFile Class
+
+This class of object exposes the following methods:
+© OpenFile();
+
+e ReadLine();
+
+e WriteLine();
+
+e CloseFile();
+
+ConfigFile Class
+
+This class of object exposes the following methods:
+e GetConfigString();
+
+e GetConfigint();
+
+Errors
+
+The Windows NT Event log is not used.
+
+All functions in the dil’s return 0 (or a positive value) on success, and —n on
+
+failure.
+
+The failure details are displayed to the ‘user’ in a message box.
+
+© 2000 ICL Pathway Limited
+
+13
+
+COMMERCIAL IN CONFIDENCE Page: 10 of
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+4.1 Exit Codes
+4.1.1 LegatoListFileDIl.dll
+
+4.1.2
+
+-1 (1 or more mandatory arguments have not been supplied.)
+-2 (MMINFO call has failed.)
+
+-3 (1st read file open failure (_pre.txt))
+
+-4 (1st write file open failure (_mmi.txt))
+
+-5 (NSRINFO call has failed.)
+
+-6 (2nd read file open failure (_mmi.txt))
+
+-7 (2nd write file open failure (_nsr.txt))
+
+-8 (3rd read file open failure (_nsr.txt))
+
+-9 (Spawn of LegatoP has failed.)
+
+-10 (Create of 'recover' script file has failed.)
+
+-11 (4th read file open failure (_rec.txt))
+
+-12 (Unable to open the user supplied output file.)
+
+-13 (Unable to open the volume data file (_out.txt).)
+
+-14 (Unable to open recovery input file (user supplied).)
+
+-15 (Read error on user supplied input file (Recover Phase).)
+-16 (Unable to open temporary output file (Status Check).)
+-17 (Unable to open ‘out'file as log input (Status Check).)
+
+-18 (Unable to open 'inp' file (Status Check).)
+
+-19 (Unable to delete RFI file (Status Check).)
+
+-20 (Unable to open the log file (Status Check).)
+
+MSUtilsDII.dll
+
+-1 (1 or more mandatory arguments have not been supplied.)
+-2 (Spawn of 'Agent_Get_ClusterlD' has failed.)
+
+-4 (Spawn of 'Reset_Riposte_Message_Store' has failed.)
+
+-5 (Spawn of 'Agent_Load_Audit_Data' has failed.)
+
+-6 ('Restore_Audit_Data' has returned an error. See response files for
+
+details.)
+-7 (‘Agent_Load_Audit_Data’ has returned an error. See response files for
+details.)
+
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 11 of
+
+13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+
+-8 (‘Agent_Get_ClusterID' has returned an error. See response files for
+details.)
+
+4.2. Deficiencies
+None.
+4.3 Clearance Dates
+N/A.
+4.4 Work Rounds
+None.
+5 Messages
+5.1 Internal Message Communications
+None.
+5.2 Run Time Communications
+None.
+6 API
+The ‘Legato Networker’ command line interface is used to invoke:
+e =mminfo,
+e nsrinfo,
+* recover,
+See P/N 22-1877-01 (Legato Networker Administrator’s Guide) Appendix
+A, for full details.
+7 Support Route
+Normal 1* to 4" line support route, using PATHWAY’s PinICL system.
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 12 of
+13
+
+Last Printed: 21/08/00 09:07
+FUJ00176539
+FUJ00176539
+
+ICL Pathway Audit Extractor Support Guide Ref: TD/MAN/018
+Version: 1.0
+COMMERCIAL IN CONFIDENCE Date: 21/08/2000
+
+NOTE 1. Comment from review sheet added here for completeness.
+
+(1° to 3” line support calls may not be supported by Development in the long
+term. Jan Holmes (QRM Audit Manager) raised this several times with Mik
+Peach, as I recall, before Jan left ICL Pathway. A skill’s transfer may be
+required when Development process, 4" line support calls only. This is a
+potential issue that QRM Audit has to resolve.)
+
+© 2000 ICL Pathway Limited COMMERCIAL IN CONFIDENCE Page: 13 of
+
+13
+
+Last Printed: 21/08/00 09:07

@@ -1,0 +1,5164 @@
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Document Title: TPS Object Model
+
+Document Type: Design
+
+Abstract: This document describes the object model for the
+TPS subsystem interfaces. It shows how the TIP and
+MIS interface objects are derived from Counter
+transaction objects via TPS Host table objects.
+
+Status: Draft
+
+Distribution: Alan Ward
+Roger Donato
+Dennis Sandor
+Phil Hemingway
+Steve Warwick
+Peter Chandler
+Rex Dixon
+Mik Peach
+Nikki O'Sullivan
+Declan Brady, CFM
+Declan Sheehan, CFM
+Library
+
+Author: Roger Donato
+
+Comments to: Roger Donato
+
+Comments by: 31/08/99
+
+COMMERCIAL IN CONFIDENCE Page 1 of 1
+© 1999 ICL Pathway Ltd
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+0 Document control
+0.1 Document history
+
+Version Date Reason
+
+0.3 18/11/96 Initial version for limited circulation
+
+0.5 12/12/96 Re-issue for comment
+
+0.6 16/01/96 Incorporates agreements on BES/EPOSS Integration and
+revisions to the TIP AIS and DW to TPS IS
+
+0.7 01/12/97 Major re-issue due to EPOSS and BES revision
+
+0.8 12/12/97 Update to incorporate further BES changes
+
+0.9 18/12/97 Update to incorporate BES EVP, TIP transaction identification,
+reversals and some other minor changes
+
+11 22/02/99 Major update to align with the revised Release 2 design
+
+1.2 15/04/99 To align with TPS Host Tables, latest version of the Pathway to
+TIP AIS, and include more explanatory information
+
+1.3 17/05/99 To align with changes to the MIS Release 2: TPS EPID v4.1, in
+particular additional Service Code Types: not published
+
+1.4 19/08/99 Re-issue for CSR+
+
+BES details removed
+Document structure changed.
+
+Data Item transaction_mode_version_no added to tables
+tms_rx_aps_transactions, tms_rx_eposss_transactions,
+tms_rx_obcs_transactions
+
+0.2 Approval authorities
+
+Name Position Signature Date
+Alan Ward Chief Architect
+
+0.3. Associated documents
+
+Reference Vers Date Title Source
+TD/DES/005 0.3 25/09/96 Pathway Object Model Process
+
+BP/DES/010 0.3 10/02/99 TP Service Design Specification
+
+TIFS/001 5.5a 01/03/99 Pathway to TIP AIS POCL
+
+COMMERCIAL IN CONFIDENCE Page 2 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+4 DWI/IFS/009 4.1 26/04/99 MIS Release 2: TPS EPID CFM
+5 EP/DES/002. 6.1 02/10/98 EPOSS Attribute Grammar Catalogue
+6 AD/DES/008 1.0 15/10/98 BPS Riposte Message Catalogue
+(Release 2)
+7 AD/DES/011 1.0 15/10/98 TPS Agents for Release 2 High Level
+Design
+8 AD/DES/012 1.0 15/10/98 TPS Tables and Mappings for
+Release 2
+9 15/03/99 Designer 2000: TPS Table Definition
+0.4 Abbreviations
+
+0.5
+
+Changes in this version
+
+Re-issue for CSR+
+BES details removed
+
+Document structure changed.
+
+Data Item transaction_mode_version_no added to tables
+tms_rx_aps_transactions, tms_rx_eposss_transactions,
+tms_rx_obcs_transactions
+
+COMMERCIAL IN CONFIDENCE Page 3 of 1
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00171947
+FUJ00171947
+
+Ref: TD/DES/013
+Version:1.4
+Date:19/08/99
+
+0.6 Table of content
+
+4. INTRODUCTION. .u0......ccccececcceseseseseeesceesesesessesesesesesececseseseeseseaeeeeeeeeseaeeeee 8
+2. LOCAL BUSINESS OBJECT MODEL... ceceeeeeeeeeeeeeeeeeeeeeeeeeee 9
+3. RIPOSTE MESSAGES. ....0.0.....ccccesecccseecececeseseeeeeeeeeeseeeecseeeeseeeeeeneeeeeeeeee 22
+3.1 ItrOdUCtiOn...........ccecececeseecescseeeesesescnesceeeceeseseeeeteseessiereeecetacerseeeeeee 22
+3.2 EPOSS Logon... ecececeeee cece eeesseeeeeeeeeceeeeececsceeeseeeesecececseereeeeseeeets 22
+3.3 Riposte Message.............cecccecceeececeeecesceeeseeeceeeeeeeeeceeeeeeeseeteeeeeneeeeeaees 22
+3.4 EPOSS Tramsaction..............cccececccececeeseseeeeeeeceeeeeeeeseeeeeeeeeeeeseeeeeeeeeeees 23
+3.5 EPOSS Additional Data..............ccceeecceceseeeseeeeseeeeceeeeseseeeeeeeeeeeeeeeeee 25
+3.6 Additional Data for APS... cece ee ececeeseeeceeeeeeeeeeeeeeeereeeeneeeeeeneee 26
+3.7 Additional Details for OBCS............e ee eeeece cece eeeeeeeeeeeeeeeeeeeeeeeseeeeeneees 27
+3.8 EPOSS Black Box Data... eeeececeeseeeeeeseseeeeeeeereeeeteeeenceeeteesess 28
+3.9 APS Black Box Data...............ccceesececeeeeecseceeeeeeeeeeeeeeeesseeeeeeeeeeeeacataesees 28
+3.10 OBCS Black Box Datta... eee eee ee ees eeeeeeeereneeeeeeteeeeeeteseeeeeeeee 29
+3.11. EPOSS Event... ccceceeeseseseseseseeseecseseseescecseeceeeeeseeseseeseeeeeees 30
+3.12 OBCS Transaction... eee ececceceeeeeeeeeeeseeeteeeeneeeeenenereeeesenee 30
+3.13 EPOSS CA Transaction. ..........0.....ceceececececeeececeeeeeeeeeeeeeeerereeeeeeeeeneee 32
+3.14 EPOSS OF Transaction... cece eee cence ee eeeeeeeeeeeeneeeeeeeeeeeeeees 32
+3.15 EPOSS Security Event... ceecececeseeeceeseseeeseeeereeeeteeeeeeneneeeeees 33
+3.16 EPOSS EOD ooo... cece cece eee ec eee ececeeeeeeeeeeeeeeeeeseeeeneeeeeeeeseeseneneeeeeeeets 34
+3.17 EPOSS Logout... cece eee ceceeseeeeeeceeeeeeeeeeeeeeeeneneeecacaseneceeeneneees 34
+3.18 EPOSS Logout Authority... cc cesceec estes eeeeeeereseseeseeseeeeeeeeeeeeeeee 35
+4. ORACLE SCHEMA...........ccccccecceceesecseseeeeeeseeseseeseseeesseeseeneerseneisenenseeseseesees 36
+41 IMtrOGUCtION 0... eecececeeceeeeeeeeeeeeeeeceeeeneeeesseseeeeeeesseesseneneeatetieeeesaee 36
+
+COMMERCIAL IN CONFIDENCE
+
+Page 4 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.2 Table tmp_rx_Cac_reS@nd. oo... ee eeeeceeeeceeceseeseeeeseeeeeeeeeeseeseeeeeeeeneeeee 36
+4.3 Table tmp_rx_clt_reSend oo... eeeeecee ee ceeeeeeseeeeeeeeeeeeeeeeeteeeeeeeeeeeeeets 36
+4.4 Table tmp_rx_Otx_reS@nd. oo... eeeceeeeeceecesceceeeseeeeeeeeeeseeseeeeeeseneeeeeaees 36
+4.5 Table tmp_rx_stx_reS@nd oo... eeeeee ee eeeeeeeeeeeeeeeceeeeeeeeceeeeeeeeseneeeeeeeee 37
+46 Table tms_rx_aps_transactions.................ceccecceceeceseeeeseeceeeeeeeseeseneeeees 37
+47 Table tms_rx_Cac_reS@nd...........cececceeeceeceseeceececeeeeeceeceseeceeeseeseeeeeees 40
+48 Table tms_rx_Ccash_@CCOuUnt.............eceeceeeeeeeseeeceeeeeeceseeseeseeeeneeeeeeeeees 41
+4.9 Table tps_rx_clt_reS@nd oo... ec ceeeeeeeeeececeeeeeeeeeeeeeeeeeeeceeeeeeeeeeeess 43
+4.10 Table tms_rx_epOSs_@VeMts......... eee eceeceececeecceceseeeeeeeseeseeeeseeseeseeeeeenees 44
+4.11 Table tms_rx_eposs_transactions...........0.0.0. cece ee eeeeeeeeeeeeeeeees 46
+412 Table tms_rx_obcs_statuses........ cece eceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeneeee 49
+413 Table tms_rx_obcs_transactions................cccecceeeceseeeeseeceeeeeeseeeeteeeees 51
+4.14 Table tms_rx_Otx_reSend oo... cec cess eeseeeeeeeeeeeeeeeseeeneeeeeeeeeeees 55
+4.15 Table tms_rx_stock_holdings...........0.....ccccceeeceecesceeeseeeeeeeeeeeeeeeeeenenee 58
+4.16 Table tms_rx_stx_resend eo... eee cececcee eee ceeeeeeeseeeeeeeeeeeeeeeeeeeeneenee 59
+4.17 Table tps_clients............. cc eceeecccccecceceseeseeeeseeceeececeseeeseeseeseeeeeeeseeenee 60
+4.18 Table tps_client_SummMaries........0.....0. cece cece ceeeeeeeeeeeeeeeeseeeeeeeenees 61
+4.19 Table tps_outlets 2.2.0... cee cece cece eecceeeeeeeseeeeeeeeeeeeeaeeseseeeeeeeeaeeaeeee 62
+4.20 Table tps_outlets_notactive 0... cece cceeeeeeeeeeeeeeeeeeeeeeeeneeeeeeees 63
+4.21 Table tps_outlet_COds......... eee eececeeceecceeeeeeeeeeeseeeeeeeeeeseseeeeeeeeeeeeseeee 63
+4.22 Table tps_tt_reversals.......0... cece cece eee cneeeeeeeeeeeeeeeeeneeeeeeeneeeeneees 63
+5. INTERFACE FILE TO TIP... eeeeeecee eee eeeeceseceeeeceeeeeeeeeeeeeeeseeeseeeeeeeee 65
+5.1 IMtrOdUCtION. ........ ee eeeececeeeceee ee eeeeeeeeeeeeseeeeeeeeeeseseeneeeeeeeesenseeesetecasaneceeeed 65
+5.2 General.
+
+5.2.1 TPS Transmission File Heade:
+
+5.2.2 TPS Transmission File Trailer.
+
+5.2.3. TPS Sub-File Header.
+
+5.2.4 TPS Sub-File Trailer.
+
+COMMERCIAL IN CONFIDENCE Page 5 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.3 TPS Transactions Sub fil
+5.3.1 Description
+
+5.3.2 TPS Transaction/Tender Line Detai “69
+5.3.3 Additional Details for Reversals... 12
+5.3.4 Additional Data for OBCS Benefit Payment. 73
+
+5.3.5 Additional Data for Automated Payment.
+5.3.6 Additional Data for OBCS Benefit Book.
+5.3.7 Event Details........0....c eee
+5.3.8 Additional Data for EPOSS Events.
+
+5.4 TPS Cash Account Sub file.
+5.4.1 Description.................
+5.4.2 TPS Cash Account Detail
+5.4.3 TPS Stock Holdings Details.
+
+5.5 TPS Client Summary Sub file.
+5.5.1 Description.............
+5.5.2 TPS Client Transmission Summary Details.
+
+6. INTERFACE FILE TO DATA WAREHOUSE ..............0c:ccceceteeeeeteeeeees 82
+6.1 Introduction... ee ececceceeeeeceeecseseseeeseceeseeeeeseseaseseeseeeseseseceeesesateceteeeed 82
+6.2 GONO Pl... eee eee ceceee ee eeeeeee eens ee eeeeeeeeeeeeeeeeeeeeesieeeeerenieisesneneneeesseeated 82
+
+6.3 TPS MIS Basic Transactions File.
+6.3.1 Description...............::::20
+6.3.2 MIS Basic Transaction Record
+
+6.4 TPS MIS OBCS Transactions File.
+6.4.1 Description.......0.0.0 cee
+6.4.2 I TPS MIS OBCS Transaction Record
+
+6.5 MIS Miscellaneous File
+6.5.1 Description..........
+6.5.2 TPS MIS Miscellaneous.
+
+6.6 TPS MIS File Control File.
+6.6.1 Description.............
+6.6.2 TPS MIS File Details.
+
+6.7 TPS MIS Summary File... ccceceeseceeseseeeeeeececeeeeeceeaceeseseseeeeeeeeeees 89
+6.7.1 Description
+6.7.2 TPS MIS Summary File Detail:
+
+6.8 MIS Lock File..
+6.8.1 Description
+
+6.9 TPS TIP File Delivery File.
+6.9.1 Description
+
+COMMERCIAL IN CONFIDENCE Page 6 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+6.9.2 TPS TIP File Delivery Data... eee eceeeee ee reeeeeeeeeeeeeeeeeeeeen 90
+
+FIGURE 1 - TPS CLASS DIAGRAM STRUCTURE (CLASS DIAGRAM) 9
+
+FIGURE 2 - TPS TRANSACTIONS (CLASS DIAGRAM) 10
+FIGURE 3 - TPS EPOSS TRANSACTION (CLASS DIAGRAM) 1
+FIGURE 4 - TPS EPOSS EVENT (CLASS DIAGRAM) 12
+FIGURE 5 - TPS APS TRANSACTION (CLASS DIAGRAM) 13
+FIGURE 6 - TPS OBCS TRANSACTION (CLASS DIAGRAM) 14
+FIGURE 7 - TPS OBCS BOOK EVENT (CLASS DIAGRAM) 15
+FIGURE 8 - TPS CASH ACCOUNT & STOCK HOLDING (CLASS
+DIAGRAM) 16
+FIGURE 9 - TPS CLIENT SUMMARIES (CLASS DIAGRAM) 17
+FIGURE 10 - TPS TIP TRANSMISSIONS (CLASS DIAGRAM) 18
+
+FIGURE 11 - TPS TIP TRANSACTIONS SUB FILE (CLASS DIAGRAM) 19
+FIGURE 12 - TPS TIP CASH ACCOUNT SUB FILE (CLASS DIAGRAM) 19
+FIGURE 14 - TPS MIS TRANSMISSIONS (CLASS DIAGRAM) 20
+FIGURE 15 - OMT DIAGRAMMING CONVENTION (CLASS DIAGRAM) 21
+
+COMMERCIAL IN CONFIDENCE Page 7 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+1. Introduction
+
+The TPS Object Model describes the mapping of Counter message
+objects into TPS Host table objects into TIP and MIS output file
+objects. The object descriptions for the TPS table objects and the TIP
+and MIS output file objects show how the objects are derived.
+
+The document adheres to the naming conventions used by the
+different hardware platforms: thus ProductNo in the EPOSS
+Transaction is renamed as prod_id in the Oracle database and
+renamed again as Item_Id when it appears in the TIP interface file to
+POCL.
+
+The TPS Object Model consists of the following sections:
+
+«# The Local Business Object Model, providing the class diagrams,
+the first diagram describes the structure of the class diagrams
+
+« Description of the Riposte and EPOSS messages, their derivation,
+their attributes, and its associations with other objects
+
+¢@ Description of tables in the Oracle database which are loaded by
+the TPS Agent and which are then used by the TPS Host to load
+into the output files for POCL TIP and the Data Warehouse. The
+mapping describes all data items and their derivation
+
+« Description of the TPS output files
+¢ Description of the interface to the Data Warehouse.
+
+COMMERCIAL IN CONFIDENCE Page 8 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+2. Local Business Object Model
+
+TPS Class Diagram Structure(CLD00001.DAT)
+
+The class diagrams consist of 3 sets of diagrams:
+1. The transaction derivation diagrams
+
+These diagrams show how the constituent components of
+counter transactions, events and other related messages
+
+are associated and used to construct the TPS host tables.
+The TPS tables are used to construct the various TIP and
+MIS outputs
+
+2. The TIP and MIS transmission files
+These diagrams show how the TIP and MIS transmission
+files are constructed from the TIP and MIS outputs. In the
+case of TIP, the TIP transmission files are constructed
+from subfiles containing the TIP outputs
+
+3. The OMT diagramming convention
+
+This diagram explains the OMT diagramming convention
+used in the class diagrams
+
+Type: Class Diagram Page Ref: CLD
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+11:29:40
+
+Figure 1 - TPS Class Diagram Structure (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 9 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+TPS Transactions(CLD00002.DAT)
+
+[TIP Output)
+
+Defines the category of TIP records
+which make up the TIP output
+Riposte Message [TPS Table transmission files
+pe ‘8 ‘The TIP output object names are
+directly derived from the record
+
+Defines the category of Defines the category of ae
+Riposte messages, Fes Host tabies The ‘pares used inthe Patiowsy to TIP
+Generated by the Counter tables are partiioned to
+Snd Counter agents, hold the tanaactons or
+2 he HelpDesk, Cvents fora gwen
+Containing the Counter umber of Outets TPS Transaction/Tender Line Details
+fansactions and events ‘The tables are joined to
+Ae Riposte Messages form the Tip and 1
+Go net have names a Mig output transmission
+Such, abject names have
+Deen chosen to closely The TPS table names are ,
+Feflect te message same as Used by the TPS ‘ais Ouput
+function fost
+EPOSS Transaction I] 1 tms_nc_eposs_transactions
+
+Defines the category of MIS records
+which make up the MIS output
+transmission files,
+
+‘The MIS output object name are
+directly derived from the record
+
+‘This model shows the categories of transaction objects which ames used in the TPS to MIS EPIO
+make up the overall transaction structure, The object }
+
+Sesociations in the following transaction diagrams show the
+felationship of the transaction objects, ie Riposte Messages to 1
+
+TPG Host tables and TPS Host tables to TIP and MIS outputs [TPS Mis Basic Transaction I
+
+In the corresponding transmission files.
+
+‘An example of a EPOSS transaction is shown in outline
+
+Type: Class Diagram Page Ref: CLD
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+11:31:27
+
+Figure 2 - TPS Transactions (Class Diagram)
+
+TPS EPOSS Transaction(CLD00003.DAT)
+
+Fist Message [cross rersonee I epost ansactons
+
+Type: Class Diagram Page Ref: CLD
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+
+COMMERCIAL IN CONFIDENCE Page 10 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+[11:32:02 [
+
+Figure 3 - TPS EPOSS Transaction (Class Diagram)
+
+TPS EPOSS Event(CLD00004.DAT)
+
+Riposte Message \
+
+ea
+Tanee
+Reore Message I) I Boba
+Sm Prowse iis Oupat
+oa Ensomey
+Sty
+
+‘TP Output
+
+acord Type iene
+
+Fat Gack node Flag
+
+"TPS EPOSS Event
+
+‘Stock Unt Type
+
+Type: Class Diagram
+
+Page Ref: CLD
+
+Date Last Changed: 14-Apr-99
+11:33:20
+
+Last Changed By: ROY SMETHURST
+
+Figure 4 - TPS EPOSS Event (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE
+
+Page 11 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+TPS APS Transaction(CLD00005.DAT)
+
+Type: Class Diagram Page Ref: CLD
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+11:49:26
+
+Figure 5 - TPS APS Transaction (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 12 of 1
+ICL Pathway
+
+FUJ00171947
+
+FUJ00171947
+TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+TPS OBCS Transaction(CLD00006.DAT)
+
+[Type: Class Diagram
+
+Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+
+11:51:29
+
+Figure 6 - TPS OBCS Transaction (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 13 of 1
+ICL Pathway
+
+TPS Object Model
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00171947
+FUJ00171947
+
+Ref: TD/DES/013
+
+Version:1.4
+
+Date:19/08/99
+
+TPS OBCS Book Event(CLD00007.DAT)
+
+/nipaste Message
+
+(OBC Transaction
+
+I xppication
+Tran Type
+
+Stace
+
+TOP iene
+
+Vouchers
+
+Result
+
+ne
+
+Foreign Enquiry Time
+
+aveharge
+Pet foregn
+
+(iP Opa
+
+TPS Event Details
+Record Type Ieenifer
+
+Organisational Unt Code
+Yorsion Number of Org Unt
+tion
+
+ind Flag
+
+Fail Gack Mode Flag
+
+Version No of Item Transaction Mode
+‘Yraneaction Mode Code
+
+Quartty
+
+TPS Benefit Book
+ak
+Sede Reaut
+
+\Type: Class Diagram
+
+Page Ref: CLD
+
+12:53:46
+
+Date Last Changed: 15-Apr-99
+
+Last Changed By: ROY SMETHURST
+
+Figure 7 - TPS OBCS Book Event (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE
+
+Page 14 of 1
+ICL Pathway
+
+TPS Object Model
+
+COMMERCIAL IN CONFIDENCE
+
+Date:19/08/99
+
+TPS Cash Account & Stock Holding(CLD00016.DAT)
+
+Riposte Message
+
+TPS Table TP
+
+‘Output \
+
+EPOSS CA Transaction
+CAP
+
+Cash Account Id
+
+Qty
+Sale Value ‘counfer_position
+Cash Ace Line group_id
+
+Tran Type line_number
+Snap Shot ‘orgaunit_id
+
+(I tms_r_eash_accounts 1
+
+TPS Cash Account Details
+
+‘amount
+cash_account_period
+
+‘org_unit_version_no
+riposte_fumI
+trading"date
+
+Record Type Identifier
+Version Number of Org Unit
+
+Organisational Unit Code
+
+Cash Account Week Number
+Cash Account Line Number
+Amount
+
+EPOSS OF Transaction I 1+ 1I_tms_m_stock holdings I 1 1I TPS Stock Holdings Details
+rontainer ‘amount Record Type Identifier
+Fan type Dalance_period Organisational Unit Code
+ProductNo cash adcount- period Version Number of Org Unit
+ot container Cash Account Week Number
+ay counter position emi
+Sale Value ‘group. id Version Number of item
+Untterice Srg_unitia Holdings Date
+Pm Srgzunit_version_no Quantity
+Opening Figures Id prod_id Value
+pening fs product_version_number
+Riposte Message
+‘Groupie
+‘a
+Num
+Date MIS Output
+Time
+User
+Expiry
+CRE
+
+iType: Class Diagram
+
+Page Ref: CLD
+
+12:28:47
+
+Date Last Changed: 14-Apr-99
+
+Last Changed By: ROY SMETHURST
+
+Figure 8 - TPS Cash Account & Stock Holding (Class Diagram)
+
+TPS Client Summaries(CLD00017.DAT)
+
+PS Table
+
+TIP Output
+
+tms_P_aps_tansactions
+
+Total
+
+I_1[ "TPS ciient Transmission Summary Details
+
+Number of Ctent Identiner
+
+of Transactions
+ue of Transaction
+
+Type: Class Diagram
+
+Page Ref: CLD
+
+12:29:32
+
+Date Last Changed: 14-Apr-99
+
+Last Changed By: ROY SMETHURST
+
+COMMERCIAL IN CONFIDENCE
+
+Page 15 of 1
+
+FUJ00171947
+FUJ00171947
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Figure 9 - TPS Client Summaries (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 16 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model Ref: TD/DES/013
+
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+TPS TIP Transmissions(CLD10001.DAT)
+
+TPS POCLTIP system I + 1 I TPS Pathway Central System
+———————— i ————
+
+‘TPS TIP Transmissions
+
+i
+
+TPS Transmission File Header i TPS Transmission File Trailer
+
+Record Type Identifier ut Record Type Identifier
+
+File Type faerie
+Date of Fle Completion
+
+Interface Version identiior 1. OL TPS Transmission File I. 4 1I Completion Time of Fle Creation
+‘Total Number of Sut-ies
+
+Total Value of Sub-File Trailers
+
+Transmission Day Number
+‘Transmission File Number
+
+Date of File Creation y
+Time of File Creation
+
+Transmission Status I
+
+as
+
+TPS Transmissions Subtle
+
+I
+
+TPS Transactions Subfile TPS Client Summary Subfile
+
+I I
+[FPS Gash account uone I [TRS BA Resonctaton Subte
+
+iType: Class Diagram Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+12:31:15
+
+Figure 10 - TPS TIP Transmissions (Class Diagram)
+
+TPS TIP Transactions Subfile(CLD10002.DAT)
+
+‘TPS Transactions Subfile
+
+‘TPS Sub-File Header \ ¥ TPS Sub-File Trailer
+Record Type Identifier Record Type Wdentifer
+Organisational Unit Code Organisational Unit Code
+Version Number of Org Unit Version Number of Org Unit
+‘Sub-File Type identifier Date of Sub-File Completion
+‘Sub-File Sequence Number Completion Time of Sub-File Creation
+Date of Sub-File Creation ‘Total Number of Records
+‘Time of Sub-File Creation Total Amount
+
+TPS Transaction/Tender Line Details (TIP Output] TPS Event Details (TIP Output
+Record Type Ideniiner cord Type Identifier
+Organisational Unit Code Organisational Unit Code
+Version Number of Org Unit Version Number of Org Unit
+Stock Unit Identifier Stock Unit Identifier
+
+Session Sequence Number Session Sequence Number
+‘Transaction Sequence Number ‘Transaction Sequence Number
+Till Kdentiier Titans
+
+Employee Identifier :mployee Identifier
+
+Date of Transaction Date of Transaction
+
+Start Time of Transaction Start Time of Transaction
+
+End Time of Transaction End Time of Transaction
+
+(Cash Account Week Number Cash Account Week Number
+Cash Account Day Number Cash Account Day Number
+
+Stock Unit Balance Period Stock Unit Balance Period
+
+Method of Data Capture Method of Data Capture
+
+Reversal Indicator Reversal indicator
+
+Refund Flag Refund Flag
+
+Fall Back Mode Flag Fall Back Mode Flag
+
+Item la tem Id
+
+Version No of item Transaction Mode: Version No of item Transaction Mode
+Transaction Mode Code ‘Transaction Mode Code
+
+Amount Amount
+
+‘Quanuty ‘Quantity
+
+Type: Class Diagram Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+
+COMMERCIAL IN CONFIDENCE Page 17 of 1
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+FUJ00171947
+FUJ00171947
+
+[12:33:19 I
+
+Figure 11 - TPS TIP Transactions Sub file (Class Diagram)
+
+TPS TIP Cash Account Subfile(CLD10003.DAT)
+
+TPS Sub-File Header I 1 4] TPS Cash Account Subtiie I. 1 ‘TPS Sub-File Trailer
+Record Type Identifier
+
+TPS Cash Account Details TPS Stock Holdings Details
+Record Type identifier Record Type Wdeniiier
+Srganisavonai Unit Code Srganisavonal Unt Code
+Setsion Number of Org Unit Setsion Number of Org Unit
+SScHALoStnt Week Number SocRReoSunt Weer Number
+Gach Account Line Number fem'a
+mount Version Number of tem
+Holdings Date
+Save
+iType: Class Diagram Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+12:34:06
+
+Figure 12 - TPS TIP Cash Account Sub file (Class Diagram)
+
+TPS TIP Client Summary Subfile(CLD10005.DAT)
+
+TPS Sub-File Trailer
+
+Record Type Identifier
+Organisational Unit Code
+
+Version Number of Org Unit
+
+Date of Sub-File Completion
+Completion Time of Sub-File Creation
+‘Total Number of Records
+
+Total Amount
+
+1PS SubFle Header yy _-{ TPS Ohent Summary Subtle I yy
+
+Record Type Identifier
+Organisational Unit Code
+Version Number of Org Unit
+‘Sub-File Type Identifier 1
+‘Sub-File Sequence Number
+Date of Sub-File Creation
+
+I Time of Sub-File Creation
+
+as
+TPS Client Transmission Summary Details
+
+Record Type Identifier
+Client Identifier Code
+
+Version Number of Client Identifier
+fem la
+
+Version Number of Item
+
+Client Trading Date
+
+Total Number of Transactions
+Total Value of Transactions
+
+Type: Class Diagram Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+12:35:17
+
+Figure 13 - TPS TIP Client Summary Sub file (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 18 of 1
+ICL Pathway
+
+FUJ00171947
+
+FUJ00171947
+
+TPS Object Model Ref: TD/DES/013
+Version:1.4
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+TPS MIS Transmissions(CLD20001.DAT)
+
+“TPS MIS Transmissions:
+
+1[ Tes is Fie ConuotFie I 1 [TPS MIS File Detaie
+
+TPS MIS OBCS Tins Fle
+
+Som
+
+[FST Fie Donen Fie IS 1 1. [ TPS TP Fe Detvery Data
+
+Source
+
+iType: Class Diagram
+
+Page Ref: CLD
+
+Date Last Changed: 14-Apr-99
+12:35:43
+
+Last Changed By: ROY SMETHURST
+
+Figure 13 - TPS MIS Transmissions (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 19 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+OMT Diagramming Convention(CLD30001.DAT)
+OMT Object tT I 4 1 I_ OMT Object 2 seith OME Object 2 on'a one to one
+~ associated with zero or more
+. OMT Object 25,
+OMT Object 3
+OMT Whole
+OMT Whole object consists of
+exactly one OMT Part 1 object
+; ) = zero or one OMT Part 2 objects
+1 1 1 - one or more OMT Part 3 objects
+1 ont ie
+OMT Part 4 OMT Part2 OMT Part3
+I I
+OMT General
+OMT Isa object is a generalised
+abject from which OMT Isa 1 and
+I OMT Isa 2 inherit their properties
+and become specialised cases of
+OMT Isa
+OMT Special 1 OMT Special 2
+
+Type: Class Diagram Page Ref: CLD
+
+Date Last Changed: 14-Apr-99 Last Changed By: ROY SMETHURST
+
+12:36:13
+
+Figure 145 - OMT Diagramming Convention (Class Diagram)
+
+COMMERCIAL IN CONFIDENCE Page 20 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.2
+
+3.3
+
+Riposte Messages
+
+Introduction
+
+This section contains details of the Counter messages held in
+message store. Some of the details are derived from Riposte whilst
+others are placed there by EPOSS. Some of the messages are written
+by other Counter processes such as End of Day.
+
+EPOSS Logon
+
+Parent Category:
+Riposte Message
+Description:
+The logon event message
+Attributes:
+Logon X(15)
+The user name of the logged on user
+
+Association Statements
+Each EPOSS Logon:
+Is related to only one tms_rx_eposs_events
+
+Riposte Message
+
+Parent Category:
+Riposte Message
+Description:
+The Riposte Message object provides which the message
+header attributes for all message objects
+Attributes:
+Groupld 9(6)
+Outlet identifier (6 digits of the FAD code)
+Id 9(2)
+Counter position number
+Num 9(8)
+Riposte message number
+Date X(11)
+The date the message is written to the journal, format(DD-Mon-
+YYYY)
+Time X(8)
+The time the mesaage is written to the journal,
+format(HH:MM:SS)
+User X(15)
+Clerk/employee as Riposte user
+Expiry 9(3)
+The number of days before message expiry
+
+COMMERCIAL IN CONFIDENCE Page 21 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.4
+
+CRC X(8)
+Message cyclic redundancy check to protect message integrity
+
+Association Statements
+Each Riposte Message:
+has no associations.
+
+EPOSS Transaction
+
+Parent Category:
+Riposte Message
+
+Description:
+A transaction that records the sale of stock items and the
+associated payments from the customer
+
+Attributes:
+
+Tran Start Num 9(8)
+Not used by Pathway
+
+Debit 9(9)
+Used when money is being 'paid' out of the drawer, unsigned
+pence
+
+Credit 9(9)
+Used when money is being 'paid' into the drawer, unsigned
+pence
+
+Session Id X(18)
+Unique session identifier for all transactions within a customer
+session. Contains Groupld, Id and Num separated by hyphens
+of the messages (normally the first) within the session
+
+Txn Id X(18)
+Unique transaction identifier for all messages within a customer
+transaction. Contains Groupld, Id and Num separated by
+hyphens of the messages (normally the first) within the
+transaction
+
+Container X(3)
+Stock unit name
+
+Start Date X(11)
+Date the transaction commenced
+
+Start Time X(8)
+Time the transaction commenced
+
+Start TF 9
+Tenths of a second part of the start transaction time
+
+End Date X(11)
+Date the transaction completed
+
+End Time X(8)
+Time the transaction completed
+
+End TF 9
+
+Tenths of a second part of the completion transaction
+Mode X(4)
+
+COMMERCIAL IN CONFIDENCE Page 22 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Contains the mode of the system when the transaction is
+written. Same values as BlackBoxData.M, however Mode is
+used by TPS in preference
+
+- SC=serve customer
+
+- ER=linked reversal
+
+- RV=unlinked reversal
+
+- RISD=remit in from Supplies
+
+- ROSD=remit out to Supplies
+
+- RU=Revaluation Uprating
+
+- RD=Revaluation Downrating
+
+- Tl=transfer in
+
+- RIOP=remit in from other PO
+
+- ROOP=remit out to other PO
+
+- RICL=remit in Client
+
+- ROCL=remit out Client
+
+- RODC=remit out DPC
+
+- TO=transfer out
+
+- REC=recovery (bulk input)
+
+- HK=housekeeping
+
+- SAP=stock adjustment positive
+
+- DDP=declaration discrepancy positive
+
+- SAN=stock adjustment negative
+
+- DDN=declaration discrepancy negative
+
+- RIAD=remit in from ADC
+
+- ROAD=remit out to ADC
+
+Application X(12)
+Application name generating the transaction, eg
+EPOSSAppMain, EOD, OBCS, APS
+Product No 9(4)
+Product to which this transaction relates
+
+Qty S$9(5)
+Quantity of product transacted, may be negative
+PVer 9(4)
+
+Identifies the version of reference data used for the product
+Sale Value S9(7)V(2)
+Actual sale value, may be negative, or zero in the case of milk
+tokens
+Entry Method 9
+Method of data capture, O=barcode, 1=keyboard (manual),
+2=magnetic card, 3=smart card, 4=smart key, 5=scales
+Cross Reference X(18)
+Cross reference to another transaction, eg for reversal. The
+Groupld, Id and Num separated by hyphens of the cross
+referenced message
+Lkd Txns 9(2)
+A count of transactions following this one that are logically
+linked to this one
+Black Box Data struct
+
+COMMERCIAL IN CONFIDENCE Page 23 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.5
+
+Data provided by extended applications, passed through by
+EPOSS. The following attribute apply but are not described:
+- S, unknown but always 1
+- M, mode, same value as Mode
+- LTPN, linked txn product number
+- LTSV, linked txn sale value
+- HOR, unknown - used with scales
+- IsLinked, is linked to a previous txn
+- SRC, source stock unit for a transfer
+- SRCBP, source balance period? - preceded by a back slash.
+Only used for transfer out
+- DESTBP, destination balance period? - preceded by a back
+slash. Only used for transfer in
+- DEST, destination stock unit for a transfer
+Additional Data struct
+Zero or more attributes containing data captured as part of this
+transaction. The number and names of all additional data fields
+match those defined in product additional data
+Tran Type X
+Flag, used primarily for reporting, to indicate the type of
+transaction, S=serving
+PM struct
+Primary mappings for levels 1 through 5 - maps this transaction
+to the EPOSS summarisation hierarchy
+SM struct
+Secondary mappings for levels 1 through 5 - maps this
+transaction to the EPOSS summarisation hierarchy
+suo
+Attribute unknown to Pathway
+
+Association Statements
+Each EPOSS Transaction:
+Is related to only one tms_rx_eposs_transactions
+Is related to only one tms_rx_aps_transactions
+Is related to only one tms_rx_obcs_transactions
+
+EPOSS Additional Data
+
+Parent Category:
+Riposte Message
+Description:
+Additional application specific data
+Attributes:
+None
+
+Association Statements
+
+Each EPOSS Additional Data:
+has no associations.
+
+COMMERCIAL IN CONFIDENCE Page 24 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.6 Additional Data for APS
+
+Parent Category:
+Riposte Message
+Description:
+Additional data for APS transactions
+Attributes:
+AD - Accounting Date X(11)
+The accounting date upon which the transaction was
+completed, format (dd-Mon-yyyy)
+APSSEQ - AP Sequence No 96)
+The AP transaction sequence number within the customer
+session, consists of the counter identifier and an AP transaction
+sequence number for that counter
+(RiposteMessage.Id*10000)+APTxnSeqNo
+CA - Client Account 9(4)
+The Client account code
+CID - Client ID 9(4)
+The Client identifier code
+CN - Client Name X(24)
+The name of the Client
+NB Internal APS attribute
+CuR - Customer Reference No X(20)
+The customer reference number
+MoP - Method of Payment X(6)
+The method of payment, ie cash, cheque
+PF - Printer Failure 9
+Identifies whether a printer failure has occurred whilst printing
+an APS receipt, 0=success, 1=failure
+NB: not implemented in CSR or CSR+
+PT - Print Time 9(8)
+The receipt print time in microseconds
+NB: not implemented in CSR or CSR+
+Rref - Receipt Reference X(24)
+The total token data printed on the receipt, may be longer than
+Token Data
+NB Internal APS attribute
+SG - Client Service Group X(2)
+The Client service group (nb set by Pathway in Reference Data)
+SVC - Client Service Code 9(4)
+The Client service code
+TD - Token Data X(24)
+The actual data contained on the token with which the Luhn
+check digit applies
+NB Internal APS attribute
+Tl - Token Identifier 910)
+
+COMMERCIAL IN CONFIDENCE Page 25 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.7
+
+3.8
+
+The token identifier which identifies the token and the data
+elements on the token
+
+TT - Token Type X(2)
+The AP token type, (ie MC=magnetic card, BC=barcode,
+SC=smart card, SK=smart key)
+
+TV - Token Id Version No 9(10)
+The version number of the token identifier
+
+Association Statements
+Each APS Additional Data:
+has no associations.
+
+Additional Details for OBCS
+
+Parent Category:
+Riposte Message
+
+Description:
+Additional information giving order book details provided by
+OBCS during the EPOSS transaction
+
+Attributes:
+
+Result 9
+The result of the OBCS transaction, ie 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+
+IOP Ident struct
+The IOP Identifier consists of Customer Reference Number,
+Additional Book Indicator, OB Serial Number and CPP System
+Indicator
+
+Vouchers 9(2)
+The number of vouchers encashed
+
+State 9
+The OBCS transaction state, the valid types are (1=Receipt,
+2=Redirect, 3=Issue,) 4=Encashment, 5=NoBarcode
+
+Association Statements
+Each OBCS Additional Data:
+has no associations.
+
+EPOSS Black Box Data
+
+Parent Category:
+Riposte Message
+Description:
+Data provided by extended applications, passed through by
+EPOSS
+Attributes:
+$9
+Unknown but always 1
+
+COMMERCIAL IN CONFIDENCE Page 26 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+M X(4)
+
+The transaction mode, same values as Mode
+Omode X(4)
+
+The mode of the original transaction for a reversal
+LTPN 9(4)
+
+3.9
+
+Linked txn product number
+LTSV $9(7)V9(2)
+Linked txn sale value
+IsLinked X(5)
+Is linked to a previous transaction, True or False
+HOR ??
+Unknown - used with scales
+SRC X(3)
+Source stock unit for a transfer
+SRCBP 9(3)
+Source balance period? - preceded by a back slash. Only used
+for transfer out
+DEST X(3)
+Destination stock unit for a transfer
+DESTBP 9(3)
+Destination balance period? - preceded by a back slash. Only
+used for transfer in
+
+Association Statements
+Each EPOSS Black Box Data:
+has no associations.
+
+APS Black Box Data
+
+Parent Category:
+Riposte Message
+Description:
+Black box data defined for APS
+Attributes:
+APSXREF X(6)
+The APS cross-reference to the reversed transaction, format as
+APSSEQ
+Full FAD Code X(7)
+The full FAD code, as this is required by the APS Host and
+cannot be derived easily from the Groupld
+M X(4)
+The transaction mode, same values as Mode
+Omode X(4)
+The mode of the original transaction for a reversal
+Transaction Mode 9
+The AP transaction mode, superseded by
+EPOSSTransaction.Mode
+
+COMMERCIAL IN CONFIDENCE Page 27 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model Ref: TD/DES/013
+
+Version:1.4
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Association Statements
+Each APS Black Box Data:
+has no associations.
+
+3.10 OBCS Black Box Data
+
+3.11
+
+Parent Category:
+Riposte Message
+
+Description:
+The EPOSS Transaction Black Box Data carries foreign enquiry
+attributes
+
+Attributes:
+
+Foreign Enquiry Time 9(8)
+The time in microseconds to complete a foreign enquiry on the
+central OBCS database
+
+Foreign Enquiry Time Out 9
+Indicates whether the foreign enquiry timed out due to ISDN
+failure, O=OK, 1=timeout
+
+Foreign Indicator 9
+Indicates whether a foreign encashment took place, O=local,
+1=foreign
+
+Association Statements
+Each OBCS Black Box Data:
+has no associations.
+
+EPOSS Event
+
+Parent Category:
+Riposte Message
+
+Description:
+EPOSS events occur in response to user action. They take the
+form of an EPOSS Txn Object with TranType=E.
+Parameters (P1, P2, etc) are held with the P attribute as name
+value pairs. The order of the parameter is the order in which
+they appear in the Text, T, attribute
+
+Attributes:
+
+Container X(3)
+Stock unit name
+
+Tran Type X
+Flag, used primarily for reporting, to indicate the type of
+transaction, E=event
+
+Id 9(2)
+Unique identifier for this event, value include:
+40=CashAccControl
+
+9=SUCreated
+
+10=SUDeleted
+
+COMMERCIAL IN CONFIDENCE Page 28 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.12
+
+7=UserAttached
+6=RolloverComplete
+Ti 2?X(??)
+Descriptive title for this event
+T 22X(??)
+Description for the event, including parameters appropriate for
+this type of event
+
+P.P1 X(??)
+
+First parameter appearing in the event text
+P.P2 X(??)
+
+Second parameter appearing in the event text
+P.P3 X(??)
+
+Third parameter appearing in the event text
+P.P4 X(??)
+
+Fourth parameter appearing in the event text
+PM Struct
+
+Primary mappings
+
+Association Statements
+Each EPOSS Event:
+Is related to only one tms_rx_eposs_events
+
+OBCS Transaction
+
+Parent Category:
+Riposte Message
+
+Description:
+The OBCS transaction for processing Order Books. It has no
+monetary value associated. The actions are Receive, Redirect
+or Issue
+
+Attributes:
+
+Application X(4)
+Application name, OBCS
+
+Tran Type X(5)
+The transaction type, Admin
+
+State 9
+The OBCS transaction state, the valid types are 1=Receipt,
+2=Redirect, 3=Issue, (4=Encashment, 5=NoBarcode)
+
+IOP Ident struct
+The IOP Identifier consists of Customer Reference Number,
+Additional Book Indicator, OB Serial Number and CPP System
+Indicator
+
+Vouchers 9(2)
+The number of vouchers encashed, always 0
+
+Result 9
+The result of the OBCS transaction, ie 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+
+NC
+
+COMMERCIAL IN CONFIDENCE Page 29 of 1
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+FUJ00171947
+FUJ00171947
+
+3.13
+
+Foreign Enquiry Time 9(8)
+
+The time in microseconds to complete a foreign enquiry on the
+
+central OBCS database
+Foreign Enquiry Time Out 9
+Indicates whether the foreign enquiry timed out due to ISDN
+failure, O=OK, 1=timeout
+Foreign Indicator 9
+Indicates whether a foreign encashment took place, O=local,
+1=foreign
+Start Date X(11)
+Date the transaction commenced
+Start Time X(8)
+Time the transaction commenced
+Start TF 9
+Tenths of a second part of the start transaction time
+End Date X(11)
+Date the transaction completed
+End Time X(8)
+Time the transaction completed
+End TF 9
+Tenths of a second part of the completion transaction
+Entry Method 9
+Method of data capture, 0=barcode, 1=keyboard (manual),
+2=magnetic card, 3=smart card, 4=smart key, 5=scales
+
+Association Statements
+Each OBCS Transaction:
+Is related to only one tms_rx_obcs_statuses
+
+EPOSS CA Transaction
+
+Parent Category:
+Riposte Message
+
+Description:
+At rollover a set of transactions are written that reports the
+content of each of the cash account lines. Only lines that
+contain anything are reported on. A subset of the normal
+transaction format is used
+
+Attributes:
+
+CAP 9(3)
+The Cash Account Period that is being reported
+
+Qty S9(5)
+Quantity of product on cash account line, negative
+
+Sale Value S9(7)V(2)
+Actual sale value on cash account line, negative
+
+Cash Acc Line 98)
+
+COMMERCIAL IN CONFIDENCE Page 30 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.14
+
+The actual line number being reported. Lines take the form
+qqqqvvvwy, qqqq9999 or 9999vww, where qqqq and vw are the
+respective quantity and sale value line numbers
+
+Tran Type X
+Flag, used primarily for reporting, to indicate the type of
+transaction, C=cash account
+
+Snap Shot X(5)
+Snap shot indicator, True or False
+
+Cash Account Id X(18)
+The cash account identifier used to identify all cash account
+lines for the corresponding cash account, = message identifier
+of first cash account line?
+
+Association Statements
+Each EPOSS CA Transaction:
+Is related to only one tms_rx_cash_accounts
+
+EPOSS OF Transaction
+
+Parent Category:
+Riposte Message
+Description:
+Opening figures trailer identifies the end of the opening figures
+transactions which provide the stock holding at the start of the
+new balance period. All opening figures transactions for the
+same Outlet are linked via the Opening Figures Id attribute
+Attributes:
+Container X(3)
+Stock unit name, note ## for Outlet stock unit
+Tran Type X
+Flag, used primarily for reporting, to indicate the type of
+transaction, B=balance rollover, H=cash account rollover
+Product No 9(10)
+Product to which this transaction relates
+
+PVer 9(10)
+The product version number
+Qty S$9(5)
+
+Quantity of product held, negative
+Sale Value S9(7)V(2)
+Actual sale value, negative
+UnitPrice $9(7)V(2)
+Unit price for this product
+PM struct
+Primary mappings for levels 1 through 5
+Opening Figures Id msgno
+A key value that is used in all opening figures transactions,
+=messageno (no hyphens) of first stock holding txn of these
+opening figures
+
+COMMERCIAL IN CONFIDENCE Page 31 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+3.15
+
+3.16
+
+Association Statements
+Each EPOSS OF Transaction:
+Is related to only one tms_rx_stock_holdings
+
+EPOSS Security Event
+
+Parent Category:
+Riposte Message
+Description:
+Identifies logon/logout security events
+Attributes:
+Event Name X(11)
+The event name, FailedLogon
+User X(15)
+The user name
+
+Association Statements
+Each EPOSS Security Event:
+Is related to only one tms_rx_eposs_events
+
+EPOSS EOD
+
+Parent Category:
+Riposte Message
+
+Description:
+The EOD message generated at Outlet close plus half an hour
+or 19:00 hours whichever is the earlier
+
+Attributes:
+
+Application X(3)
+The application name, EOD
+
+Tran Type X(7)
+The transaction type, EODMark
+
+EOD Date X(11)
+The date to which the EoD applies, format dd-mon-yyyy
+
+Manual 9
+Indicates the EOD generated at at time other than normal EOD,
+ie when counter recovered after failure, 1=recovery,
+O=otherwise
+
+Non Counter 9
+Included if the EOD marker was centrally generated for a Post
+Office that is believed to be non-automated, 1=centrally
+generated, 0=otherwise
+
+Pseudo 9
+Included if the EOD marker was centrally generated for a Post
+Office that has not generated a "real" EOD marker "today" at the
+cut-off time
+
+COMMERCIAL IN CONFIDENCE Page 32 of 1
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00171947
+FUJ00171947
+
+Ref: TD/DES/013
+Version:1.4
+Date:19/08/99
+
+3.17
+
+3.18
+
+NB not currently supported
+CAP
+
+Not used
+EndOfDay
+
+Not used
+Mark 2?
+
+The ripose marker
+
+Association Statements
+Each EPOSS EOD:
+Is related to only one tms_rx_eposs_events
+
+EPOSS Logout
+
+Parent Category:
+Riposte Message
+Description:
+The logout event message
+Attributes:
+Logout X(15)
+The user name of the logged out user
+
+Association Statements
+Each EPOSS Logout:
+Is related to only one tms_rx_eposs_events
+
+EPOSS Logout Authority
+
+Parent Category:
+
+Riposte Message
+Description:
+
+Identifies who and why logout has occurred
+Attributes:
+Application X(17)
+
+The application, UserAccessControl
+LoggedOutUser X(15)
+
+Identifies the logged out user
+LogoutAuthority X(7)
+
+The logout authority, Desktop
+
+Association Statements
+
+Each EPOSS Logout Authority:
+Is related to only one tms_rx_eposs_events
+
+COMMERCIAL IN CONFIDENCE
+
+Page 33 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.
+
+4.1
+
+4.2
+
+4.3
+
+44
+
+Oracle Schema
+
+Introduction
+This section describes the tables contained in the Oracle database
+
+which is populated by the TPS Agent and which is accessed by TPS
+Host to produce the records output to TIP and to MIS.
+
+The tables listed here are those used in the transfer of data to POCL
+TIP and the Data Warehouse. There are other tables in the database
+used for control purposes which are not described here.
+
+The master definition for all table mappings is defined in
+Designer/2000.
+
+The tables are listed in alphabetical sequence.
+
+Table tmp_rx_cac_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Temporary table for re-cycling cash account details from sub
+files which have been rejected by POCL TIP.
+
+Attributes:
+Same as tps_rx_cac_resend
+
+Table tmp_rx_clit_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Temporary table for re-cycling client summaries from sub files
+which have been rejected by POCL TIP.
+
+Attributes:
+
+Same as tps_rx_cit_resend
+
+Table tmp_rx_otx_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Temporary table for re-cycling transaction/tender lines from sub
+files which have been rejected by POCL TIP.
+
+Attributes:
+
+COMMERCIAL IN CONFIDENCE Page 34 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.5
+
+4.6
+
+Same as tps_rx_otx_resend
+
+Table tmp_rx_stx_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Temporary table for re-cycling stock holding details from sub
+files which have been rejected by POCL TIP.
+
+Attributes:
+Same as tps_rx_stx_resend
+
+Table tms_rx_aps_transactions
+Parent Category:
+TPS Table
+Description:
+The basic table for APS transactions. This is used to generate
+the TIP (in conjunction with the tps_tt_reversals table) and MIS
+outputs
+Attributes:
+amount $9(9)V9(2)
+The amount of the transaction
+Derivation: EPOSSTransaction.SaleValue
+ap_transaction_sequence 9(6)
+The APS transaction sequence number of the original
+transaction
+Derivation: EPOSSTransaction.AdditionalData APSSEQ
+balance_period 9(2)
+The current stock unit balance period
+Derivation: BP(EPOSSTransaction.Container)
+where BP is an agent function which derives the balance period
+from the stock unit using the RolloverTrailer
+cash_account_period 9(2)
+The current stock unit cash account period
+Derivation: CAP(EPOSSTransaction.Container)
+where CAP is an agent function which derives the CAP from the
+stock unit using the RolloverTrailer
+client_code 9(4)
+The client identifier
+Derivation: EPOSSTransaction.AdditionalData.CID
+container X(3)
+The current stock unit
+Derivation: EPOSSTransaction.Container
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.Id
+
+COMMERCIAL IN CONFIDENCE Page 35 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+customer_reference X(20)
+The customer reference number
+Derivation: EPOSSTransaction.AdditionalData.CuR
+end_date date
+Date the transaction completed
+Derivation: EPOSSTransaction.End(Date+Time)
+end_time_fraction 9
+The end time fraction of a second
+Derivation: EPOSSTransaction.EndTF
+entry_method 9(2)
+The initial entry method for the transaction
+Derivation: EPOSSTransaction.EntryMethod
+fallback_mode X
+Indicates whether the transaction was entered in fallback mode,
+YorN
+Derivation: if EPOSSTransaction.Mode=REC then Y else N fi
+NB: For APS and EPOSS Mode=REC (bulk input).
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+prod_id 9(10)
+The product identifier
+Derivation: EPOSSTransaction.ProductNo
+NB: Padded with leading zeros.
+quantity 9(7)
+The number of product items transacted
+Derivation: EPOSSTransaction.Qty
+reversal 9
+The type of reversal, existing or new otherwise a normal
+transaction
+Derivation: if EPOSSTransaction.Mode=RV then
+Reversal=2
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction. Application = "APS" and
+BlackBoxData.APSXREF = not null then
+Reversal=1
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction. Application = "APS" and
+BlackBoxData.APSXREF = null then
+Reversal=2
+reversed_ap_transaction_sequen 9(6)
+
+COMMERCIAL IN CONFIDENCE Page 36 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Cross-reference to the original AP transaction
+
+Derivation: EPOSSTransaction.BlackBoxData.APSXREF
+riposte_num 9(10)
+
+The transaction message number
+
+Derivation: RiposteMessage.Num
+session_sequence_number 9(6)
+
+The session sequence number derived from the last 6 digits of
+
+the session id message number
+
+Derivation: EPOSSTransaction.Sessionld.Num
+start_date date
+
+Date the transaction started
+
+Derivation: EPOSSTransaction.Start(Date+Time)
+start_time_fraction 9
+
+The start time fraction of a second
+
+Derivation: EPOSSTransaction.StartTF
+token_identifier 9(10)
+
+The AP token identifier
+
+Derivation: EPOSSTransaction.AdditionalData.TI
+token_type_version_number 910)
+
+The version number of the token identifier
+
+Derivation: EPOSSTransaction.AdditionalData.TV
+trading_date date
+
+The current trading date being harvested
+
+Derivation: EODMark.EODDate
+transaction_mode_id 9(2)
+
+The mode of the transaction. The EPOSS mode is translated
+
+into an item transaction mode, as below:
+
+IEPOSS M Transaction_
+
+Mode mode_id
+
+ER Serve Customer 1
+
+RV Serve Customer (reversal) 1
+
+RISD _ [Remit In - Supplies Division 2
+
+IROSD _ [Remit Out - Supplies Division 3
+
+RU Revaluation — Uprating 4
+
+RD Revaluation — Downrating 5
+Not used 6
+
+ITI \Transfer In - Between Stock 7
+Units
+
+RIOP [Remit In - Other Offices 8
+
+RROOP __IRemit Out- Other Offices 9
+
+RICL___IRemit In - Client 10
+
+ROCL ___IRemit Out - Client 11
+
+IRODC __IRemit Out - DPC 12
+
+ITO \Transfer Out - Between Stock 13
+Units
+
+REC Bulk Input 14
+
+IHK Housekeeping 15
+
+COMMERCIAL IN CONFIDENCE Page 37 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+ISAP Stock Adjustment — Positive 16
+DDP [Declaration Discrepancy — 17
+Positive
+ISAN Stock Adjustment — Negative 18
+DDP. Declaration Discrepancy — 19
+Negative
+Event 20*
+(Ordered 21
+PT Parcel Traffic 22
+NAD Non Accounting Data 23
+RIAD __IRemit In to ADC 24
+ROAD __IRemit Out to ADC 25
+
+4.7
+
+Transaction_mode 20 (Event) is derived by TPS_Host
+
+transaction_mode_version_no 9(10)
+Version Number of Item Transaction Mode. Derived from
+EPOSSTransaction.BlackBoxData.V
+
+transaction_sequence_number 9(4)
+The transaction number within session. Derived by TPS Agent
+so that the first transaction in a session is assigned a sequence
+of 1 and subsequent transactions increase by 1
+Derivation: RiposteMessage.Num-
+EPOSSTransaction.Sessionid.Num+1
+
+user_name X(15)
+The username of the clerk
+Derivation: RiposteMessage.User
+
+Association Statements
+Each tms_rx_aps_transactions:
+Is related to only one EPOSS Transaction
+Is related to only one TPS Transaction/Tender Line Details
+Is related to only one TPS MIS Basic Transaction
+
+Table tms_rx_cac_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Table for re-cycling cash account lines from sub files which
+have been rejected by POCL TIP. If a transmision file contains
+any errors it is send back as a complete file to Pathway. Cash
+Account details from the clean sub files are loaded into this
+table and the bad sub files passed to EDSC for manual
+correction.
+
+Attributes:
+
+COMMERCIAL IN CONFIDENCE Page 38 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.8
+
+amount $9(12)V9(2)
+The amount of the cash account line, either the quantity or sale
+value
+Derivation: Amount in the TPS Cash Account Details
+cash_account_period 9(2)
+The cash account period
+Derivation: Cash Account Week Number in the TPS Cash
+Account Details
+line_number 9(4)
+The cash account line number.
+Derivation: Cash Account Line Number in the TPS Cash
+Account Details
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet
+Derivation: Organisational Unit Code in the TPS Cash Account
+Details
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet
+Derivation: Version Number of Org Unit in the TPS Cash
+Account Details
+record_type X(3)
+Identifies the cash account details record
+Derivation: Record Type Identifier in the TPS Cash Account
+Details (always "CAC")
+
+Association Statements
+Each tms_rx_cac_resend:
+Is related to only one Tps Cash Account Details
+
+Table tms_rx_cash_accounts
+
+Parent Category:
+TPS Table
+
+Description:
+The table for cash account lines.
+Information is derived from the corresponding final outlet Cash
+Account, ie EPOSS CA Transaction which is an EPOSS
+Transaction with TranType=C and SnapShot=False
+NB: Each cash account line is assumed complete, ie no totaling
+required for lines with same line number
+
+Attributes:
+
+amount S9(12)V9(2)
+The amount of the cash account line, either the quantity or sale
+value
+Derivation: if EPOSSCATransaction.SaleValue=null then
+EPOSSCATransaction.Qty else
+EPOSSCATransaction.SaleValue fi
+
+cash_account_period 9(2)
+
+COMMERCIAL IN CONFIDENCE Page 39 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.9
+
+The cash account period
+Derivation: EPOSSCATransaction.CAP
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.Id
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+line_number 9(4)
+The cash account line number. Lines take the form qqqq or
+vvvv, where qqqq and vvw are the respective quantity and sale
+value line numbers
+Derivation: EPOSSCATransaction.CashAccLine
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+riposte_num 9(10)
+The transaction message number
+Derivation: RiposteMessage.Num
+trading_date date
+The current trading date being harvested
+Derivation: EODMark.EODDate
+
+Association Statements
+Each tms_rx_cash_accounts:
+Is related to only one EPOSS CA Transaction
+Is related to only one TPS Cash Account Details
+
+Table tps_rx_clit_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Table for re-cycling client summaries from sub files which have
+been rejected by POCL TIP. If a transmision file contains any
+errors it is send back as a complete file to Pathway. Client
+Summary details from the clean sub files are loaded into this
+table and the bad sub files passed to EDSC for manual
+correction.
+
+Attributes:
+
+org_unit_id 9(10)
+The organisational unit identifier for the AP Client
+
+COMMERCIAL IN CONFIDENCE Page 40 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.10
+
+Derivation: Client Identifier Code in the TPS Client
+Transmission Summary Details
+
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the AP
+Client.
+Derivation: Version Number of Client Identifier in the TPS Client
+Transmission Summary Details
+
+prod_id 9(10)
+The AP product identifier
+Derivation: Item Id
+
+product_version_number 9(10)
+The product version number
+Derivation: Version Number of Item in the TPS Client
+Transmission Summary Details
+
+record_type X(3)
+Identifies the TPS Client Transmission Summary Details
+Derivation: Record Type Identifier in the TPS Client
+Transmission Summary Details (always "CLT")
+
+total_transaction_value 9(12)V9(2)
+Total value of transactions per trading day for each individual
+client product
+Derivation: Total Value of Transactions in the TPS Client
+Transmission Summary Details
+
+total_transaction_volume 9(6)
+Total number of transactions per trading day for each individual
+client product
+Derivation: Total Number of Transactions in the TPS Client
+Transmission Summary Details
+
+trading_date date
+The trading date applicable to the client, ie the transaction day
+(ccyymmdd)
+Derivation: Client Trading Date in the TPS Client Transmission
+Summary Details
+
+Association Statements
+Each tms_rx_clt_resend:
+Is related to only one TPS Client Transmission Summary
+Details
+
+Table tms_rx_eposs_events
+
+Parent Category:
+TPS Table
+Description:
+The table for EPOSS events. EPOSS events are derived as
+follows:
+914: EPOSSEvent.Id=40
+915: EPOSSEvent.Id=9
+
+COMMERCIAL IN CONFIDENCE Page 41 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+916: EPOSSEvent.Id=10
+917: EPOSSEvent.Id=7
+919: EPOSSEvent.Id=6
+923: EOD
+930: Logon
+931: Logout
+932: SecurityEvent, FailedLogon
+933: Manager Forced Log Out (not at CSR)
+938: Forced Log Out
+Attributes:
+balance_period 9(2)
+The current stock unit balance period
+Derivation: if event_id=919 then EPOSSEvent.P.P3 else null fi
+cash_account_week 9(3)
+The current stock unit cash account period
+NB: This attribute is named cash_account_period with data tpye
+9(2) in all other tables
+Derivation: if event_id=914 then EPOSSEvent.P.P1
+elsf event_id=919 then EPOSSEvent.P.P2
+elsf event_i 15 or 916 then CAP(EPOSSEvent.Container) fi
+Where CAP is an Agent function that returns the CAP using the
+Rollover Trailer
+changed_container X(3)
+The changed stock unit
+Derivation:
+if event_id=916 or 919 then EPOSSEvent.P.P1
+elsf event_id=915 or 917 then EPOSSEvent.P.P2 else null fi
+changed_status X
+The stock unit status
+Derivation: if event_id=915 then EROSSEvent.P.P1 else null fi
+changed_user X(15)
+The new user
+Derivation: if event_id = 917 then EPOSSEvent.P.P1 else null fi
+container X(3)
+The current stock unit
+Derivation: EPOSSEvent.Container
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.Id
+event_id 9(3)
+The event identifier
+Derivation:
+914: EPOSSEvent.Id=40
+915: EPOSSEvent.
+916: EPOSSEvent.
+917: EPOSSEvent.
+919: EPOSSEvent.Id="
+923: EOD
+930: Logon
+
+COMMERCIAL IN CONFIDENCE Page 42 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.11
+
+931: Logout
+932: SecurityEvent, FailedLogon
+933: Manager Forced Log Out (not at CSR)
+938: Forced Log Out
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+riposte_num 9(10)
+The transaction message number
+Derivation: RiposteMessage.Num
+trading_date date
+The current trading date being harvested
+Derivation: EODMark.EODDate
+transaction_date date
+The date of the event taken from the riposte message
+Derivation: RiposteMessage.(Date+Time)
+user_name X(15)
+The username of the clerk
+Derivation: RiposteMessage.User
+
+Association Statements
+Each tms_rx_eposs_events:
+Is related to only one EPOSS Event
+Is related to only one EPOSS Logon
+Is related to only one EPOSS Logout
+Is related to only one EPOSS Logout Authority
+Is related to only one EPOSS Security Event
+Is related to only one EPOSS EOD
+Is related to only one TPS Event Details
+
+Table tms_rx_eposs_transactions
+
+Parent Category:
+TPS Table
+Description:
+The basic table for EPOSS transactions
+Attributes:
+amount $9(9)V9(2)
+The amount of the transaction
+Derivation: EPOSSTransaction.SaleValue
+
+COMMERCIAL IN CONFIDENCE Page 43 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+balance_period 9(2)
+The current stock unit balance period
+Derivation: BP(EPOSSTransaction.Container)
+where BP is an agent function which derives the balance period
+from the stock unit using the RolloverTrailer
+cash_account_period 9(2)
+The current stock unit cash account period
+Derivation: CAP(EPOSSTransaction.Container)
+where CAP is an agent function which derives the CAP from the
+stock unit using the RolloverTrailer
+container X(3)
+The current stock unit
+Derivation: EPOSSTransaction.Container
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.ld
+end_date date
+Date the transaction completed
+Derivation: EPOSSTransaction.End(Date+Time)
+end_time_fraction 9
+The end time fraction of a second
+Derivation: EPOSSTransaction.EndTF
+entry_method 9(2)
+The initial entry method for the transaction
+Derivation: EPOSSTransaction.EntryMethod
+fallback_mode X
+Indicates whether the transaction was entered in fallback mode,
+YorN
+Derivation: if EPOSSTransaction.Mode=REC then Y else N fi
+NB: For APS and EPOSS Mode=REC (bulk input). For OBCS
+no fallback
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(Groupld)
+prod_id 9(10)
+The product identifier
+Derivation: EPOSSTransaction.ProductNo
+NB: Padded with leading zeros
+quantity 9(7)
+The number of product items transacted
+Derivation: EPOSSTransaction.Qty
+
+COMMERCIAL IN CONFIDENCE Page 44 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+reversal 9
+The type of reversal, existing or new otherwise a normal
+transaction
+Derivation: if EPOSSTransaction.Mode=RV then
+Reversal=2
+
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction.Application=EPOSSAppMain and
+EPOSSTransaction.CrossReference=not null then
+Reversal=1
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction.Application=EPOSSAppMain and
+EPOSSTransaction.CrossReference=null then
+Reversal=2
+reversal_session_number 9(6)
+The original transaction session identifier, the last 6 digits of the
+num part of the message identifier
+Derivation: EPOSSTransaction.CrossReference.Sessionld
+reversal_su 9(2)
+The counter identifier of the original transaction
+NB: Changed from stock unit to counter identifier, data type
+should be 9(2) not X(3) as in TPS Table
+Derivation: EPOSSTransaction.CrossReference.ld
+reversal_transaction_number 9(4)
+Transaction number or transaction being reversed
+riposte_num 9(10)
+The transaction message number
+Derivation: RiposteMessage.Num
+session_sequence_number 9(6)
+The session sequence number derived from the last 6 digits of
+the session id message number
+Derivation: EPOSSTransaction.Sessionld.Num
+start_date date
+Date the transaction started
+Derivation: EPOSSTransaction.Start(Date+Time)
+start_time_fraction 9
+The start time fraction of a second
+Derivation: EPOSSTransaction.StartTF
+trading_date date
+The current trading date being harvested
+Derivation: EODMark.EODDate
+transaction_mode_id 9(2)
+The mode of the transaction. The EPOSS mode is translated
+into an item transaction mode, as below:
+
+IEPOSS M Transaction_
+Imode mode_id
+ER Serve Customer 1
+
+RV. Serve Customer (reversal) 1
+
+RISD _ [Remit In - Supplies Division 2
+
+COMMERCIAL IN CONFIDENCE Page 45 of 1
+ICL Pathway
+
+TPS Object Model
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00171947
+FUJ00171947
+
+Ref: TD/DES/013
+Version:1.4
+Date:19/08/99
+
+ROSD Remit Out - Supplies Division 3
+IRU Revaluation - Uprating 4
+IRD [Revaluation - Downrating 5
+Not used 6
+TI \Transfer In - Between Stock 7
+Units
+RIOP___IRemit In - Other Offices 8
+ROOP _ [Remit Out- Other Offices 9
+RICL Remit In - Client 10
+ROCL Remit Out - Client 11
+IRODC Remit Out - DPC. 12
+[TO \Transfer Out - Between Stock 13
+Units
+REC [Bulk Input 14
+IHK [Housekeeping 15
+ISAP ‘Stock Adjustment - Positive 16
+DDP. [Declaration Discrepancy - 17
+Positive
+SAN ‘Stock Adjustment - Negative 18
+DDP. Declaration Discrepancy - 19
+Negative
+[Event 20*
+(Ordered 21
+PT Parcel Traffic 22
+INAD Non Accounting Data 23
+RIAD __IRemit In to ADC 24
+ROAD __IRemit Out to ADC 25
+
+Transaction_mode 20 (Event) is derived by TPS_Host
+
+transaction_mode_version_no 9(10)
+Version Number of Item Transaction Mode. Derived from
+EPOSSTransaction.BlackBoxData.V
+
+transaction_sequence_number 9(4)
+The transaction number within session. Derived by TPS Agent
+so that the first transaction in a session is assigned a sequence
+
+of 1 and subsequent transactions increase by 1
+
+Derivation: RiposteMessage.Num-
+
+EPOSSTransaction.Sessionid.Num+1
+user_name X(15)
+
+The username of the clerk
+
+Derivation: RiposteMessage.User
+
+Association Statements
+Each tms_rx_eposs_transactions:
+
+Is related to only one EPOSS Transaction
+
+Is related to only one TPS Transaction/Tender Line Details
+
+COMMERCIAL IN CONFIDENCE
+
+Page 46 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Is related to only one TPS MIS Basic Transaction
+
+4.12 Table tms_rx_obcs_statuses
+
+Parent Category:
+TPS Table
+Description:
+The basic table for OBCS book events
+Attributes:
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.ld
+end_date date
+Date the transaction completed
+Derivation: OBCSTransaction.End(Date+Time)
+end_time_fraction 9
+The end time fraction of a second
+Derivation: OBCSTransaction.EndTF
+entry_method 9(2)
+The initial entry method for the transaction
+Derivation: OBCSTransaction.EntryMethod
+foreign_enquiry_time 98)
+The time in microseconds to complete a foreign enquiry on the
+central OBCS database
+Derivation: OBCSTransaction.ForeignEnquiryTime
+foreign_enquiry_timeout 9
+Indicates whether the foreign enquiry timed out due to ISDN
+failure, O0=OK, 1=timeout
+Derivation: OBCSTransaction.ForeignEnquiryTimeout
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+iop_id X(15)
+The IOP Identifier consists of Customer Reference Number,
+Additional Book Indicator, OB Serial Number and CPP System
+Indicator
+Derivation: OBCSTransaction.IOPident
+no_charge X
+The no charge indicator, Y/N flag
+Derivation: OBCSTransaction.NC.
+not_foreign X
+Indicates whether a foreign encashment took place, Y=local,
+N=foreign
+Derivation: OBCSTransaction.Foreignindicator
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(RiposteMessage.Groupld)
+
+COMMERCIAL IN CONFIDENCE Page 47 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.13
+
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(RiposteMessage.Groupld)
+riposte_num 9(10)
+The transaction message number
+Derivation: RiposteMessage.Num
+start_date date
+Date the transaction started
+Derivation: OBCSTransaction.Start(Date+Time)
+start_time_fraction 9
+The start time fraction of a second
+Derivation: OBCSTransaction.StartTF
+trading_date date
+The current trading date being harvested
+Derivation: EODMark.EODDate
+transaction_result 9
+The result of the OBCS transaction, ie 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+Derivation: OBCSTransaction.Result
+transaction_type 9
+The OBCS transaction state, the valid types are (1=Receipt,
+2=Redirect, 3=Issue,) 4=Encashment, 5=NoBarcode
+NB: TPS Table data type should be 9 not X
+Derivation: OBCSTransaction.State
+user_name X(15)
+The username of the clerk
+Derivation: RiposteMessage.User
+vouchers 9(2)
+The number of vouchers encashed
+Derivation: OBCSTransaction.Vouchers
+
+Association Statements
+Each tms_rx_obcs_statuses:
+Is related to only one TPS MIS OBCS Transaction
+Is related to only one TPS Event Details
+Is related to only one OBCS Transaction
+
+Table tms_rx_obcs_transactions
+
+Parent Category:
+TPS Table
+Description:
+The basic table for OBCS transactions
+Attributes:
+amount $9(9)V9(2)
+The amount of the transaction
+Derivation: EPOSSTransaction.SaleValue
+
+COMMERCIAL IN CONFIDENCE Page 48 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+balance_period 9(2)
+The current stock unit balance period
+Derivation: BP(EPOSSTransaction.Container)
+where BP is an agent function which derives the balance period
+from the stock unit using the RolloverTrailer
+cash_account_period 9(2)
+The current stock unit cash account period
+Derivation: CAP(EPOSSTransaction.Container)
+where CAP is an agent function which derives the CAP from the
+stock unit using the RolloverTrailer
+container X(3)
+The current stock unit
+Derivation: EPOSSTransaction.Container
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.ld
+end_date date
+Date the transaction completed
+Derivation: EPOSSTransaction.End(Date+Time)
+end_time_fraction 9
+The end time fraction of a second
+Derivation: EPOSSTransaction.EndTF
+entry_method 9(2)
+The initial entry method for the transaction
+Derivation: EPOSSTransaction.EntryMethod
+fallback_mode X
+Indicates whether the transaction was entered in fallback mode,
+YorN
+Derivation: if EPOSSTransaction.Mode=REC then Y else N fi
+NB: For APS and EPOSS Mode=REC (bulk input). For OBCS
+no fallback
+foreign_enquiry_time 9(8)
+The time in microseconds to complete a foreign enquiry on the
+central OBCS database
+Derivation:
+EPOSSTransaction.BlackBoxData.ForeignEnquiryTime
+foreign_enquiry_timeout 9
+Indicates whether the foreign enquiry timed out due to ISDN
+failure, O=OK, 1=timeout
+Derivation:
+EPOSStTransaction.BlackBoxData.ForeignEnquiryTimeout
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+iop_id X(15)
+The IOP Identifier consists of Customer Reference Number,
+Additional Book Indicator, OB Serial Number and CPP System
+Indicator
+Derivation: EPOSSTransaction.AdditionalData.lOPident
+
+COMMERCIAL IN CONFIDENCE Page 49 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+not_foreign X
+Indicates whether a foreign encashment took place, Y=local,
+N=foreign
+Derivation: EPOSSTransaction.BlackBoxData.Foreignindicator
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(RiposteMessage.Groupld)
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet,
+the agent uses the Groupld to derive from the TPS Outlets table
+Derivation: TPSOutlets(RiposteMessage.Groupld)
+prod_id 9(10)
+The product identifier
+Derivation: EPOSSTransaction.ProductNo
+NB: Padded with leading zeros
+quantity 9(7)
+The number of product items transacted
+Derivation: EPOSSTransaction.Qty
+reversal 9
+The type of reversal, existing or new otherwise a normal
+transaction
+Derivation: if EPOSSTransaction.Mode=RV then
+Reversal=2
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction.Application=EPOSSAppMain and
+EPOSSTransaction.CrossReference=not null then
+Reversal=1
+If EPOSSTransaction.Mode=ER and
+EPOSSTransaction.Application=EPOSSAppMain and
+EPOSSTransaction.CrossReference=null then
+Reversal=2
+reversal_session_number 9(6)
+The original transaction session identifier, the last 6 digits of the
+num part of the message identifier
+Derivation: EPOSSTransaction.CrossReference.Sessionid
+reversal_su 9(2)
+The counter identifier of the original transaction
+NB Changed from stock unit to counter identifier
+Derivation: EPOSSTransaction.CrossReference.ld
+reversal_transaction_number 9(4)
+Transaction number of transaction being reversed
+riposte_num 9(10)
+The transaction message number
+Derivation: RiposteMessage.Num
+session_sequence_number 9(6)
+The session sequence number derived from the last 6 digits of
+the session id message number
+Derivation: EPOSSTransaction.Sessionld.Num
+
+COMMERCIAL IN CONFIDENCE Page 50 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+start_date date
+
+Date the transaction started
+
+Derivation: EPOSSTransaction.Start(Date+Time)
+start_time_fraction 9
+
+The start time fraction of a second
+
+Derivation: EPOSSTransaction.StartTF
+trading_date date
+
+The current trading date being harvested
+
+Derivation: EODMark.EODDate
+transaction_mode_id 9(2)
+
+The mode of the transaction. The EPOSS mode is translated
+
+into an item transaction mode, as below:
+
+IEPOSS M Transaction_
+Imode mode_id
+ER ‘Serve Customer 1
+RV Serve Customer (reversal) 1
+RISD __ [Remit In - Supplies Division 2
+IROSD __IRemit Out - Supplies Division 3
+IRU Revaluation - Uprating 4
+IRD [Revaluation - Downrating 5
+INot used 6
+Tl [Transfer In - Between Stock 7
+Units
+RIOP___ [Remit In - Other Offices 8
+IROOP _IRemit Out- Other Offices 9
+RICL___IRemit In - Client 10
+ROCL __IRemit Out - Client 11
+RODC Remit Out - DPC 12
+TO [Transfer Out - Between Stock 13
+Units
+REC _ [Bulk Input 14
+HK Housekeeping 15
+ISAP ‘Stock Adjustment - Positive 16
+DDP. [Declaration Discrepancy - 17
+Positive
+ISAN ‘Stock Adjustment - Negative 18
+DDP. [Declaration Discrepancy - 19
+Negative
+Event 20*
+(Ordered 21
+PT Parcel Traffic 22
+NAD Non Accounting Data 23
+RIAD __IRemit In to ADC 24
+ROAD __IRemit Out to ADC 25
+
+Transaction_mode 20 (Event) is derived by TPS_Host
+
+COMMERCIAL IN CONFIDENCE Page 51 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.14
+
+transaction_mode_version_no 9(10)
+Version Number of Item Transaction Mode. Derived from
+EPOSSTransaction.BlackBoxData.V
+
+transaction_result 9
+The result of the OBCS transaction, ie 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+Derivation: EPOSSTransaction.AdditionalData.Result
+transaction_sequence_number 9(4)
+The transaction number within session. Derived by TPS Agent
+so that the first transaction in a session is assigned a sequence
+of 1 and subsequent transactions increase by 1
+Derivation: RiposteMessage.Num-
+EPOSSTransaction.Sessionid.Num+1
+transaction_type 9
+The OBCS transaction state, the valid types are (1=Receipt,
+2=Redirect, 3=Issue,) 4=Encashment, 5=NoBarcode
+NB: TPS Table data type should be 9 not X
+Derivation: EPOSSTransaction.BlackBoxData.State
+user_name X(15)
+The username of the clerk
+Derivation: RiposteMessage.User
+vouchers 9(2)
+The number of vouchers encashed
+Derivation: EPOSSTransaction.AdditionalData. Vouchers
+
+Association Statements
+Each tms_rx_obcs_transactions:
+Is related to only one EPOSS Transaction
+Is related to only one TPS Transaction/Tender Line Details
+Is related to only one TPS MIS OBCS Transaction
+
+Table tms_rx_otx_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Table for re-cycling transaction files which have been rejected
+by POCL TIP. If a transaction file contains any errors it is send
+back as a complete file to Pathway. The clean sub files are
+loaded into this table and the bad files passed to EDSC for
+manual correction.
+
+Attributes:
+
+additional_data X(2000)
+The additional data associated with APS, OBCS records and
+reversals.
+
+amount S9(9)V9(2)
+
+COMMERCIAL IN CONFIDENCE Page 52 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+The amount of the transaction
+Derivation: Amount in the TPS Transaction/Tender Line Details.
+The sign is always same as in TPS Transaction/Tender Line
+Details.
+balance_period 9(2)
+The current stock unit balance period
+Derivation: Stock Unit Balance Period in the TPS
+Transaction/Tender Line Details
+cash_account_day 9(2)
+The current stock unit cash account period
+Derivation: Cash Account Day Number in the TPS
+Transaction/Tender Line Details
+cash_account_period 9(2)
+The current stock unit cash account period
+Derivation: Cash Account Week Number in the TPS
+Transaction/Tender Line Details
+container X(3)
+The current stock unit
+Derivation: Stock Unit Identifier in the TPS Transaction/Tender
+Line Details
+counter_position 9(2)
+The counter identifier
+Derivation: Till Identifier in the TPS Transaction/Tender Line
+Details
+end_time Date
+Date the transaction completed
+Derivation: End Time of Transaction in the TPS.
+Transaction/Tender Line Details
+end_time_fraction 9
+The end time fraction of a second
+Derivation: End Time of Transaction in the TPS
+Transaction/Tender Line Details
+entry_method 9(2)
+The initial entry method for the transaction
+Derivation: Method of Data Capture in the TPS
+Transaction/Tender Line Details
+fallback_mode X
+Indicates whether the transaction was entered in fallback mode,
+YorN
+Derivation: Fall Back Mode Flag in the TPS Transaction/Tender
+Line Details
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet
+Derivation: Organisational Unit Code in the TPS
+Transaction/Tender Line Details
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet.
+Derivation: Version Number of Org Unit in the TPS
+Transaction/Tender Line Details
+
+COMMERCIAL IN CONFIDENCE Page 53 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+prod_id 9(10)
+The product identifier
+Derivation: Item Id in the TPS Transaction/Tender Line Details
+prod_version_no 910)
+Version Number of Item Transaction Mode. (Item wrongly
+named in Designer/2000 for historical reasons!).
+Derivation: Version No of Item Transaction Mode in the TPS
+Transaction/Tender Line Details
+quantity 9(7)
+The number of product items transacted
+Derivation: Quantity in the TPS Transaction/Tender Line Details
+record_type X(3)
+Identifies the transaction/tender line details record
+Derivation: Record Type Identifier in the TPS
+Transaction/Tender Line Details. (always "OTX")
+refund_flag 9
+The type of reversal, existing or new otherwise a normal
+transaction
+Derivation: Refund Flag in the TPS Transaction/Tender Line
+Details
+reversal 9
+To show if reversals have taken place (O=default, 1=linked
+reversed txn ie contains reference to reversal txn in additional
+data, 2=non-linked reversed txn)
+Derivation: Reversal Indicator in the TPS Transaction/Tender
+Line Details
+session_sequence_number 9(6)
+A sequence number which uniquely identifies a session within
+an outlet counter
+Derivation: Session Sequence Number in the TPS
+Transaction/Tender Line Details
+start_date date
+Date the transaction started (ccyymmdd)
+Derivation: Date of Transaction in the TPS Transaction/Tender
+Line Details
+start_time Date
+The start time
+Derivation: Start Time of Transaction in the TPS
+Transaction/Tender Line Details
+start_time_fraction 9
+The start time fraction of a second
+Derivation: Start Time of Transaction in the TPS
+Transaction/Tender Line Details
+transaction_mode_id 9(2)
+The mode of the transaction.
+Derivation: Transaction Mode Code in the TPS
+Transaction/Tender Line Details
+transaction_sequence_number 9(4)
+
+COMMERCIAL IN CONFIDENCE Page 54 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.15
+
+A sequence number which uniquely identifies each transaction
+within a session. Derivation: Transaction Sequence Number in
+the TPS Transaction/Tender Line Details
+
+user_name X(15)
+The username of the clerk
+Derivation: Employee Identifier in the TPS Transaction/Tender
+Line Details
+
+Association Statements
+Each tms_rx_otx_resend:
+Is related to only one TPS Transactions/Tender Line Details
+
+Table tms_rx_stock_holdings
+
+Parent Category:
+TPS Table
+Description:
+The table for stock holding records
+Each record is derived from an EPOSS Opening Figures Txn
+which is an EPOSS Transaction with TranType H? for container
+HH
+NB: It is assumed that there may be multiple records for the
+same product for the same Outlet
+Attributes:
+amount $9(12)V9(2)
+The amount of the transaction
+Derivation: EPOSSOFTransaction.SaleValue
+balance_period 9(2)
+The current stock unit balance period, not relevant at Outlet
+level
+Derivation: 1, set by agent
+cash_account_period 9(2)
+The cash account period
+Derivation: CAP(RiposteMessage.Date)
+where CAP is an agent function which derives the CAP from the
+date
+container X(3)
+The current stock unit
+Derivation: EPOSSOFTransaction.Container
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.ld
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet, the agent uses
+the Groupld to derive from the TPS Outlets table
+
+COMMERCIAL IN CONFIDENCE Page 55 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.16
+
+Derivation: TPSOutlets(Groupld)
+org_unit_version_no 9(10)
+
+The organisational unit identifier version number for the Outlet,
+
+the agent uses the Groupld to derive from the TPS Outlets table
+
+Derivation: TPSOutlets(Groupld)
+prod_id 9(10)
+
+The product identifier
+
+Derivation: EPOSSOFTransaction.ProductNo
+
+NB: Padded with leading zeros
+product_version_number 9(10)
+
+The product version number
+
+Derivation: EPOSSOFTransaction.PVer
+quantity 9(7)
+
+The number of product items transacted
+
+Derivation: EPOSSOFTransaction.Qty
+record_date date
+
+The date of the stock holding
+
+Derivation: RiposteMessage.(Date+Time)
+riposte_num 9(10)
+
+The transaction message number
+
+Derivation: RiposteMessage.Num
+trading_date date
+
+The current trading date being harvested
+
+Derivation: EODMark.EODDate
+
+Association Statements
+Each tms_rx_stock_holdings:
+Is related to only one TPS Stock Holdings Details
+Is related to only one EPOSS OF Transaction
+
+Table tms_rx_stx_resend
+
+Parent Category:
+TPS Table
+
+Description:
+Table for re-cycling stock holding records from sub files which
+have been rejected by POCL TIP. If a transmision file contains
+any errors it is send back as a complete file to Pathway. Stock
+Holding details from the clean sub files are loaded into this table
+and the bad sub files passed to EDSC for manual correction.
+
+Attributes:
+amount $9(12)V9(2)
+
+The amount of the transaction
+
+Derivation: Value in the Stock Holding Details
+cash_account_period 9(2)
+
+The cash account period
+
+COMMERCIAL IN CONFIDENCE Page 56 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+417
+
+Derivation: Cash Account Week Number in the Stock Holding
+Details
+org_unit_id 9(10)
+The organisational unit identifier for the Outlet
+Derivation: Organisational Unit Code in the Stock Holding
+Details
+org_unit_version_no 9(10)
+The organisational unit identifier version number for the Outlet
+Derivation: Version Number of Org Unit in the Stock Holding
+Details
+prod_id 9(10)
+The product identifier
+Derivation: Item Id in the Stock Holding Details
+product_version_number 9(10)
+The product version number
+Derivation: Version Number of Item
+quantity 9(7)
+The number of product items transacted
+Derivation: Quantity in the Stock Holding Details
+record_date date
+The date of the stock holding
+Derivation: Holdings Date in the Stock Holding Details
+record_type X(3)
+Identifies the transaction/tender line details record
+Derivation: Record Type Identifier in the Stock Holding Details
+(always "STX")
+
+Association Statements
+Each tms_rx_stx_resend:
+Is related to only one TPS Stock Holdings Details
+
+Table tps_clients
+
+Parent Category:
+TPS Table
+Description:
+Provides a mapping of client code to client organisational unit
+code. The data is loaded from RDMC at start of TPS host
+processing
+Attributes:
+client_code 9(4)
+The 4-digit client code
+org_unit_id 9(10)
+The 10 digit organisational unit code for the client
+org_unit_version_no 9(10)
+The version number of the organisational unit
+
+Association Statements
+
+COMMERCIAL IN CONFIDENCE Page 57 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Each tps_clients:
+
+Is related to only one TPS Client Transmission Summary
+Details
+
+Is related to only one tps_client_summaries
+
+4.18 Table tps_client_summaries
+
+Parent Category:
+TPS Table
+Description:
+The client summaries are derived from the AP transactions (in
+the TPS transaction stream) by trading day, client, product and
+product version (except the TPS host does not support product
+version!)
+NB: This is a temporary measure for CSR
+Attributes:
+client_code 9(4)
+The AP Client 4 digit code
+Derivation: tms_rx_aps_transactions.client_code
+prod_id 9(10)
+The AP product identifier
+Derivation: tms_rx_aps_transactions.prod_id
+product_version_number 9(10)
+The product version number
+Derivation: 0
+NB: Not supported by TPS host in tms_rx_aps_transactions
+total_transaction_value 9(12)V9(2)
+Total value of transactions per trading day for each individual
+client product
+Derivation: sum(tms_rx_aps_transactions.amount) for
+tms_rx_aps_transactions.trading_date &
+tms_rx_aps_transactions.client_code &
+tms_rx_aps_transactions.prod_id &
+tms_rx_aps_transactions.pver
+NB: pver not supported by TPS host!
+total_transaction_volume 9(6)
+Total number of transactions per trading day for each individual
+client product
+Derivation: count(tms_rx_aps_transactions.quantity) for
+tms_rx_aps_transactions.trading_date &
+tms_rx_aps_transactions.client_code &
+tms_rx_aps_transactions.prod_id &
+tms_rx_aps_transactions.pver
+NB: pver not supported by TPS host!
+trading_date date
+The trading date applicable to the client, ie the transaction day
+(ccyymmdd)
+Derivation: tms_rx_aps_transactions.trading_date
+
+COMMERCIAL IN CONFIDENCE Page 58 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.19
+
+4.20
+
+Association Statements
+Each tps_client_summaries:
+Is related to one or more tms_rx_aps_transactions
+Is related to only one tps_clients
+Is related to only one TPS Client Transmission Summary
+Details
+
+Table tps_outlets
+
+Parent Category:
+TPS Table
+Description:
+The table of Outlets, initialised at the start of TPS host
+processing from data from RDMC
+Attributes:
+fad_code X(7)
+The full FAD code of the outlet
+group_id X(7)
+The group identifier for the outlet as used by Riposte
+version_number 9(10)
+The version number of the organisational unit code
+org_unit_id 9(10)
+The organisational unit code
+end_of_day_indicator X
+Indicates whether end of day has been harvested for this outlet,
+Y/N flag
+Partition 9(3)
+The table partition used in harvesting
+automated X
+Indicates whether the outlet is automated, Y/N flag
+active X
+Indicates whether the outlet is active, Y/N flag
+
+Table tps_outlets_notactive
+
+Parent Category:
+TPS Table
+
+Description:
+The table used and maintained by TPS Host to determine
+whether to output empty transaction sub files to POCL TIP.
+Table populated by data from RDMC
+
+Attributes:
+
+organisation_unit_id 9(10)
+The organisation unit for outlet
+
+trading_date
+date when unit was not active
+
+COMMERCIAL IN CONFIDENCE Page 59 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+4.21
+
+4.22
+
+Association Statements
+Each tps_outlets_notactive:
+Is related to one tps_outlets
+
+Table tps_outlet_eods
+
+Parent Category:
+TPS Table
+
+Description:
+The table used and maintained by Agent indicating when outlet
+was last polled
+
+Attributes:
+group_id X(7)
+
+The group identifier for the outlet as used by Riposte
+date_of_last_contact date
+
+date last polled
+
+Association Statements
+Each tps_outlets_eods:
+Is related to one tps_outlets
+
+Table tps_tt_reversals
+
+Parent Category:
+TPS Table
+Description:
+The reversals table is used to fix up APS reversals.
+The reversed_ap_transaction_sequen is used to located the
+original AP transaction from which the counter_position,
+session_sequence_number and transaction_sequence_number
+are obtained
+Attributes:
+ap_transaction_sequence 9(6)
+The APS transaction sequence number of the original
+transaction
+Derivation: EPOSSTransaction.AdditionalData APSSEQ
+counter_position 9(2)
+The counter identifier
+Derivation: RiposteMessage.ld
+group_id 9(6)
+The Outlet identifier
+Derivation: RiposteMessage.Groupld
+session_sequence_number 9(6)
+The session sequence number derived from the last 6 digits of
+the session id message number
+
+COMMERCIAL IN CONFIDENCE Page 60 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: EPOSSTransaction.Sessionld.Num
+transaction_sequence_number 9(4)
+
+The transaction number within session. Derived from the num
+
+part of the transaction message by subtracting the num part of
+
+the session identifier
+
+NB This originally used the EPOSSTransaction.Txnid but this
+
+does not provide unique transaction number because of linked
+
+transactions, eg postal order and fee, finish up with the same
+
+transaction number which is not what is required by TIP
+
+22? Is this correct ???
+
+Derivation: RiposteMessage.Num-
+
+EPOSSTransaction.Sessionid.Num+1
+
+Association Statements
+
+Each tms_tt_reversals:
+Is related to only one tms_rx_aps_transactions
+
+COMMERCIAL IN CONFIDENCE Page 61 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.
+5.1
+
+5.2
+
+5.2.1
+
+Interface File to TIP
+
+Introduction
+The file transmitted between Pathway and POCL TIP systems.
+
+The format of the interface is defined in the contract controlled
+document Pathway to TIP Application Interface Specification [ref 3].
+
+The file contains a header, trailer and a number of sub-files. In any
+transmission file the sub-files are of the same type.
+
+There are three different types of subfile:
+transactions (there are about 64 of these each night)
+cash account (there is 1 per night)
+
+@ client transmission summary (there is 1 per night: although the
+largest file occurs on Wednesdays when the outlets do their weekly
+cash accounts).
+
+General
+
+This section describes the common characteristics of the transmission
+files.
+
+Each Transmission file has a header and a trailer.
+
+Each Transmission file has one or more sub files: each sub file has a
+header and a trailer.
+
+TPS Transmission File Header
+
+Description:
+The transmission file header
+Attributes:
+Record Type Identifier X(3)
+Identifies theTransmission File Header record
+Derivation: ="TFH"
+File Type Identifier X(5)
+Unique file type identifier
+Derivation: ="TMSTX"
+Interface Version Identifier 9(10)
+A TIP maintained number giving the Interface Version identifier
+being used by Pathway, fixed value for CSR and CSR+ = 50
+until otherwise agreed
+Derivation: ex TIP
+Transmission Source X(2)
+The Pathway system where the files originated, "B_"=Bootle
+system, "W_"=Wigan system
+Transmission Day Number 9(3)
+
+COMMERCIAL IN CONFIDENCE Page 62 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.2.2
+
+5.2.3
+
+The day number in the year for which the file was created, 001
+to 366. File contains transactions conducted within a specific 24
+hour period. Day number in which the period ends
+Transmission File Number 9(3)
+A Pathway generated transmission file number which helps to
+uniquely identify each transmission for each day, 001 to 999
+Date of File Creation 9(8)
+The date at which time the file was created, may be different to
+completion date if creating overnight (ccyymmdd)
+Derivation: date
+Time of File Creation 9(6)
+Commencement time at which the file was created (hhmmss)
+Derivation: time
+Transmission Status X(3)
+A TIP maintained status which uniquely identifies the status of
+each transmission, ie "NOR"=normal, "RES"=re-sent
+
+Association Statements
+Each TPS Transmission File Header:
+Is part of only one TPS Transmission File
+
+TPS Transmission File Trailer
+
+Description:
+The transmission file trailer
+
+Attributes:
+
+Record Type Identifier X(3)
+Identifies the Transmission File Trailer record
+Derivation: ="TFT"
+
+Date of File Completion 9(8)
+The date at which time the file was completed, may be different
+to commencement date if creating overnight (ccyymmdd)
+Derivation: date
+
+Completion Time of File Creation 9(6)
+The time at which the file was completed (hhmmss)
+Derivation: time
+
+Total Number of Sub-Files 9(6)
+Total number of sub-files contained within the transmission
+Derivation: count(Sub-Files)
+
+Total Value of Sub-File Trailers S9(10)V(2)
+Total value of all sub-file trailers contained within the batch
+Derivation: sum(SubFileTrailer. TotalAmount)
+
+Association Statements
+Each TPS Transmission File Trailer:
+Is part of only one TPS Transmission File
+
+TPS Sub-File Header
+
+COMMERCIAL IN CONFIDENCE Page 63 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.2.4
+
+Description:
+The sub-file header record which identifies the sub-file, source
+of data, date and time of creation and versions of data
+contained
+
+Attributes:
+
+Record Type Identifier X(3)
+Identifies the sub-file header record
+Derivation: ="SFH"
+
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie outlet
+Derivation: tms_rx_X.org_unit_id
+
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_X.org_unit_version_no
+
+Sub-File Type Identifier X(5)
+Unique sub-file type identifier:
+- OTRAN for Transaction / Tender Line Details
+- CASHS for Cash Account / Stock Holding Details
+- CLSSF for Client Summary
+
+Sub-File Sequence Number 9(5)
+A Pathway generated sequence number to uniquely identify
+each sub-file, starts at 1 and increments for each sub-file in the
+transmission
+Derivation: set by TPS host
+
+Date of Sub-File Creation 9(8)
+The date at which time the sub-file was created, may be
+different to completion date if creating overnight (ccyymmdd)
+Derivation: date
+
+Time of Sub-File Creation 9(6)
+Commencement time at which the sub-file was created
+(hhmmss)
+Derivation: time
+
+Association Statements
+Each TPS Sub-File Header:
+Is part of only one TPS Transactions Sub file
+Is part of only one TPS Client Summary Sub file
+Is part of only one TPS Cash Account Sub file
+
+TPS Sub-File Trailer
+
+Description:
+The sub-file trailer which identifies the sub-file record and
+provides a check of the total number and the amount of the
+transaction lines
+
+Attributes:
+
+Record Type Identifier X(3)
+Identifies the sub-file trailer record
+Derivation: ="SFT"
+
+COMMERCIAL IN CONFIDENCE Page 64 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.3
+
+5.3.1
+
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie outlet
+Derivation: tms_rx_X.org_unit_id
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_X.org_unit_version_no
+Date of Sub-File Completion 9(8)
+The date at which time the sub-file was completed, may be
+different to commencement date if creating overnight
+(ccyymmdd)
+Derivation: date
+Completion Time of Sub-File Creation 9(6)
+The time at which the sub-file was completed (hhmmss)
+Derivation: time
+Total Number of Records 9(6)
+Total number of all records in the sub-file file, excluding header
+and trailer records
+Derivation: count(xxx)
+NB: For Transaction/Tender Line, xxx=
+tms_rx_aps_transactions,tms_rx_eposs_transactions,
+tms_rx_eposs_events, tms_rx_obcs_transactions,
+tms_rx_obcs_statuses.
+For Cash Account, xxx = tms_rx_cash_accounts &
+tms_rx_stock_holdings
+For Client Summaries, xxx = tms_rx_aps_transactions
+Total Amount S9(10)V9(2)
+Total value of amount field in detail lines
+Derivation: sum(xxx.amount)
+NB: For Transaction/Tender Line, xxx=
+tms_rx_aps_transactions,tms_rx_eposs_transactions,
+tms_rx_obcs_transactions
+For Cash Account, xxx = tms_rx_cash_accounts
+For Client Summaries, xxx = tms_rx_aps_transactions
+
+Association Statements
+Each TPS Sub-File Trailer:
+Is part of only one TPS Transactions Sub file
+
+Is part of only one TPS Client Summary Sub file
+Is part of only one TPS Cash Account Sub file
+
+TPS Transactions Sub file
+Description
+
+The outlet transactions sub file contains all the outstanding
+transactions for an outlet. The transactions are ordered by date and
+
+COMMERCIAL IN CONFIDENCE Page 65 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.3.2
+
+time. The sub file contains a sub file header record (see section 5.2.3),
+a sub file trailer record (see section 5.2.4), and sub file details records.
+
+TPS Transaction/Tender Line Details
+
+Details of the transaction or tender line recorded in a TIP OTX record.
+These are the basic details of an EPOSS transaction, additional data
+are provided for APS, EPOSS and OBCS transactions, and for
+reversal transactions.
+
+All fields are derived via TPS tms_rx_X tables, where
+
+X=eposs_transactions for EPOSS transactions
+aps_transactions for APS transactions
+obcs_transactions for OBCS transactions
+
+The mappings for events are described under TPS Event Details (see
+section 5.3.7.
+
+Attributes:
+Record Type Identifier X(3)
+Identifies the transaction/tender line details record
+Derivation: ="OTX"
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie outlet
+Derivation: tms_rx_X_transactions.org_unit_id
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_X_transactions.org_unit_version_no
+Stock Unit Identifier X(3)
+Unique identifier to distinguish between all stock units within the
+outlet, also includes back office stock units
+Derivation: tms_rx_X_transactions.container
+Session Sequence Number 9(6)
+A sequence number which uniquely identifies a session within
+an outlet counter
+Derivation: tms_rx_X_transactions.session_sequence_number
+Transaction Sequence Number 9(4)
+A sequence number which uniquely identifies each transaction
+within a session
+Derivation:
+tms_rx_X_transactions.transaction_sequence_number
+Till Identifier 9(2)
+Unique identifier of the terminal/till at the counter, also includes
+back office terminals/tills
+Derivation: tms_rx_X_transactions.counter_position
+Employee Identifier X(15)
+Identifier of the employee carrying out the transaction
+Derivation: tms_rx_X_transactions.user_name
+NB: Restricted to 6 characters so space filled on right
+
+COMMERCIAL IN CONFIDENCE Page 66 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Date of Transaction 9(8)
+The date to which the transaction refers (ccyymmdd)
+Derivation: tms_rx_X_transactions.end_date
+
+Start Time of Transaction 9(7)
+The time to the nearest 1/10th second at which the transaction
+commenced (hhmmsss)
+Derivation:
+tms_rx_X_transactions.start(date[time]+time_fraction)
+
+End Time of Transaction 9(7)
+The time to the nearest 1/10th second at which the transaction
+completed (hhmmsss)
+Derivation:
+tms_rx_X_transactions.end_(date[time]+time_fraction)
+
+Cash Account Week Number 9(3)
+Cash account week number, derived from markers in the
+corresponding stock unit
+Derivation: tms_rx_X_transactions.cash_account_period
+NB Derived by Agent
+
+Cash Account Day Number 9(2)
+The day in relation to the cash account week on which the
+transaction took place
+Derivation: zero, not supported at CSR or CSR+
+
+Stock Unit Balance Period 9(2)
+Stock unit balance period number, derived from markers in the
+corresponding stock unit
+Derivation: tms_rx_X_transactions.balance_period
+NB Derived by Agent
+
+Method of Data Capture 9(2)
+How each transaction is captured at the point of sale,
+O=barcode, 1=keyboard/screen (manual), 2=magcard,
+3=smartcard, 4=smartkey, 5=scales
+Derivation: tms_rx_X_transactions.entry_method
+
+Reversal Indicator 9
+To show if reversals have taken place (O=default, 1=linked
+reversed txn ie contains reference to reversal txn in additional
+data, 2=non-linked reversed txn)
+Derivation: tms_rx_X_transactions.reversal
+
+Refund Flag X
+To show when refunds have been provided ("Y"=refund,
+"N"=normal)
+Derivation: N, not supported in CSR or CSR+
+
+Fall Back Mode Flag X
+To show when transactions have been keyed after the event, ie
+in fallback mode, "Y"=fallback mode, "N"=normal
+Derivation: tms_rx_X_transactions.fallback_mode
+
+Item Id 9(10)
+A unique item that specifies a product/stock item/tender
+Derivation: tms_rx_X_transactions.prod_id
+
+Version No of Item Transaction Mode 910)
+
+COMMERCIAL IN CONFIDENCE Page 67 of 1
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+FUJ00171947
+FUJ00171947
+
+5.3.3
+
+Version number held for the item transaction mode code
+Derivation: not supported in CSR.
+Item is supported at CSR+. Null values will be permitted as
+outlets migrate to CSR+. There may be rare instances where
+counter may not be able to populate
+
+Transaction Mode Code 9(10)
+Identifies the generic type of transaction, eg Rem In, Rem Out,
+Adjustment
+Derivation: tms_rx_X_transactions.transaction_mode_id
+
+Amount S9(7)V9(2)
+Amount for each transaction either to or from the customer.
+Normally positive with accounting sense defined by item and
+transaction mode. Payments, Receipts, Stock Sales, Reversals
+and Refunds will usually be shown as positive. Can be negative
+for tender items with can change sign flag set to "Y". Can be
+zero for some items
+Derivation: tms_rx_X_transactions.amount
+Note: All amounts are unsigned (positive) apart from the
+product "cash" (the only "can change sign" product). If the
+accounting sense can be determined from the transaction mode,
+eg Rem in, then cash is positive else for cash the sign on the
+amount is reversed, EPOSS positive becomes TIP negative and
+EPOSS negative becomes TIP positive
+
+Quantity 9(5)
+Total volume for each item, cannot be negative, Defaults to 1
+Derivation: tms_rx_X_transactions.quantity
+
+Association Statements
+Each TPS Transaction/Tender Line Details:
+Is part of only one TPS Transactions Sub file
+Is related to only one tms_rx_eposs_transactions
+Is related to only one tms_rx_aps_transactions
+Is related to only one tms_rx_obcs_transactions
+
+Additional Details for Reversals
+
+Additional fields in the reversed transaction to identify the linked
+reversed transaction. Only present for Existing Reversals
+(EPOSSTransaction.Mode=ER). New Reversals do not have these
+additional items.
+
+Attributes:
+Reversed Till Identifier 9(2)
+Till identifier of the reversed transaction
+Derivation: tms_rx_X_transactions.reversal.su
+NB This used to be the stock unit but now contains the counter
+identifier
+Reversed Session Number 9(6)
+Session number of the reversed transaction
+
+COMMERCIAL IN CONFIDENCE Page 68 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: tms_rx_X_transactions.reversal_session_number
+Reversed Transaction Number 9(4)
+
+Transaction number of the reversed transaction
+
+Derivation:
+
+tms_rx_X_transactions.reversal_transaction_number
+
+Association Statements
+
+Each TPS Additional Details for Reversals:
+Inherits from TPS Transaction/Tender Line Details
+
+COMMERCIAL IN CONFIDENCE Page 69 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+5.3.4 Additional Data for OBCS Benefit Payment
+
+5.3.5
+
+Parent Category:
+TIP Output
+Description:
+Order Book foil encashment transaction line additional data
+Attributes:
+Transaction Record Type 9
+Indicates the type of transaction (1=Receipt, 2=Redirect,
+3=Handover, 4=Encashment, 5=Non-barcode)
+Derivation: tms_rx_obcs_transactions.transaction_type
+Transaction Result 9
+Identifies the result of the transaction, 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+Derivation: tms_rx_obcs_transactions.transaction_result
+Parent Office A
+Signifies whether the customer is collecting benefit from one of
+their designated offices, Y/N flag
+Derivation: tms_rx_obcs_transactions.not_foreign
+
+Association Statements
+Each TPS OBCS Payment:
+Inherits from TPS Transaction/Tender Line Details
+
+Additional Data for Automated Payment
+
+Additional fields in the OTX record for APS transaction line
+information.
+
+Attributes:
+[Public]
+Token Identifier 9(10)
+The token identifier
+Derivation: tms_rx_aps_transactions.token_identifier
+[Private]
+Version Number 9(10)
+Version number of the token
+Derivation:
+tms_rx_aps_transactions.token_type_version_number
+Customer Ref Number X(20)
+Identifier relevant to the customer
+Derivation: tms_rx_aps_transactions.customer_reference
+
+Association Statements
+
+Each TPS Automated Product:
+Inherits from TPS Transaction/Tender Line Details
+
+COMMERCIAL IN CONFIDENCE Page 70 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+5.3.6 Additional Data for OBCS Benefit Book
+
+5.3.7
+
+Additional fields in the OTX record for Order Book management
+transaction information.
+
+Attributes:
+Code 9
+Indicates the type of transaction, (1=Receipt, 2=Redirect,
+3=Handover, 4=Encashment failed Unreadable/Invalid,
+5=NoBarcode)
+Derivation: tms_rx_obcs_statuses.transaction_type
+Code Result 9
+Identifies the result of the transaction, 1=OK, 2=Impound,
+3=Unreadable, 4=Invalid
+Derivation: tms_rx_obcs_statuses.transaction_result
+
+Association Statements
+Each TPS Benefit Book:
+Inherits from TPS Transaction/Tender Line Details
+Inherits from TPS Event Details
+
+Event Details
+
+The TIP transaction record for events has the same format as the
+basic TIP OTX record. Derivations for OBCS book events, and EPOSS
+events and have zero or null fields where corresponding transaction
+information is not available. The derivations refer to the tables
+tms_rx_X, where:
+
+X=obcs_statuses, Benefit Books
+eposs_events, EPOSS Events
+change_npos, Change Post Office
+
+Attributes:
+Record Type Identifier X(3)
+Identifies the transaction/tender line details record
+Derivation: ="OTX"
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie outlet
+Derivation: tms_rx_X.org_unit_id
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_X.org_unit_version_no
+Stock Unit Identifier X(3)
+Unique identifier to distinguish between all stock units within the
+outlet, also includes back office stock units
+Derivation: null
+Session Sequence Number 9(6)
+A sequence number which uniquely identifies a session within
+an outlet counter
+
+COMMERCIAL IN CONFIDENCE Page 71 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: null
+Transaction Sequence Number 9(4)
+A sequence number which uniquely identifies each transaction
+within a session
+Derivation: null
+Till Identifier 9(2)
+Unique identifier of the terminal/till at the counter, also includes
+back office terminals/tills
+Derivation: tms_rx_X.counter_position
+Employee Identifier X(15)
+Identifier of employee carrying out the transaction
+Derivation: tms_rx_X.user_name
+NB: Restricted to 6 characters so space filled on right
+Date of Transaction 9(8)
+The date to which the transaction refers (ccyymmdd). The date
+is derived from the date+time value
+Derivation: tms_rx_X.Y_date[date]
+where:
+Y=event, Benefit Cards
+end, Benefit Books
+transaction, EPOSS Events
+transaction, Change Post Office
+Start Time of Transaction 9(7)
+The time to the nearest 1/10th second at which the transaction
+commenced (hhmmsss)
+Derivation: null
+End Time of Transaction 9(7)
+The time to the nearest second at which the transaction
+completed (hhmmsss). The time is derived from the date+time
+value
+Derivation: tms_rx_X.Y_date[time]
+where:
+Y=event, Benefit Cards
+end, Benefit Books
+transaction, EPOSS Events
+transaction, Change Post Office
+Cash Account Week Number 9(3)
+Cash account week number, derived from markers in the
+corresponding stock unit
+Derivation: null apart from selected EPOSS events then
+tms_rx_eposs_events.cash_account_period
+NB Derived by Agent
+Cash Account Day Number 9(2)
+The day in relation to the cash account week on which the
+transaction took place
+Derivation: zero, not supported at CSR or CSR+
+Stock Unit Balance Period 9(2)
+Stock unit balance period number, derived from markers in the
+corresponding stock unit
+
+COMMERCIAL IN CONFIDENCE Page 72 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: null apart from selected EPOSS events then
+tms_rx_eposs_events.balance_period
+NB Derived by Agent
+
+Method of Data Capture 9(2)
+How each transaction is captured at the point of sale,
+O=barcode, 1=keyboard/screen (manual), 2=magcard,
+3=smartcard, 4=smartkey
+Derivation: null
+
+Reversal Indicator 9
+To show if reversals have taken place (O=default, 1=linked
+reversed txn ie contains reference to reversal txn in additional
+data, 2=non-linked reversed txn)
+Derivation: null
+
+Refund Flag X
+To show when refunds have been provided ("Y"=refund,
+"N"=normal)
+Derivation: null
+
+Fall Back Mode Flag X
+To show when transactions have been keyed after the event, ie
+in fallback mode, "Y"=fallback mode, "N"=normal
+Derivation: null
+
+Item Id 9(10)
+A unique item that specifies a product/stock item/tender
+Derivation: Z, where:
+Z=913, Benefit Books
+
+tms_rx_eposs_events.event_id, EPOSS Events
+
+Version No of Item Transaction Mode 910)
+Version number held for the item transaction mode code
+Derivation: null
+
+Transaction Mode Code 9(10)
+Normally identifies the generic type of transaction, eg Rem In,
+Rem Out, Adjustment, but set to 20 to identify an event
+transaction
+Derivation: 20
+
+Amount S$9(7)V9(2)
+Amount for each transaction either to or from the customer.
+Normally positive with accounting sense defined by item and
+transaction mode. Payments, Receipts, Stock Sales, Reversals
+and Refunds will usually be shown as positive. Can be negative
+for tender items with can change sign flag set to "Y". Can be
+zero for some items
+Derivation: null
+
+Quantity 9(5)
+Total volume for each item, cannot be negative, Defaults to 1
+Derivation: null
+
+Association Statements
+Each TPS Event Details:
+Is related to only one tms_rx_obcs_statuses
+Is related to only one tms_rx_change_npos
+
+COMMERCIAL IN CONFIDENCE Page 73 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Is related to only one tms_rx_eposs_events
+Is part of only one TPS Transactions Sub file
+
+5.3.8 Additional Data for EPOSS Events
+
+EPOSS events are recorded as Transaction Line records with
+Transaction Mode Code=20 - Event
+
+Additional fields are added to the end of the record according to event
+type, eg CreateStockUnit has fields StockUnit and StockUnitType
+
+Attributes:
+Stock Unit X(3)
+
+The new/delete stock unit
+
+Derivation: tms_rx_eposs_events.changed_container
+Stock Unit Type X
+
+The stock unit type, Individual or Shared
+
+Derivation: tms_rx_eposs_events.changed_status
+User X(15)
+
+The new/delete/modify user
+
+Derivation: tms_rx_eposs_events.changed_user
+User System Detail X(7)
+
+The new/delete/modify user details
+
+Derivation: not used at CSR or CSR+
+Association Statements
+
+Each TPS EPOSS Event:
+
+Inherits from TPS Transaction/Tender Line Details
+
+Inherits from TPS Event Details
+
+COMMERCIAL IN CONFIDENCE Page 74 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.4 TPS Cash Account Sub file
+
+5.4.1 Description
+The cash account is a sub file containing the electronic version of the
+Cash Account produced at an outlet upon weekly completion. It
+includes separately identifiable stock holdings at outlet level for each
+stock item
+
+5.4.2 TPS Cash Account Details
+
+Parent Category:
+TIP Output
+Description:
+The cash account details for a completed cash account week.
+Records are sequenced in ascending line number
+Attributes:
+Record Type Identifier X(3)
+Identifies the cash account details record
+Derivation: ="CAC"
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie the outlet
+Derivation: tms_rx_cash_accounts.org_unit_id
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_cash_accounts.org_unit_version_number
+Cash Account Week Number 9(3)
+The cash account week number, derived from markers in the
+outlet stock unit (##)
+Derivation: tms_rx_cash_accounts.cash_account_period
+Cash Account Line Number X(4)
+A unique number which identifies each cash account line
+number, eg 0008 for telephone receipts (note leading zeros are
+not suppressed). Quantity and value always have separate
+account lines
+Derivation: tms_rx_cash_accounts.line_number
+Amount $9(10)V9(2)
+The amount for this cash account line; amount for quantities
+has digits after the decimal point
+Derivation: tms_rx_cash_accounts.amount
+
+Association Statements
+Each TPS Cash Account Details:
+Is part of only one TPS Cash Account Sub file
+Is related to only one tms_rx_cash_accounts
+
+COMMERCIAL IN CONFIDENCE Page 75 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.4.3. TPS Stock Holdings Details
+
+Parent Category:
+TIP Output
+Description:
+The stock holdings details for an outlet for a completed cash
+account week.
+The stock holding records from the tms_rx_stock_holdings table
+for each product for each stock unit need to be added together
+to form the stock holding for the outlet
+Attributes:
+Record Type Identifier X(3)
+Identifies the outlet stock holdings details record
+Derivation: ="STX"
+Organisational Unit Code 9(10)
+Unique identifier for the organisational unit, ie outlet
+Derivation: tms_rx_stock_holdings.org_unit_id
+Version Number of Org Unit 9(10)
+The version number of the organisational unit
+Derivation: tms_rx_stock_holdings.org_unit_version_number
+Cash Account Week Number 9(3)
+The cash account week number linking cash to actual date,
+derived from the date and not the outlet stock unit (##)
+Derivation: tms_rx_stock_holdings.cash_account_period
+Item Id 9(10)
+The stock item identifier
+Derivation: tms_rx_stock_holdings.prod_id
+Version Number of Item 9(10)
+Version number held for the stock item at the point the weekly
+outlet stock take occurs
+Derivation: tms_rx_stock_holdings.product_version_number
+NB Not obvious this provides any useful purpose as the version
+number may have changed during the week!!!
+Holdings Date 9(8)
+The date to which the holdings refer (ccyymmdd)
+Derivation: tms_rx_stock_holdings.record_date
+Quantity 9(7)
+The quantity on hand for each stock item
+Derivation: for each product
+sum(tms_rx_stock_holdings.quantity)
+Value 9(10)V9(2)
+The value on hand for each stock item
+Derivation: for each product
+sum(tms_rx_stock_holdings.amount)
+
+Association Statements
+Each TPS Stock Holdings Details:
+Is part of only one TPS Cash Account Subfile
+Is related to only one tms_rx_stock_holdings
+
+COMMERCIAL IN CONFIDENCE Page 76 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+5.5
+
+5.5.1
+
+5.5.2
+
+TPS Client Summary Sub file
+Description
+
+The client transmission summary is a sub file containing client AP
+product transaction summary information. It contains summary details
+by client for each client product.
+
+For CSR it contains a summary of AP transaction sent to TIP for
+Pathway outlets only.
+
+For CSR¢+ it contains a summary of AP transactions sent to AP Clients
+who have migrated from HAPS to Pathway: it includes data collected
+by Pathway from automated offices and data collected by HAPS from
+non automated offices.
+
+The sub file contains:
+
+- one or more TPS Client Transmission Summary Details
+- one TPS Sub-File Header
+
+- one TPS Sub-File Trailer
+
+TPS Client Transmission Summary Details
+
+Client summary details contains summary information that has been
+sent to the Client for each client AP product.
+
+Attributes:
+
+Record Type Identifier X(3)
+Identifies the client transmission summary details record
+Derivation: ="CLT"
+
+Client Identifier Code 9(10)
+Unique identifier for the client
+Derivation: current value as defined in Reference Data
+(At CSR this is captured from tps_clients.org_unit_id
+NB: The Client Identifier Code and Version Number of Client
+Identifier are derived from the client_code by tps_clients table
+look-up which converts a 4 digit CID into a 10 digit Client
+Identifier Code and 10 digit Version Number of Client Identifier
+At CSR+ the data item is captured by APS Host)
+
+Version Number of Client Identifier 9(10)
+The version number of the client identifier
+Derivation: current value as defined in Reference Data
+(At CSR this is captured from tps_clients.org_unit_version_no
+NB: The Client Identifier Code and Version Number of Client
+Identifier are derived from the client_code by tps_clients table
+
+COMMERCIAL IN CONFIDENCE Page 77 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model F
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+look-up which converts a 4 digit CID into a 10 digit Client
+Identifier Code and 10 digit Version Number of Client Identifier.
+At CSR+ the data item is captured by APS Host)
+
+Item Id 9(10)
+The unique identifier that specifies the AP product applicable to
+the Client
+Derivation: at CSR it is derived from
+tps_client_summaries.prod_id
+At CSR¢ it is derived by APS Host
+
+Version Number of Item 9(10)
+Version number held for the item code
+Derivation: current value as defined in Reference Data
+
+Client Trading Date 9(8)
+The trading date applicable to the Client, ie the transaction day
+(ccyymmdd)
+Derivation: at CSR it is derived from
+tps_client_summaries.trading_date
+At CSR¢ it is derived by APS Host
+
+Total Number of Transactions 9(6)
+Total number of transactions per trading day for each individual
+client product
+Derivation: at CSR it is derived from
+count(tms_rx_aps_transactions.quantity) for
+tms_rx_aps_transactions.client_code &
+tms_rx_aps_transactions.prod_id &
+tms_rx_aps_transactions.pver
+At CSR+ it is derived by APS Host
+
+Total Value of Transactions S9(10)V9(2)
+Total value of transactions per trading day for each individual
+client product
+Derivation: at CSR it is derived from
+sum(tms_rx_aps_transactions.amount) for
+tms_rx_aps_transactions.client_code &
+tms_rx_aps_transactions.prod_id &
+tms_rx_aps_transactions.pver:
+At CSR+ it is derived by APS Host
+
+Association Statements
+Each TPS Client Transmission Summary Details:
+Is part of only one TPS Client Summary Subfile
+Is related to only one tps_clients
+Is related to only one tps_client_summaries
+
+COMMERCIAL IN CONFIDENCE Page 78 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.2
+
+6.3
+
+6.3.1
+
+6.3.2
+
+Interface File to Data Warehouse
+Introduction
+
+The file transmitted between Pathway and the Data Warehouse.
+
+The format of the interface is defined in the MIS Release CSR+: TPS
+EPID [ref 4].
+
+There are different types of transmission file:
+@ TPS MIS Basic Txns Files
+
+@ TPS MIS OBCS Txns Files
+
+@ TPS MIS Miscellaneous File
+
+@ TPS MIS File Control File
+
+# TPS MIS Summary File
+
+@ TPS TIP File Delivery File
+
+# TPS MIS Lock File
+
+General
+
+This section describes the common characteristics of the transmission
+files.
+
+TPS MIS Basic Transactions File
+
+Description
+
+The transactions file contains all the APS and EPOSS transaction
+records for an integral number of Post Office outlets. The records are
+ordered by outlet only
+
+NB the actual ordering may be the same as for TIP
+
+MIS Basic Transaction Record
+
+The MIS transaction record for APS and EPOSS transactions.
+Information is derived from the tms_rx_aps_transactions and
+tms_rx_eposs_transactions tables.
+
+Attributes:
+
+Customer Session Id X(18)
+Unique customer session identifier formed from the Groupld, Id
+and Num separated by hyphens
+
+COMMERCIAL IN CONFIDENCE Page 79 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: tms_rx_X_transactions.session_sequence_number
+NB: Is this just 6 digits of the num part of the Sessionld padded
+to 18 characters, or is the message identifier reconstituted, if so,
+how?
+Transaction_No
+Transaction identifier within customer session
+Derivation:
+tms_rx_X_transactions.transaction_sequence_number
+NB: Is this just 4 digits of the num part of the TxnId padded to
+18 characters, or is the message identifier reconstituted, if so,
+how?
+Post Office Counter Id 9(2)
+The number of the Post Office counter position
+Derivation: tms_rx_X_transactions.counter_position
+Post Office Id 9(10)
+Post Office code (organisation code, not FAD code)
+Derivation: tms_rx_X_transactions.org_unit_id
+FAD code X(7)
+The FAD code
+Derivation: tms_rx_X_transactions.group_id
+NB: Is an extra space added?
+Transaction Start Time X(20)
+Date and time the transaction started, format (DD-MON-YYYY
+hh:mm:ss)
+Derivation: tms_rx_X_transactions.start_date
+Ttransaction Start Time Fractional 9
+The fractional remainder of the start time to the nearest 1/10th
+second
+Derivation: tms_rx_X_transactions.start_time_fraction
+Transaction Stop Time X(20)
+The time the transaction completed, format (DD-MON-YYYY
+hh:mm:ss)
+Derivation: tms_rx_X_transactions.end_date
+Transaction Stop Time Fractional 9
+The fractional remainder of the end time to the nearest 1/10th
+second
+Derivation: tms_rx_X_transactions.end_time_fraction
+Transaction Value S9(10)V9(2)
+The total value of the transaction
+Derivation: tms_rx_X_transactions.amount
+Number of Items 9(5)
+Number of items transacted
+Derivation: tms_rx_X_transactions.quantity
+Product Code 9(10)
+The product or service code of the item
+Derivation: tms_rx_X_transactions.prod_id
+NB: Leading zeros added
+Service Code X
+
+COMMERCIAL IN CONFIDENCE Page 80 of 1
+ICL Pathway TPS Object Model
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+FUJ00171947
+FUJ00171947
+
+6.4
+
+6.4.1
+
+The type of application service (A=APS, E=EPOSS, O=OBCS,
+etc)
+Derivation: if tms_rx_aps_transactions then A else
+tms_rx_eposs_transactions then E fi
+
+Fallback Mode X
+The transaction mode, eg bulk input, recovery, etc
+Derivation: tms_rx_X_transactions.fallback_mode
+
+Print Time 9(8)
+The duration of printing activity in microseconds
+Derivation: zero, not supported in CSR or CSR+
+
+Print Failure Flag A
+A flag to indicate that the associated print failed, Y/N flag
+Derivation: space, not supported in CSR or CSR+
+
+Input Dev Lead Time 9(8)
+The time in microseconds from data (token) entry to first screen
+of the transaction for this token
+Derivation: 0, not supported at CSR or CSR+
+
+Entry Method 9(2)
+The method of data capture, O=barcode, 1=manual, 2=magcard,
+3=smart
+Derivation: tms_rx_X_transactions.entry_method
+
+Electronic Scales X
+Flag to indicate whether an electronic scales was used within
+the EPOSS transaction. Values are Y and N
+Derivation: If tms_rx_X_transactions.entry_method=5 then Y
+else N fi
+
+Reversal Indicator X
+Flag to indicate whether the transaction is Non-reversed (0),
+Linked Reversal (1) or Unlinked Reversal (2)
+Derivation: tms_rx_X_transactions.reversal
+
+Association Statements
+Each TPS MIS Basic Transaction:
+Is part of only one TPS MIS Basic Txns File
+Is related to only one tms_rx_eposs_transactions
+Is related to only one tms_rx_aps_transactions
+
+TPS MIS OBCS Transactions File
+
+Description
+
+The MIS OBCS transactions file contains all the OBCS transaction
+records for an integral number of Post Office outlets. The records are
+ordered by outlet only.
+
+NB the actual ordering may be the same as for TIP
+The file contains one record type.
+
+COMMERCIAL IN CONFIDENCE Page 81 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.4.2
+
+Each TPS MIS OBCS Transaction File is part of the TPS MIS
+Transmission Files
+
+TPS MIS OBCS Transaction Record
+
+The MIS transaction record for OBCS transactions OBCS transactions
+(MIS Service Type Code=O) are derived from the OBCS EPOSS
+Transaction via the tms_rx_obcs_transactions table
+
+OBCS book events (MIS Service Type Code=P) are derived from the
+OBCS Transaction via the tms_rx_obcs_statuses table, where the MIS
+Product Code is set to OBCSTransaction.State to indicate the type of
+book event. Other fields are set to zero or space if no corresponding
+attribute is present
+
+NB:use of tms_rx_obcs_X where X=transactions for service type=O
+and X=statuses for service type=P.
+
+Attributes:
+
+Customer Session Id X(18)
+Unique customer session identifier formed from the Groupld, Id
+and Num sepaated by hyphens
+Derivation: O:
+tms_rx_obcs_transactions.session_sequence_number
+P: space
+NB: Is this just 6 digits of the num part of the Sessionld padded
+to 18 characters, or is the message identifier reconstituted, if so,
+how?
+
+Txn_id X(18)
+Transaction identifier within customer session
+Derivation: O:
+tms_rx_obcs_transactions.transaction_sequence_number
+P: space
+NB: Is this just 4 digits of the num part of the Txnld padded to
+18 characters, or is the message identifier reconstituted, if so,
+how?
+
+Post Office Counter Id 9(2)
+The number of the Post Office counter position
+Derivation: tms_rx_obcs_X.counter_position
+
+Post Office Id 9(10)
+Post Office code (organisation code, not FAD code)
+Derivation: tms_rx_obcs_X.org_unit_id
+
+FAD code X(7)
+The FAD code
+Derivation: tms_rx_obcs_X.group_id
+NB: Padded with space???
+
+Txn Start Time X(20)
+Date and time the transaction started, format (DD-MON-YYYY
+hh:mm:ss)
+
+COMMERCIAL IN CONFIDENCE Page 82 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+Derivation: tms_rx_obcs_X.start_date
+Txn Start Time Frac Sec 9
+The fractional remainder of the start time to the nearest 1/10th
+second
+Derivation: tms_rx_obcs_X.start_time_fraction
+Txn Stop Time X(20)
+The time the transaction completed, format (DD-MON-YYYY
+hh:mm:ss)
+Derivation: tms_rx_obcs_X.end_date
+Txn End Time Frac Sec 9
+The fractional remainder of the end time to the nearest 1/10th
+second
+Derivation: tms_rx_obcs_X.end_time_fraction
+Txn Value $9(10)V9(2)
+The total value of the transaction
+Derivation: O: tms_rx_obcs_transactions.amount
+P:0
+Number of Items 9(5)
+Number of items transacted
+Derivation: tms_rx_obcs_X.vouchers
+POCL Product Code 910)
+The product or service code of the item
+Derivation: O: tms_rx_obcs_transactions.prod_id
+P: tms_rx_obcs_statuses.transaction_type
+NB Product Code is used to pass the book event type
+Service Type Code X
+The type of application service (O=OBCS transaction, P=OBCS
+book event)
+Derivation: O: O
+P:P
+Retrospective Input X
+The transaction mode, eg bulk input, recovery, etc
+Derivation: O: tms_rx_obcs_transactions.fallback_mode
+P: space
+Enquiry Time 9(8)
+Duration of enquiry for foreign transactions in microseconds,
+measured from the enquiry call to when the call returns
+Derivation: tms_rx_obcs_X.foreign_enquiry_time
+ISDN Failure Flag X
+A flag to indicate that the associated ISDN connection failed,
+Y/N flag
+Derivation: tms_rx_obcs_X.foreign_enquiry_timeout
+Input Device Lead Time 98)
+The time in microseconds from data (token) entry to first screen
+of first transaction for this token, 0 for second and subsequent
+transactions
+Derivation: 0, not supported at CSR or CSR+
+Entry Method X
+
+COMMERCIAL IN CONFIDENCE Page 83 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.5
+6.5.1
+
+6.5.2
+
+6.6
+
+6.6.1
+
+The method of data capture, O=barcode, 1=manual, 2=magcard,
+3=smart
+Derivation: tms_rx_obcs_X.entry_method
+
+Foreign Indicator X
+Indicates whether a foreign post office was used, Y/N flag
+Derivation: tms_rx_obcs_X.not_foreign
+
+Bar Code Number X(15)
+The barcode data
+Derivation: tms_rx_obcs_X.iop_id
+
+Impound Indicator X
+Indicates whether the book was impounded, Y/N flag
+Derivation: if tms_rx_obcs_X.transaction_result=2 then Y else N
+fi
+
+Association Statements
+Each TPS MIS OBCS Transaction:
+Is part of only one TPS MIS OBCS Txns File
+Is related to only one tms_rx_obcs_transactions
+Is related to only one tms_rx_obcs_statuses
+
+MIS Miscellaneous File
+Description
+
+The MIS Miscellaneous file contains
+The file contains one record type.
+
+TPS MIS Miscellaneous
+
+Description:
+Miscellaneous data
+
+Attributes:
+
+Ta 9(10)
+The number of records available for transfer from TPS to TIP at
+03:00. This is the figure from the previous day since delivery to
+the data warehouse is made at 00:30
+Derivation: count(TIPRecord)
+
+Association Statements
+Each TPS MIS Miscellaneous:
+Is part of only one TPS MIS Miscellaneous File
+
+TPS MIS File Control File
+
+Description
+
+COMMERCIAL IN CONFIDENCE Page 84 of 1
+ICL Pathway TPS Object Model
+
+FUJ00171947
+FUJ00171947
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.6.2
+
+The file control file contains information about the files delivered as
+part of the extract
+
+Association Statements
+Each TPS MIS File Control File:
+Is made up of only one TPS MIS File Details
+Is part of only one TPS MIS Transmission Files
+
+TPS MIS File Details
+
+Description:
+Provides details of the files transferred to MIS
+
+Attributes:
+
+Number of Files
+The number of data files in this extraction
+Derivation:
+sum(transactions+payments+miscellaneous+potcontrol+lock)
+
+Comment
+A comment describing the extract, format(COMMENT:text of
+comment)
+
+Source
+The number of records in each file type,
+format(SOURCE:typ:rrrr)
+Derivation:
+
+Target
+The target system, format(TARGET:DW)
+Derivation:
+
+Date Delivered
+The date the extract was delivered (?) to MIS,
+format(DELIVDATE:DD-MON-YYYY hh:mm:ss)
+Derivation:
+
+Date Posted
+The date on which the transactions and payments were
+harvested, format(POSTDATE:DD-MON-YYYY hh:mm:ss)
+Derivation:
+
+Number of Extracts
+The number of previous daily extracts being delivered in this
+transmission, set to 0 if this is the normal single extract,
+format(NUMEXTRACTS:n)
+Derivation:
+
+Other Extracts
+A list of all the posting dates of previous extracts separated by
+colons, format(OTHEREXTRACTS:DD-MON-YYYY)
+Derivation:
+
+File Names
+The names of the files and the number of records in each file
+plus hash code, format(FILE:yymmddnn.typ:rrrr:hhhh)
+Derivation:
+
+COMMERCIAL IN CONFIDENCE Page 85 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.7
+6.7.1
+
+6.7.2
+
+6.8
+6.8.1
+
+Association Statements
+Each TPS MIS File Details:
+Is part of only one TPS MIS File Control File
+
+TPS MIS Summary File
+Description
+
+Description:
+A summary control file giving details of the transmission so far.
+A summary control file is sent after every 10 transaction files or
+after the 2 miscellaneous and TIP delivery files. A summary file
+is followed by a lock file
+
+Attributes:
+
+None
+
+Association Statements
+Each TPS MIS Summary File:
+Is made up of one or more TPS MIS Summary File Details
+Is part of only one TPS MIS Transmission Files
+
+TPS MIS Summary File Details
+
+Description:
+Identifies summary control information for each file transferred
+Attributes:
+File Name X(8)
+The name of the file
+Record Count 9(5)
+The number of records in the file
+
+Association Statements
+Each TPS MIS Summary File Details:
+Is part of only one TPS MIS Summary File
+
+MIS Lock File
+
+Description
+The lock file which is used to mark the delivery of logical units of
+
+transmitted data. The presence of the lock file indicates the existence
+of the summary file and the data files.
+
+The lock file is a file of size zero bytes
+
+Association Statements
+
+COMMERCIAL IN CONFIDENCE Page 86 of 1
+FUJ00171947
+FUJ00171947
+
+ICL Pathway TPS Object Model Ref: TD/DES/013
+
+Version:1.4
+
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+6.9
+6.9.1
+
+6.9.2
+
+Each TPS MIS Lock File:
+Is part of only one TPS MIS Transmission Files
+
+TPS TIP File Delivery File
+Description
+
+Description:
+A file of TIP SLA data pertaining to the delivery of TIP files to
+TIP
+
+Attributes:
+
+None
+
+Association Statements
+Each TPS TIP File Delivery File:
+Is part of one or more TPS TIP File Delivery Data
+Is part of only one TPS MIS Transmission Files
+
+TPS TIP File Delivery Data
+
+Description:
+For each file delivered to TIP a delivery record is created
+Attributes:
+File_id X(12)
+The identifier of the delivered file
+Derivation: ex TPS Host
+Source X(4)
+The name of the source system delivering the file
+Derivation: TPS
+Dest X(4)
+The name of the destination system
+Derivation: TIP
+D_date X(20)
+The data and time of successful delivery to the client
+Derivation: ex TPS Host
+C_date X(11)
+The creation date for the file containing the transactions
+Derivation: ex TPS Host
+Num_recs 98)
+The number of records in the file
+Derivation: ex TPS Host
+
+Association Statements
+
+Each TPS TIP File Delivery Data:
+Is part of only one TPS TIP File Delivery File
+
+COMMERCIAL IN CONFIDENCE Page 87 of 1
+FUJ00171947
+
+FUJ00171947
+ICL Pathway TPS Object Model Ref: TD/DES/013
+Version:1.4
+COMMERCIAL IN CONFIDENCE Date:19/08/99
+
+COMMERCIAL IN CONFIDENCE Page 88 of 1

@@ -1,0 +1,1197 @@
+ICL Pathway
+
+Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Pathway to HAPS Application Interface Specification (Horizon
+Release 2+)
+
+Interface Specification
+
+CSR+
+
+This document defines the record formats to be used to support
+Release 2+ of the Automated Payments System. It describes the data
+interfaces between the Pathway Host system and POCL HAPS to
+support the Automated Payments Service within the Horizon project.
+
+Document Status: Approved
+Distribution: Steve Warwick Bob Cragg (POCL)
+Dai Jones Pete Lindsey
+Stephan Robson Dave McDonnell
+Simon Palladino Nial Finnegan
+Library (PATHWAY) Library (Horizon)
+Reviewed By: Steve Warwick Bob Cragg (POCL)
+Dai Jones Pete Lindsey
+Stephan Robson Dave McDonnell
+Simon Palladino Nial Finnegan
+Author: W. Curtis (A&TC)/Richard Hicks
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 1 of 20
+
+FUJ00001374
+FUJ00001374
+ICL Pathway
+
+FUJ00001374
+FUJ00001374
+
+Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+0 DOCUMENT CONTROL
+
+0.1 Document History
+
+Version
+
+0.1
+
+0.2
+0.3
+
+3.0
+3.1
+
+4.0
+
+44
+
+Date
+
+10/07/97
+28/07/97
+
+4/12/97
+
+13/3/98
+
+2/7/98
+
+21/10/98
+8/1/99
+
+22/2/99
+8/4/99
+
+23/4/99
+
+16/03/00
+
+Reason
+
+Issued for initial comments.
+
+Revised after comment. Transaction records are defined by
+Token type. Other data types are described by cross
+reference to POCL documents. The Transfer Processes
+have been revised to support multiple Clients.
+
+Version number changed to follow standards.
+
+File transfer process modified after comments.
+
+Minor corrections made to record definitions.
+
+Updated following input from The Post Office following a
+meeting between Pathway, PDA and POCL staff.
+
+Updated following further input from Post Office Counters
+Ltd. A section has been added to describe the record
+formats produced by the Pathway APS Host to facilitate the
+implementation of file conversion software. File conversion
+and validation is done on the Pathway PC not the HAPS
+PC. The Clerk Id. value has been removed from the Receipt
+Reference number. Pisces data definitions have been
+removed completely.
+
+Issued at version 2.0 as baseline.
+
+The HAPS interface will not now be used to transfer
+Quantum transactions to the TIP interface since Operational
+TIP will be in place before Release 2+ goes live.
+
+The validation and conversion of data files will be performed
+by the Pathway Host AP System and not on the Pathway
+PC.
+
+The File Identifier field format is to be maintained at 11
+characters and a transaction type value is now included.
+Issued at version 3.0 as baseline.
+
+Revised following comments received. Directory names
+modified to aid compatibility with NR2. Information
+contained in other documents removed. Detail not relevant
+to HAPS has been removed.
+
+Issued at version 4.0 as baseline. All references to GEC
+WaterCard have been changed to ABB WaterCard as this is
+how it is now known. Other minor changes have been made
+to the wording to clarify some points.
+
+Updated for POCL CR 0084a; CP 2488; CCN 621:
+
+1) To change the description of the acceptable method of
+payments to allow ‘0’ as sent by DPC:-
+a) i.e. Appendix A.2 ‘Method of Payment - number(1) -
+How payment was made, values: 0 = DPC, 1= Cash, 2 =
+Other:
+
+2) Also, the following updates:
+
+Appendix A. Section A.2 —
+
+a) ‘Time Entered - Number(4) - Time of the AP
+Transaction (Local Time) for DPC transactions the time
+will be set to zeros’, format: HHMM.
+
+b) ‘Microfilm Reference Number - Char(10) - Only used in
+HAPS to Pathway DPC transactions, holds reference
+number to identify DPC sales vouchers. Otherwise set to
+
+APIFS031.doc
+
+COMMERCIAL IN-CONFIDENCE Page 2 of 20
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+C) spaces or zero’s
+5.0 10/04/00 Updated for comments.
+Issued for approval
+0.2 Approval authorities
+Name Position Signature Date
+Stephan Robson TDA
+Peter Wiles Pathway Chief Architect
+John Dicks Pathway Customer Requirements.
+Director
+Chris Humphries Pathway Development Manager
+Steve Doyle Pathway APS Delivery Manager
+Bobb Cragg POCL APS Product Manager
+0.3 Associated Documents
+Reference Version Date Title Source
+TD/ARC/0001 4.2 27/11/98 Technical Environment Alan Ward
+Description
+CR/FSP/0004 5.1 23/7/98 Service Architecture Design John C. C. Dicks
+Document
+APMIG_O A 4/10/96 Automated Payment System John Bruce
+Migration Overview BA/POCL
+APAY/CIDS/021 Issue 1 Amend 12/5/94 Automated Payments POCL_ ~—_-K. Norman POCL
+Host/Client Systems GEC
+WaterCard Interface Spec.
+TTSGECOC DRAFT - C 31/10/96 POCL Token Technology M. Shuttleworth
+Specification GEC WaterCard POCL
+BP/DES/0002 3.0 29/5/98 APS Design Specification - R.Smethurst
+Release 2
+AP/IFS/029 2.0 28/9/98 Pathway to HAPS Technical R.Smethurst
+Interface Specification
+AP/IFS/001 5.0 22/09/99 Pathway to HAPS Interface R.Smethurst
+Specification
+Tba Operational Procedures
+
+0.4 Terms & Abbreviations
+
+APS
+
+DPC
+
+FTMS
+
+HAPS
+
+HAPS gateway PC
+Pathway gateway PC
+POCL
+
+Automated Payments Service
+
+Document Processing Centre
+
+File Transfer Managed Service
+
+Host Automated Payments System run by POCL
+Pathway HAPS Site FT System
+
+Pathway Bootle (Wigan) FT System
+
+Post Office Counters Limited
+
+RDMC Reference Data Management Centre
+RDP. Reference Data Project (POCL)
+Smart Token ABB WaterCard (previously GEC WaterCard)
+TIP Transaction Information Processing
+Data Types
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 3 of 20
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+The format of each of the data types is defined using the Oracle SQL Server convention.
+The character set used is ASCII.
+
+Type Size and description
+char(n) fixed length character string of n bytes
+varchar(n) variable length character string to a maximum of n bytes,
+
+left justified and space filled
+number(n) an integer with a total of n ASCII digits (this is NOT binary)
+byte(n) binary data or byte representation of n bytes
+
+0.5 Changes in this Version
+0.6 Changes Forecast
+
+0.7‘ Table of Contents
+
+0. DOCUMENT CONTROL.
+0.1 Table of Contents.
+0.2 Document History.
+0.3. Changes Forecast
+0.4 Approval authorities.
+0.5 Associated Document:
+0.6 Terms & Abbreviation:
+
+1. Introduction.
+
+Error! Bookmark not define
+
+Error! Bookmark not de
+
+3. Background..
+3.1. Transaction Da’
+3.2 Control file...
+3.3. Response file.
+3.4 Client Tariff Data...
+3.5 — Client Distribution Dat
+3.6 Reference Data.
+3.7 Data Flows
+3.8 Year 2000.
+
+4. Physical data format:
+4.1 Transaction data.
+
+4.1.1 Transfer Structure.
+4.1.2 Record Formats.
+
+5. Transfer Processe:
+5.1 Platforms...
+5.2 Filenames.
+5.3. Validation.
+5.4 Usernames.
+5.5 Directories... sees
+
+Appendix A. Record formats for AP Transaction Files.
+
+Appendix B. Transaction Control File Structure.
+
+Appendix C. Transaction Response File structure
+
+SOCCMOVNNNNODUUHHWHOwWEF
+
+1. Introduction
+
+The objective of the document is to define the format of the files which are transferred
+
+between the Pathway Host system and the POCL Host Automated Payments System (HAPS).
+The definition of the file formats and the file naming convention enables the functions required
+at both systems to be developed. The Operational Procedures define the functions required to
+support the transfer of the files. Files are transferred in both directions depending on the origin
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 4 of 20
+
+FUJ00001374
+FUJ00001374
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+of the data. However the solution is for any one Client Account to be only supported from one
+Host system.
+
+At Release 2 all transactions are transferred to HAPS for onward transmission to the
+respective Clients. Release 2+ enables Clients to directly receive transactions from Pathway
+and this requires that transactions for Clients supported by Pathway but generated by POCL
+counter systems are passed to Pathway via HAPS for onward transfer to the Client. Also at
+Release 2+ the Pathway counter system supports Smart Tokens and this requires AP Client
+data to be transferred between the two systems as appropriate to where the service is
+supported.
+
+2. Scope
+
+The document defines the Pathway to POCL HAPS Application Interface. It is an extension of
+the Release 2 Automated Payments system and describes the file formats of the files required
+by both systems to support Automated Payments within the Pathway and HAPS systems. The
+Release 2 interface specification still applies for Release 2 systems but this document extends
+the specification to include support for Smart Token technology and Client communication by
+Pathway. This document when read in conjunction with the Pathway to HAPS Technical
+Interface Specification replaces the Release 2 document although some areas may be
+covered by both documents.
+
+Operational TIP will be in place before Release 2+ is live and all transactions will be sent
+there for settlement purposes.
+
+The names of the directories used on the HAPS gateway PC are fixed and are defined here.
+
+The cut-over of Clients to being directly supported by Pathway is defined in the Client
+Migration Strategy.
+
+2.1 Assumptions
+
+Client Reference Data is NOT delivered via HAPS but from the Reference Data Project.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 5 of 20
+
+FUJ00001374
+FUJ00001374
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+3. Background
+
+The Release 2 Automated Payments System handles a subset of possible transactions that
+can be performed at a post office. The Release 2+ APS supports Smart Tokens which are
+used for pre-payment meters and this requires data, supplied by the Client, to be written onto
+the Token.
+
+There are several different Smart Token Technologies that are supported and each one is
+different in its format but generally manages a common set of data. However only ABB
+WaterCard is supported across the interface between Pathway and HAPS. The three types of
+data transferred between the two systems are transaction data, tariff data and distribution
+data, which is customer specific. For ABB WaterCard, the distribution data is referred to as
+Customer Update Lists. The tariff data and distribution data are transferred from the Client
+across the Pathway to HAPS interface unchanged and this format is as previously agreed with
+the WaterCard Clients.
+
+The transaction data files are formatted as described in this document and these are then
+processed before forwarding to the appropriate Client. To facilitate the processing of the large
+volumes of transaction data a control file is transferred describing the details of the
+transaction files. Also further files are generated to enable error reporting and
+acknowledgment of successful transfers.
+
+During the interim period when post office counter systems are supported both by Pathway
+and by POCL it will be necessary to transfer tariff and distribution data from HAPS to Pathway
+and vice versa. This is necessary to cover the migration of Clients to being directly supported
+by Pathway. In either case the format of a file for a particular data type is the same no matter
+in which direction the transfer occurs. The Client defines the formats of the tariff data and
+distribution files and these are the formats to be used in any transfer between Pathway and
+HAPS.
+
+3.1 Transaction Data
+
+The transaction data is generated at the Post Office Counter and is needed by the Client for
+accounting and is needed by POCL for settlement of monies within the whole system.
+Transactions are routed directly to Clients either from HAPS or from Pathway. Any
+transactions collected by POCL supported outlets for transfer to Clients supported by Pathway
+are transferred to Pathway. Similarly transactions from Pathway supported outlets for transfer
+to Clients supported by HAPS are transferred to HAPS.
+
+The transaction data content and format for smart tokens will be different to other token types
+and there are two transaction file types:
+
+1, one containing magnetic card and bar code transactions,
+
+2. one containing ABB WaterCard transactions,
+
+The name of a transaction file indicates the file type, as defined in Section 5., but each file
+type has the same structure:
+
+— file header,
+
+— transaction detail records,
+
+—_ file trailer.
+
+The file header and trailer for the two types of transaction file are in the same format.
+The transaction file records do not need to be sorted and can contain records for several
+
+Clients. The records will usually be sorted by FCD Office Code value when produced by
+Pathway.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 6 of 20
+
+FUJ00001374
+FUJ00001374
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+A control file is produced once all of the transaction files are complete and this indicates how
+many transaction files were transferred since the production of the previous control file.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 7 of 20
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+3.2 Control file
+
+A control file consists of a header record, zero or more control detail records and a trailer
+record. The format is described in Appendix B. A control file indicates how many transaction
+files have been sent since the production of the previous control file. If no transaction files are
+sent then a control file is still sent but with no control detail records, just a header and a trailer
+record. A control file is sent each business day.
+
+The control file is renamed by the receiving system once all of the transaction files have been
+processed and this renamed file is transferred back to the originating system.
+
+3.3 Response file
+
+The system that receives the transaction files validates the content of the files and produces a
+response file for every transaction file sent. If a transaction file is valid then an OK file is
+produced but if validation fails then an error file is produced. The OK file consists of a header
+record, zero or more detail records and a trailer record. The error file consists of a header
+record, one or more detail records and a trailer record. The format is described in Appendix C.
+
+The receiving system also renames each transaction file depending on successful validation
+or unsuccessful validation. These files are not transferred to the originating system whereas
+the response files are transferred back. The response files are used to correct any errors in
+the transaction data and to register either successful validation or an error condition.
+
+3.4 Client Tariff Data
+
+The Utility companies define tariffs to be used in their meters which are updated infrequently.
+The data is transmitted to the Service providers in files and the file formats for each of the
+currently supported Client Utility companies has been agreed between POCL and the Client.
+
+3.5 Client Distribution Data
+
+The term Distribution Data is used because the token manufacturers use different terms to
+describe the data targetted at specific customers. The ABB Watercard Client generates the
+Customer Update Lists in the format specified by agreement with them.
+
+This data is distributed according to the Client's requirements. This is currently specified to be
+to all post offices for ABB WaterCard.
+
+3.6 Reference Data
+
+The Automated Payments Service relies on data specific to each Client supported that
+provides parameters to be used when transacting a payment. The Reference Data
+Management Service provides this reference data.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 8 of 20
+
+FUJ00001374
+FUJ00001374
+FUJ00001374
+
+FUJ00001374
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+3.7 Data Flows
+The diagram following illustrates the data flows between the various systems. POCL Clients
+can communicate with either Pathway or HAPS but any one Client, uniquely identified by a
+Client Account code allocated by POCL, only sends and receives data from one AP Host. A
+Client could receive transactions for one service/account from HAPS and for another
+service/account from Pathway, but this does not affect the interface between the two host
+systems.
+The solid lines indicate the transaction data, in Pathway/HAPS format. The dashed lines
+indicate the tariff data and distribution data, in Client data format, and the dotted lines indicate
+all data types but in Client format.
+‘Client data via
+F Pathway:
+Operational
+Path ited ~
+hway original
+‘Magnetic Card
+aoe Ce Magnetic Card
+“Gen weber ca
+Client
+‘
+PATHWAY HAPS
+7
+. y
+‘ABB
+WateCard I* { yacad
+lent Glient
+
+HAPS caiginatedt
+WC Txns
+
+3.8 Year 2000
+
+The date fields used by APS conform to Year 2000 standards, however certain date fields
+held within the APS transaction data only use 2 digits for the year. This data is not used within
+the systems and is transferred unchanged from the originating source, usually the Customer's
+Home Unit or Meter, to the Client who then interprets the data appropriately.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 9 of 20
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+4. Physical data formats
+
+All data is transferred in one or more files and each file has a header record, zero or more
+data records and a trailer record. Since the Client Data formats are immutable then it will be
+observed that some of these files have no trailer record.
+
+There are no record delimiters, such as <CR> <LF>, in the transaction files, tariff data files or
+distribution data files and it is the record type which determines the record format.
+
+4.1 Transaction data
+
+At Release 2 of the Pathway system AP transaction data is transferred to the HAPS system as
+defined in the ‘Pathway to HAPS Interface Specification, Ref. AP/IFS/001’. The extra data that
+is required to support Smart Tokens necessitates that the record format for the files to be
+transferred is modified.
+
+There will be a different file for each token technology type,
+— magnetic card and bar code,
+— ABB Watercard.
+
+4.1.1 Transfer Structure
+
+The Transaction Files have the same format for both directions of transfer, though the content
+of some of the record fields is dependent on which is the sending system.
+Each file has the same structure:
+
+— File Header record,
+— Transaction records,
+— File Trailer record.
+
+There can be zero or more transaction records in a file. Dependent on the file type there may
+be more than one type of transaction record, in which case the order of the transaction
+records is specified with the record formats for the file type below.
+
+The control file consists of a header record, zero or more control records and a trailer record.
+There is one control record for each transaction file in the transmission.
+
+The error file consists of a header record, one or more error records and a trailer record.
+There is one error record for each transaction record in the corresponding transaction file that
+is in error. If there are no errors then an error file will not be produced but an OK file is
+produced.
+
+An OK file consists of a header record, zero or more error records and a trailer record. Errors
+recorded in the OK file indicate that the format of the transaction is valid but that the
+transaction is undeliverable. This is because the Client is either unknown to the receiving
+system or is disowned, i.e. the originating system owns this Client interface.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 10 of 20
+ICL Pathway
+
+FUJ00001374
+
+FUJ00001374
+
+Pathway to HAPS Application Interface Ref: AP/IFS/031
+
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+4.1.2 Record Formats
+
+The generic header and trailer record for all transaction data files are specified below. The
+records for the transaction detail records for each file type are specified in appendix A.
+
+Header Record
+
+Field name Format Description
+
+Label Identifier Ichar(4) [The header record type, set to := "AHR1"
+
+Source lchar(7) A POCL allocated FAD Code to identify the
+sending system. (Same value as at Release 2 for
+Pathway.)
+
+(0360775 = Pathway live, 9990771 = Pathway test,
+(0370770 = HAPS live, 9980776 = HAPS test.
+
+File Identifier Ichar(11) IFor Pathway to HAPS this is the file name as
+defined in section 5.2. If the file is retransmitted
+the file name and consequently this field is
+lupdated.
+
+IFor HAPS to Pathway this is the file name as
+\defined in section 5.2. If the file is retransmitted
+the file name and this sequence number is not
+lupdated.
+
+[Token type Ichar(1) Indicates the type of transaction by token type. Set}
+jto space for magnetic card and bar code and set
+Ito ‘A’ for WaterCard transactions.
+
+Filler Ichar(84) [Set to spaces to maintain backwards compatibility.
+
+[Trailer Record
+
+Field name Format Description
+
+Label Identifier Ichar(4) [The trailer record type, set to “ATL1”
+
+Filler4 Inumber(13) Set to zeros
+
+(Credit Items Total Inumber(13) [The total of all the amounts (ignoring their sign) of
+leach transaction in the file.
+
+Derivation: sum(Amount Paid)
+
+Filler Inumber(7) Set to zeros
+
+[Credit Record Count Inumber(7) (The count of all transactions in the file, i.e. the
+[count of all data records in the file.
+
+Derivation: count(Transaction Detail Records)
+
+Filler3 Ichar(63) Set to spaces
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 11 of 20
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+5. Transfer Processes
+
+5.1 Platforms
+
+The files are held within the Pathway system at the Data Centre on the Pathway APS Host
+and transferred between the gateway PCs as defined in the Pathway to HAPS Technical
+Interface Specification, AP/IFS/0029. Software running on the Pathway gateway PC, the
+Pathway FT System, has access to the Pathway APS Host file system. The files are made
+available on the Pathway Main File Transfer PC, the HAPS gateway PC, for the POCL HAPS
+platform to access.
+
+The transaction files sent from HAPS are validated at the Pathway Host and files sent from
+Pathway are validated by HAPS. Each system produces notification files (.OK), or error files
+(.ERR), for transfer back to Pathway or HAPS using a defined directory structure. The Client
+data files are not verified by the receiving Host system before they are transferred to the other
+Host. The File Transfer Managed Service, FTMS, transfers the files between the Pathway
+gateway PC and the HAPS gateway PC.
+
+5.2 Filenames
+
+The files are held in specific directories depending on the direction of transfer but the
+filenames used are only dependent on the file type. The originating system creates the file
+and gives it a name according to the specifications below. The receiving system then renames
+the file, in situ, and sets the file creation date after it has successfully transferred it. The table
+below defines the file names and file types to be used.
+
+The file types are
+
+* TXN for AP Transaction files
+
+* CTL for the control file associated with the transaction files
+
+e NOT for renamed AP transaction files notifying successful validation, which remain on the
+gateway PC
+
+e NOX for renamed AP transaction files notifying unsuccessful validation, which remain on
+the gateway PC
+
+e OK for OK files returned to the originator indicating successful validation of the
+corresponding AP transaction file
+
+e ERR for error files returned to the originator indicating unsuccessful validation of the
+corresponding AP transaction file
+
+e CTN for renamed notification of control files, returned to Host which originated the control
+
+file
+
+TFD for ABB WaterCard Tariff data
+
+TFN for renamed Tariff data successfully received, which remain on the gateway PC.
+
+DID for ABB WaterCard Distribution data
+
+DIN for renamed Distribution data successfully received, which remain on the gateway PC
+
+Note. The tariff data and distribution data filenames are different to that defined by the Client
+and it is the responsibility of the Client facing Host system to rename the files.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 12 of 20
+
+FUJ00001374
+FUJ00001374
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+File Type [Transaction data from Pathway [Transaction data from HAPS
+Data file Pdddsss.TXN Hdddsss. TXN
+IControl file IPddd001.CTL IHddd001.CTL
+Notification file, IHdddsss.NOT IPdddsss.NOT
+success
+Notification file, IHdddsss.NOX IPdddsss.NOX
+failure
+Rename of control IHddd001.CTN IPddd001.CTN
+ile
+OK file IHdddsss.OK IPdddsss.OK
+Error file IHdddsss.ERR IPdddsss.ERR
+
+The file identifier, "odddsss.typ", for both Pathway and HAPS generated files is derived as
+follows:
+
+* o= source of file, P for Pathway and H for HAPS;
+e ddd = business day of the year (January 1st is 001);
+* sss=file sequence number starting at 001 on each transaction day.
+
+The sequence number increases by 1 for each transaction file and is maintained by the
+sending host system. If a file is retransmitted from Pathway to HAPS, for whatever reason, the
+file is regenerated and the file is named using the next available sequence number.
+
+If a transaction file is retransmitted from HAPS to Pathway it will have the same file name, i.e.
+the same sequence number is used.
+
+File Type \Tariff data [Distribution data
+Data file ClientName.TF I ClientName.DID
+D
+Notification file, (ClientName.TFN IClientName.DIN
+successfully received
+
+For files other than transaction files then the Clients determine the names according to the
+Application Interface Specifications and the filename, including the file type, is modified
+during the copying phase. The name given to a Client data file is fixed for each Client and
+every new delivery of a file of a given type from that Client uses the same name. Once the
+receiving system has processed the file, successfully or unsuccessfully, then the file is
+renamed. The table below defines the file names used for each of the identified Clients. The
+
+names provided here are only suggested names and the definitive values used are contained
+in the Operational Procedures.
+
+\Client Name File Name
+Welsh Water GWELSHV1
+Three Valleys Water G3VALV1
+Anglian Water GANGWV1
+Mid Kent Water GMIDKV1
+North West Water GNWWV1
+Wessex Water GWESV1
+
+[Cambridge Water IGCAMBV1
+
+South West Water IGSWWV1
+
+North Surrey Water IGNSURV1
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 13 of 20
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+5.3 Validation
+
+The records in each transaction file are checked to be of the correct size as defined by the
+specified format but the content of every field is not validated. Only fields which have a
+defined range or value specified or are used as an index entry or record length are validated.
+The error codes, defined in Appendix C, indicate the current set of fields to be validated.
+
+The Client data is only validated where an index entry or record length value exists.
+The notification and error files produced after the validation of the transaction data are placed
+
+in the same directory on the HAPS gateway PC using the same sequence number as the
+original file. The directory names used are described later.
+
+5.4 Usernames
+
+The username POCLHAPS is available for POCL read and write access to files on the
+\WORKING and \PATHWAY directories on the HAPS gateway PC.
+
+5.5 Directories
+
+Each file is held in a well-known place on the Pathway Main File Transfer PC at HAPS, the
+HAPS gateway PC, using a pre-defined name that is configured into the FTMS system. The
+currently defined name of the directory is \WORKING and this directory continues for files
+sent from Pathway. For files transferred from HAPS the \PATHWAY directory is allocated.
+
+File Type IHAPS gateway PC
+Transactions & Control Files I \WORKING
+Pathway Originated
+Acknowledgments from HAPS I \WORKING
+for Pathway Originated files
+
+Transactions & Control Files I \PATHWAY
+HAPS Originated
+
+Acknowledgments from \PATHWAY
+Pathway for HAPS Originated
+
+files
+\Client Data via Pathway WORKING
+\Client Data via HAPS PATHWAY
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 14 of 20
+
+FUJ00001374
+FUJ00001374
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+Appendix A. Record formats for AP Transaction Files
+
+A.1 Magnetic card and bar code AP Transaction File structure
+
+This file contains transaction records for magnetic card and bar code transactions. There is
+only one type of Transaction record, with the records in any order in the file between the
+header and trailer records.
+
+A.2 Magnetic card and bar code AP Transaction Detail Record
+
+Field name Format Description
+
+Record Type number(2) I Identifies the type of record:
+31 = magnetic card AP transaction
+32 = bar code AP transaction.
+
+IFCD Office Code Ichar(7) Post Office code identifying the Outlet (FAD code)
+
+Client Id Inumber(4) IThe code by which the AP Client is identified
+
+Client Account Code Inumber(4) IThe code by which the AP Client account is identified
+
+Client Service Code Inumber(4) IThe code by which the AP Client service is identified
+
+iCustomer Reference Ichar(20) Customer reference number, left justified, space filled
+
+Date Entered Inumber(8) [Date of the AP transaction, format: YYYYMMDD
+
+[Time Entered Inumber(4) [Time of the AP transaction (Local Time), for DPC
+itransactions the time will be set to zeros, format:
+HHMM.
+
+[Accounting Date Inumber(8) IThe accounting date on which the transaction was
+performed, format: YYYYMMDD
+
+Service Group Ichar(2) IThe service group to which the client/service belongs.
+
+[Transaction Type Inumber(1) ‘IThe type of transaction, values:
+(0 = Normal, 1 = Reversed, 2 = Reversal
+
+Receipt Reference Ichar(5) Part of the transaction reference to enable identification}
+
+lof the transaction. See note below.
+
+Receipt Serial Number Inumber(4)  IUniquely identifies the transaction within the Receipt
+
+Reference.
+
+Filler Ichar(2) jset to spaces
+
+Method of Capture Inumber(1) {The method of transaction capture, values: 0 =
+(Automatic, 1 = Manual, 2 = DPC (HAPS to Pathway
+jonly)
+
+(Method of Payment Inumber(1) How payment was made, values: 0 = DPC, 1 = Cash,
+2 = Other
+
+[Amount Paid inumber(10) IThe actual amount of the transaction in pence
+
+iReversing/Reversed Ichar(5) For reversed or reversal transactions, the receipt
+
+Receipt Reference reference of the reversing or reversed transaction.
+
+Reversing/Reversed Inumber(4) IFor reversed or reversal transactions, the receipt serial
+
+Receipt Serial Number Inumber of the reversing or reversed transaction. See
+above.
+
+Microfilm Reference Ichar(10) Only used in HAPS to Pathway DPC transactions,
+
+INumber holds reference number to identify DPC Sales voucher.
+Otherwise set to spaces or zeros.
+
+Batch Status Ichar Only used in HAPS to Pathway DPC transactions,
+
+jotherwise set to spaces.
+
+\Values: B = Balanced, U = Unbalanced.
+
+Note. The Receipt Reference, for Horizon generated transactions, is composed as follows:
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 15 of 20
+
+FUJ00001374
+FUJ00001374
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+“ttecH” tt = terminal number and cc is set to spaces.
+
+For HAPS originated transactions the value depends on the capture device and is not used by
+Pathway.
+
+A.3 ABB Watercard Transaction File structure
+
+This file contains transaction records for ABB WaterCard transactions. There is only one type of
+transaction record, which can be in any order in the file between the header and trailer records.
+
+A.4 ABB Watercard Transaction Detail Record
+
+Field name Format Description
+Record Type number(2) Identifies the record: 33 = ABB Watercard AP
+transaction.
+IFCD Office Code Ichar(7) Post Office code identifying the Outlet (FAD code)
+Client Id Inumber(4) IThe code by which the AP Client is identified
+
+Client Account Code Inumber(4) IThe code by which the AP Client account is identified
+Client Service Code Inumber(4) IThe code by which the AP Client service is identified
+Customer Reference Ichar(16) ICustomer reference number, left justified, space filled
+
+iHome Unit Reference Inumber(6) Identifies the unit in the customer's home (from the
+number card).
+
+Date Entered Inumber(8) [Date of the AP transaction, format: YYYYMMDD
+
+[Time Entered Inumber(4) ITime of the AP transaction (Local Time), format: HHMMI}
+
+Accounting Date Inumber(8) IThe accounting date on which the transaction was
+Iperformed, format: YYYYMMDD
+
+Service Group Ichar(2) IThe service group to which the client/service belongs.
+
+Receipt Reference Ichar(5) Part of the transaction reference to enable identification
+
+jof the transaction. This follows the same format as the
+Imagnetic card.
+
+Receipt Serial Number — Inumber(4) [Uniquely identifies the transaction within the Receipt
+
+Reference.
+Method of Capture Inumber(1) — [The method of transaction capture, values:
+(0 = Automatic, 1 = Manual
+Amount Paid Inumber(10) IThe actual amount of the transaction in pence
+[Amount on card Inumber(6) {The actual amount on the card on completion of the
+transaction, in pence.
+[Transaction Type Inumber(1) ‘IThe type of transaction, values:
+10 = Normal, 1 = Reversed, 2 = Reversal
+(Method of Payment Inumber(1) IHow payment was made, values: 1 = Cash, 2 = Other
+Reversing/Reversed Ichar(5) IFor reversed or reversal transactions, the receipt
+Receipt Reference reference of the reversing or reversed transaction.
+iReversing/Reversed Inumber(4) IFor reversed or reversal transactions, the receipt serial
+Receipt Serial Number Inumber of the reversing or reversed transaction. See
+labove.
+[Transaction Status Inumber(2) [See below for values.
+(Captured card data byte(256) IThe data captured from the card.
+Notes.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 16 of 20
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+1. The Client transaction format includes a System Type and a Terminal Number field. These
+values can be obtained from the Receipt Reference when generating the Client format
+record.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 17 of 20
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+A.5 ABB Watercard Transaction Status
+
+The Transaction status field of the ABB WaterCard Transaction detail record can take the
+following values.
+
+Status I/Meaning
+0 iSuccessful transaction, full operation available.
+
+Successful transaction, credit adjustment only available.
+ISuccessful transaction, card rebuild successfully performed.
+Card rebuild successful, but transaction cancelled.
+Transaction re keyed, minimal card data populated.
+
+alolrI a
+
+70 Client tariff file missing.
+71 [Region code missing from tariff file or invalidated by ref data.
+
+72 IProperty band missing from tariff file or invalidated by ref
+(data.
+
+73 ‘alidation word has value of OxFFFF.
+74 invalid card state (e.g. Home Unit with non-zero credit).
+75 ICard rebuild not available for client.
+
+76 [Transaction canceled, the clerk abandoned processing during
+he ‘get amount’ phase of a normal transaction.
+
+77 IUnable to access card.
+
+[DN: These status values are defined in other documentation for ABB WaterCard.]
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 18 of 20
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+Appendix B. Transaction Control File Structure
+
+The record layout and field sizes are shown in the following tables.
+Records are variable length and are separated by record separator characters CR/LF.
+
+Header record
+The header record identifies the file source.
+
+FUJ00001374
+FUJ00001374
+
+Field name Format Description
+Label identifier char(4) The header record type, “"AHR2"
+Source Ichar(7) \Source identifier for the sending host using a POCL FAD
+Code,
+
+[0360775 = Pathway live, 9990771 = Pathway test,
+[0370770 = HAPS live, 9980776 = HAPS test.
+
+File identifier lchar(11) _IThe file identifier of the control file
+
+Format version [char(8) \Version of detail record format, ie 1.0.0 for this version
+
+File creation date Ichar(12) I IDate and local time the control file is created (format
+iccyymmddhhmm)
+
+Control detail record
+
+The control record identifies the AP transaction files that form part of the transmission.
+
+Field name Format Description
+Record type number(2) I Identifies the detail record type, 91=file detail
+iDate generated Ichar(8) Date the transaction file created, ccyymmdd
+File identifier Ichar(11) [The transaction file identifier
+[Transaction file type _Ichar ‘= magnetic card/ bar code , ‘A’ = Watercard
+Number of txns Inumber(7) IThe number of transaction records in the file
+(i.e. excluding header and trailer records)
+‘alue of txns Inumber(13) IThe total value of the transactions in pence
+
+Note. The field Transaction file type replaces the field File status from Release 2 which was
+
+unused.
+Trailer record
+
+The trailer record identifies the number of control detail records.
+
+Field name Format Description
+
+Label identifier char(4) The trailer record type, "ATL2"
+
+Number of detail records Inumber(5) IThe number of detail records in the control file, i.e. number
+
+lof transaction files in the transmission
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 19 of 20
+FUJ00001374
+
+FUJ00001374
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+Appendix C. Transaction Response File structure
+The record layout and field sizes are shown in the following tables.
+Records are variable length and are separated by record separator characters CR/LF.
+Header record
+The header record identifies the file source
+Field name Format [Description
+Label identifier char(4) The header record type, "AHR3"
+Source Ichar(7) [Source identifier for the sending host using a POCL FAD
+ICode,
+10360775 = Pathway live, 9990771 = Pathway test,
+10370770 = HAPS live, 9980776 = HAPS test.
+File identifier Ichar(11) _IThe file identifier of the error file or OK file
+Format version Ichar(8) \Version of detail record format, ie 1.0.0 for this version
+File creation date lchar(12) [Date and local time the error file is created (format
+lccyymmddhhmm)
+Source application Ichar(4) IThe application that created the error file, one of PVAL,
+IPFTM, HAPS
+Error detail record
+The error record identifies the errors detected in the AP transaction files that formed part of
+the original transmission.
+Field name Format [Description
+Record type Inumber(2) Identifies the detail record type, 92=error detail
+Date generated Inumber(8) Date error detected, ccyymmdd
+[Error code Inumber(3) [The unique error code
+Record number Inumber(7) IThe number of the transaction record in error (the header
+record counts as record 1)
+Field number Inumber(2) [The field number in error, if applicable
+(Error description Ichar(40) IA short text description of the error
+
+Trailer record
+
+The trailer record identifies the number of error detail records.
+
+Field name Format [Description
+
+Label identifier Ichar(4) [The trailer record type, “ATL3"
+
+Number of records Inumber(5) IThe number of detail records, i.e. number of errors in the
+itransaction file
+
+The process used to report undeliverable AP transactions is by reporting an error detail record
+in the corresponding response file. If there are no other types of error detected then these are
+placed in the OK file otherwise they are placed in the error file with the other detected errors.
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 20 of 20
+FUJ00001374
+FUJ00001374
+
+ICL Pathway Pathway to HAPS Application Interface Ref: AP/IFS/031
+Specification (Horizon Release 2+) Version: 5.0
+COMMERCIAL IN CONFIDENCE Date: 10/04/00
+
+Error codes are allocated in ranges for ease of use and extension.
+
+These are:
+
+1 to 99 General use
+100 to 199 Pathway use
+200 to 299 HAPS use
+
+The following table defines some general error codes and a description. The description may
+be used as the default text for the Error detail field in an error detail record:
+
+Error code IDescription
+
+1001 Header missing
+
+1002 [Trailer missing
+
+1003 Header FAD code not Pathway
+
+1004 File Identifier not same as filename
+1005 [Trailer Credit Record Count is wrong
+1006 [Trailer Credit Items Total is wrong
+(007 Record length incorrect for record type
+008 Record type invalid
+
+1009 Record out of sequence
+
+1010 [Txn Type not Normal/Reversed/Reversing
+011 (Client unknown
+
+012 (Amount not numeric
+
+013 Header repeated
+
+1014 [Trailer repeated
+
+015 Client disowned
+
+APIFS031.doc COMMERCIAL IN-CONFIDENCE Page 21 of 20

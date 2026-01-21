@@ -1,0 +1,1222 @@
+Fujitsu
+Services
+
+Document Title:
+Document Type:
+Release
+
+Abstract:
+
+Document Status:
+Authors:
+Contributors:
+
+Reviewed By:
+
+Comments To:
+Comments By:
+
+Distribution:
+
+0.1
+
+Network Banking MIS Report Design
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232502
+FUJ00232502
+
+Ref: NB/SDS/008
+
+Version: 2.0
+Date: 12/07/2002
+
+Network Banking MIS Report Design
+
+Report Design
+BI3
+
+This Contract Controlled document details the design of
+Management Information Reports that are part of the
+
+Network Banking Service.
+Approved
+
+Steve Newman
+
+Roger Barnes
+
+Gary Booker (POL Retail Banking)
+James Brett (POL Design Authority)
+Jeanette Brown (POL Design
+Authority Manager)
+
+Charles Leighton (POL Security)
+Alan Orpe (POL Business Change)
+Sue Stewart (POL Business Service
+Management)
+
+Donald Bell
+
+Richard Brunskill
+
+Alan D’ Alvarez
+
+Author, Roger Barnes
+
+N/A
+
+Contributors, Reviewers and:
+Pete Jeram
+
+Liam Foley
+Fujitsu Services Library
+
+Document Control
+
+Tony Hayward
+
+Phil Hemingway
+Dave Hollingsworth
+Mark Hopkins
+Gareth Jenkins
+Dave Johns
+
+Duncan MacDonald
+Bill Reynolds
+Geoffrey Vane
+John Moran
+
+Mike Deverell
+
+0.1 Document History
+Version I Date Reason for Issue Associated CP/
+PinICL Nos.
+0.1 12/09/2001 I First draft
+0.2 4/12/2001 Second drafi. Pathway document
+boilerplate added. Changes arising from
+POL review of first draft incorporated.
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: I of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+Reports re-designed to get most benefit
+from Business Objects.
+0.3 14/12/2001 I Changes arising from comment from
+internal review.
+1.0 20/3/2002 Un-approved baseline for first drop of code
+from development to System Test.
+Ll 12/4/2002 Changes arising from comment from CP3208
+external review. CP3209
+. 3
+Changes due to changes in requirements P3221
+introduced by CP.
+1.2 24/05/2002 I Removal of POL Organisational Analysis Removal of
+Report requirement for
+this Report
+from NOS
+2.0 12/07/2002 I Minor comments from POL applied and
+issued for approval.
+Initial definitions of Value Bands and
+applicable Product Types add to definition
+of the Bank Analysis report.
+02 Approval Authorities
+Name Position Signature Date
+David Johns APDU Design Manager
+Fujitsu Services
+Torstein Godeseth I Design Authority
+Post Office Limited
+0.3 Associated Documents
+Ref. I Doc. Vers. I Title Author
+REQ NB/SPE/001 Network Banking, Systems T Hayward
+Requirements Specification
+NOS BP/CON/266 I 4.0 Codified Agreement Schedule NOS -
+NBS Service Management
+DES TD/SDS/001 System Design Specification for the I Gareth Jenkins
+Network Banking Application
+DAT NB/SDS/009 Network Banking MIS Data Model I Steve Newman
+VOL NB/SRS/001 Systems Requirements Specification I James
+for Business Volumes Stinchcombe
+AIS NB/IFS/006 Pathway Data Warehouse to Post Steve Newman
+Office Ltd Application Interface
+Specification.
+OPS CS/PRD/109 Delivery Procedure For Network John Moran
+Banking MIS Reports
+
+©z 2002 Fujitsu Services Limited
+Last Updated: 17/07/02 15:38
+
+Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Page: 2 of 1
+Fujitsu Network Banking MIS Report Design
+
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232502
+FUJ00232502
+
+Ref: NB/SDS/008
+
+Version: 2.0
+Date: 12/07/2002
+
+Unless stated otherwise the documents referred to above are the latest approved versions.
+
+©z 2002 Fujitsu Services Limited
+
+Last Updated: 17/07/02 15:38
+
+Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Page: 3 of 1
+Fujitsu
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+0.4 Abbreviations & Defi
+
+Network Banking MIS Report Design
+
+Ref: NB/SDS/008
+
+Version: 2.0
+Date: 12/07/2002
+
+ns
+
+IAbbreviation
+
+efinition
+
+(Accounting Day
+
+IA day within an Accounting Week for POL.
+
+[Accounting Week
+
+Period of approx. one calendar week (Thursday to Wednesday), defined by
+POL for accounting purposes. A collection of Accounting Days
+
+IAuthorising Source
+
+IA body that authorises transactions, might be a Bank but more often an
+agent such as LINK
+
+[Bank
+
+[Financial Institution that issues cards to its customers that can be used for
+NB Transactions. N.B. Bank is a specialisation of the POL Client entity.
+
+(Confirmed Amount
+
+[Amount confirmed in C2 message. Zero if transaction fails, is declined, or
+is balance enquiry
+
+IDWh Data Warehouse.
+[End Date Identifies the end of a period of time (Date and Time)
+IFAD Code IA structured code to identify an outlet or a satellite as a cash accounting
+
+unit.
+
+[Financial Institution
+
+IA privately owned entity that collects funds from the public.
+
+lIssuer Scheme
+
+Classification of a group of types of cards issued by a Bank
+
+lIssuer Scheme ID
+
+IUnique (POL) system generated code identifying an Issuer Scheme
+
+[Money Laundering Threshold
+
+IA cut off value below which 'Cash Deposit’ transactions are not likely to be
+f interest from a money laundering perspective.
+
+[Month
+
+IA calendar month
+
+'B
+
+jetwork Banking
+
+IB Transaction
+
+[Record of an attempted Network Banking Transaction, regardless of its
+Outcome
+
+BE Network Banking Engine
+BS jetwork Banking Service
+Outcome Classification of the result of a NB Transaction
+
+(Outcome Code
+
+IUnique code indicating the Outcome of a Transaction.
+
+[Transaction Result
+
+lassification of Outcome, e.g. ‘Transaction Completed OK’, ‘Abandoned
+by Clerk’, Decline Confirmed’, 'Transaction Failed’
+
+[Transaction Result Code
+
+lUnique code indicating the Transaction Result of a NB Transaction.
+
+Outlet
+
+[Place where Horizon system is installed for conducting transactions with
+the general public
+
+IPAN
+
+[Primary Account Number
+
+Posting Date
+
+IThe date of the last complete POL Trading Day (ending at 19:00)
+preceding the harvesting run producing the Transmission Files in which
+Ithe transactions were sent to TIP and the DWh.
+
+POL
+
+Post Office Limited
+
+Product
+
+\Classification of NB Transaction identifying the combination of Product
+{Type and Bank
+
+Product Code
+
+[Identifies a POCL Product
+
+[Product Type
+
+IA classification of Product, e.g. ‘Cash Withdrawal’, 'Cash Deposit’,
+(Balance Enquiry’, etc. Equivalent to Item Type in POLs logical data
+model.
+
+[Product Type ID
+
+IUnique (POL) system generated code identifying an Product Type, e.g.
+ICash Withdrawal, Cash Deposit, etc.
+
+©z 2002 Fujitsu Services Limited
+
+Commercial In-Confidence
+Without Prejudice and Subject to Contract
+
+Page: 4 of I
+
+Last Updated: 17/07/02 15:38
+
+FUJ00232502
+FUJ00232502
+
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+IRDMC Reference Data Management Centre
+
+Settlement Date
+
+{The date of a NB Transaction for settlement purposes, determined by
+Uuthorising Source
+
+Start Date Identifies the Start of a period of time (Date and Time)
+
+ITPS Transaction Processing System. Fujitsu Services application that collects
+ransaction data from Outlets and forwards it to POL.
+
+[Trading Date IDate identifying a period of approximately one calendar day that is the
+
+interval between two End of Day markers written at Outlets at a time
+\determined by reference data.
+
+[Receipt Date
+
+[The local date and time of a transaction as recorded on the receipt.
+
+(Transaction Value
+
+leasure (sum) of the confirmed value of transactions in a collection.
+
+ITransaction Volume
+
+leasure (count) of volume of transactions in a collection
+
+IUser Name
+
+IUser Name entered by Clerk at logon
+
+0.5 Changes in This Version
+Amendments arising from review comments of the previous version. All changes are
+
+minor.
+
+The initial definition of Value Bands and applicable Product Types, as defined in
+Schedule NOS - NBS Service Management, have been added to the description of the
+
+Bank Analysis report.
+
+0.6 Changes Expected
+
+None
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 5 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+0.7 Table of Contents
+
+0. DOCUMENT CONTROL.
+
+0.1 DOCUMENT HISTORY.
+0.2. APPROVAL AUTHORITIES.
+IN THIS VERSION.
+
+ANWRNNN VN
+
+a
+
+TABLE OF CONTENTS. ......:ccccesssscssssssssssssssussssseesssssessssssessnsssiussssenisssssesiunssseiisnsetennnsssesnseetenuase
+1 INTRODUCTION
+
+2 REQUIREMENTS..
+
+3. METHOD OF DISTRIBUTION...
+
+4 DESIG
+
+AL PRINCIPLES..0.0....ccccccsesssessssssssssssseensnsssenssnessessssnntnsssnsennsssstennssetennsnsstensseseeussseniassseeisseseennaneseeses
+
+4.2. DATES.
+
+4.3 HIERARCHIES.........
+
+4.4 REPORT DESIGN.
+4.4.1 Money Laundering.
+4.4.2. Multiple Transactions
+4.4.3 Transaction Outcome Analysis by Outlet.
+4.4.4 Bank Ana we 2
+
+-1 Report LAYOuTS
+4.4.5 Money Laundering.
+4.4.6 Multiple Transactio
+4.4.7 Transaction Outcome Analysis by Outlet.
+4.4.8 Bank AndlySis........00000+
+
+1 Introduction
+
+Fujitsu Services’s Data Warehouse (DWh) will be used to provide all Management
+Information reports. These are characterised by the use to which they are put and the
+timeliness in which they need to be produced. A management information report is used to
+inform strategic decision making rather than day-to-day operational decisions. Usually the
+reports are produced some time after the fact and report on events that took place over a
+period of days, weeks and months, or even years, rather than hours.
+
+2 Requirements
+
+These reports do not support contractual service levels but are provided for the use of POL to
+support the management of their business. This is a new service to POL.
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 6 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+Four Trend Analysis reports are required:
+¢ Money Laundering
+
+¢ Multiple Transactions
+
+e Transaction Outcome by Outlet
+
+e Bank Analysis
+
+3 Method of Distribution
+
+Pathway's Management Support Unit will refresh each report shortly after the period covered
+by the report has ended. This will create a new Business Objects report file for each report.
+These files will be made available to Post Office Limited , for example by CD-ROM or by
+placing them on a server to which they have access. The method of delivery will be specified
+in Delivery Procedure for Network Banking MIS Reports (CS/PRD/109) [OPS].
+
+Once a week the new Business Objects report files for the Transaction Outcome by Outlet and
+Bank Analysis will be delivered to POL.
+
+Once a month the new Business Objects report files for the Money Laundering and Multiple
+Transactions will be delivered to POL:
+
+The Bank Analysis report will normally be delivered to POL on the working day following the
+end of the reporting period. Other reports will normally be delivered to POL within five
+working days after the end of the reporting period.
+
+Post Office Limited will need to provide one or more Windows NT Workstations running
+BusinessObjects 5.1 to view, print and manipulate the reports provided.
+
+4 Design
+
+This section describes the format and content of the Network Banking MIS reports as they
+will be delivered. It also shows some examples of how the reports can be customised by the
+user to meet his or her own individual requirements.
+
+This document follows BusinessObjects convention of considering attributes of objects as
+either Dimensions or Measures. Dimensions are attributes by which it is possible to specify
+what is being reported. They determine things like What happened, When something
+happened, Where something happened. It is not normal to perform arithmetic on dimensions.
+Measures are quantitive attributes like how many or how much. Arithmetic is routinely
+performed on Measures.
+
+4.1 Principles
+
+The following conventions will be applied to all reports unless there is a specific requirement
+otherwise. Reports will:
+
+e Cover a single instance of a period of time defined in either the Calendar or Accounting
+Calendar hierarchies.
+
+Be delivered as Business Objects report files.
+Use Arial font sized at 10 point or above.
+Be able to be printed full width on normal A4 paper either landscape or portrait.
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 7 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+© Column widths must, wherever possible be large enough to display the longest data item
+without truncation or text wrapping.
+e Have a repeating page header that contains the report title, date last refreshed, the period
+of time covered, and any text required to show the values of any selection criteria used.
+© Where the scope of a report is a Month the page header will display the Month Name
+and Year in a single field. e.g. August 2001.
+© Where the scope of a report is an Accounting Week the page header will display
+Accounting Week ID, Accounting Period Id, and Financial Year in a single field
+separated by" /". e.g. "4/5/2000" which represents the fourth Accounting Week in
+the Fifth Accounting Period in the Financial Year that began in Year 2000.
+e Have a repeating page footer that contains page number in Page n of nn format.
+© Object descriptions or names are displayed in preference to codes. N.B. The data
+providers must include codes so that they are available to users.
+e Dates are displayed in DD-Mmm-YY format, left justified.
+Times of events are displayed in hh24:mm:ss format, left justified.
+Times, which are measurements of intervals between events, are displayed in ss.mmm, i.e.
+seconds and milliseconds.
+e Currency amounts are displayed in £4,##0.00 format, right justified.
+e Transaction volumes are displayed in #,##0 format, right justified.
+
+4.2 Dates
+
+Requirements have been identified to use four dates:
+
+¢ Receipt Date - Calendar Date (and Local Time) when the transaction was recorded.
+Receipt Date will be used for any reports where the details of individual transactions are
+required.
+
+e Trading Date - Identifies Trading Day. This is the unit by which the Transaction
+Processing Service packages transactions for delivery to both TIP and the Data
+Warehouse. The Data Warehouse will maintain aggregates with Trading Day granularity
+and this will be the default unit of aggregation for all MIS reports.
+
+e Settlement Date - The requirement for the Bank Analysis report explicitly states that
+Settlement Date, which is determined by the Authorising Source, is to be used. This
+attribute will be included in the data passed from TPS to DWh.
+
+¢ Posting Date - This is the date that transactions were posted to the Data Warehouse. It is
+the date of the 7rading Day that ended immediately prior to the transactions being
+harvested by TPS for delivery to TIP.
+
+4.3 Hierarchies
+
+Business Objects is a powerful user tool for manipulating data. A full description of the
+facilities it provides is beyond the scope of this document. Some features however depend on
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 8 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+the end users use of them being anticipated and catered for by the designer. This is
+particularly true when considering the different levels of detail, or abstraction, that a user
+might require. There are two basic ways to do this:
+
+Drilling: This is where the user is interested in looking in more detail at a subset of data from
+areport. e.g. A user looking at a report showing volumes of transactions by Bank and wishes
+to see how a Bank's transactions are distributed by the Bank's Issuer Schemes. By selecting
+the 'Drill' control, the Bank Dimension, and the ‘drill down' option a new version of the report
+is displayed showing only the selected Bank's transactions broken down by it's /ssuer Schemes.
+Both the scope and the level of abstraction of the report are changed. This facility depends on
+hierarchies being defined and made available in reports.
+
+Dimension Swapping: This is where a user is interested at looking at a report at a different
+level of abstraction. e.g. A user is looking at a report showing the volume of Network
+Banking Transactions by Territory and wishes to look at the same data by Head of Area. By
+‘dragging’ the Head of Area dimension from the Report Manager section of the report and
+‘dropping’ it over the 'Territory' dimension in the report body these dimensions are swapped.
+The report will change to show the volume of Network Banking Transactions by Head of
+Area. Changing the dimensions used in a report only changes the level of abstraction and
+cannot be used to change the scope.
+
+Business Objects is a complex tool and it is possible to manipulate reports in many ways. It is
+not possible make reports foolproof without removing all the flexibility available. Drilling up
+and down predefined hierarchies, and swapping a reported dimension for another in the same
+hierarchy, will be supported.
+
+To support this a number hierarchies have been defined for Network Banking MIS reports. It
+should be noted that while hierarchies can add greatly to the usefulness of Business Objects
+reports they are not cost free. The cost comes in three forms 1) The length of time it takes to
+regenerate reports increases, 2) The size of delivered files increases, 3)The time taken to
+display the results of changes made to the report by the user increases, reducing its
+responsiveness. If it is found that any of these is unacceptable in use then consideration should
+be given to reducing the use of hierarchies.
+
+The convention used in this document for defining hierarchies is top (or most abstract, least
+detail) to bottom (or least abstract, most detail). Unless restricted by the scope of the report
+the user will be allowed to navigate both up and down hierarchies.
+
+The following hierarchies are defined:
+
+Hierarchy: Dimension
+ISLA Calendar
+
+SLA Year
+L _ISLA Quarter
+L : onth
+Level4 si Trrading Day
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 9 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+jimension
+[Level 1 se Financial Year
+Level 2 DEE IAccounting Period
+evel _jAccounting Week
+Level4 Accounting Day
+Hierarchy: Dimension
+Settlement Calendar
+[Level 1 y [Financial Year
+Level 277 IAccounting Period
+evel3 IAccounting Week
+evel4 ____SSettlement Date
+Dimension
+[Level 1 Og Bank
+[Level 2 —__ Issuer Scheme
+Dimension
+Level) Product Type
+[Level 2 [Product
+Hierarchy: Dimension
+Outcome
+Level 1 : \Transaction Result
+[Level 2 (Outcome
+
+4.4 Report Design
+
+The design of each report will be expressed in terms of the entities and attributes in [DAT].
+For convenience brief descriptions of the entities and attributes employed are reproduced in
+Section 0.4 Abbreviations and Definitions.
+
+4.4.1 Money Laundering
+
+This monthly report shows the details, by Outlet, of cash deposit transactions that exceed a
+configurable threshold. The report will display successful Network Banking transactions
+where the Product Type is 'Cash Deposit’ and the Confirmed Amount is greater than Money
+Laundering Threshold . Money Laundering Threshold is an amount, held in Fujitsu Services
+reference data within the Data Warehouse, that constrains the volume of data included in the
+report. The value of Money Laundering Threshold will be set to £10000. This value can be
+changed at POLs instigation using the established Change Request process. The standard
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 10 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+Business Objects filter function can be employed by the user to restrict the transactions
+displayed to any value greater than Money Laundering Threshold.
+
+Details of each individual Transaction where the threshold is exceeded will be displayed
+together with an Outlet summary that shows the volume of transactions and sum of Confirmed
+Amounts.
+
+No hierarchies are used in this report.
+
+Rules:
+
+1. The transaction was successful (7ransaction.Success = true).
+
+2. Product Type is 'Cash Deposit’.
+
+3. Receipt Date between Month.Start Date and Month.End Date.
+
+4. Confirmed Amount is greater than Money Laundering Threshold.
+
+Measures:
+
+© Confirmed Amount
+
+© Count of transactions per Outlet
+
+© Sum of Confirmed Amount per Outlet
+
+Dimensions:
+
+e@ Outlet
+
+e@ User Name
+e Receipt Date
+e
+
+PAN
+
+Other Details Available:
+e FAD Code
+
+Hierarchies:
+© None
+
+Sort Sequence:
+e Ascending Outlet Name
+
+4.4.2 Multiple Transactions
+
+This monthly report shows details of where more than a configurable number of transactions
+has been conducted, within an Outlet, for the same PAN in a Trading Day. [R269] Multiple
+Transaction Threshold is an value, held in Fujitsu Services reference data within the Data
+Warehouse, that constrains the volume of data included in the report. The value of Multiple
+Transaction Threshold will be initially set to 5 (five). This value can be changed at POLs
+instigation using the established Change Request process.
+
+Details of each individual transaction will be shown, sorted by Outlet, PAN, and Receipt Date.
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 11 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+Rules:
+
+1. Receipt Date between Month Start Date and Month End Date.
+2. Count of NB Transaction for PAN on Trading Date at Outlet is greater than Multiple
+Transaction Threshold.
+
+Measures:
+© = Confirmed Amount
+
+Dimensions:
+Outlet
+
+User Name
+Receipt Date
+PAN
+
+Product Type
+
+Transaction Result
+
+Other Details Available:
+e FAD Code
+e Product Type ID
+
+Hierarchies:
+e None
+
+4.4.3, Transaction Outcome Analysis by Outlet
+
+This weekly report [R258] shows a summary of the Network Banking transactions performed
+in each Outlet. The scope of this report will be an Accounting Week.
+
+For each Outlet there will be one row, showing Transaction Volume and Transaction Value,
+for each combination of Product and Outcome. The sort sequence for this report will be
+ascending FAD Code, Product and Outcome. Page breaks will be inserted to ensure that each
+Outlet starts on a new page.
+
+Rules:
+1. Trading Date between Accounting Week.Start Date and Accounting Week.End Date.
+
+Measures:
+e@ = Transaction Volume
+e = Transaction Value
+
+Dimensions:
+
+© Outlet
+
+e FAD Code
+
+e Accounting Week
+
+e@ Product
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 12 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+FUJ00232502
+
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+© Outcome
+
+Other Details Available:
+© Outlet ID
+
+e@ Product Code
+
+© Outcome Code
+
+Hierarchies:
+e = This is a very large report that is required to show a great deal of detail. No drilling down
+is possible but drilling up in the Product and Outcome hierarchies will be supported
+
+4.4.4 Bank Analysis
+
+A weekly report showing, for each Bank, the daily count and sum of Confirmed Amount of
+Network Banking transactions. [R261].
+
+Each page will, in addition to the standard page header items, show the date of latest Trading
+Date posted by the Data Warehouse at the time the report was produced (or refreshed). This
+is included to indicate to the user that the Data Warehouse had posted transactions for each
+Trading Date within the Accounting Week.
+
+The scope of this report a week will be an Accounting Week. A single report will be produced
+each week containing all Banks.
+
+Each Bank will start on a new page, and within Bank there will be separate sections for each
+Issuer Scheme.
+
+Within /ssuer Scheme there will be one row for each combination of Posting Date, Settlement
+Date, Product Type Value Band and Transaction Result recorded during the reporting period.
+
+The sort sequence for the report will ascending Bank, Issuer Scheme, Posting Date,
+Settlement Date, Product Type Value Band and Transaction Result.
+
+N.B. Value Bands and the Product Types that they apply to are soft configured. The initial
+configuration will be that specified in "Codified Agreement Schedule N05 - Service
+Management" [NOS], section 6.1.2. i.e. For each of the Product Types “Cash Withdrawal”,
+“Cash Withdrawal with Balance” and “Cash Deposit” there shall be three value bands. The
+three value bands will be: (i) zero value transactions; (ii) transactions of greater than zero that
+are less than or equal to £250; and (iii) greater than £250.
+
+Rules:
+1. Posting Date between Accounting Week.Start Date and Accounting Week.End Date.
+
+Measures:
+e@ = Transaction Volume
+e = Transaction Value
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 13 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+4.4.5
+
+Fujitsu Network Banking MIS Report Design
+Services
+
+COMMERCIAL IN CONFIDENCE
+
+Dimensions:
+
+Bank
+
+Issuer Scheme
+
+Posting Date
+
+Settlement Date
+
+Product Type Value Band
+
+Transaction Result
+
+Other Details Available:
+Bank ID
+
+Issuer Scheme ID
+Product Type ID
+Product Type
+
+Value Band
+
+Value Band ID
+Transaction Result Code
+Issuer Scheme
+Issuer Scheme ID
+Product
+
+Product Code
+
+Outcome
+
+Outcome Code
+
+Hierarchies:
+
+© Settlement Date (up only)
+e Bank
+
+© Product
+¢ Outcome
+
+Report Layouts
+Money Laundering
+
+Ref: NB/SDS/008
+
+Version: 2.0
+Date: 12/07/2002
+
+FUJ00232502
+FUJ00232502
+
+© 2002 Fujitsu Services Limited I Commercial In-Confidence
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+
+Page: 14 of 1
+FUJ00232502
+
+FUJ00232502
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+
+Money Laundering Last Refreshed: 01-Jul-01 6:07:40
+
+Network Banking Cash Deposit transactions over £10000
+
+June, 2001
+
+Outlet 2 2 £200,000.00]
+
+4.4.6 Multiple Transactions
+
+©c 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 15 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+FUJ00232502
+
+FUJ00232502
+Fujitsu Network Banking MIS Report Design Ref: NB/SDS/008
+Services
+Version: 2.0
+COMMERCIAL IN CONFIDENCE Date: 12/07/2002
+Multiple Transactions Last Retteshed: O1-JuL01 06:17:49
+
+Instances of the same PAN being used for move than 5 transactions on the same Trading Day
+
+June, 2001
+Transaction Confirmed
+Outlet Name PAN Product Type Transaction Result UserName ransacaon — Contume:
+Outlet 1 I3334567890123450000 IWithdraw Cash [Transaction Completed OK IClerk02 }01-Jun-01 12:05:00 £20.00)
+[Outlet 1 I3334567890123450000 IWithdraw Cash [Transaction Completed OK IClerk02 }01-Jun-01 12:05:30 £20.00)
+[Outlet 1 [3334567890123450000 [Withdraw Cash [Transaction Completed OK [Clerk02 [01-Jun-01 12:05:00 £20.00)
+
+[Outlet 4 [3334567690123450000_IWithdraw Cash [Transaction Completed OK __ICierk02__IO1-Jun-01 12:05:30 £20.00
+[Outlet 4 [3334567890123450000_IWithdraw Cash [Transaction Completed OK _IClerkO1__IOt~Jun-01 12:01:00, £20.00
+[Outlet 1 [3334567690723450000_[Withdraw Cash Transaction Completed OK __ICierkOi__IOtaJun-01 12:01:15, £20.00
+[Outlet 2 '1114567890723450000_IWithdraw Cash [Decline Confirmed (Clerk01_ IOr-Jun-01 12:01:00 £0.00
+[Outlet 2 F1414567890723450000_[Withdraw Cash [Decline Confirmed (Clerk01__IOt-Jun-01 12:02:00 £0.09
+[Outlet 2 F1114567890123450000_IWithdraw Cash [Decline Confiimed (Clerkot—_JOt-sun-01 12:02:00 £0.00)
+[Outlet 2 /1114567890123450000_[Withdraw Cash [Decline Confirmed (Clerk01__IOt-Jun-01 12:03:00 £0.00]
+[Outlet 2 '11714567690723450000 [Withdraw Cash [Decline Confirmed (Clerk01__IOt-Jun-01 12:04:00 £0.09
+[Outlet 2 '1114567690123450000_IWithdraw Cash [Decline Confirmed (Clerk01__IOt-Jun-01 12:05:00 £0.00
+[Outlet 3 [2224567890123450000_[Deposit Cash {Transaction Failed (Clerk01__IOt-Jun-01 12:02:00 £0.00
+[Outlet 3 [2224567890123450000_ [Deposit Cash Transaction Failed (Clerk07 [07-Jun-07 12:03:00 £0.00
+[Outlet 3 [2224567890123450000_ [Deposit Cash HTransaction Failed (Clerk01__ IOt-Jun-04 12:04:00 £0.00
+[Outlet 3 [2224567890123450000_IWithdraw Cash [Transaction Failed (Clerk01__IOt-Jun-01 12:05:00 £0.09
+[Outlet 3 [2224567890123450000_IWithdraw Cash [Transaction Failed (Clerk01___IOt-Jun-01 12:06:00 £0.09
+[Outlet 3 [2224567890123450000_IWithdraw Cash [Transaction Completed OK _ICierkO1__ [01-Jun-01 12:07:00 £150.09
+[Outlet 4 '3334567600123450000_ [Deposit Cash Transaction Failed (ClerkO1_IOt-Jun-07 12:02:30 £0.00
+[Outlet 4 [3334567890123450000_[Deposit Cash {Transaction Completed OK _IClerkO1__IOt-Jun-01 12:03:30] £7,000.
+[Outlet 4 '3334567890123450000_ [Balance Enquiry {Transaction Failed [Clerk01_— IOr-Jun-07 12:04:30 £0.00)
+[Outlet 4 [3334567890123450000 [Balance Enquiry Transaction Completed OK _ICierkO1 [01-Jun-07 12:05:30 £0.
+[Outlet 4 [3334567890123450000_IWithdraw Cash Transaction Failed (Clerk01 [01-Jun-01 12:06:90 £0.09
+[Outlet 4 [3334567890123450000_IWithdraw Cash [Transaction Completed OK _IClerko1__IOt-Jun-O1 12:07:30, £200.01
+
+4.4.7 Transaction Outcome Analysis by Outlet
+
+©c 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 16 of 1
+
+Without Prejudice and Subject to Contract
+
+Last Updated: 17/07/02 15:38
+Fujitsu
+Services
+
+Network Banking MIS Report Design
+
+FUJ00232502
+FUJ00232502
+
+Ref: NB/SDS/008
+
+FAD Code : FAD 38
+
+Outlet 1
+
+Accounting Week: 3/6/2001
+
+Version-2.0
+
+Outcome Analysis:OMMERCIAL IN CONFEBIREXEShed: 25-Aug-Opatb:19207/
+
+002
+
+Accou ig Week End Date: 22-Aug-01
+Pro Desc Gutcene Transaction Transaction
+Volume Value
+Barclays Deposit Cash Completed OK 16) £685.00)
+Barclays Deposit Cash Decl - Usage Violation - amt 2 £0.00}
+Barclays Deposit Cash Failed by Agent Inside ICL-P 4 £0.00]
+Barclays Withdraw Cash Completed OK 4 £180.00
+Barclays Withdraw Cash Failed By NBE <j £0.00}
+NatWest Bank Balance Enquiry ICompleted OK 4 £0.00}
+NatWest Bank Balance Enquiry _ I Decline - Impound Card 6 £0.00}
+NatWest Bank Balance Enquiry I Decl - Trans not supported 5I £0.00}
+NatWest Bank Balance Enquiry I Decl - Usage Violation - amt 9 £0.00]
+NatWest Bank Balance Enquiry I Failed by Agent Inside ICL-P. 5I £0.00}
+NatWest Bank Deposit Cash Abandoned - APACS checks 9 £0.00}
+NatWest Bank Deposit Cash Decline - Impound Card 8 £0.00}
+NatWest Bank Deposit Cash Failed by Agent Inside ICL-P 5I £0.00}
+NatWest Bank Deposit Cash Failed by Agent Outside ICL-P 6 £0.00}
+NatWest Bank Withdraw Cash _IAbandoned - Clerk 10 £0.00)
+NatWest Bank Withdraw Cash Completed OK 9 £450.00}
+Unv. Bank Balance Enquiry Abandoned - Signature failed 6 £0.00}
+Unv. Bank Balance Enquiry Decline - Insufficient Funds 3] £0.00}
+Unv Bank Take All Decline - Insufficient Funds 9 £0.00)
+Unv Bank Take All Decl - Trans not supported td £0.00}
+Unv Bank Take All With Balance IDecl - Usage Violation - freq 2 £0.00}
+Unv Bank Take All With Balance IFailed by Agent Inside ICLP 9 £0.00}
+Sum: 143 £1,315.00}
+4.4.8 Bank Analysis
+©c 2002 Fujitsu Services Limited I Commercial In-Confidence Page: 17 of 1
+
+Last Updated: 17/07/02 15:38
+
+Without Prejudice and Subject to Contract
+Fujitsu
+Services
+
+Network Banking MIS Report Design
+
+COMMERCIAL IN CONFIDENCE
+
+FUJ00232502
+FUJ00232502
+
+Ref: NB/SDS/008
+
+Version: 2.0
+Date: 12/07/2002
+
+Bank Analysis
+Accounting Week: 3/6/2002
+Bank: Barclays Bank Limited
+
+Scheme: Scheme A
+Posting
+
+Settlement
+Date Date ibs
+
+t Type Transaction Result
+
+Transaction
+
+Last Refreshed: 23-Aug-02 09:43:01
+Last date posted: 22-Aug-02
+
+From: 15-Aug-02
+
+To: 24-Aug-02
+
+Transaction Value
+
+15:Aug-02I 13-Aug-02 IW ithgraw Gash <= £250 [Transaction Completed OK. 324 299,591.00
+75:Aug-02I 14-Aug-02 IWithdraw Cash == £250 Hransaction Completed OK PRES) £537,747-09]
+15:Aug-02I 15-Aug-02 IW ithdraw Cash <= €250 [Transaction Completed OK SLEWLE £73,058,799.09]
+18-Aug-02] 06-Aug-02Iwitharaw Cash <= €250 Hfransaction Completed ov i £267.00]
+16-Aug-02] 14-Aug-02 IWithdraw Cash <= €250 iTransaction Completed OK 285 $52,778.00
+16:Aug-02I 15-Aug-02 Iv itharaw Cash <= €250 iTrans action Compieied OK ERIC) £951,719.09]
+16-Aug-02] 16-Aug-02 IW ihdraw Cash <= £250 [Transaction Completed OK 232.927] £36,630,083.00]
+16-Aug-02] 17-Aug-02 IWithdraw Cash <= £280 [Transaction Completed OK 2 431.09]
+
+474,108) £11,643,605,00]
+
+21-Aug-02)" 24-Aug-02IWithdraw Cash <= £260
+I i
+
+Transaction Completed OK
+i Som}
+
+i7e4.022 £195,525,831.00I
+
+Bank Analysis
+
+Accounting Week: 3/6/2002
+Bank: Barclays Bank Limited
+Scheme: Scheme B
+
+Product
+
+1 Type
+
+Transaction Result
+
+Transaction
+
+Last Refreshed: 23-Aug-02 09:43:01
+Last date posted: 22-Aug-02
+
+From: 15-Aug-02
+
+To: 21-Aug-02
+
+15-Aug-02] 15-Aug-02 [Balance Enquil [Transaction Completed OK 53.468] 0.00)
+15:Aug-02I 15-Aug-02 ICash Withdrawal -zero value [Decline Confirm ea 4362) 20.00)
+45:Aug-02I —15-Aug-02ICash Withdrawal <= £250 [Transaction Completed OK 102,223] £75,035,413.00)
+75:Aug-02I 15-Aug-02 ICash Withdrawal > £250 ransaction Campieied OK ei6 433,557.09]
+5:Aug-02I 15-Aug-02 IGash Withdrawal with Salanee zero value Transaction Failed 23 0.00)
+45:Aug-02I —15-Aug-02IGash Withdrawal with Balance <= £260 [iransaction Cam pleted OK EXEL] £565,401.00]
+7S:Aug-02I 15-Aug-02 ICash Withdrawal with Balance > £250 ransaction Completed OK 2208; $802,728.00
+24-Aug-02] 21-Aug-02Icash Withdrawal with Balance > £250 [Transaction Completed OK 85 £65,412100
+Zi-Aug-02]21-Aug-02[ohange PIN [Transaction Completed OK 83 20.00)
+Zi-Aug-02] 21-Aug-02] Witharawal Limit [Transaction Completed OK ERED) 2155,232 94]
+
+Sum 380.244] 51,167,231 62]
+
+Bank Analysis
+Accounting Week: 3/6/2002
+Bank: Barclays Bank Limited
+
+Scheme: Scheme C
+Posting
+
+Settlement
+Produc
+
+Type Transaction Result
+
+Transaction
+
+Last Refreshed: 29-Aug-02 09:43:01
+Last date posted: 22-Aug-02
+From: 15-Aug-02
+
+To: 21-Aug-02
+
+Transaction Value
+
+Date Date
+16-Aug-02] 16-Aug-02I8alance Enqui [Transaction Completed OK. 37.781 0.00)
+
+[7 te-Aug-02]16-Aug-02I8 lance Enquiry Transaction Abandoned by Clerk I a2) 0.00)
+24:Aug-02I/ 24-Aug-02) Withdrawal Limit signature Fat 26 120,00)
+2icAug-02]—21-Aug-02IWithdrawal Limit Fee Declined 3 £0.00)
+2i-Aug-02] 21-Aug-02 [Withdrawal Limit [card Check Failed z 0.00]
+Zi-Aug-02I 21-Aug-02 [Withdrawal Linc [Destine contiem ea 72] £0.00)
+2i-Aug-02] —21-Aug-02[Witharawal Limit [Transaction Failed 18] £0.00)
+‘Sum 116,075) £0.09]
+
+©c 2002 Fujitsu Services Limited I Commercial In-Confidence
+
+Last Updated: 17/07/02 15:38
+
+Without Prejudice and Subject to Contract
+
+Page: 18 of 1

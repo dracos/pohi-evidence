@@ -1,0 +1,1690 @@
+ICL Pathway
+
+FUJ00001379
+
+FUJ00001379
+
+Generalised API for OPS/TMS Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+Document Title:
+
+Document Type:
+
+Release:
+
+Abstract:
+
+Document Status:
+
+Author & Dept:
+Contributors:
+
+Reviewed By:
+
+Comments By:
+Comments To:
+
+Distribution:
+
+Generalised API for OPS/TMS
+Appendix B: Cryptography and Key Management
+
+Technical Design Standard
+
+N/A
+
+This appendix provides an overview of the Key Management
+Service developed by ICL Pathway for the release CSR¢. It
+defines the cryptographic interfaces that have been developed
+to support the applications available at this release.
+
+The main document provides the information required to plan
+the development of new applications and describes in more
+detail the architecture set out in the OPS Architecture
+Specification.
+
+Both documents are supplied under the terms of the Codified
+Agreement to POCL to facilitate the procurement of
+applications to run on the Service Infrastructure (interfacing
+with OPS and TMS).
+
+This document is only available to organisations outside
+ICL Pathway through formal Non-Disclosure Agreement.
+
+APPROVED
+
+Patricia Morris, Technical Design Authority
+
+David Johns, Janet Dore
+
+ICL Pathway: Terry Austin, John Dicks, David Johns,
+
+Dave Tanner, Geoffrey Vane, Peter Wiles
+
+POCL: Bob Booth
+
+Document Controller & Author
+
+ICL Pathway Library and Reviewers
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-1 of 27
+FUJ00001379
+
+FUJ00001379
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+0.0 Document Control
+
+0.1 Document History
+
+Version IDate [Reason for Issue Associated
+INo. CP/PinICL No.
+(0.10 11/01/00 Initial version for review
+
+(0.10a 20/01/00 __ [Internally reviewed
+
+(0.10b 21/01/00 _IInternally reviewed
+
+(0.10c 27/01/00 _ Internally reviewed
+
+(0.11 28/01/00 Reviewed by POCL
+(0.12 18/02/00 ‘IFor review by POCL
+0.13 (06/03/00 _— [For internal review
+(0.14 14/03/00 ‘IFor review
+
+1.0 30/03/00 (Approved
+
+0.2 Approval Authorities
+
+Name Position Signature Date
+IT. Austin [Development Director
+J. Dicks (Customer Requirements Director
+
+IR. Booth IPOCL
+
+0.3 Associated Documents
+
+Reference Versio I Date Title Source
+
+n
+
+ITD/ARC/030 0.4 12/11/99 IOPS Architecture Specification ICL Pathway
+ITD/ARC/029 (0.4 12/11/99 ITMS Architecture Specification IC_ Pathway
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: B-2 of 27
+ICL Pathway
+
+FUJ00001379
+
+FUJ00001379
+
+Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+0.4 Abbreviations/Definitions
+
+Abbreviatio I Definition
+n
+ACF Auto-Configuration
+AP [Automated Payments
+API Application Programming Interface
+APS Automated Payment Service: counter application supported by
+Horizon.
+AUDS Audit Server
+base-64 [An encoding that uses characters from the set
+encoding “ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkimnopqrstuvwxyz
+0123456789+/”
+Cc [A UNIX-derived programming language
+C++ Object oriented version of C
+CM Configuration Management
+Crypto API Cryptographic Functions Application Programming Interface
+DLL Dynamic Link Library
+DSA Digital Signature Algorithm
+FAD Financial Accounting Division
+FEK Filestore Encryption Key
+FTMS File Transfer Managed Service
+KMA Key Management Application
+KMS Key Management Service
+L&G Landis and Gyr
+OBCS Order Book Control Service; counter application supported by
+Horizon, which supports a similarly named DSS application.
+OPS Office Platform Service. The provision and support of the hardware
+and software at Outlets including the Desktop environment of the
+Horizon system.
+OSD Office Supply Division
+PMMC PostMaster’s Memory Card
+PO Post Office
+POCL Post Office Counters Ltd
+POLO Post Office Logon
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-3 of 27
+FUJ00001379
+
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+Rambutan [A symmetric encryption algorithm implemented in Zergo
+communications hardware.
+
+RIPOSTE Retail Integrated Point Of Sale system in a Transaction Environment:
+product from Escher that provides both the infrastructure and the
+Desktop environment of the Horizon system. The definitions in this
+manual refer to version 6.0 onwards.
+
+RPC Remote Procedure Call
+
+SHA Secure Hash Algorithm
+
+Sl Software Issue
+
+TIP Transaction Information Processing: POCL application that handles
+transaction data returned from Horizon.
+
+TMS Transaction Management Service. The hardware and software
+required for the replication, transmission and management of
+transactions committed to the Horizon Riposte Message Store and
+Pathway Data Centres, or vice versa.
+
+TPS ‘Transaction Processing System: application that collects transaction
+information and returns it to TIP.
+
+VPN Virtual Private Network
+
+0.5 Changes in this Version
+Version (Changes
+1.0 Includes changes arising from POCL review of V0.14
+
+0.6 Changes Expected
+
+(Changes
+
+This document reflects the current implementation. The provided descriptions and
+definitions may be subject to change control as determined by technical and/or
+operational needs.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-4 of 27
+ICL Pathway
+
+FUJ00001379
+
+FUJ00001379
+
+Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+0.7 Table of Contents
+
+BA
+B.2
+B.3
+B4
+B.S
+B.6
+B.7
+B.7.1
+B.7.2
+B.7.3
+B.7.4
+B.7.5
+B.7.6
+B8
+Bo
+B.10
+
+Scope.....
+
+Introduction,
+
+Key Management Domains.
+
+Key Distribution...
+
+Key Management Client Environment.
+
+New Cryptographic Context...
+
+Cryptographic Function Library.
+Application context...
+Multiple Keys.....
+
+Cryptographic functions.
+
+Return values......
+
+Information codes.
+Failure Codes.
+
+Event Logging..
+Calling the functions.........
+
+Restrictions......
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-5 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+B.1 Scope
+
+The information in this appendix is provided to enable the overall planning of
+new applications using cryptographic functionality. It gives an overview of the
+cryptographic facilities provided by the ICL Pathway Key Management
+Service (KMS) and identifies those interfaces available to new applications
+that interface to the OPS and TMS. It does not specify the information
+necessary to enable the detailed design and implementation to proceed or
+discuss implications of its use beyond the scope of OPS and TMS.
+
+Any development that interfaces with the ICL Pathway system may
+impact the security of existing applications and so must be subject to a
+Security Evaluation Review process by ICL Pathway. See Appendix C,
+System Management, for further information.
+
+Any usage by new applications of the cryptographic interfaces will
+require the impact on existing domains, or of new domains, to be
+scoped by ICL Pathway. For example, even use of an existing key by a
+new application could have an impact and so must be evaluated.
+
+B.2_ Introduction
+
+Security within TMS and OPS is provided by a number of components:
+
+e TMS security includes the Virtual Private Network, used on the links between the
+centre and the post office outlets, to provide confidentiality and authentication
+over the network. For further details refer to TMS Architecture Specification.
+
+e Within the OPS environment, specific directories on the hard discs are
+encrypted, but any LAN communications within the outlet are in clear. For further
+details refer to OPS Architecture Specification.
+
+e Riposte provides Cyclic Redundancy Checking on all messages within the TMS
+environment. For further details, refer to TMS Architecture Specification.
+
+e Cryptography provides a higher level of security for messages within the TMS
+environment. It is this element of security that is covered in this appendix.
+
+Cryptography is used in several parts of the Horizon system to provide
+security services. For example, a Virtual Private Network is implemented
+between the Data Centres and the post office outlets (gateway) to provide
+confidentiality, authentication and integrity over the network. It should be
+noted that LAN communications within an outlet are in clear.
+
+The details required to develop a new application that uses key distribution
+and cryptographic functions are highly specific to the individual business
+requirement. Each application using cryptography operates within a specific
+cryptographic context. The underlying ICL Pathway Key Management Service
+(KMS) supports these applications by managing the generation, delivery and
+life cycle of all cryptographic key material. KMS provides a context-specific
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-6 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+Cryptographic Functions API to applications. These interfaces rely on the
+underlying key management service and cannot be used in isolation.
+
+It is important to understand the context into which a new application is to be
+introduced; this is illustrated in Figure B-1.
+
+Key Management Service
+
+Central Agent
+
+Crypto Key Mat Cryptographic
+Function
+Crypto Algorithm Library
+Counter Application
+“Crypto API
+Protected Domain
+
+Figure B-1 Application Cryptographic Context
+
+Each application exists in a Protection Domain, which is managed by KMS.
+Cryptographic key material is distributed by KMS, which also provides the
+
+cryptographic functions needed by any application that invokes encryption
+and decryption.
+
+Section B.3 describes the key management domains in use in the Horizon
+system, and how Protection Domains are managed. The distribution of the
+keys involved is described in section B.4 with the environment for key
+management centrally and at the counter outlined in section B.5. This section
+also identifies the role played by Riposte in the key management process.
+
+If an application requires a new cryptographic context, for example using a
+new algorithm, the impact on KMS and these existing domains has to be
+evaluated. The information required for such an evaluation is given in section
+B.6. Section B.7 contains the definition of the Crypto API interfaces.
+
+Section B.8 describes the use of Windows NT Event Management interfaces
+that are used by KMS and the application to record events that occur during
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-7 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.3
+
+use of the cryptographic functions. Section B.9 describes the way in which an
+application calls the Cryptographic Functions API.
+
+There are some restrictions that need to be considered in planning the usage
+of the cryptographic API and these are listed in section B.10.
+
+Key Management Domains
+
+: .
+Certification Authority I
+
+TP
+
+’ Key Management Centre
+mx ff POX NS
+/ tac I i i ‘. auDs’,
+
+AAG utimaco
+jabling I PYpar I Rambutrh,
+
+/ Polo) \ ‘
+\ Audit Server’, POCL TIP)
+
+/ 186 seewe
+
+packaging. / 5 CWign) remote
+ap \ \
+Host, audit sewer
+
+Po ven
+oto) I Severs I ergo
+
+outers AP
+
+an) i
+f (eoll-out code) } \, Bootle)
+
+Po
+J eateways
+
+Managed Key Clients
+
+Figure B-2 Key Management domains
+
+Figure B-2 shows how key management emanates from a single point of
+control, fanning out along segments that correspond to the various uses of
+cryptography to the many points at which keys are used. Each Managed Key
+Client operates in its own cryptographic context known as a Protection
+Domain, managed from the Key Management Centre. For example, TIP
+cryptographic applications are considered under the protection domains
+POCL TIP and PWY TIP, one corresponding to authentication of POCL to
+Pathway and the other corresponding to the authentication of Pathway to
+POCL.
+
+There are two major divisions, shown in Figure B-2 as horizontal sections.
+They are as follows:
+
+« The Key Management Centre domain encompasses the apparatus that
+the ICL Pathway Security Manager uses to control the use of keys.
+
+« The Managed Key Clients domain encompasses all platforms on which
+managed keys are used for cryptography. These include PO Outlets,
+campus and remote gateway platforms.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-8 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.4
+
+The Key Management Service supports each protection domain by supplying
+the appropriate key material required by each Key Management Client.
+
+The protection domains are shown as radial segments in Figure B-2. Each
+protection domain represents the ‘space’ in which keys are managed for a
+particular cryptographic application; for example, ‘AP’ is the protection
+domain for Automated Payment keys. Each protection domain may be
+identified with a specific purpose. Several protection domains may use the
+same type of key, but the key value is unique. The key value in a protection
+domain will change each time the key is replaced. The domains currently in
+use support ICL Pathway’s distribution process, the Post Masters’ secure
+logon needed to unlock message encryption, Automated Payment and the
+particular requirements of cards such as those provided by L&G, as well as
+the security used in communications and audit. The security of the TIP
+interface both within ICL Pathway and to the POCL domain is also covered.
+
+KMS manages the complete key life cycle from generation, through activation
+to deactivation and destruction. There is a user interface for the ICL Pathway
+Key Manager to force an early key change and where necessary revoke a
+key. When a key is changed, the keys may remain in an active state for some
+time until it is known that the old keys are no longer required. It is possible
+therefore for more than one key set to be in use at a time, particularly during
+a transition period. In this case, both the current key set and the previous key
+set exist at the same time, and KMS controls which key set is to be used. The
+context indicates which key set is to be used and the application does not
+need to deal with the implications of key changes or key selection (see
+section B.7.2).
+
+Key Distribution
+
+For applications within OPS/TMS, all confidential key material is distributed in
+two parts using two logically discrete routes: Riposte and a second delivery
+channel. In the case of the AP protection domain, for example, the
+PostMaster’s Memory Card (PMMC) provides one part of the key material and
+Riposte the other part. Key material to be distributed by Riposte is generated
+and held in a Key Management Application database that is architecturally
+equivalent to a Host. Key material is distributed by a set of interactive Key
+Management Agents, which listen for a request to deliver material and then
+extract new key material from this database and transmit it via Riposte across
+the Virtual Private Network (VPN) to the relevant platform. The process is
+summarised in Figure B-3.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-9 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+Secure Domain
+
+Key Management
+
+Centre
+Aggnts
+Correspondence Server Level
+; Counter Outlet : :
+Chypto API
+Application
+
+‘ounter Domain
+
+Figure B-3 Key generation and distribution
+B.5 Key Management Client Environment
+
+Each platform that is involved in encryption or decryption operations has a
+local Riposte Client service running on it. Key Management software running
+on the Client platform obtain and act on new key material and on the
+appropriate messages that arrive in the Riposte Message Store, for example
+by unloading a previous signing key and loading its replacement. The
+Cryptographic Functions API is provided to enable the applications to perform
+the required cryptographic operations using the current key material
+appropriate to their specified cryptographic context.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-10 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.6 New Cryptographic Context
+
+If a new application requires a new cryptographic context and associated Key
+Management Protection Domain, details must be supplied to ICL Pathway to
+enable the scoping of the new KMS Protection Domain and to define the
+configuration data required to support it.
+
+The necessary details include:
+e Cryptography algorithms to be used
+e Types and volumes of key material
+e How the keys are to be generated
+« If appropriate, the Certification Authority for the keys
+« The type(s) of Client platform
+e The specific cryptographic material required on each platform
+
+e Performance features of the application
+
+Even if the requirements of a new application match existing facilities, in
+addition to setting up configuration data, ICL Pathway must update the
+Key Management Service for a new protection domain and perform
+testing before the application can be released to the live estate. The
+method for providing these facilities would be agreed as part of the
+Security Evaluation Review process. See Appendix C, System
+Management, for further information.
+
+The algorithms supported to date for existing applications are shown in the
+
+table below:
+Algorithm (Purpose
+Red Pike Encryption using symmetric 64 bit key
+DSA Sign/verify using 768 bit key
+ISHA ‘Secure Hash Algorithm
+
+Other algorithms are used by KMS, but they are only supported on
+customised interfaces to and from specific third party applications, and as
+such, are not included as part of the generalised Crypto API. Any application-
+specific requirements are identified as necessary; for example, for the L&G
+domain, KMS identifies the appropriate key for the relevant software.
+
+Further algorithms or key generation capability can be considered
+during the Security Evaluation Review process for bespoke
+implementation, or as enhancements to the Crypto API itself. See
+Appendix C, System Management, for further information.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-11 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.7 Cryptographic Function Library
+
+A dynamic link library is provided that contains the Cryptographic Functions
+API. This allows an application to:
+
+e Encrypt data
+
+e Decrypt data
+
+e Add a digital signature to a message
+e Verify a message’s digital signature
+
+These functions allow an application to encrypt all or part of a transient
+message and add a digital signature to it before it is committed to the
+message store and replicated to the centre. An agent would then verify that
+the digital signature was correct before decrypting the message. The reverse
+is of course true. In both cases the key involved would have been distributed
+already by KMS via Riposte.
+
+The processes are summarised in Figure B-4.
+
+Data Destination Verify Digital Signature
+Application/Agent Deciypt dats ca
+Digital
+Signature
+added
+
+tes]
+
+"Messe > Cryptographic Function Library
+VPN R
+
+Enerypt data
+_Add Digital Signature
+
+n
+G
+r
+My
+Pp
+t
+e
+d
+
+Data Source
+
+Application/Agent
+
+Figure B-4 Cryptographic functions
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-12 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.7.1
+
+B.7.2
+
+Application context
+
+Each application or agent using the Cryptographic Functions API is required
+to specify the context within which it is operating each time a function is used.
+The context includes a protection domain and the name of the key owner. In
+the case of signing, encryption or data decryption this enables the key to be
+used to be determined. In the case of verification or file decryption it enables
+a check to be performed that the key supplied with the data was the correct
+key for the context.
+
+A single context can support either encryption or sign/verify. If an application
+requires both, it must use two contexts.
+
+Multiple Keys
+
+For most cryptographic relationships a single key set is in use at any one
+time. For some cryptographic relationships it is possible to use more than one
+key set at a time: the current key set or the previous key set. The context
+indicates which key set is to be used and the application does not need to
+deal with the implications of key changes or key selection.
+
+The issue of key changes and refresh cycles will be covered during the
+Security Evaluation Review process. See Appendix C, System
+Management, for further information.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-13 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.7.3 Cryptographic functions
+
+Table B-1 contains a list of the available functions. The availability of specific
+functions depends on the context (CRY_CONTEXT). For example, the
+encryption interfaces are not available within a context that supports signing,
+and vice versa.
+
+[Function Description and Parameters Return values
+comments
+IcrySignStart Initialise signing fora (context Success:
+
+ontext. Loads the (Context of signer. ICRY_OK
+primary key for the
+
+Specified context. Failure:
+
+(CRY_INVALID_CONTEXT Invalid
+context.
+
+(CRY_NO_RESOURCE
+[Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+
+(CRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+Other error.
+
+lcrySignData Sign data. The contentIcontext Success:
+bof the signature block (Context of signer. ICRY_OK
+an ae Length of data to be (CRY_INVALID_CONTEXT
+
+erifying application igned. invalid context.
+
+here it is presented
+as an input parameter IpData (CRY_BUFFER_TOO_SMALL Buffer
+fo the cryVerifyData [Pointer to buffer (0 small (to hold signature block).
+unction. The binary holding data to be ICRY_NO_RESOURCE
+signature block may besigned. Resource not available.
+
+onverted to and from ISignatureBlock
+b format suitable for /S/@natureBlock (CRY_KEY_NOT_FOUND
+
+ransmission via Length of generated Key does not exist.
+Riposte using the signature block. Ley ake Not FOUND
+
+functions IpSignatureBlock Public key certificate does not exist.
+CryBinToB64 and Pointer to generated
+
+i" ICRY_MEMORY_ERROR
+cryB64ToBin. signature block. bl 4ir
+
+[Unable to obtain memory.
+
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+lcrySignFile Sign file(s). The outputIcontext Success:
+is created if it does not IContext of signer. ICRY_OK
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-14 of 27
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+lexist. A signature \dataPath Failure:
+block is written to the Pathname(s) of (CRY_INVALID_CONTEXT
+butput file. If inlineDatafile(s) to be signed. _IInvalid context.
+is set to TRUE then
+Bata from the fe beings watin le at Resource ot avaiable
+Signed is included in hich ane °
+ne output file. The I an 1S IcRY_KEY_NOT_FOUND
+pontent of the output . Key does not exist.
+file must be len
+ransmitted from the Number of bytes (CRY_PKC_NOT_FOUND .
+signing to the verifying within file to be [Public key certificate does not exist.
+application where itis processed. ICRY_FILE_NOT_FOUND
+presented as an input I nepata File does not exist.
+parameter to the indicates whether or IcRY_MEMORY_ERROR
+cryVerifyFile function * = =
+Twerify not data is to be [Unable to obtain memory.
+folded in output IoRy_INVALID_PARAMETER
+7 Invalid parameter.
+KestPath cRY_ERR_OTHER
+Pathname of output lothér error.
+ffile.
+IcrySignStop (Complete signing for a\context ‘Success:
+context. \Context of signer. ICRY_OK
+Failure:
+(CRY_INVALID_CONTEXT
+Invalid context.
+(CRY_MEMORY_ERROR
+Unable to obtain memory.
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+lcryVerifyStart [Initialise verification (context Success:
+fora context. Loads {Context of signer. ICRY_OK
+‘he primary key for the Failure:
+specified context if CRY_INVALID_CONTEXT
+context indicates Invalid context.
+symmetric algorithm.
+(CRY_MEMORY_ERROR
+[Unable to obtain memory.
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+cryVerifyData erify data. The context ‘Success:
+content of the \Context of signer. ICRY_OK
+signature block must jon:
+[Data Information:
+pave been generated I ength of data to be ICRY_INVALID_SIGNATURE
+yacaiitothe erified. Signature not generated by key in
+crySignData function signature block.
+‘see above) and \pData
+ransmitted from the Pointer to buffer [(RY_KEY_REVOKED
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: B-15 of 27
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+signing application. holding datatobe Key has been revoked.
+erified. a
+Failure:
+ISignatureBlock CRY_WRONG_KEY_USED Signature
+Length of signature Inot generated by a current key for
+block. his context.
+SignatureBlock — (CRY_INVALID_CONTEXT
+Pointer to signature [Invalid context.
+block. ICRY_INVALID_SIGNATURE_BLOCK
+revocationReason __IInvalid signature block.
+Reason why key has Icry_NO_RESOURCE
+been revoked. Resource not available.
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+(CRY_PKC_EXPIRED
+Public key certificate has expired.
+ICRY_PKC_FOUND
+[Public key not found.
+(CRY_MEMORY_ERROR
+[Unable to obtain memory.
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+cryVerifyFile erify file(s). Where {context ‘Success:
+more than one \Context of signer. ICRY_OK
+filename is specified in
+he order is significant Porno Se INVALID SIGNATURE
+nd must be the same Pathname(s) of I ‘ana - -
+file(s) to be verified. ISignature not generated by key in
+as that used when the
+. Signature block.
+signature was loffset
+generated. Offset within file at (CRY_KEY_REVOKED
+hich processing is IKey (specified in signature block)
+0 start. lhas been revoked.
+len Failure:
+Number of bytes I[CRY_WRONG_KEY_USED Signature
+ithin file to be inot generated by a current key for
+processed. this context.
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: B-16 of 27
+ICL Pathway
+
+Generalised API for OPS/TMS
+Appendix B: Cryptography and Key Management Version: 1.0
+
+COMMERCIAL IN-CONFIDENCE
+
+Ref: TD/STD/004
+
+Date: 30/03/00
+
+inlineData
+Indicates whether or
+not data is included
+in input file.
+
+sourcePath
+Pathname of input
+file.
+
+revocationReason
+Reason why key has
+been revoked
+
+ICRY_INVALID_CONTEXT
+Invalid context.
+
+(CRY_INVALID_SIGNATURE_BLOCK
+Invalid signature block.
+
+(CRY_NO_RESOURCE
+Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key (specified in signature block)
+\does not exist.
+
+ICRY_FILE_NOT_FOUND
+File does not exist.
+
+(CRY_PKC_EXPIRED
+Public key certificate has expired.
+
+ICRY_PKC_FOUND
+[Public key not found.
+
+(CRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+lcryVerifyStop
+
+(Complete verification
+jor a context.
+
+ontext
+\Context of signer.
+
+‘Success:
+ICRY_OK
+
+Failure:
+ICRY_INVALID_CONTEXT
+Invalid context.
+
+(CRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+IcryEncryptStart
+
+Initialise encryption for
+fa context. Loads the
+primary key for the
+Specified context if
+context indicates
+Symmetric algorithm.
+
+ontext
+\Context of signer.
+
+‘Success:
+ICRY_OK
+
+Failure:
+ICRY_INVALID_CONTEXT
+Invalid context.
+
+(CRY_NO_RESOURCE Resource not
+available.
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE Page: B-17 of 27
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+ICRY_KEY_NOT_FOUND
+[Key does not exist.
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+lcryEncryptData Encrypt data. The lcontext Success:
+encrypted data is \Context of encryptor.ICRY_OK
+feiumen in the buffer Data Failure:
+pointed to by Length of ICRY_INVALID_CONTEXT
+EncryptedData. The (decrypted) data. _ [Invalid context.
+
+encrypted data may be:
+decrypted using the
+cryDecryptData
+junction.
+
+[pData
+
+Pointer to buffer
+holding data to be
+encrypted.
+
+lEncryptedData
+Length of encrypted
+\data.
+
+[pEncryptedData
+Pointer to encrypted
+\data.
+
+ICRY_BUFFER_TOO_SMALL Buffer
+[00 small (to hold encrypted data).
+
+ICRY_NO_RESOURCE
+[Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+lcryEncryptFile
+
+[Encrypt file. The file
+KdestPath is created if it
+does not exist. The
+content of the file
+destPath must be
+ransmitted from the
+encrypting to the
+decrypting application
+
+here it is presented
+as an input parameter
+fo the cryDecryptFile
+junction.
+
+context
+‘Context of encryptor,
+
+lsourcePath
+Pathname of file to
+ibe encrypted.
+
+ffset
+IOffset within file at
+hich processing is
+fo start.
+
+len
+
+Number of bytes
+ithin file to be
+
+processed.
+
+\destPath
+Pathname of file to
+sontain encrypted
+
+‘Success:
+ICRY_OK
+
+Failure:
+(CRY_INVALID_CONTEXT
+Invalid context.
+
+ICRY_NO_RESOURCE
+[Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+
+(CRY_FILE_NOT_FOUND
+File does not exist.
+
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+
+source file. (CRY_ERR_OTHER
+(Other error.
+lcryEncryptStop IComplete encryption {context Success:
+for a context. \Context of encryptor.ICRY_OK
+Failure:
+
+(CRY_INVALID_CONTEXT
+Invalid context.
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE Page: B-18 of 27
+ICL Pathway
+
+Generalise
+
+d API for OPS/TMS
+
+Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE
+
+Date: 30/03/00
+
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+(CRY_INVALID_PARAMETER
+invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+IcryDecryptStart
+
+Initialise decryption for
+fa context. Loads the
+primary key for the
+Specified context if
+context indicates
+symmetric algorithm.
+
+context
+{Context of signer.
+
+‘Success:
+ICRY_OK
+
+Failure:
+(CRY_INVALID_CONTEXT
+Invalid context.
+
+(CRY_NO_RESOURCE
+[Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+
+ICRY_ERR_OTHER
+(Other error.
+
+IcryDecryptData
+
+[Decrypt data. The
+decrypted data is
+eturned in the buffer
+pointed to by pData.
+
+context
+{Context of signer.
+
+lEncryptedData
+Length of encrypted
+(data.
+
+[pEncryptedData
+Pointer to encrypted
+\data.
+
+IData
+Length of
+(decrypted) data.
+
+‘Success:
+ICRY_OK
+
+Failure:
+(CRY_INVALID_CONTEXT
+Invalid context.
+
+ICRY_BUFFER_TOO_SMALL Buffer
+{00 small (to hold data).
+
+(CRY_NO_RESOURCE
+[Resource not available.
+
+ICRY_KEY_NOT_FOUND
+Key does not exist.
+
+ICRY_INVALID_ENCRYPTION_BLOCK
+
+\pData [Encryption block is not valid.
+poner outer 4) (ORY_MEMORY_ERROR
+Kata. 19 (decryp' [Unable to obtain memory.
+(CRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+lcryDecryptFile Decrypt file. The sontext Success:
+ontent of the (section (Context of encryptor.ICRY_OK
+bf) the file specified by . .
+i sourcePath Failure:
+sourcePath that is to Pathname of file to [CRY_INVALID_CONTEXT
+be decrypted must }.3 decrypted Invalid context.
+have been generated .
+by a call to the offset ICRY_NO_RESOURCE
+
+cryEncryptFile
+function (see above)
+
+IOffset within file at
+hich processing is
+
+Resource not available.
+ICRY_KEY_NOT_FOUND
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE Page: B-19 of 27
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+land transmitted from __ {to start. Key does not exist.
+he poypting len IcRY_WRONG_KEY_USED
+Application. Number of bytes. Key not valid in this context.
+ithin file to be ICRY_FILE_NOT_FOUND
+processed. IFile does not exist.
+destPath = ICRY_MEMORY_ERROR
+Pathname of file to Unable to obtain memory.
+Icontain decrypted
+Source file ICRY_INVALID_PARAMETER
+. Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+IcryDecryptStop (Complete decryption context Success:
+for a context. \Context of encryptor.ICRY_OK
+Failure:
+ICRY_INVALID_CONTEXT
+Invalid context.
+ICRY_MEMORY_ERROR
+Unable to obtain memory.
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+lcryBinTo64 (Convert binary data to IlIn Success:
+pase-64 encoding. TheILength of binary (CRY_OK
+converted data, \data to be ilure:
+A Failure:
+terminated by a null converted. ICRY BUFFER TOO SMALL
+pharacter, is returned pin [Buffer too small (to hold converted
+in the buffer pointed to 5~ . data)
+by pOut. Pointer to binary .
+(data. ICRY_MEMORY_ERROR
+lout [Unable to obtain memory.
+Length of converted IcRY_INVALID_PARAMETER
+(data. Invalid parameter.
+\pOut
+Pointer to buffer to
+receive converted
+\data.
+lcry64ToBin (Convert base-64 pin Success:
+encoded data to Pointer to base-64_ I[CRY_OK
+binary. The converted encoded data. Failure:
+
+data is returned in the
+buffer pointed to by
+pOut.
+
+Out
+Length of converted
+\data.
+
+[pOut
+Pointer to buffer to
+receive converted
+
+(CRY_BUFFER_TOO_SMALL
+[Buffer too small (to hold converted
+\data).
+
+ICRY_INVALID_DATA
+Data is invalid.
+
+ICRY_MEMORY_ERROR
+
+FUJ00001379
+FUJ00001379
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE Page: B-20 of 27
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+\data. [Unable to obtain memory.
+ICRY_INVALID_PARAMETER
+Invalid parameter.
+ICRY_ERR_OTHER
+(Other error.
+IcryHashData (Generates hash value lin Success:
+for a variable length Length of data. (CRY_OK
+buffer. A hash of the -
+- + pin Failure:
+ata is returned in the Pointer to data. ICRY_NO_RESOURCE
+buffer pointed to by ~ Resource not available.
+pOut. Out
+Length of data. ICRY_INVALID_PARAMETER
+Invalid parameter.
+[pOut
+Pointer to buffer,  [CRY_BUFFER_TOO_SMALL
+
+Buffer too small.
+
+ICRY_MEMORY_ERROR
+[Unable to obtain memory.
+
+ICRY_INVALID_PARAMETER
+invalid parameter.
+
+ICRY_ERR_OTHER
+Other error.
+
+Table B-1 Cryptographic functions - continued
+
+B.7.4 Return values
+
+Each function returns a value to the caller. The value indicates success,
+provides information or indicates failure:
+
+A single success value (CRY_OK) is defined for all functions and indicates that
+
+the function has completed its desired action and is returning success to the
+
+caller.
+
+Zero or more information values are defined for a function. These indicate that
+
+FUJ00001379
+FUJ00001379
+
+the function has completed its desired action and is returning other than success
+
+to the caller.
+
+One or more failure values are defined for a function and indicate that the
+function has been unable to complete its desired action.
+
+Information and failure codes are listed in the following tables.
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: B-21 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.7.5 Information codes
+
+Table B-2 gives the values that may be returned for information.
+Symbol Message Description
+
+CRY_INVALID_SIGNATURE Signature not valid. The signature was not generated by the
+key identified in the signature block. The
+data is either corrupt or from an
+unauthorised source
+
+CRY_KEY_REVOKED Key has been The key identified in the signature block
+
+revoked. has been revoked. The data has either
+been long-delayed in transit or it comes
+from an unauthorised source.
+
+CRY_PKC_EXPIRED Public Key Certificate The Public Key Certificate for the key
+
+has expired identified in the signature block has
+expired. The data has either been long-
+delayed in transit or it comes from an
+unauthorised source.
+
+Table B-2 Status codes: information
+
+It is the responsibility of the application to take the appropriate action when
+these conditions are encountered. This includes identifying the appropriate
+follow up actions; for example, alerting the ICL Pathway Security Manager
+that a security relevant event has occurred. The Cryptographic functions are
+not able to recognise whether these conditions are security relevant and so
+do not log NT events for these conditions.
+
+B.7.6 Failure Codes
+
+Table B-3 illustrates the sorts of values that may be returned on failure.
+
+The codes returned on failure may need to be extended if new
+applications are introduced and this will be assessed as part of the
+Security Evaluation Review process. See Appendix C, System
+Management, for further information.
+
+The errors that are dealt with by the cryptographic functions themselves are
+identified in Table B-4.
+
+Symbol Message Description
+
+CRY_BUFFER_TOO_SMALL. Buffer too small. he buffer size specified is too small for the
+
+jata requested. The location specifying the
+buffer size has been updated to give the
+minimum buffer size required.
+
+CRY_ERR_OTHER Other failure. nN unanticipated error condition has
+curred. A diagnostic message giving
+letails of this will have been written to the
+vent log. This is a ‘catch all’ error condition
+that deals with errors than are not explicitly
+
+identified otherwise.
+
+CRY_FILE_NOT_FOUND File not found. A file used as input to the cryptographic
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-22 of 27
+FUJ00001379
+
+FUJ00001379
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+operation cannot be located.
+
+CRY_INVALID PARAMETER Invalid Parameter One of the parameters supplied by the
+caller is incorrect.
+
+CRY_INVALID_CONTEXT Invalid context. [The context specified by the caller has not
+been recognised, or is not available on this
+platform.
+
+CRY_INVALID_DATA Invalid data [The data supplied as a parameter is invalid,
+
+for example not base-64 encoded data.
+
+CRY_INVALID_ENCRYPTION_BL Invalid encryption [The encryption block cannot be analysed.
+ock block. The data is either corrupt or from an
+unauthorised source.
+
+CRY_INVALID_SIGNATURE_BLO I Invalid signature The signature block cannot be analysed.
+cK
+
+block. [The data is either corrupt or from an
+unauthorised source.
+CRY_KEY_NOT_FOUND Key does not exist. IA key that is required to perform the
+(cryptographic operation cannot be located.
+CRY_MEMORY_ERROR Unable to obtain Failure to obtain memory to perform the
+memory operation.
+CRY_NO_RESOURCE Resource not A resource that supports the loading or
+available. usage of keys is temporarily unavailable.
+The caller is expected to retry periodically.
+CRY_PKC_NOT_FOUND. Public key A public key certificate that is required to
+certificate does not perform the cryptographic operation cannot
+exist. be located.
+CRY_WRONG_KEY_USED Wrong key used. [The signature was not generated using a
+
+key owned by the caller-specified context.
+
+Table B-3 Status codes: failure
+
+B.8 Event Logging
+
+The cryptographic functions log messages relating to failures to the NT event
+log. Each event generated is classified according to its severity and security
+relevance. This classification of events determines which events are reported
+to the data centre, and the routing of any alerts between operational support
+and security management. The specification of the event filters is under the
+control of the ICL Pathway Security Manager.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-23 of 27
+ICL Pathway
+
+Generalised API for OPS/TMS
+
+FUJ00001379
+
+FUJ00001379
+
+Ref: TD/STD/004
+
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE
+
+Date: 30/03/00
+
+Note that not all failure codes result in the generation of NT events, for
+example, CRY_NO_RESOURCE and CRY_BUFFER_TOO_SMALL can be used by
+applications to control further actions. It is also the responsibility of the
+applications to log their own security relevant events. In particular, the
+applications are responsible for acting on the information response code
+CRY_INVALID_SIGNATURE in the same way that the application is responsible
+for actually calling the cryptography API in the first place. Application writers
+must also take into account the frequency of potential failure events and
+decide on the appropriate logging policy.
+
+For performance reasons it is not appropriate to swamp the NT event
+log with every instance of a failure; for example, it is not desirable to
+
+record every event during a bulk load or harvest of data. This issue can
+be raised as part of the Performance Review. See Appendix C, System
+
+Management, for further information.
+
+Table B-4 gives an example set of NT events generated by KMS.
+
+A similar set of NT events would need to be developed for each
+application and discussed with the ICL Pathway Security Manager as
+part of the Security Evaluation Review process. See Appendix C,
+System Management, for further information.
+
+Symbol
+CRY_INVALID_CONTEXT
+
+Event Message
+
+Invalid context specified.
+
+Support Notes
+Check context configuration
+
+CRY_KEY_NOT_FOUND
+
+Key for context %1 does
+not exist.
+
+Check key for specified context
+available
+
+CRY_PKC_NOT_FOUND
+
+CRY_INVALID_SIGNATURE_BLO-
+CK
+
+CRY_WRONG_KEY_USED
+
+CRY_FILE_NOT_FOUND
+
+CRY_ERR_OTHER
+
+Public key certificate for
+context %1 does not exist.
+
+Invalid signature block
+specified.
+
+Signature not generated
+by a current key for
+context %1.
+
+File %1 does not exist.
+
+Called function %1
+returned error code %2.
+
+‘Check public key certificates for
+specified context available.
+
+Data may have been received
+from an unauthorised source.
+
+Object signed using wrong key.
+Check keys available to signer in
+specified context. Data may
+have been received from an
+unauthorised source.
+
+File or directory may have been
+accidentally deleted.
+
+This is returned as a failure
+event to the application. The NT
+event log contains further details
+
+© 2000 ICL Pathway Limited
+
+COMMERCIAL IN-CONFIDENCE
+
+Page: B-24 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+which are forwarded to ICL
+Pathway System Management
+and Security Manager as
+appropriate. See Appendix C,
+System Management, for details.
+
+Table B-4 Event logging: failure
+
+The event codes that are not considered by the Cryptographic Functions as
+failures are given in section B.7.6. It is the responsibility of the application to
+resolve these errors.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-25 of 27
+FUJ00001379
+FUJ00001379
+
+ICL Pathway Generalised API for OPS/TMS Ref: TD/STD/004
+Appendix B: Cryptography and Key Management Version: 1.0
+COMMERCIAL IN-CONFIDENCE Date: 30/03/00
+
+B.9 Calling the functions
+
+The Cryptographic functions that applications or agents may use can be
+called from C and from Visual Basic. They are provided in a dynamic link
+library. Header files (cry.h and cry.bas) are provided for these languages
+which contain:
+
+e prototypes for each of the functions
+
+e definitions of types used for function parameters
+
+e defines for constants used in function parameters and return values
+
+There is a strict order in which the functions must be called by an application.
+For example:
+
+1. Start function: crySignStart, is called before performing signing operations. This
+performs any initialisation required, such as loading keys and checking that the
+algorithm modules required are available.
+
+2. Action function(s): crySignData
+
+3. Termination function: a stop function, crySignStop, is called to perform any
+termination actions required.
+
+B.10 Restrictions
+
+There are some restrictions that need to be considered in planning the usage
+of the cryptographic API:
+
+e The cryptographic API is only available on platforms running Windows NT
+
+e The cryptographic API relies on the underlying Key Management Service and
+cannot be used in isolation.
+
+e There needs to be a local Riposte Message Service running on each platform
+using the cryptographic API, but it is not dependent on the Riposte Desktop.
+
+e The cryptographic API can be used by multiple processes running concurrently
+on the same platform, but it is the responsibility of the calling application to call
+currently on a single thread within a process. The API is not thread safe.
+
+e Application writers should produce code that is as defensive as possible against
+extensions to the list of information and failure codes. For example, the list may
+need to be extended to support new applications that are introduced.
+
+© 2000 ICL Pathway Limited COMMERCIAL IN-CONFIDENCE Page: B-26 of 27

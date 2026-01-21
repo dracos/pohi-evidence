@@ -1,0 +1,1333 @@
+ICL Pathway Group Definitions for the Secure NT Build
+
+Core Services Release +
+
+Commercial In Confidence
+
+FUJ00232445
+FUJ00232445
+
+Ref:RS/REQ/016
+Version:2.0
+Date:30/01/2000
+
+Document Title:
+
+Document Type:
+
+Abstract:
+
+Status:
+
+Author(s):
+
+Distribution:
+
+Graham Hooper
+Geoffrey Vane
+John Allen
+
+Mike Holms-Sharp
+Pete Lindsey
+
+Nial Finnegan
+Belinda Fairthorne
+Suzanne Gordon
+Andrew Walker
+Library
+
+Group Definitions for the Secure NT Build
+
+Requirement Definition
+
+The ACP requires that access to Pathway systems be
+controlled by the use of pre defined roles to which users can
+be assigned. Such roles will allow users to access only those
+parts of the system, with associated objects, they need in order
+to complete the tasks associated with that particular role. This
+document summarises this requirement and defines the roles,
+with associated objects, domains and access requirements.
+
+APPROVED
+
+Mark Ascott/Alan D’Alvarez
+
+FELO1 Alan D’Alvarez
+FELO1 Dave Johns
+FELO1 Pete Dreweatt
+FELO1 Tom Northcott
+FELO1 Mik Peach
+FELO1 Gerry Boyce
+REA23 Jenny Smith
+BRAO1 Pam Barlow
+FELO1
+
+© 1999 ICL Pathway Limited Commercial in Confidence
+
+BRAO1
+BRAO1
+BRAO1
+BRAO1
+BRAO1
+IRE11
+BRAO1
+FELO1/KIDO1
+
+Page I
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+0. Document control
+
+0.1 Document history
+
+This table records the document history of RS/REQ/016, which is based on an identical copy of RS/REQ/012 v5.2.
+Vi
+
+Version Date Reason
+
+0.1 11/10/99 Initial draft for PVCS review cycle.
+
+0.2 03/11/99 Incorporates comments received from Barry Procter and Patrick
+Weightman resulting from PVCS review cycle.
+
+1.0 04/11/99 Document set to Approved.
+
+1.1 12/11/99 Amendments since document set to approved.
+
+1.2 25/11/99 Updated to clarify toolsets for KMS SYSADM and KMS DBA roles.
+
+1.3 07/12/99 Updated to identify toolsets for OCMS Admin & OCMS User roles.
+
+14 17/12/99 Updated to further clarify tools sets for KMS roles
+
+1.5 10/01/00 Updated to cater for CP2373 and CP2308
+
+1.6 23/01/00 Updated to cater for CP2330 FTMS — OCMS links in FRODB
+
+2.0 30/01/00 Issued for approval.
+
+0.2 Approval authorities
+
+Approval Authority Signature Date
+Geoffrey Vane
+Alan D’Alvarez
+
+0.3 Associated documents
+
+Reference Vers Date Title
+ACP RS/POL/0003 3.0 18/12/98 Access Control Policy
+SFS RS/FSP/0001 3.0 3/12/97 Security Functional Specification
+NT DOM RS/DES/0051 1.0 19/08/99 CSR+ NT Domain Design
+
+NT RS/REQ/012 5.0 04/06/99 NT Groups Definition for NR2
+ROLES
+
+0.4 Abbreviations and definitions
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 2
+FUJ00232445
+
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Local
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+Access via the console attached directly to an NT platform
+
+0.5 Changes in this version
+
+Appendix B updated to include new service users in FRODB domain as per CP2330. Updated info for SLAM Users
+role re accessing of SSCSS servers in BOPSS & WOPSS domains.
+
+0.6 Changes Forecast
+
+Clarification of roles used to administer the MIS is being sought. One or more new roles may be identified to replace
+the MIS BPS User role which is being removed. Any new roles identified will be introduced as a result of a CP.
+Changes to introduce Operational Change Management Service (OCMS) will be included once a CP for this is
+impacted by SDU.
+
+0.7 Table of content
+
+Document control
+
+Document history
+
+Approval authorities
+Associated documents
+0.4 cceee cence ceeeceeeeeeeeeenseeseenensesetenenseeeeets Abbreviations and definitions
+0.5 occ eee eee ees eeeeeeeeeeeeeeeeeeenees
+0.6 ooo cece cece eeeeeeeceeneeeneneneeseeeeeeeseeeeieeeeeeeeeseteeeeeees Changes Forecast
+Table of content
+
+Changes in this version
+
+Requirements
+. Implementation
+NT Administrator User
+Notes that apply to Annex A
+
+Appendices
+
+A. Table of roles and associated access requirements for Human Users
+B. Table of Service User Accounts
+
+Oanh BPR PR WW WWNNNND
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 3
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+1. Introduction
+
+The nature of the Pathway system requires that access to the core systems should be
+strictly controlled. [ACP] states that effective control depends on having a clear definition
+of the roles and responsibilities of all personnel who need some form of access to the
+system. Users will gain access by being assigned to these roles. This will be core to
+Pathway implementing the principles of least privilege.
+
+This document summarises the requirement and defines the human roles that will be
+implemented for NT platforms; which objects will be used by each role; the domains each
+role will function within; access point for the role; and associated privileges.
+
+2. Scope
+
+This document addresses the roles to be implemented as part of the Pathway central NT
+systems and access rights assigned to each role. Each role within this document access
+the datacentre through the Pathway NT Domain Structure referenced in [NT DOM]. With
+regard to roles accessing systems in the Rollout Database domain, FRODB, all roles
+described here will apply to all systems described in [NT DOM]. Roles described in this
+document will not apply to the RODB Replication Server, which is not a member of the
+FRODB domain.
+
+Roles used by SMC, SMG and Girobank are specifically excluded from this document as
+they authenticated on separate NT systems which form part of a managed service.
+
+Roles used and defined by OSD are described in this document for completeness.
+Configuration of these roles in the live estate may be partly provided by SDU and T&l PIT
+or completely by OSD.
+
+3. Requirements
+
+The requirement to implement a role based access control system emanates from [ACP].
+[ACP] further defines the roles that are required for access to the Pathway Systems and
+the responsibilities of these roles.
+
+It should be noted that the Pathway solution has moved on since Version 2 of the ACP
+was issued and, as such, the Groups defined at Appendix A do not always correlate with
+the roles defined in [ACP]. This will be addressed by feeding these role definitions into
+the current review of the ACP which will be subject to a CP once all necessary changes
+have been agreed.
+
+4. Implementation
+Each role will be set up as a Group within NT. Individual users will be assigned to these
+
+Groups in which access to objects, domains, servers and associated privileges will be
+controlled. These Groups are defined in Appendix A.
+
+© 1999 ICL Pathway Limited Commercial in Confidence Page 4
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+Roles will have defined access points which will have an accompanying Platform Design
+Document. Access to objects will be made available to each role at the relevant access
+point. This document specifically covers the Groups accessing the data centres. The
+Horizon Helpdesk and SMC/SMG roles are the responsibility of the appropriate managed
+service for the provision of suitable client systems compliant to the SFS and ACP.
+
+The definition of the users will be held in a spreadsheet, or similar, and automated tools
+will be used for the production of the relevant command scripts.
+
+Human roles and service users, as defined in this document, will be implemented using
+automated command scripts. By doing this, it will simplify the implementation and
+maintenance of the roles and service users defined in Annex A and B. Exceptions to this
+are those roles within the support services, ICL Outsourcing and SSC, who will also
+access toolsets via the command line. All roles only have authority to access the toolsets
+specified in this document.
+
+Human users created from the defined roles may only be members of one role/Group
+definition. This is required to ensure the user is only provided with one appropriate
+toolset.
+
+Implementation of the toolsets for the ICL Outsourcing roles will be the responsibility of
+the managed service and profiles will be set up locally on the NT client. In these
+instances there will be no user profile on the PDC.
+
+Implementation of the menu structure for each Group will ensure that users assigned to
+that Group will be able to access the application set necessary for them to fulfil their
+duties. Not all tools will be available through a direct menu option; for example, Business
+Objects Universes will be accessed via a Business Object menu option. The Business
+Objects Administrator will be responsible for allocating the appropriate universes to users.
+Those ‘tools’ prefixed with ‘>’ will not typically be assigned as a menu option through the
+PDC.
+
+4.1 NT Administrator User
+
+The Windows NT operating system is provided with a super user known as the
+‘Administrator’. This user has full administration and configuration privileges which is
+exercised at both system/server and domain level. This capability cannot be removed
+from Windows NT. Pathway recognises the power that this user has and the ability that a
+human user, using the administrator user, has to interfere with the day to day operation of
+the Pathway solution.
+
+To address this issue, Pathway will limit and restrict the use of the NT Administrator User.
+
+This will be achieved by:
+
+> Renaming the Administrator User on all NT Servers so that it is hidden from the system.
+The account name and password will be specified by the Pathway Security Manager,
+which will be strictly controlled and stored in a secure safe.
+
+© 1999 ICL Pathway Limited Commercial in Confidence Page 5
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+> Restrict full administrator privileges to the ‘Operational Management’ role. Use of this
+role will be subject to the management and procedural controls set out in the ‘Pathway
+Code of Practice’, PA/STD/010.
+
+5. Notes that apply to Annex A
+Those ‘tools’ prefixed with ‘>’ will not be assigned as a menu option from the users
+workstation/access point. Instead the tool will be made available to the user from the
+
+Command Line.
+
+The term NT Resource Kit will mean the full complement of NT Resource Kit utilities will
+be made available to the user role.
+
+The term NT Resource Kit* {Toolname} will mean only the specific Resource Kit utility or
+utilities specified by {Toolname} will be made available to the user role.
+
+The term NT Server Tools will mean the default Administrative Tools (Common)
+executables delivered with the NT Operating System.
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 6
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+APPENDIX A — Human User Roles
+
+Application SUP » Discoverer 2000 B/W SLAM Read / Write / PWYDCS B/WSLAM OSD NT Client PC Application
+
+» PC Xware Domain User Execute PWYHQ Support (OSD)
+» Microsoft Office HUTHTIP
+> Onnnet (telnet/ftp) Access to FARNHAPS
+>» Patrol v3.2.05 Sequent LEICHAPS
+> Legato Administrator
+> 1E4.0
+
+» SQL Server Admin
+>
+va
+IT
+
+CMD prompt
+Base Installation & INT Administrator IAll Servers (Administrative Local \Server Console IServer Console [Base Installation &
+Configuration Full \Configuration (OSD)
+fret an account
+lemplate -no
+lsystem policy)
+Engineer Event logs All Servers Read / Execute PWYDCS SEQSUP Server Console Engineers (NT
+PWYHQ ORASUP- Data Centres)
+System Shut Down Assign as PWYKMS. B/WSLAM
+member of PWYFTMS B/WPOCL
+power users FRODB B/WBOOT
+group HUTHTIP. B/WOPSS
+FARNHAPS. PWYMAS
+LEICHAPS BRASUP
+FELUSRS
+SIGF
+CONFMAN
+CORPPWY
+Security » NT User Manager All Servers. Read/Write PWYDCS All OSD NT Client PC Security
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 7
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Core Services Release + Version:2.0
+Date:30/01/2000
+Commercial In Confidence
+Managers » SQL Server Admin PWYHQ Management
+» SQL Server PWYFTMS
+SecurityManager HUTHTIP
+> CMD prompt FARNHAPS
+LEICHAPS
+FRODB
+KMS SYSADMs > NT Resource Kit All KMS Administrative PWYKMS N/A KMS Admin Operational
+Servers Workstation Management
+NT Server Tools (OSD)
+SD/DES/135
+CMD Prompt
+Explorer.exe
+(Operational MAN I» Compaq systems All Servers Administrative IPWYDCS All IOSD NT Client PC IOperational
+reference library Full PWYHQ IManagement
+Insight Manager Access to IPWYFTMS (OSD)
+SQL Server Admin ISequent IHUTHTIP IRiposte Managemen
+Technet IFARNHAPS.
+Microsoft Office LEICHAPS
+NT Resource Kit FFRODB
+
+Onnnet (telnet/ftp)
+Patrol v3.2.05
+
+Legato Administrator
+nt srvtools
+
+Tivoli desktop
+
+1E4.0 for access to Tivoli
+web
+
+NT resource kit remote
+console server
+
+PC Xware
+
+CMD prompt
+VPNDiagClient.exe
+Notepad
+SVPNTSTN.exe
+
+VVVVVVVVVVV
+
+Vv
+
+VVVVYV
+
+(Utimaco API Function
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 8
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Core Services Release + Version:2.0
+Date:30/01/2000
+Commercial In Confidence
+>_Tool)
+Network Managers I> Telnet IPYWDCS N/A Network Client PC INetwork
+> Router Configuration Management
+Software (Configurer
+> Network Diagnostic
+software
+> CMD prompt
+> VPNDiagClient.exe
+iSequent Support I» PC Anywhere [Access to Read PWYDCS ISEQSUP ISequent Client PC \Sequent Support
+> _Hyper Terminal ISequent
+(Oracle Support > Telnet Access to Read IPWYDCS IORASUP [Oracle Client PC \Oracle Support
+ISequent
+[EMC Support > EMC proprietary [Access to Read IPYWDCS N/A IEMC Client PC INone
+> Client software ISequent
+ISSC Apps MAN ICMD prompt IAll Servers IRead/Write/ IPWYDCS IAll ISSC NT Client PC Application Support
+IExecute IPWYHQ (SSC)
+> Tivoli Remote Console Also; IPWYFTMS ISD/DES/101
+> Relient IAccess to Sequent IHUTHTIP
+> Rconsole IFARNHAPS
+> RiposteGetMessage.exe LEICHAPS,
+> RiposteIndex.exe IFRODB
+> RiposteNode.exe
+> RiposteObjectSecurity. Exe
+> RiposteObject.exe
+> RipostePing.exe
+>
+RipostePriorityMessage.
+exe
+> RiposteQueryUK.exe
+> RiposteNextMessage.exe
+> RipostePutMessage.exe
+> RiposteScanMessage.
+> RiposteStatus.exe
+> RODBClient.exe
+> SQLServer V6.5 client
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 9
+ICL Pathway
+
+Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Jersi
+Core Services Release + Version:2.0
+
+Date:30/01/2000
+
+Commercial In Confidence
+
+FUJ00232445
+FUJ00232445
+
+lutilities
+
+» ExCeed for Windows NT
+(V6.1)
+
+> Visual Basic 1.D.E.
+
+[Telnet
+
+NT utilities
+> FTP (To Host Sequent, and
+other POCL Services)
+
+[Microsoft Diagnostics
+
+INT Event Viewer
+IWinZip/Pkzip
+
+ICD Rom writing software
+[Textpad
+
+INotePad
+
+IMicrosoft Word
+
+IMicrosoft Excel
+
+IMicrosoft Access
+[Microsoft Explorer
+Internet Explorer (c/w SSC
+default links page)
+IServices Manager
+[Performance MonitorRegistry
+leditor
+
+In-house Utilities
+Archve Viewer
+
+Expiry Reporter
+
+Stops Reporter
+Formatted File Utility
+MessageStore Utility
+EndOfDay Reporter
+MessageStore Sort Utility
+
+VVVVVVVY
+
+VPN Utilities
+VPNDiagClient.exe
+> __SVPNTSTN.exe
+
+Vv
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 10
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+SSC Apps SUP CMD prompt All Servers Read / Execute PWYDCS All SSC NT Client PC Application Support
+PWYHQ (SSC)
+
+Tivoli Remote Console PWYFTMS SD/DES/101
+Relient Also; HUTHTIP
+Reonsole Access to Sequent FARNHAPS
+RiposteGetMessage.exe LEICHAPS
+RiposteIndex.exe FRODB
+RiposteNode.exe
+RiposteObject.exe
+RipostePing.exe
+
+VVVVVVVVY
+
+RipostePriorityMes.
+sage.exe
+RiposteNextMessage.exe
+RiposteQueryUK.exe
+RiposteScanMessage.exe
+RiposteStatus.exe
+RODBClient.exe
+SQLServer V6.5 client
+utilities
+ExCeed for Windows NT
+(V6.1
+> Visual Basic I.D.E.
+Telnet
+
+VVVVVV
+
+Vv
+
+NT utilities
+
+» FTP (To Host Sequent,
+and other POCL.
+Services)
+
+Microsoft Diagnostics
+
+W Event Viewer
+WinZip/Pkzip
+
+CD Rom writing software
+Textpad
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 11
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+Microsoft Word
+
+Microsoft Excel
+
+Microsoft Access
+Microsoft Explorer
+Internet Explorer (c/w SSC
+default links page)
+Services Manager
+
+CMD Prompt
+
+Performance Monitor
+
+In-house Utilities
+Archve Viewer
+Expiry Reporter
+Stops Reporter
+Formatted File Utility
+MessageStore Utility
+EndOfDay Reporter
+MessageStore Sort
+Utility
+
+VVVVVVY
+
+VPN Utilities
+> VPNDiagClient.exe
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 12
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+
+. Version:2.0
++
+Core Services Release Date:30/01/2000
+
+Commercial In Confidence
+
+Auditors Legato client.exe Audit Archive and I Read/ Execute PWYDCS. B/WOPSS Audit PC NAO Auditor
+RiposteRQueryUK. Retrieval Server POCL Auditor
+Oracle Discoverer SD/DES/077 Pathway Business
+Counter Determinant Correspondence Functions Auditor
+MS Word Server
+MS Access
+
+MS Excel
+
+MS Word Pad
+
+Note Pad
+
+WinZip v6..3
+
+CD Writer Software
+Windows Explorer
+Printer
+
+DLT
+
+MS Backup
+
+ACDB Admin ACDB Client.exe Auto-Configuration I Read/Write/Execu I PWYDCS. B/WOPSS Auto-Configuration. None
+> assign member of ACDB I Server te Client PC
+Admin Group SD/DES/026
+
+ACDB User ACDB Client.exe Auto-Configuration I Read/Write/Execu I PWYDCS. B/WOPSS Auto-Configuration. None
+(assign member of ACDB Server te Client PC
+User Group)
+SD/DES/026
+
+Business Support RiposteQueryUK.exe Access to Read / Execute PWYHQ B/WOPSS Business Support Business Support
+
+Business Objects Correspondence Client PC Pathway
+
+> TPF Server SD/DES/092 Management
+
+Business Objects Designer
+
+Oracle Forms SUPF
+Series (Helpdesk)
+
+SLAM Users SLAM Database B/WSLAM Read/Execute PWYHQ B/WSLAM SLAM Client PC Implicit in text
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 13
+ICL Pathway
+
+Group Definitions for the Secure NT Build
+Core Services Release +
+
+Commercial In Confidence
+
+CON SQL* Forms.
+
+CCS SQL* Forms
+Business Objects
+
+Business Objects Designer
+Business Objects Supervisor
+Reference Data
+
+Windows Explorer
+
+MS Word
+
+MS Excel
+
+Printer
+
+3.5 floppy
+
+CD ROM
+
+Telnet
+
+Ref:RS/REQ/016
+
+Version:2.0
+
+Date:30/01/2000
+
+B/WOPSS
+(SSCSS svrs)
+
+SD/DES/015
+
+FUJ00232445
+FUJ00232445
+
+IMIS BUS DEV
+Users
+
+[Business Objects
+
+> Business Universe
+IWindows Explorer
+IMS Word
+
+IMS Excel
+
+[Printer
+
+IB/WSLAM
+
+Access to Data
+Warehouse
+
+Read/Execute
+
+IPWYHQ
+
+B/WSLAM
+
+ISLAM Client PC
+
+ISD/DES/015
+
+Implicit in text
+
+ECCO MIG Users
+
+As per SD/DES/016
+
+Migration Agent
+Server
+
+Read/Write/Execu
+te
+
+PWYMAS.
+
+ECCO Migration
+Laptop
+
+SD/DES/016
+
+None
+
+IRDMC Admin
+
+IRDMC Access Control
+IRDMC Interactive Data
+Loader
+
+IRDMC Release Manager
+IRDMC Reports
+
+IRDMC Send
+
+IMS Word
+
+IMS Excel
+
+IRiposte memo
+
+Winzip
+
+[Discoverer 2000
+
+IRDMC/RDDS
+
+Read/ Write/
+Execute
+
+IPWYDCS
+
+IFELUSRS
+
+IRDMC Administrator
+IWorkstation
+
+ISD/DES/048
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 14
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Core Services Release + Version:2.0
+Date:30/01/2000
+Commercial In Confidence
+IRDMC User IRDMC Interactive Data IRDMC/RDDS Read/ Write/ IPWYDCS IFELUSRS IRDMC Administrator
+[Loader Execute IWorkstation
+IRDMC Release Manager
+IRDMC Reports ISD/DES/048
+IRDMC Send
+IMS Word
+IMS Excel
+IRiposte memo
+Winzip
+[Discoverer 2000.
+CMS_Admin IOCMS Client IRODB Server Read / Execute IFRODB IBOPSS JOCMS Client PC INone
+ISQL Server 6.5 Client ACDB server in within SQL DB IWOPSS, (CP2033
+(Configuration Utility IBOPSS/WOPSS( ISD/DES/169
+ISQL Server 6.5 SP5a
+[ODBC V2.65
+JOCMS_Users IOCMS Client IRODB Server Read / Execute IFRODB IBOPSS [OCMS Client PC INone
+(ACDB server in within SQL DB IWOPSS (CP2033
+IBOPSS/WOPSS( ISD/DES/169
+IRODB Users IRODB Client IRODB Server Read / Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client within SQL DB
+Configuration Utility ISD/DES/050
+ODBC
+IRODB Admin IRODB Client IRODB Server Read/ Write/ IFRODB IB/WOPSS IRODB Client PC INone
+ISQL Server 6.5 Client IACDB Server IExecute
+(Configuration Utility IAll FRODB Domain ISD/DES/050
+ODBC Servers and
+IWorkstations
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 15
+ICL Pathway
+
+Group Definitions for the Secure NT Build
+
+Core Services Release +
+
+Commercial In Confidence
+
+Ref:RS/REQ/016
+Version:2.0
+Date:30/01/2000
+
+FUJ00232445
+FUJ00232445
+
+IRODB Supplier IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+
+IRODB Cel IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+
+IRODB Energis IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC None
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+
+IRODB Exel IRODB Client RODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+
+IRODB Peritas IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+Configuration Utility ISD/DES/050
+ODBC
+
+(RODB Sorbus IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 16
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Core Services Release + Version:2.0
+Date:30/01/2000
+Commercial In Confidence
+IRODB WTL IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+IRODB POCL IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+IRODB Pearce IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC INone
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+IRODB Tivoli IRODB Client IRODB Server Read/ Execute IFRODB IRODB Client PC \None
+ISQL Server 6.5 Client
+(Configuration Utility ISD/DES/050
+ODBC
+Security Auditors SecurID admin.client All Read / Execute PWYDCS All SecurID Admin W/S Pathway Security
+Event Viewer Access to PWYHQ Event Auditor
+Tivoli Web Browser Enterprise Server PWYFTMS SD/DES/090
+MS Access (SecurID) HUTHTIP
+FARNHAPS
+LEICHAPS
+FRODB
+Pathway SECMAN _ ISecurID admin.client IAll Read /Execute IPWYDCS IAll SecurID Admin W/S [Pathway Security
+[Event Viewer \Access to Enterprise IPWYHQ Manager
+[Tivoli Web Browser [Server (SecurID) IPWYFTMS. ISD/DES/090
+IMS Access IHUTHTIP
+IFARNHAPS
+ILEICHAPS
+}999-1CL-Rathwdsek 4_Commbrcial-in- Confidghe QB ages
+
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+fore:
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 18
+ICL Pathway
+
+Group Definitions for the Secure NT Build
+Core Services Release +
+
+Commercial In Confidence
+
+KMA GUI
+
+Crystal Report
+Designer
+
+Crystal SQL Designer
+ODBC Administrator
+Runtime File
+Requirements
+Seagate Crystal
+Reports Developer's
+Help
+
+Seagate Crystal
+Reports Help
+Seagate Crystal
+Reports Readme
+
+NOTE
+
+Do not install
+
+Crystal Query Client
+Crystal Query Server
+Web Report Server
+
+KMA Server
+
+Read/Execute
+
+Ref:RS/REQ/016
+Version:2.0
+Date:30/01/2000
+
+PWYKMS
+
+N/A
+
+KMA Workstation
+SD/DES/134
+
+FUJ00232445
+FUJ00232445
+
+Cryptographic Key
+Manager
+
+Data Managers
+
+KMA GUI
+
+Crystal Report
+Designer
+
+Crystal SQL Designer
+ODBC Administrator
+Runtime File
+Requirements
+Seagate Crystal
+Reports Developer's
+Help
+
+KMA Server
+
+Read/Execute
+
+PWYKMS
+
+N/A
+
+KMA Workstation
+SD/DES/134
+
+KMA Data
+Manager
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 19
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+Seagate Crystal
+Reports Help
+Seagate Crystal
+Reports Readme
+
+NOTE
+
+Do not install
+
+Crystal Query Client
+Crystal Query Server
+Web Report Server
+
+KMS SecMANs SQL Server Admin All KMS Servers Read/Execute PWYKMS N/A KMS Admin Security Manager
+Including and Domain Workstation
+SQL Server Security Workstations
+Manager SD/DES/135
+MS Query
+
+SQL Trace Utility
+SQL Server Books
+Online
+
+CMD Prompt
+Usrmgr.exe
+
+IKMS DBA ISQL Server V6.5 Client IKMA Server Read/Execute IPWYKMS N/A IKMS Admin WorkstationIDatabase
+Utilities including [Administrator
+ISQLUIW ISD/DES/135
+lEnterprise Manager
+IMS Query
+
+ISQL Trace Utility
+ISQL Server Books
+[Online
+
+(Crystal Report Designer
+\Crystal SQL Designer
+ODBC Administrator
+[Runtime File
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 20
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+[Requirements
+
+Seagate Crystal Reports
+[Developer's Help
+Seagate Crystal Reports
+[Help
+
+Seagate Crystal Reports
+[Readme
+
+INOTE
+
+[Do not install
+
+(Crystal Query Client
+ICrystal Query Server
+IWeb Report Server
+
+IKMS Apps SUP. ISQL Server V6.5 Client IJKMA Server Read/Execute IPWYKMS. N/A IKMS Admin WorkstationIApplication Support
+IUtilities including (SSC)
+
+ISQLUW ISD/DES/135
+lEnterprise Manager
+IMS Query
+
+ISQL Server Books
+[Online
+
+(Crystal Report Designer
+\Crystal SQL Designer
+ODBC Administrator
+[Runtime File
+[Requirements
+
+Seagate Crystal Reports
+[Developer's Help
+Seagate Crystal Reports
+Help
+
+Seagate Crystal Reports
+[Readme
+
+INOTE
+[Do not install Crystal
+[Query Client
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 21
+FUJ00232445
+
+FUJ00232445
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/016
+Core Services Release + Version:2.0
+Date:30/01/2000
+Commercial In Confidence
+
+ICrystal Query Server
+
+IWeb Reports Server
+IKMS Auditors IMS Word IKMA Server Read/Execute IPWYKMS N/A IKMS Admin WorkstationINAO Auditor
+
+IMS Access IPOCL Auditor
+
+IMS Excel ISD/DES/135 [Pathway Business
+
+IMS Word Pad Functions Auditor
+
+INote Pad
+
+I\Windows Explorer
+
+Printer
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 22
+ICL Pathway Group Definitions for the Secure NT Build
+
+Core Services Release +
+
+Commercial In Confidence
+
+APPENDIX B - Service User Accounts
+
+This table lists by Domain those service users that are configured on the Domain PDC.
+
+Ref:RS/REQ/016
+Version:2.0
+Date:30/01/2000
+
+FUJ00232445
+FUJ00232445
+
+Service User Account Name
+
+[Domain Account Created In
+
+(Comments
+
+IACDBsql IBOPSS IMSSQLServer and SQLExecutive Services
+[FTMS IFTMS User
+
+MAESTRO MAESTRO User
+
+Signing Signing Service
+
+IKMHarvester IKM Key Object Harvester
+IKMLoader IKM Key Object & Memo Loaders
+IFTMS IBPOCL IFTMS User
+
+MAESTRO MAESTRO User
+
+IVPNPMCSVC IBVPN [VPN Service User
+
+IVPNPMSSVC IVPN Service User
+
+IFTMS IFARNHAPS IFTMS User
+
+IPOCLHAPS IPOCL HAPS Service
+
+IFTMS IFRODB IFTMS User
+
+MAESTRO MAESTRO User
+
+IRODBsql IMSSQLServer and SQLExecutive Services
+IFTMSRODB IFTMSRODB User
+
+IFTMSTIV IFTMSTIV Local G/W User
+IFTMSSOR IFTMSSOR Local G/W User
+IRODBTivoli IRODBTivoli Remote G/W User
+IRODBSorbus IRODBSorbus Remote G/W User
+IFTMS IHDHORIZON IFTMS User
+
+IHHDBTX [Horizon Helpdesk BTX User
+IHHDMitel [Horizon Helpdesk Mitel User
+IHHDSorbus [Horizon Helpdesk Sorbus User
+IFTMS IHUTHTIP IFTMS User
+
+IPOCLRDB IPOCL RDB Service
+
+IPOCLRDT IPOCL RDT Service
+
+© 1999 ICL Pathway Limited
+
+Commercial in Confidence
+
+Page 23
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+
+Core Services Release + Version:2.0
+
+Date:30/01/2000
+Commercial In Confidence
+
+IPOCLRMAIL IPOCL RMAIL Service
+IPOCLTIP IPOCL TIP Service
+IPOCLSAPADS, IPOCLSAPADS Service
+IFTMS ILEICHAPS IFTMS User
+IPOCLHAPS IPOCL HAPS Service
+MAESTRO PWYDCS MAESTRO User
+IRDMC IRDMC Service User
+MAESTRO IPWYFTMS. MAESTRO User
+IFTMSAPS IFTMS APS Service User (Local Gateway)
+IFTMSBGT IFTMS APS User for BGT client
+IFTMSCQO IFTMS APS User for CQO client
+IDBABatch IPWYKMS jaestro DBA Service User
+Interactive Service Interactive service Account
+IKMABatch IKMA Maestro SQL Service
+IKMA Service IKMA Service Account
+MAESTRO MAESTRO User
+MAESTRO IPWYMAS. MAESTRO User
+Signing ISIGF Signing Service
+(ACDBsql ‘OPSS. IMSSQLServer and SQLExecutive Services
+IFTMS IFTMS User
+MAESTRO MAESTRO User
+Signing Signing Service
+IKMHarvester IKM Key Object Harvester
+IKMLoader IKM Key Object & Memo Loaders
+IFTMS POCL IFTMS User
+MAESTRO [AESTRO User
+IFTMS VSLAM IFTMS User
+
+© 1999 ICL Pathway Limited Commercial in Confidence
+
+Page 24
+FUJ00232445
+FUJ00232445
+
+ICL Pathway Group Definitions for the Secure NT Build Ref:RS/REQ/O16
+Core Services Release + Version:2.0
+Date:30/01/2000
+
+Commercial In Confidence
+
+MAESTRO MAESTRO User
+IVPNPMCSVC VVPN IVPN Service User
+IVPNPMSSVC [VPN Service User
+
+© 1999 ICL Pathway Limited I Commercial in Confidence Page 25

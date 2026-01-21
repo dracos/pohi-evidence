@@ -1,0 +1,529 @@
+Al 376 -TIP Incident Status Report 22/09/99
+
+TIP No.
+Type/Outlet
+
+s
+Week
+
+PINICL(s)
+Helpdesk
+
+Status
+
+4
+
+821
+8
+
+1
+
+26258
+25878
+
+Root cause was deletion of stock unit, following stock unit
+rollover, with outstanding transactions carried out since the
+last EOD marker, which were lost. This is the subject of
+PINICLs 25876/8. Fix to prevent SU deletion in such
+circumstances.
+
+Fix (PWY_WP_5138 CSR) distributed to live estate 15/8
+
+27193
+
+Root cause was Stock Unit TM (the ATM stock at the outlet)
+being rolled forward more than one CAP. The system error
+that allowed this was corrected in the LT1 offices and
+incorporated into LT2.
+
+27321
+27871
+
+This problem is associated with a missing mode on an outlet
+transaction, in this case a reversal of a previous cash
+settlement transaction, which then failed to harvest . The fix
+for this was made under root cause PinICL number 27871
+which is fixed within WP 5406 and which was distributed to
+live on 23/8.
+
+27322
+9906300196
+
+This problem related to the incorrect handling of a “correction”
+SU where the cash account snapshot and cash account report
+were run on different days on different nodes; the result was a
+doubling of the brought forward total. This was fixed in the LT2
+software and call closed on 5/7.
+
+27319
+
+This was caused by the use of a stock unit name starting with
+a space (““). The problem was alleviated at the outlet by
+deleting and recreating the SU without the leading space. To
+prevent any possible re-occurrence a fix to the software has
+been produced to prevent SU names commencing with space
+character. The fix is included within WP5406 which was
+distributed to live on 23/8.
+
+27320
+25211
+
+Root cause was 2 transactions recorded without timestamp
+during a session suspend/transfer operation and therefore not
+harvested. A harvester fix was issued to cover this situation
+and authorisation for the root cause fix (PINICL 25211) has
+been made. This has not re-occurred since mid-June. Fix will
+be distributed to outlets by 24"" September.
+
+A separate investigation (PINICL 27514) into the relationship
+
+between cash account line 0099 exceeding value on line 1049
+identified the root cause as user input error when dealing with
+Lottery cheque prize. This situation has not reoccurred in LT2.
+
+859
+nla
+
+No E- reference was supplied and a search of Powerhelp calls
+between 30/6 and 10/7 failed to identify the call details against
+likely outlets (reported FAD 0105112 is invalid). Probable
+cause null mode or deleted stock unit problem.
+
+865
+15
+
+27747
+25878
+
+Deleted stock unit problem resulted in TIP not being passed
+transactions. Earlier occurrence in 26258 (TIP 821) Underlying
+PINICLs 25876/8, with fix distributed to live estate 15/8.
+
+866
+
+28746
+
+This was the subject of Al410, concerning the change of
+products from “core” to “non-core”. Changes have been made
+to clarify Operational Business Change procedures in this area
+which should prevent this problem recurring. At Stock Unit
+Balance time the system requires to access the item records
+to obtain the description of the item for inclusion on the
+balance report. If the item is not found the balance report
+
+FUJ00118147
+FUJ00118147
+
+1 of 6
+
+21/09/99 12:22
+prints ‘spaces’ for the description but then fails to create the
+balance summary record for the product. This has been
+corrected by a fix delivered to counters between 14” and 18"
+September.
+
+868
+
+15
+
+27835
+
+Deleted stock unit problem resulted in TIP not being passed
+transactions. Earlier occurrence in 26258 (TIP 821) Underlying
+PINICLs 25876/8, with fix distributed to live estate 15/8.
+
+869
+
+27837
+
+In OBCS token administration suspend session then allowed a
+foil to be scanned and the transaction committed to the stack
+with no current mode set, resulting in a non-harvested
+transaction. This is actually a duplicate of PINICL 26181 and
+was fixed in WP4927, applied as part of the LT2 baseline on
+10/11 July. Its occurrence in TIP869 was during CA week 15,
+prior to the weekend LT2 fix.
+
+870
+
+27884
+
+This call relates to several cash account discrepancies (5
+outlets), all due to transactions not being harvested because of
+missing mode attribute on reversal transactions. Analysis of
+underlying root cause is covered within TIP 855 (underlying
+PINICL 27871; fix released 23/8)
+
+873
+12 4
+16
+
+27904
+
+This related to a mismatch between electronic and TIP derived
+cash accounts at 4 offices. This resulted from a one-off
+corruption of a .dil file (code for settlement) during the LT1 to
+LT2 upgrade at outlets 166328, 390329 and 008523.
+
+FAD 27153 was the subject of non harvested transactions due
+to missing transaction mode on the original counter
+transaction. This is the same underlying cause as TIP 874
+(PINICL 27903)
+
+27903
+28167
+
+This related to a mismatch between electronic and TIP derived
+cash accounts at 5 offices.
+
+Detailed analysis of FADs 270329 and 203329 indicated that
+this was caused by scales transactions (stamp sales) recorded
+with a missing mode attribute. Analysis at the other sites
+(without a full message store being available) indicated a
+similar root cause. 27903 fixed in WP5447, which has
+completed test. Delivered to outlets 29/8.
+
+28167 covers the agent avoidance to reconstruct missing “SC”
+mode on transaction harvesting (all scales transactions are
+“SC” mode), applied to live estate 3/8. This substitution will be
+ceased when TIP requests that we do so.
+
+885
+
+17
+
+28185
+9908020071
+
+All the incidents summarised on this call are the scales
+missing mode problem
+
+889
+10 37
+
+28218
+9908030066
+
+This call is “Acceptance Incident” 411, which is being dealt
+with separately. Due to a massive replication backlog as the
+correspondence servers synchronised after a failure the
+harvester started work before full message sets had been
+replicated for some outlets. The harvester has been enhanced
+(11.8) such that it positively checks that the message store is
+complete before harvesting an outlet. The missing
+transactions have been sent to TIP.
+
+28264
+9908040145
+
+This incident arose because transactions that were carried out
+in Stock Unit ZZ were not harvested because the stock unit
+was deleted before the End of Day marker was inserted on 29"
+July, therefore the transactions were not sent to TIP.
+
+891
+
+28272
+9908040196
+
+Null mode scales transaction not harvested for week 18, which
+was before both the harvester substitution work-around and
+the root cause fix were released.
+
+892
+
+28263
+
+Following the provision by TIP of further information on this
+
+FUJ00118147
+FUJ00118147
+
+2 of 6
+
+21/09/99 12:22
+9908040139
+
+incident the causes have been identified as:
+
+FAD Codes 230511, 101114 and 013523 — transactions with
+null modes
+
+FAD Code 278523, this imbalance was caused by the deletion
+of Stock Unit ZZ before the EOD marker was set for the day,
+causing one transaction for £155 not to be harvested and
+therefore not sent to TIP.
+
+28480
+9908110215
+
+Null mode (resulting from ‘Scales’ transactions) not harvested
+for week 19, which was before both the harvester substitution
+work-around and the root cause fix were released.
+
+28530
+9908120207
+
+Null mode transactions (resulting from ‘Scales’ transactions)
+not harvested for week 19, which was before both the
+harvester substitution work-around and the root cause fix were
+released
+
+28527
+9908120208
+
+The root cause of this is that prior to migration, within the
+ECCO system, stock of Vodaphone cards was transferred
+from the manager's SU to another. Unfortunately the
+manager transferred out one £15 card, and the receiving unit
+transferred in three £5 cards. No fault in Pathway solution.
+
+28531
+9908120216
+
+Null mode transaction (resulting from ‘Scales’ transaction) not
+harvested for week 19 (on July 30"), which was before both
+the harvester substitution work-around and the root cause fix
+were released.
+
+=
+=)
+yao
+
+28528
+9908120206
+
+Null mode transactions not harvested for week 19, which was
+before both the harvester substitution work-around and the
+root cause fix were released.
+
+Further information received from TIP, Pathway to analyse
+remaining incident.
+
+Based on the further information provided by TIP it has been
+identified that the last of the incidents arose from a Null Mode
+on a cash transaction.
+
+28529
+9908120210
+
+Compensating differences between cash and cheque lines,.
+Analysis shows CA balances with cash values as declared by
+user. TIP opening balances are incorrect. Suspected to have
+been caused by circumstances similar to 902, but unable to
+investigate further as the transaction data has now been
+archived from the message store.
+
+909
+1 d
+20
+
+28635
+9908160161
+
+This was caused by a failure to harvest a transaction created
+to correct a fee migration problem, due to a null user field.
+Harvester incidents of this nature are reported to TIP via RED
+reports.
+
+910/921
+13 1
+20
+
+28630
+9908160158
+
+This is a manifestation of the double roll over at Olympia
+caused by multiple presses of the SU rollover button. The fix
+both displays a message to inform the user that the process
+has started and also ensures any subsequent button presses
+are ignored while the balance process is running.
+
+Fix delivered to counters between 14" and 18" September.
+
+912
+*R 4
+21
+
+28840
+9908200140
+
+A long and detailed explanation of this incident has been
+provided. In summary, this is a reference data associated
+error in the way TIP produce their cash account. No fault in
+Pathway solution. Incident closed by TIP.
+
+913
+15 1
+21
+
+28847
+9908200185
+
+This incident was caused by the host being unable to correctly
+interpret the settlement of an existing reversal of the
+settlement of a stock adjustment transaction. This is because
+the reversal settlement is not itself a reversal of a transaction
+and therefore carries no indication of the ‘original mode’ of the
+transaction being reversed. In the absence of an ‘original
+mode’ attribute, the harvester assigns a mode of ‘Serve
+Customer’ (1) with the reversal indicator set.
+
+FUJ00118147
+FUJ00118147
+
+3 of 6
+
+21/09/99 12:22
+The fix will be to amend the counter software to add the
+original transaction mode to any ‘existing reversal’ settlement
+transaction, the host software will then use this information (no
+change required) to put the correct mode on the transaction
+sent to TIP. Fix expected to live by 24" September.
+
+919
+14 9
+22
+
+9909030095
+
+Different manifestation of as 914, 915 below. P & A invalid
+ITM. Fixed by withdrawal of fault on 29.8
+
+926
+
+23
+
+29473
+9909100199
+
+This is a duplicate of TIP 913.
+
+927
+
+23
+
+29476
+9909100204
+
+These discrepancies were the result of OBCS transactions
+recorded as remittances. (see also TIP incidents 914 and 915
+against Al359). Fix delivered to offices on 28" August.
+
+928
+13 4
+23
+
+29500
+9909130005
+
+This set of discrepancies arose at the Olympia office due to
+the problems at that office with a ‘double rollover’ of the stock
+unit and the subsequent corruption of the Cash Account for
+CAP 21. The corrective action resulted in the production of a
+Cash Account for CAP 22 at the office which includes all
+transactions since the start of CAP 21 up to (and including)
+transactions undertaken to the end of the calendar period of
+CAP 23. The CAP 23 Cash Account was then produced on
+the same day and contained only stock holding records.
+
+The fix for the double rollover problem was released to live on
+14 September.
+
+AI 359 2?
+
+914
+
+29891
+9908250142
+
+The transactions rejected in this incident all relate to P&A
+transactions which have been recorded with a ‘Remittance’
+mode. An error in the system at this time (which was
+corrected 29.8) caused the application variable holding the
+current desktop ‘Mode’ to be incorrectly cleared, allowing
+OBCS to conduct a P&A transaction. When the transactions
+were passed to Riposte to commit them to the message store,
+the Riposte Desktop mode at the time (in all cases one of the
+Remittance modes, indicating that the user was within the
+Remittance part of the menu hierarchy) was added into the
+transaction data.
+
+915
+
+29024
+9908260149
+
+As for TIP Incident 914 above (but with additional cases where
+the user was in the ‘Housekeeping’ mode at the time the
+transaction took place).
+
+920
+
+9909010010
+
+927
+
+23
+
+29476
+9909100204
+
+Known issue with migration, not a Pathway fault. ECCO.
+records suspense account transactions as Serve Customer,
+but TIP expects Horizon to record them as Housekeeping.
+This incident was caused by the recording of P&A transactions
+with Remittance or Housekeeping mode. This is a duplicate of
+TIP 914, 915 and 919 under AI359.
+
+A fix for this problem was delivered on 28" August (part way
+through CAP 23).
+
+4 of 6
+
+21/09/99 12:22
+
+FUJ00118147
+FUJ00118147
+Incident Types
+
+1. Deleted SU
+
+2. SU double roll
+
+3. Missing mode - reversal
+
+4. New SU
+
+5. SU name with blank first character
+
+6. Missing time stamp
+
+7. Deleted Item ref data
+
+8. Missing mode — OBCS suspend
+
+9. Missing mode - scales
+
+10. __I Replication recovery
+
+11. Fee migration correction error
+
+12. Corrupted software file
+
+13. Multiple simultaneous SU roll over
+
+14. I OBCS swipe permitted in invalid mode by faulty fix.
+15 _I Signage issue on interface.
+
+nm_I Null Mode, unassigned cause
+* Not Pathway error
+
+*E I ECCO transfer problem
+
+*R__I Reference Data missmatch
+
+5 of 6 21/09/99 12:22
+
+FUJ00118147
+FUJ00118147

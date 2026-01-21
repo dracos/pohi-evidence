@@ -1,0 +1,4125 @@
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+Post Office Limited
+Network Banking Engine
+
+NBE - Horizon Application Interface Specification
+
+Status = Baseline
+Version : 2.0c
+
+Version as of February 15, 2002
+Printed: April 18, 2002
+
+Author: Jo Down
+
+IBM Global Services
+South Bank
+
+76 Upper Ground
+London
+
+SE1 9PZ
+
+IBM Confidential
+ICL Pathway Confidential
+
+Document Control
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 1 of 68
+
+1BM ConfidentialiCL Pathway Confidential
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+Revision History
+
+Version Revision Summary of Changes Changes
+Number Date Marked
+00.01 21/08/01 Initial draft. This replaces any previously issued interface No
+specification relating to the Horizon — NBE interface.
+00.02 30/08/01 Update following workshop on data flows with Post Office No
+Limited and ICLP. Also corrections from IBM review.
+00.03 14/09/01 Update following 2°’ workshop with Post Office Limited and No
+ICLP.
+00.04 21/09/01 Corrections from IBM review. No
+00.05 12/10/01 Update from Post Office Limited and ICLP formal review (see I No
+separate file for detailed responses to comments)
+00.06 19/10/01 Update following approval workshop No
+00.06A_ I 13/11/01 Update following meeting with Bob Booth Yes
+00.07 14/11/01 Update following workshop with ICLP and Post Office Limited _I Yes
+00.08 15/11/01 Update following comments received on version 00.07 Yes
+1.0 16/11/01 Baseline No
+4.1 14/01/02 Update following CR26 Removal of MQ and CR27 Removal No
+of S messages and ICLP comments post version 1.0
+1.2 28/01/02 Update following ICLP and POL comments and review No
+meeting 23/1/02
+1.3 5/2/02 Update following ICLP and POL comments No
+1.4 6/2/02 Update following review meeting 6/2/02 No
+2.0 8/2/02 Baseline No
+2.0a 11/2/02 Comments incorporated for 2.0 No
+2.0b 12/2/02 Comments incorporated for 2.0a Yes
+
+Please ensure that this document is current. Printed documents and locally copied files may become obsolete
+due to changes to the master document. The source of the document can be found in the IBM Lotus Notes
+
+Project Control Book.
+
+Review status and approvals
+
+This document will require
+
+approval from the following before being baselined:
+
+Name
+
+Title
+
+Carl Binnion IBM Project Manager
+Torstein Godeseth Post Office Limited TDA
+
+Bill Reynolds ICL Horizon Project Manager
+Distribution
+
+This document will be distributed to the following when baselined:
+
+Name
+
+Title
+
+The IBM Project Team
+
+The Post Office Limited Project
+
+Team
+
+The ICL Horizon Project Team
+
+The eFunds Project Team
+
+Filename: PONWB - NBE Horizon
+Author: Jo Down
+
+AIS - 2.0¢ - 020215.doc
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0cStatus: Baseline
+
+Date: February 15, 2002
+Page 2 of 68
+IBM Confidential
+
+FUJ00001624
+
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+Outstanding Issues
+
+The following issues affect this document, which will require updating when the issues are resolved:
+
+Number
+
+Description
+
+Issue Status and Date
+
+When the rate of requests received from
+Horizon exceeds a Maximum, the NBE
+must respond to sufficient [R] Messages
+with a [suitable A] Message without passing
+the [R] Message to a host such that the
+total rate of Messages being passed to a
+host a maximum.
+
+The NBE will not monitor the
+instantaneous transaction rate but if
+the processing capabilities of the
+machine are exceeded messages
+will be queued and subject to delay.
+Old messages will automatically be
+declined.
+
+6/2/02 Open Issue — with POL to
+agree satisfactory response. Due
+22/02/02.
+
+Fallback area requires expansion
+
+Raised 6/2/02
+
+Future Work required.
+POL to define specific
+requirements. Due 22/2/02
+
+Regarding: 3b) 3.1 has AS but does not
+define special characters; indeed how do
+we cope with text with - as yet undefined -
+reserved characters?
+
+I do not believe the clarification on the
+fourth bullet addresses the "As" and
+non-binary encoded data. Are there
+restrictions that, for instance, "<<<Great
+Credit Deals>>>" would be OK as footer
+text? etc.
+
+Raised 12/02/02
+Future decision required
+IBM/POL Due 22/2/02
+
+Regarding: 3c) 3.1.1 Is the XML carrying
+binary or BASE64 encoded binary?
+
+This referred to the third bullet in the notes
+around CDATA.
+
+IBM Due 22/2/02
+
+what fields are duplicated for a second
+balance. I had assumed Bal, Type, Amt
+and /Bal giving my 50. In Bob's calculation
+he has Balce, Bal, /Bal and /Balce giving
+26 difference of 24. The fields which are
+needed for a second balance need to be
+Clarified/agreed.
+
+IBM/POL Due 22/2/02
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢Status: Baseline
+Date: February 15, 2002
+Page 3 of 68
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+Table of Contents
+1 INTRODUCTION 9
+14 Purpose 9
+1.2 Scope 9
+1.3. Structure 9
+1.4 Terms and Abbreviations 10
+1.5 References 10
+2 OVERVIEW OF THE INTERFACE 1
+2.1. Data Description 1
+2.2 _ Derivation and Use of Data 12
+2.2.1 Intra-Day 12
+2.2.2 End of Day - File Transfer 13
+2.2.3 Security Messages 13
+2.2.4 Echo Test Messages 14
+2.3. Non Computer Data 14
+3 DATAITEMS 15
+3.1 Data Item List 15
+3.1.1 General Message Element Definitions and Abbreviations 15
+3.1.2 Horizon-NBE Message Elements 17
+3.1.3 Horizon-NBE File Elements. 26
+3.2 Data Interpretations 28
+3.2.1 [R2] - Authorisation / Financial Transaction Request 29
+3.2.2 [A2] - Authorisation/Financial Transaction Request Response 30
+3.2.3. [C2] - Confirmation 31
+3.2.4 [C4] - Confirmation 32
+3.2.5 [D] - Reconciliation Exception 34
+3.2.6 [KT] - Security Key Test 36
+3.2.7 [KA] - Security Key Acknowledge 36
+3.2.8  [PS]-Echo Test 37
+3.2.9 [PR] - Echo Test Response 37
+4 TRANSFER STRUCTURE 38
+4.1 Transfer Grouping 38
+4.1.1 Overview of the Interface 38
+4.1.2 Authorisation Agent Interface (Interface 1) 39
+4.1.3 Expedited Confirmations (Interface 2) 39
+4.14 Batch Interface (Interface 3) 39
+4.15 Network Management 39
+4.2 Transfer Structure 40
+4.3 Record Structure 40
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢Status: Baseline
+Date: February 15, 2002
+Page 4 of 68
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+1 XML Structures 40
+
+4.3.2 Message Structures 40
+4.4 Sequences 49
+4.5 Data Volumes 49
+4.6 Data Authentication 49
+4.7 Data Dictionary 49
+4.8 End of Day Batch Transfer 50
+4.8.1 Overview 50
+4.8.2 Segment File Format 50
+4.8.3 Control File Format 51
+
+5 SECURITY OF TRANSMITTED DATA 53
+5.1 Need to Know 53
+5.2 Protected Data 53
+5.3 Encryption and Decryption Methods 53
+5.3.1 PIN Block Encryption 53
+5.3.2 Sensitive Data Encryption 53
+5.3.3 Message Authentication 54
+5.4 Session Establishment 54
+5.5 Key Management 54
+5.5.1 Key Hierarchy 54
+5.6 Key Types 55
+5.6.1 Key Management Application 55
+5.6.2 Key Management Principles 56
+5.6.3 PIN Block Encryption Key Transport Fields 58
+5.6.4 Sensitive Data Encryption Key Transport Fields 58
+5.6.5 I Message Authentication Code Key Transport Fields 58
+5.6.6 Key Encryption 59
+5.7. Zone Key Agreement 59
+5.7.1 ZMK Distribution 59
+5.7.2 Key Stores 60
+5.7.3 Zone Master Key, ZMK, Life Cycle 60
+5.7.4 Zone Master Key Management Messages 62
+5.7.5. ZMK Variants 62
+
+6 OPERATIONAL PROCEDURES 64
+6.1 Processing Cycles 64
+6.2 Transfer Initiation 64
+6.3 Security Procedures 64
+6.4 Fallback Procedures 64
+6.5 Control 65
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢Status: Baseline
+Date: February 15, 2002
+Page 5 of 68
+FUJ00001624
+
+FUJ00001624
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+7 APPENDIXA 66
+7.1. Transaction Type Enumerators 66
+7.2 Discrepancy Reason Codes 66
+7.3. Response Codes 66
+7.4 Transaction Result Code 67
+7.5 Balance Type 67
+7.6 Network Management Response Codes 68
+7.7 Message Type Enumerators 68
+7.8 Record Type Enumerators 68
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0cStatus: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 6 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+1 Introduction
+
+1.1 Purpose
+
+The document has been produced by IBM for Post Office Limited as a deliverable from the work defined in the
+Statements of Work([1], [4], [6].
+
+The purpose of this document is:
+
+e To specify the interface between the NBE and Horizon (Campus)
+
+¢ To provide the development teams with sufficient detail to develop the NBE - Horizon interface
+e To provide a basis of contractual boundaries, and SLA measurement points
+
+e To provide a consistent communications vehicle amongst the development teams that have responsibility
+for developing the various components comprising the application.
+
+1.2 Scope
+
+This document applies to the interface between the NBE and Horizon Campus only. It includes only those
+financial transaction messages, network messages, reconciliation and settlement messages sufficient to
+support the financial products being delivered to Post Office Limited in the first release.
+
+The IBM Application Architect, IBM Business Analyst, Post Office Limited Application Architect, ICL Pathway
+Application Architect, LINK Application Architect and the IBM, eFunds and ICLP Development Team members
+should read this document.
+
+This AIS is concerned only with the application messages exchanged over the interface between NBE and
+Horizon. It does not include system management or the interfaces with LINK and other Financial Institutions.
+
+The technical interface between the NBE and Horizon will be specified in a Technical Interface Specification
+Reference [3].
+
+1.3 Structure
+
+This AlS document follows Post Office Limited’s AIS standard Reference [7].
+
+Section 2 contains a high level overview of the Horizon — NBE interface and its context.
+Section 3 contains a detailed description of the messages to be exchanged.
+
+Section 4 contains details of the data transfer.
+
+Section 5 contains details of security of the exchanged data items. This section identifies the security needed
+for data items (e.g. encryption) and details of the method to be used.
+
+Section 6 contains relevant details of any operational procedures relating to the interface.
+
+Section 7 contains response code data and discrepancy response code data
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 7 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+1.4 Terms and Abbreviations
+See NBE Programme Glossary at Reference [9]
+1.5 References
+Please note that where no version is specified in the table below, the latest version is assumed.
+1. Title PONWB - Statement of Work for Requirements Analysis
+Version 01.00
+Date 2 February 2001
+Author IBM
+2. Title NB Volumetrics
+Version 2.0A
+Date
+Author Post Office Limited
+3. Title PONWB - Horizon-NBE Technical Interface Specification
+Version 1.03
+Date 02 February 2002
+Author IBM
+4. Title PONWB - Statement of Work for Initiate Design Phase
+Version 01.00
+Date 24 September 2001
+Author IBM
+5. Title NBE-Horizon Operational Level Agreement
+Version
+Date TBD
+Author TBD
+6. Title PONWEB - Statement of Work To Initiate Phase 0
+Version 01.00
+Date 2 January 2002
+Author IBM
+7. Title PONWB - Application Interface Specification Template
+Version
+Date
+Author POL
+8. Title IBM/POL NBE Functional Solution Definition
+Version under construction
+Date
+Author IBM
+9. Title NBE Programme Glossary
+Version 1.3
+Date
+Author POL
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0cStatus: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 8 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+2 Overview of the Interface
+
+2.1 Data Description
+
+The following messages are exchanged over the Horizon - NBE interface:
+
+Message Description Direction
+Type
+
+[R2] Authorisation / Financial Transaction Request: Horizon > NBE
+e balance enquiry
+
+° withdrawal
+
+« withdrawal with balance
+° withdraw limit
+
+e deposit
+
+e PIN change
+
+[A2] Authorisation/Financial Transaction Request NBE > Horizon
+Response:
+
+e balance enquiry response
+
+e withdrawal response
+
+e withdrawal with balance response
+
+e withdraw limit response
+
+e deposit response
+
+e PIN change response
+
+Each of the above will have a response code that
+
+indicates approve or decline with reason and any
+required action (e.g. card retention).
+
+[C2] Priority confirmation sent: Horizon > NBE
+
+¢ Where clerk has declined the transaction
+where [A] Approve has been received at the
+counter
+
+e Where the counter times out as no [A] has
+been received by the counter
+
+[C2] messages are only generated for financial
+transactions ie not for Balance Enquiries or PIN
+Change transactions.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 9 of 68
+
+1BM ConfidentialiCL Pathway Confidential
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+message is generated.
+
+Change transactions.
+
+[C4] Confirmation See 3.2.4 for scenarios where this
+
+[C4] messages are only generated for financial
+transactions ie not for Balance Enquiries or PIN
+
+NBE
+
+> Horizon
+
+Change transactions.
+
+[D] Reconciliation Exception. See 3.2.5 for scenarios
+where this message is generated.
+
+[D] messages are only generated for financial
+transactions ie not for Balance Enquiries or PIN
+
+NBE
+
+-> — Horizon
+
+[KT] Security Key Test
+
+Horizon
+
+->  NBE
+
+[KA] Security Key Acknowledge
+
+NBE
+
+-> Horizon
+
+[PS] Echo Test
+
+further end-to-end significance.
+
+Initiated by Horizon at regular intervals to
+determine if NBE system is still available. NBE
+will reply immediately with [PR] message below.
+
+The context of [PR]/[PS] messages is local
+between the Agent and the NBE and has no
+
+Horizon
+
+->  NBE
+
+[PR] Echo Test Reply
+
+NBE
+
+-> Horizon
+
+Each message will include fields that ensure both the consistency of the interfaces (version number) and
+the security of sensitive data (message authentication codes and working keys).
+
+2.2 Derivation and Use of Data
+
+2.2.1 Intra-Day
+
+The messages listed above are generally exchanged, as a result of a transaction generated, by either a
+user at a Post Office outlet, or by LINK/Financial Institution. NBE does not generally initiate messages;
+rather it acts as a message router, and transforms received messages into the appropriate format for the
+next system in the message sequence. The following table shows the derivation and use of each banking
+transaction message exchanged between Horizon and NBE in terms of the received message that causes
+each Horizon - NBE message to be exchanged, and the transmitted message resulting from the Horizon -
+NBE message exchange. The shaded columns indicate the systems and connecting interface addressed
+
+by this AIS.
+Message Sequence
+Horizon Horizon NBE LINK or Financial
+Outlet Campus. Institutions
+(Ri —> (R21 > [R3] >
+<{A3] < [AQ] < TAT]
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢Status: Baseline
+Date: February 15, 2002
+Page 10 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+[C0] > [C2] > [Ey] >
+or
+
+No message
+< [EQ
+
+2.2.2 End of Day - File Transfer
+
+At the end of the day a batch file, relating to reconciliation and settlement messages, is generated. This
+file is created independently of real time processing, by message matching during settlement. These
+messages are derived as follows:
+
+e Reconciliation Exception Message [D] — this message informs Horizon that there will be a
+reconciliation difference and a manual adjustment may be necessary. The reasons for generating a [D]
+message are described in section 3.2.5
+
+* [C4] - This message informs Horizon of the NBE view of all Financial transactions received during
+the current Business day where the NBE believes that Horizon and the NBE are aligned. The
+scenarios where a [C4] is generated are described in section 3.2.4.
+
+The structure and delivery of this file is detailed in section 4.8.
+2.2.3 Security Messages
+Security key exchange messages are initiated by Horizon and acknowledged by NBE.
+
+The following table shows the derivation and use of each security message exchanged between Horizon
+and the NBE.
+
+Security Message Sequence
+Horizon Horizon NBE LINK or Financial
+Outlet Campus Institutions
+
+{KT] >
+
+< [KA]
+
+Key Test, KT, and Key Acknowledgement, KA, messages are only issued when the Acquirer Zone Master
+Key, AZMK, is changed. This will normally happen once every six months. The NBE may receive KT
+messages from all prime and backup Horizon NBS Agents. NBE must respond to all KT messages it
+receives with a KA message returned on the same connection. The first KA response returned by the
+NBE will trigger promotion of the new AZMK to current AZMK. The new AZMK promotion will be
+communicated to all NBE Pls and the new key will be used for MAC creation of responses to all
+subsequent messages sent by the NBS Agents to NBE. The old key AZMK will continue to be known to
+the NBE in order to perform cryptographic functions on messages constructed using the old AZMK that
+remain in enqueue for the NBE.
+
+If no response is received to any KT message sent by the NBS Agents operator intervention will be
+required to resolve the problem and retry the key test.
+
+2.2.4 Echo Test Messages
+
+The Horizon Agents have identified a need for sending periodic Echo Test messages to the NBE, to check
+that other applications are in a working state including valid keys, even if there is no business traffic (eg in
+the middle of the night). Two further messages have been introduced for this :-
+
+a) [PS] Echo Test
+
+b) [PR] Echo Test Reply
+(The PS message will be sent to NBE at a configurable interval, at a time to be defined in the OLA).
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 11 of 68
+
+IBM Confidential/ICL Pathway Confidential
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+FUJ00001624
+FUJ00001624
+
+The NBE should be listening for [PS] messages at all times (as it does for [R2] messages) and should
+respond with a [PR] message as soon as possible to the Horizon Agent, that initiated the PS message.
+These messages are very similar to the KT and KA messages identified by Key management. A common
+
+structure is defined, though separate message types are maintained to simplify processing.
+
+The following table shows the derivation and use of each security message exchanged between Horizon
+
+and the NBE.
+Echo Test Message Sequence
+Horizon Horizon NBE LINK or Financial
+Outlet Campus Institutions
+[PS] >
+< [PR]
+
+The Horizon prime and backup NBS Agent send application Echo Test messages at regular configurable
+intervals to NBE. If a timeout of this Echo Test is detected then the application software can close the
+
+connection (if appropriate) in order to reset the current session.
+
+2.3 Non Computer Data
+
+All data relating to this interface (with the exception of security (zone) keys) is originated/received from a
+
+connected computer system or from internal reference data.
+
+The manual exchange of security (zone) keys is described in Section 5 - ZMK Distribution.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0cStatus: Baseline
+Date: February 15, 2002
+
+Page 12 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3 Data Items
+
+3.1 Data Item List
+
+3.1.1 General Message Element Definitions and Abbreviations
+
+The following sections define the list of Horizon Campus Message Elements for each group of
+transactions, together with which message(s) they are present in. Each message is classified and
+identified using the RACE (Request / Authorise / Confirm / Exception) model.
+
+The Horizon Message Element name has been included for ease of reference.
+
+The entry in the format column corresponds to any of the abbreviations shown in the following table:
+
+Abbreviatio I Description
+
+A Alphabetic characters onl
+N Numeric characters only
+
+An Alphabetic or Numeric characters
+
+As Alphabetic or Special characters
+
+Ans Alphabetic, Numeric or Special characters
+B Binary
+
+DD Day
+
+MM Month
+
+YY Year
+
+cc Century
+
+HH Hour
+
+MM Minutes
+
+ss Seconds
+
+H Hexadecimal representation of the data
+T XML Tag
+
+The Field Size column gives the number of characters (octets) required for the data excluding XML tag
+names, as shown in the table below. Note that this value does not take into account the effect of
+encryption, which will increase the size of the sensitive data. For further detail see Section 5.6.1.
+
+Description i
+
+Fixed Length field. Numeric fixed length fields are right
+justified and zero padded. Fixed length string fields are left
+justified and space padded.
+
+«10 Variable length field (up to a maximum of 10 characters in
+this example).
+
+The Source column indicates the system or user originating the data.
+The Notes column contains a brief description of the field, together with any additional comments.
+
+The Required column in the message definition tables within this section contain the following codes:
+Code ___I Meaning
+
+M The element is mandatory for this message
+c The element is conditional for this message, and the condition to be applied is
+stated in the Conditions column. It should be noted that the receiving system
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0cStatus: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 13 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+may not be able to assess whether the condition has been met, in which case it
+must be able to interpret the presence or non-presence of the element according
+to appropriate business rules.
+
+Notes
+
+« The FAD Code, at an instance in time, unambiguously identifies an outlet. A FAD code may be
+reused, but because there is a hygiene period before reuse, this should not cause any problems.
+The current assumption is that the FAD code will continue to be used to uniquely identify an outlet,
+as many Horizon functions rely on this.
+
+« Null fields (i.e. that are not required) need not be transmitted over this interface. It is the
+responsibility of the receiving system to interpret null fields appropriately. If an amount field
+contains a zero, this will be treated as a numeric amount and not a null value.
+
+e The term “CDATA’ is used to indicate to XML that the field contains binary values.
+
+e XML requires that all data is printable. Base64 encoding of binary data allows the data to be
+presented as a printable string of ASCII characters. The character set is the ASCII code page, ISO
+8859. Base64 encoding results in a 3:4 expansion of data. The 64 "digits" used when encoding
+are:
+
+ABCDEFGHIJKLMNOPQRSTUVWXY Zabcdefghijkimnopqrstuvwxyz0123456789+/
+
+and the equals character is used for padding.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 14 of 68
+
+1BM ConfidentialiCL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+3.1.2 Horizon-NBE Message Elements
+
+The Horizon Message Elements used in Horizon-NBE messages are listed below (see section 3.1.1 for explanation of columns).
+
+The information presented here is also included in different contexts in other sections, mainly 3.2 and 4.3. However, the information in 3.1.2 takes precedence over any
+other section, where the information is included.
+
+The table includes Horizon element names, descriptions, XML tag names, maximum length of each element (including XML tag names). The XML names have been
+developed as follows:
+
+e Where possible, the LINK/ISO name has been used as the starting point
+e Where no (suitable) LINK/ISO name is available, the Horizon name has been used as the starting point
+
+« The XML names have been shortened as much as possible, whilst still retaining meaning in the name. Sometimes this has been achieved by removing vowels in the
+words, except where they occur at the beginning or end of a word. More often the first 3 or 4 characters of each word have been selected
+
+e Each shortened word begins with a capital letter
+«There are no delimiters between words
+
+e The words were re-arranged so that the class word (identifier, number, date, amount, etc.) occurred at the end of the name for consistency and reference purposes.
+Class words in XML were amended where appropriate to ensure consistency in XML.
+
+e XML structures are hierarchical. For each XML tag, the higher level XML names are shown in brackets. XML structures are to be included in this specification.
+
+e To further reduce the length of XML tag names certain abbreviations were adopted, as follows:
+
+° Cd Code
+
+° Id Identifier
+
+« MAC Message Authentication Code
+
+« Msg Message
+
+e Num Number
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 15 of 68
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+« PAN Primary Account Number
+e PIN Personal identification number
+e STAN System Trace Audit Number
+*  Trmsm Transmission
+° = Txn Transaction.
+_XBal Balce This XML tag is used fo group
+repeatable Balance fields
+_XBalce Ten This XML tag is used to group
+Balance fields
+~xCth NBANSg Defines the Control Data for the w [Mp] I M pM
+message
+xl NBANSg 1d 9 Defines the business data needed to I T w[M>M]MIMIM
+uniquely identify the transaction
+TXNBANSG TOPLevel NBANsg 7 The top level XML tag that identifies I T A
+the XML structure for all the
+messages in this AIS
+xSec NBAMS Seo Ti This XML tag is used to group T
+‘Security-related fields
+—XTxn NBANSg Tan Ti This XML tag holds the non-key T A
+fields for an individual message
+‘Agent_Date Ctr Agpte x) UTC date, Synched with a time c Campus
+source — Rugby. c Agent
+Y
+Y
+M
+M
+D
+D
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 16 of 68
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Appleaton Interface Specification
+
+‘Agent_time Ct Agtme 21] 6 I UTCtime. Synched with atime Campus ™
+source - Rugby Agent
+
+zlooz=errI
+
+‘Amount_Authorised Ten AuthAmt 31 I 12 I An amount of money that a bank will FT c Cc
+allow a Post Office customer to 12
+deposit/withdraw in a specific
+transaction. Expressed in the minor
+unit of currency (ie. GBP pence or
+EUR cents)
+
+“Amount_Confirmed Tin ConfAmt 31 I 12 I An amount of money that a Post NI.. I Clerk M TM IM
+Office customer has confirmed that 12
+they have deposited/withdrawn in a
+specific transaction. Expressed in
+the minor unit of currency (i.e. GBP
+pence or EUR cents).
+
+‘Amount_Discrepancy Ten DiscAmt 31 I 12 I This amount of money is the net NY]... I NSE ™
+result of a transaction, as far as the 12
+bank is concerned, It will contain the
+Amount_Confirmed,
+‘Amount_Authorised or
+‘Amount_Requested, depending on
+the reason for the [D] message
+Expressed in the minor unit of
+currency (ie. GBP pence or EUR
+cents), it does not contain a sign
+
+“Amount_Requested Tin RegAmt 29 I 12 I An amount of money that a Post N Clerk c c
+Office customer wishes to 12
+depositwithdraw in a specific
+transaction. Expressed in the minor
+unit of currency (ie. GBP pence or
+EUR cents)
+
+Auth_Code Tx AuthCd 23 I 6 I Avalue generated by the Banktobe I A I 6 I FI c
+printed on the receipt passed to the
+‘Customer. Usually this field is s
+reserved for EFTPoS transactions,
+but it may also be used in the direct
+bank Interface.
+
+3
+
+Balance_Type Bal Type 75 I 2 I Classifies account balances, NI 2 ]fl c
+according to their usage, using ISO /
+LISS equivalent enumerators. Please
+refer to Appendix A for enumerated
+values.
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 17 of 68
+
+IBM Confidential/ICL Pathway Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Balance_Vvalue Bal
+
+‘Amt
+
+24
+
+13
+
+The monetary balance for a
+customer's bank account, for a
+balance type, at a point in time.
+Contains
+
+*C’ (optional) = credit
+
+“D" = debit, followed by up to 12
+digits amount in the minor unit of
+currency (ie. GBP pence or EUR
+cents)
+
+A
+n
+s
+
+FI
+B
+
+Bank_Transaction_Id id
+
+STAN
+
+Message sequence number
+assigned by the message originator
+(except Horizon), to assist in
+identifying a transaction uniquely.
+Stays unchanged through the life of
+the transaction.
+
+Clerk_Identity Ctr
+
+User
+
+Records identity of clerk operating at
+the outlet workstation (also known as
+node or counter). This is required for
+audit purposes.
+
+3
+
+© I Outlet from
+system
+
+Client_ld Ten
+
+Clientid
+
+31
+
+Identifies a client of Consignia that is
+the end bank (card issuer) for a
+transaction . This element is needed
+for reconciliation and reports.
+
+~ I Horizon from
+10 I Ref Data
+
+Currency Tn
+
+CurrCd
+
+20
+
+Code defining the currency used to
+represent the transaction amount.
+Will be GBP, may be EUR later.
+'$04217 format to LINK & Fis
+
+3 I Clerk
+
+Discrepancy_Reason_cod I Txn
+e
+
+DscRsnCd
+
+eg
+
+‘Shows why a reconciliation error
+occurred for a transaction. Please
+refer to Appendix A for enumerated
+values.
+
+Enerypt Sec
+
+Encrypt
+
+187
+
+This contains the Encrypted
+Sensitive Data passed by Horizon to
+NBE. The encrypted fields are Track
+2 data (Expiry Date, and optionally
+Issue Number and Start Date)
+These fields are passed from the
+counter to Horizon in an XML
+structure, called Encdata (see
+4.3.2.1). The Enedata XML tag is
+also included in Encrypt.
+
+Entry_Method Tan
+
+Etyide
+
+Specifies how a transaction was
+entered by a clerk at a Point of
+Service. Value:
+
+1= manual,
+
+2.= magnetic card.
+
+Note that magnetic card data entry
+will always be from Track 2.
+
+T_[ Outlet from
+system
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 18 of 68
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+Expiry_Date NA ExpDte 0] 4 I Contains the year andmonthafter I Y Outlet from] ©
+which the card is deemed to have Y card
+expired. Card front format is M
+
+(MMYY), but needs to be converted I M
+to ISO format (YYMM) in Horizon, so
+this AIS handles the date in ISO
+format. This field is passed to the
+NBE within the Encrypt field and,
+therefore, does not have an XML
+length
+
+Fee Ten FeeAmt 29 I 12 I Value of the issuer charge for A. [Fl Cc
+processing a transaction in the minor I N I 12
+unit of currency (ie. GBP pence or
+EUR cents). This is not included in
+Transaction Amount, as the value is
+applied by the issuer. The value of
+the fee sign will indicate whether the
+fee is credited to or debited from the
+customer. Field is variable length
+and will have the following format:
+Digit 1 = C (Credit) or D (Debit)
+Digits 2-n = numeric
+
+Group_ld Cir Roptrid 25 I 6 I Uniquely identifies the party N 6 I Outietfrom [Mi MM I M
+accepting the card and presenting Ref Data
+transaction data to an acquirer.
+Currently, it wll be an outlet, which is
+a Consignia organisational unit,
+providing face-to-face customer
+services. Contains FAD code bytes
+1-6
+
+Horizon_Txn_Num id AtxnNum 31 I 32 I Unique transaction number to be A. I Outetfrom [M [mM I™MIM[M
+used in all messages between n I 32 I system
+Horizon and the NBE relating tothe I s
+transaction. Generated by Horizon
+and provided in the request message
+initiating the transaction. Will be
+generated using Group_ld, Node_Id
+(Outlet Workstation Identifier) and
+an incrementing number, however
+no assumptions should be made
+about the internal structure of this
+element - it must be regarded as a
+unique alphanumeric string.
+
+Tssue_Number WA TssNum 0] 3 I A number distinguishing between N 3 I Outettrom [Cc
+separate cards with the same card
+primary account number. It is
+entered when requested (when
+swipe fails). This field is passed to
+the NBE within the Encrypt field and,
+therefore, does not have an XML
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 19 of 68
+
+IBM Confidential/ICL Pathway Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Tength
+
+Tssuer_Scheme_ld Ten
+
+IssSchid
+
+3T I 10
+
+‘A unique system generated code to
+identify the Issuer Scheme. An
+example of an Issuer scheme might
+be Barclays’ Standard Current
+Account.
+
+N
+
+10
+
+‘Outlet from
+Ref data
+
+™
+
+Tanguage_Code Ten
+
+Tangcd
+
+Identifies the language to be used
+for printing text on receipt . The
+values 1-4 are set in reference data
+to indicate regions, the value 2 (=
+Wales) is the only value actioned by
+this interface
+
+Outlet from
+Ref data
+
+Maximum _Withdrawal Txn
+
+MaxWdrw
+
+3T I 12
+
+Maximum withdrawal for an
+individual transaction, in the minor
+unit of currency (ie. GBP pence or
+EUR cents). This is set by the outlet
+and is passed to the Bank.
+
+‘Outlet from
+Ref data
+
+Message_Authentication_
+Code
+
+NBAMSg
+
+MAC
+
+51 I 40
+
+Used to validate the source and the
+text of the message between the
+sender and receiver. (see ISO
+9807). Value is held as Base64
+encoded binary. See Section 5.6.5
+for additional details
+
+aeB<Q50
+
+40
+
+‘Sending
+System
+
+Message_Type on
+
+MsgType
+
+23/4
+
+Classifies the type of message being
+‘sent. Enumerators are listed in
+section 7.7
+
+Outlet from
+system
+
+Network_Management_Txn I Id
+_Num
+
+NettxnNum
+
+55 I 32
+
+Unique transaction number to be
+used in all network management
+messages between Horizon and the
+NBE. The same overall size field is
+used as Horizon_Txn_Num, but the
+internal structure of the identifier (i.
+the value) may be different from
+those generated at the counter
+
+Campus
+Agent
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 20 of 68
+Post Office Limited - Network Banking Engine - NBE - Horizon Appleaton Interface Specification
+
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Network_Response_code I Txn NetRespcd 25 I 2 I This allows the NBE to report Status I N NBE M ™
+information in Echo Tests and the
+response to a Security Key Test
+message. Please refer to Appendix
+A for enumerated values.
+Node_ld Cia Termia 7a I 2 I Uniquely identifies a point of service I N I 2 I Outlet from wi
+workstation (counter/node) within a system
+Consignia outlet
+PAN Tan PAN 30 I 19 [A series of up to 19 digits ona card I N Outlet from M
+used to identify a particular card, 19 I card M
+customer account or relationship. It
+is embossed on card or first n digits
+on track 2. Manually entered when
+card swipe fails Full name is Primary
+Account Number.
+PIN_Block_ Sec PINT 37 I 44 I Encrypted PIN block value Usedto I e I 44 I Entered by
+identify the cardholder at the point of I n cust
+service. Value is held as Base64 or
+encoded binary y
+pt
+e
+d
+PIN_Block_2 Sec PINZ 37 I 44 I When customer enters value for e I 44 I Entered by
+changed PIN, the new encrypted n cust
+PIN is entered here. Value is held as I cr
+Base64 encoded binary y
+pt
+e
+d
+Receipt_Text Ten Ropttxt 99 I 80 I Cardissuer data tobe printed onthe I A I .6 I Fi, vialook
+Point of Service workstation. nI 0 I up
+Comprises 2 lines of 40 characters. I s
+of information, e.gBank marketing
+material, festive message etc.
+Receipt_Transaction_Date I Id Telbte 25 I 8 I As printed on receipt, transaction C [8 _I Outlet from MM
+date on a Request, in Local Time c system
+Y
+Y
+M
+M
+D
+D
+Receipt_Transaction_Time I Id Teitme 23 I 6 I As printed on receipt, transaction H I 6 I Outlet from MM
+time on a Request, in Local Time H system
+M
+M
+s
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 21 of 68
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Reference
+
+Ref
+
+75 I 64
+
+Reference data that is to be reflected
+back in the response message.
+Allocated by Horizon, it is to be used
+in Security Key and Echo Test and
+Acknowledgement messages.
+
+0 3 >a]
+
+64
+
+Horizon7
+NBE
+
+Response _Code
+
+Respcd
+
+A code to show the Authorisation
+response to a previous request
+message. (ie whether it has been
+Authorised or Declined, of Failed).
+Please refer to Appendix A for
+enumerated values
+
+FINBE
+
+Routing_Gateway
+
+RingGwy
+
+29 I 10
+
+Identifies a system, where the
+authorisation for a specific
+transaction should be sought. This
+element is needed to specify where
+the NBE should route requests and
+for reconciliation and reports.
+Enumerators to be allocated. Value
+indicates destination address.
+Routing address, to be used in
+conjunction with reference data
+relating to organisational unit
+
+Outlet from
+system
+
+Settlement_Date
+
+Sette
+
+a7 I 8
+
+The calendar date, for which funds
+shall be transferred between
+acquirer and card issuer (i.e. when
+LINKIFI brings transaction to
+account). Where the NBE is acting
+as the slave, this element is provided
+(or overwritten) by the client for
+settlement, which may be LINK, the
+Flor (as an option for directly
+connected Fis) the NBE. Where the
+NBE is acting as the master, the
+NBE will provide this date not the
+Client.
+
+g0zz<~<oo
+
+Settlement
+Client
+
+Start_Date
+
+WA
+
+EfetDte
+
+Contains the year and month upon
+which the card is valid for use. Card
+front format is (MMYY), but needs to
+be converted to ISO format (YYMM)
+in Horizon, so this AIS handles the
+date in ISO format. This field is
+passed to the NBE within the
+Encrypt field and, therefore, does not
+have an XML length,
+
+z=e<<I
+
+‘Outlet from
+card
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 22 of 68
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Track_2_Image
+
+NA
+
+T2
+
+0] 37
+
+Contains the information encoded on
+track 2 of the magnetic stripe card,
+excluding beginning and ending
+sentinels and longitudinal
+redundancy check (LRC)
+characters. Any transaction entered
+by magnetic stripe will be declined if
+this element is not present. This field
+is passed to the NBE within the
+Encrypt field and, therefore, does not
+have an XML length.
+
+N] 37
+
+‘Outlet from
+card
+
+c
+
+Transaction_Result_Code
+
+TxnRsitCd
+
+25 I 2
+
+‘Shows the transaction outcome.
+Please refer to Appendix A for
+enumerated values.
+
+‘Outlet from
+clerk /
+application
+
+Transmission_Date_And_
+Time
+
+TmsmDieTm
+
+30 I 14
+
+Date and time the message initiator
+sends a message, specified in UTC.
+
+LINKTFIT
+NBE/
+Horizon
+
+‘Txn_Type
+
+TranType
+
+231 2
+
+Tdentifies the type of transaction
+being undertaken ; See Appendix 7.1
+for enumerated values.
+
+zjooZerrd00z=Z~<~<o9oI
+
+Clerk
+
+Version_Number
+
+Ctrl
+
+VersNum
+
+at { 2
+
+Version of the message definition. .
+Any changes to a message definition
+will result in a change to the version
+number for that message
+
+‘ZMK_ldentifier
+
+Txn
+
+ZMKId
+
+27 I 12
+
+‘The identity of the ZMK being tested
+copied from the corresponding Key
+Test Message MAC “blob” and
+Base64 encoded.
+
+NBE
+
+3.1.3 Horizon-NBE File Elements
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 23 of 68
+FUJ00001624
+
+FUJ00001624
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+CF_Serial_Number X starts at 001 for first Transfer CCYYMMDDXXx 1 M
+End_Signing_Date_Time _ I Latest Signing_Date_Time from control file body records CCYYMMDDHHMMSS I 14 M
+EOL End of Line Carriage Return/Line 2 IMI[M [MM] M
+Feed OxDOA
+File_Length Length of segment file in bytes N “42 M
+File_Name File name of the segment file without path name or suffixes See TIS M
+FS Field Separator 0x38 (Semi-colon) i M[M[MIM
+Generation_Date_and_Tim I Date and time at which the sequence file was generated CCYYMMDDHHMMSS I 14 I M M
+e
+MAC File ‘A Base 64 encoded version of the MAC result of the segment file Base64 40 M
+MAC_Record The MAC, in order, of the fields that precede the MAC_Record (including field separators) Base64 40 Mf M
+Number_Records Number of body records in the control N 4 M
+Record_Type Refer to section 7.8 for enumerators N 2 I[MI[M[M[™
+‘Sequence_Number_of File I Sequence number of the file being transferred n 4. ™M
+Signing_Date_Time Signing_Date and Time of the segment file CCYYMMDDHHMMSS I 14 M
+Start_Signing_Date_Time I Earliest Signing_Date_Time from control file body records CCYYMMDDHHMMSS I _14 M
+Total_Records Total number of XML records on the file N 8 M
+Version_Number Version number of the file N 2 [M M
+
+Filename: PONWB - NBE Horizon AIS - 2.0c - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+
+Page 24 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2 Data Interpretations
+
+This section contains the definition of each message type to be sent over this interface. The
+
+Message Element column lists those elements required for the message by Horizon name, and
+relates to list in Section 3.1.
+
+The Required column in the message definition tables within this section contain the following
+codes:
+
+M The element is mandatory for this message
+
+c The element is conditional for this message, and the condition to be applied is
+stated in the Conditions column. It should be noted that the receiving system
+may not be able to assess whether the condition has been met, in which case it
+
+must be able to interpret the presence or non-presence of the element according
+to appropriate business rules.
+
+The Conditions column lists the conditions for inclusion of a conditional message element;
+
+inclusion of the element may depend on details of the transaction type, or simply whether the data
+is available to the sending system.
+
+It should be noted that any changes to a message definition will result in a change to the version
+number for that message. A history of version numbers is maintained in this document.
+
+In the message definitions below, XML Tags are not included, as only data content fields are
+considered.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Version: 2.0¢ Status: Baseline
+Author: Jo Down
+
+Date: February 15, 2002
+
+Page 25 of 68
+IBM Confidential/CL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.1 [R2] - Authorisation / Financial Transaction Request
+
+3.2.1.1 Overview
+
+This message is sent by the Horizon Campus to the NBE. The message requests a financial
+transaction or authorisation.
+
+Please note that Transmission Date and Time is not included in the [R2] message. In order to
+measure if a message is stale, the NBE will use the Agent Date and Time. This time will be added
+by the Horizon Agent.
+
+3.2.1.2 Message Definition
+
+Message Element Required I Notes / Conditions
+Agent_Date 1
+‘Agent_Time M
+Amount_Requested c Required for Deposit, Withdrawal and Withdrawal with
+Balance transactions, as indicated by the Txn_type
+field in this message.
+Clerk_Identity M
+Client_Id M
+Currenc} Cc
+Entry_Method M
+Expiry_Date Cc Required, if manually entered and specified in
+reference data
+Group_1d M
+Horizon_Txn_Num M
+Issue_Number c Required, if manually entered and specified in
+reference data
+issuer_Scheme_Id M
+Language _Code M
+Maximum _Withdrawal c Required for Withdraw Limit transaction type, as
+indicated by the Txn_type field in this message.
+Message Authentication Code M
+Message_Type M
+Node_Id M
+PAN M
+PIN_Block_1 c Required for PIN change transaction, or if verification
+is by PIN, as indicated by the Txn_type field in this
+message.
+PIN_Block 2 c Required for PIN change transaction, as indicated by
+the Txn_type field in this message.
+Receipt_Transaction_Date M7
+Receipt_Transaction Time M
+Routing Gateway M
+Start_Date c Required, if manually entered and specified in
+reference data
+Track_2_Image Cc Required, if Entry Method = 2 (magnetic card)
+Txn_type M
+Version Number M Setto 01
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 26 of 68
+IBM Confidential/CL Pathway Confidential
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.2 [A2] - Authorisation/Financial Transaction Request Response
+
+3.2.2.1 Overview
+
+This message is sent by the NBE to Horizon Campus on receipt of an [A1] message from LINK or
+a Financial Institution or on timeout for the [A1]. The message contains the authorisation verdict
+
+to a request.
+
+Transactions supported by the [A2] message are listed in Section 2.1above.
+
+3.2.2.2 Message Definition
+
+Message Element Required I Notes / Conditions
+
+‘Amount_Authorised c Required for Deposit, Withdrawal, Withdraw Limit and
+Withdrawal with Balance transactions, as indicated by
+the Txn_type field in this message. Will be set to zero
+if the request is declined, (as indicated by the
+Response Code field in this message)
+
+‘Auth_Code Cc Required, if available from LINK/Bank
+
+Balance I Balance_Type c Required, if balance enquiry or financial transaction
+with balance, as indicated by the Txn_type field in this
+message (see 7.1 for enumerators) . Up to 2 balances
+will be passed to Horizon (each will be processed by
+Horizon)
+This field may be repeated to provide multiple
+balances. Refer to section 7.5 for values.
+
+Balance_Value Cc
+
+Bank Transaction_Id M
+
+Currency Cc Required, if Amount_Authorised or Balance or Fee is.
+present in message (ie. not null)
+
+Fee Cc Required, if issuer charges fee on this transaction
+
+Horizon_Txn_Num M
+
+Message_Authentication Code M
+
+Message _Type M
+
+Receipt_Transaction_Date M
+
+Receipt Transaction Time M
+
+Receipt_Text Cc Required, if available from issuer
+
+Response Code M ‘See Appendix A for enumerated values
+
+Settlement_Date M
+
+Version Number M Set to 07
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+Version: 2.0¢ Status: Baseline
+
+IBM Confidential/ICL Pathway Confidential
+
+Date: February 15, 2002
+Page 27 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.3 [C2] - Confirmation
+
+3.2.3.1 Overview
+These messages are sent by the Horizon Campus to the NBE for financial transactions only.
+
+[C2] nulls are generated from the counter where:
+1. the clerk has declined the transaction where an [A] Approve has been sent
+2. the counter times out as no [A] has been received
+
+If the NBE receives duplicate [C2]s, any second or subsequent [C2] will appear on an exception report
+during end of day processing. Duplicates will have the same Horizon Transaction Number.
+
+Transactions supported by the [C2] message are listed in Section 2. 1above.
+
+3.2.3.2 Message Definition
+
+Message Element Required I Notes / Conditions
+
+‘Amount_confirmed Wi Will be set to zero if the transaction is declined, (as,
+indicated by the Transaction Result Code field in this
+message)
+
+Required, if [A2] is available
+
+Bank_Transaction_1d
+Clerk_Identity
+
+Client_Id
+
+Currene}
+
+Group_id
+
+Horizon_Txn_Num
+Issuer_Scheme_Id
+Message_Authentication Code
+Message_Type
+
+Node_Id
+
+PAN
+Receipt_Transaction_Date
+
+Used to detect age of message for matching with
+request
+
+Receipt_Transaction_Time
+Routing Gateway
+Transaction Result_Code
+
+Txn_type
+Version Number
+
+zlzlel<leI =I=]=/=!=I=/=I=/=]/=IeI0}
+
+Set to 07
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 28 of 68
+
+IBM Confidential/CL Pathway Confidential
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.4 [C4] - Confirmation
+
+3.2.4.1 Overview
+
+NBE sends a [C4] message when:
+
+1. There is a [R/A] pair at the End of Day for which no reversal was required (either no [C2]
+message has been received, or a [C2] message has been received and the [A] was a decline).
+
+Where there is a [C2] in the message set:
+
+2. The [C2] message requires a reversal and the reversal is actioned, even if the NBE cannot
+
+complete delivery to the Financial Institution;
+
+3. There is no [R] or [A] in the log and the [C2] message is recent i.e. if there was a [R] message
+that reached the NBE it would have been found. As such the [C4] message closes the
+
+transaction that never got to the Financial Institution;
+
+4. There is a [C2] message with a corresponding [R/A] pair in the log for the same day, but no
+
+reversal is needed (i.e. [A] was a decline).
+
+Start
+
+.
+
+AB there [R/A}
+
+End of day search
+
+in context fle? NOP disk log to clarify > on disk?
+onren outcomes
+if T
+Yes Yes
+y y
+S 1e4]- [Ri was -
+_/Was the [A] declined N ‘Was the [A}
+~ approve! ? approve’?
+: No action. . -
+. ’
+Yes Yes
+y
+
+Process reversal
+
+{D] - Approved
+
+IR}.
+Must manually
+reverse.
+
+Ig there [R/A]_
+
+Should [R] ~_
+No be on disk? Yes
+[C4}- [RI that wa
+No not ‘seen’ by NBEI
+
+or therefore Fl.
+No action.
+
+(TDI no record of I
+I IRI for this (C2). I
+I Mayneed  ~
+t i
+
+Was the (oat RI
+7 approved ‘today’
+< reversal in the
+. and reversed
+
+‘same day?
+
+‘No:
+
+No action.
+
+[D] - [R} approved
+in a previous day.
+
+No action
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 29 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.4.2 Message Definition
+
+Message Element Required I Notes / Conditions
+
+‘Amount_Confirmed
+Bank_Transaction_Id
+Client_Id
+
+Currency
+
+Group_id
+Horizon_Txn_Num
+Message Type
+PAN.
+
+Receipt_Transaction_Date
+Receipt_Transaction_Time
+Routing Gateway
+Settlement_Date
+Txn_type
+
+Version_Number
+
+=I =/=/=I=/=/=I=/=/=I=I=I=I=}
+
+Set to 01
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 30 of 68
+
+IBM Confidential/CL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.5 [D] - Reconciliation Exception
+
+3.2.5.1 Overview
+
+The NBE sends this message to Horizon Campus at the end of the day as part of the batch file
+generated during settlement to inform Horizon that there will be a reconciliation difference. This
+indicates that manual inspection may be required to see what action is required to reconcile the
+transaction. This message is only sent for financial transactions.
+
+NBE sends a [D] message when:
+
+1. There is a [C2] message with a corresponding [R/A] pair on disk and reversal is needed; it was
+too late for the on-line to reverse and therefore needs manual intervention. The NBE does not
+generate a reversal.
+
+This would have a code 01 with a value of the approved amount.
+
+2. There is a [C2] message that refers to a [R] message that is older than that held on disk and
+therefore not known if a reversal is needed or not. The NBE does not generate a reversal.
+
+This would have a code 02 with a value of zero.
+
+3. There is a [C2] message with a corresponding [R/A] pair still in the context file that was
+approved in a previous day i.e. a value [C4] message would have been sent in an earlier day
+(typically a cut-over event, and seen as a stand-alone reversal). The NBE also generates a
+reversal.
+
+This would have a code 03 with a value of zero, as this is the resultant Fl position.
+
+The reason codes are listed in section 7.2.
+
+3.2.5.2 Message Definition
+
+Message Element Required I Notes / Conditions
+
+‘Amount Authorised Cc Required if available from [A] message
+
+‘Amount_Confirmed M
+
+‘Amount_Discrepancy M TEwill contain the Amount_Confirmed,
+Amount_Authorised or Amount_Requested,
+depending on the reason for the [D] message (please
+refer to Appendix 7.2 for the list of reasons).
+
+‘Amount_Requested c Required if available from [R] message
+
+Bank Transaction _Id M
+
+Clerk_identity M
+
+Client_Id M
+
+Currency M Currency relates to Amount_Discrepancy and will
+always be present.
+
+Discrepancy _Reason_Code M Refer to 7.2 for values
+
+Group_Id M
+
+Horizon_Txn_Num M
+
+Message_Type M
+
+Node_Id M Please note it is possible for there to be a change in
+the value of Node_Id between the [R2] and the [C2]
+message. It does not matter to Horizon which of the
+two values is passed back in a [D] message (should
+they differ).
+
+PAN M
+
+Receipt_Transaction Date M
+
+Receipt_Transaction Time M
+
+Routing Gateway M
+
+Settlement_Date M
+
+Txn_Type M
+
+Version Number M Settoo1
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 31 of 68
+IBM Confidential/CL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.6 [KT] - Security Key Test
+
+3.2.6.1 Overview
+
+This message is sent by Horizon Campus to the NBE to confirm that a new ZMK has been
+correctly installed, and that Horizon is ready to receive Working Keys encrypted using it.
+
+3.2.6.2 Message Definition
+
+Message Element Required _[ Notes / Conditions
+Message_Authentication Code
+Message_Type
+
+Network Management Txn_Num
+Reference
+Transmission_date_and_time
+Version_Number
+
+=I=/=]=]e/=
+
+Set to 01
+
+3.2.7 [KA] - Security Key Acknowledge
+
+3.2.7.1 Overview
+
+This message is sent by the NBE to Horizon Campus to acknowledge correct receipt of a Key Test
+Message, and to confirm that NBE is ready to receive Working Keys encrypted using the ZMK
+identified in the message.
+
+3.2.7.2 Message Definition
+
+Message Element Required I Notes / Conditions
+Message_Authentication Code
+Message_Type
+
+Network Management_Txn_Num
+Network Response_Code
+Reference
+
+Transmission _date_and_time
+
+2IzI=I</</Z/e]=
+
+Version_Number Setto 01
+
+ZMK_Identifier
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 32 of 68
+IBM Confidential/CL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+3.2.8 [PS] - Echo Test
+
+3.2.8.1 Overview
+The Horizon Agents have identified a need for sending periodic [PS] Echo Test messages to the NBE so as
+to be able to check that all is well in the connections even if there is no business traffic (eg in the middle of
+the night). The NBE should be listening for [PS] messages at all times (as it does for [R2] messages) and
+on receipt return a response to the ICLP agent indicating its alive status using the same connection.
+
+3.2.8.2 Message Definition
+
+Message Element Required I Notes / Conditions
+Message_Authentication_Code
+Message_Type
+
+Network Management_Txn_Num
+Reference
+Transmission_date_and_time
+Version Number
+
+=I=I=I=]</=
+
+Set to 01
+
+3.2.9 [PR] - Echo Test Response
+
+3.2.9.1 Overview
+
+The Horizon Agents will send periodic [PS] Echo Test messages to the NBE, to check that all is well in the
+connections even if there is no business traffic (e.g. in the middle of the night). The NBE should be
+listening for [PS] messages at all and should respond with a [PR] message as soon as possible.
+
+3.2.9.2 Message Definition
+
+Message Element Required I Notes / Conditions
+Message_Authentication Code M
+Message_Type
+
+Network Management_Txn_Num
+
+Network_Response_Code
+
+Reference
+
+Transmission_date_and_time
+
+=l=/=} =} =l=/=I
+
+Version_Number Set to 07
+
+ZMK Identifier
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 33 of 68
+IBM Confidential/CL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4 Transfer Structure
+
+4.1 Transfer Grouping
+
+4.1.1 Overview of the Interface
+
+The following figure shows the end to end message sequences, using the RAC (Request / Authorise /
+Confirm) model, across all components of the Network Banking environment. This AIS addresses all
+application messages between the NBE and the Horizon Campus. The network messages [KT], [KA], [PS],
+[PR] are not included in this diagram, but are included in the PONWB — Horizon-NBE Technical Interface
+Specification [3].
+
+Revised Message Flows eliminating C flow to NBE (draft)
+
+Client
+oy PocL
+
+[summaries byI
+(se)
+
+li
+I[ cee &
+
+AIS UF 1 AIS UF 2 mm AIS UF 3
+[cana] Data Reconciliation Service Host
+(Reconciliation Processing Tebies)
+A
+12 cnt
+
+espe oa
+
+met)
+
+Campus
+
+Mossage Store I [ R
+replication
+
+vesting into 611 & C12)
+
+4 Logieat And spit (ns
+
+OutietI 2 Legend. transer, seperate
+
+RIA pairs wah no C2nulor completed Cn processing
+peredicaly), tase with uncompleted C2nul generate D
+
+4 And spit wnere co message requ igs CO ar nut response om
+
+21 16/0102 0, Hotingeworth
+
+The diagram (taken from ICL Pathway) shows that the NBE exchanges messages with the Horizon
+Campus over three distinct interfaces.
+
+AIS I/F 1 is used to exchange messages between the PO Outlet and the NBE through an Authorisation
+Agent within the Horizon Campus. This interface carries the transaction request messages from Horizon
+to the NBE, and the related authorisation messages that authorise or decline the transaction.
+
+AIS I/F 2 is used for expedited confirmation messages that originate at the Outlet, requiring the NBE to
+possibly reverse a transaction.
+
+AIS I/F 3 is used to send the batch file which is created during End of Day reconciliation containing [C4]
+and [D] messages to the Data Reconciliation Service Host in Horizon.
+
+All these interfaces should be resilient to the transfer of duplicate messages; in practice, however, this
+should only happen after failure and recovery of either end of the interface.
+
+Horizon can initiate an Echo test ([PS] / [PR] exchange) or a Security test ([KT] / [KA] exchange) at any
+time with the NBE using a specific Systems Management interface (not shown in the diagram) for this
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 34 of 68
+1BM Confidential/iCL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+purpose. Since Horizon is a distributed system, these exchanges, which may take place from any Horizon
+Agent Server to the NBE, provide an appropriate "return address" for the reply by means of an
+Agent_Identifier .
+
+4.1.2 Authorisation Agent Interface (Interface 1)
+
+This interface supports [R2] and [A2] messages only. The messages are exchanged online, as a single
+message transfer in each direction.
+
+Horizon campus initiates all transactions by issuing an [R2] message from a request from a clerk at a PO
+Outlet of behalf of a card-holding customer. NBE forwards the request as an [R3] message to the
+authorising institution and under normal circumstances waits for an [A1] response, which it then passes to
+Horizon as an [A2] message.
+
+Both NBE and Horizon will detect and discard stale messages, and each will apply a timeout to the
+expected reply. Activation of the timeout will cause a transaction to be declined by the NBE (on non-
+receipt of the [A1]) by sending an [A2] decline message to Horizon, and by Horizon (on non-receipt of the
+[A2]) by initiating an [A3] decline. If a connection no longer exists to deliver the [A] message then
+automatic reversal by the NBE is required.
+
+This interface is to be operational throughout the Post Office trading day, which, for a few outlets (e.g.
+Heathrow airport), is 24 hours. This means that “business as usual” must be accommodated during
+settlement.
+
+4.1.3 Expedited Confirmations (Interface 2)
+
+This interface supports expedited confirmation [C2] messages only. They are ‘priority’ messages
+generated either because the counter decision is different from that on the authorisation due to a clerk
+decision or because of a failure in communications and it is unclear as to whether the transaction has
+been authorised or not.
+
+4.1.4 Batch Interface (Interface 3)
+
+This interface supports the file transfer of the batch file containing the Confirmation [C4], and
+Reconciliation Exception [D] messages. Either a [C4] or a [D] message is needed to complete the
+“message set” for each transaction. The scenarios where a [C4] is generated is described in section 3.2.4
+and [D] scenarios are described in section 3.2.5. There will only be one [C4] or [D] message in one
+business day for one message set.
+
+4.1.5 Network Management
+
+The Authorisation Agent and Expedited Confirmation Interfaces support Network Management application
+Ping [PS], [PR] messages in addition to their primary message set. These Network Management
+messages flow in real time. Ping [PS] messages originate in Horizon Agents. Each agent will generate a
+[PS] message at a regular, configurable interval. This interval will typically be a number of minutes. The
+NBE should respond immediately with a [PR] message to the originating agent to confirm it is available to
+process business messages. If the Horizon Agent does not receive a [PR] message it should log an event
+and send another message after waiting for the configured interval. Any response must be received on the
+same connection.
+
+Key Test messages and their responses [KT] and [KA] are used to verify that a new acquirer ZMK has
+been exchanged successfully. The period between ZMK changes must be agreed by Horizon and NBE. It
+is normally occurs every six months. Keys will only be changed at other times, if key compromise or a
+Disaster Recovery action is required. The [KT] message includes a working key encrypted under the new
+Zone Master Key. The NBE decrypts and verifies the working key and responds to the originating agent,
+using a [KA] message.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 35 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4.2 Transfer Structure
+
+The messages defined in this AIS will be exchanged using XML_ The message definitions in Section 3.2
+specify the mandatory and conditional elements comprising each message.
+
+4.3 Record Structure
+4.3.1 XML Structures
+
+For each message type in this specification, an equivalent XML structure is provided below in XML tag
+language. Please refer to the Data Dictionary in this specification for details of the derivation of the XML
+tag names and maximum length of each field (including XML tags).
+
+A maximum length for the XML structure is normally included.. In the XML structures below, there are two
+
+types of elements
+
++ XML structure headings, which do not have any associated values
+
+e XML attributes that do have any associated values. These names are followed by the XML delimiter
+for the field followed by the Horizon Message Element e.g. <Acptrid>value</Acptrid>. // Group_Id
+
+The XML structures accommodate sensitive data encryption operations, which will include whichever fields
+are present of Track_2_Image, Expiry_Date, Issue_Number and Start_Date.
+
+"Empty" fields will be omitted in XML.
+
+4.3.2 Message Structures
+
+4.3.2.1 [R2] - Authorisation/Financial Transaction Request
+Maximum Length of [R2] XML Structure is 923 octets
+
+<NBAMsg>
+
+<Ctri>
+<VersNum>value</VersNum> // Version_Number
+<MsgType>value</MsgType> /I Message_Type
+<Acptrid>value</Acptrid> // Group_ld
+<Termid>value</Termid> // Node_Id
+<User>value</User> // Clerk_Identity
+<AgDte>value</AgDte> //Agent_Date
+<AgTme>value</AgTme> //Agent_Time
+
+</Ctrl>
+
+<Id>
+
+<HTxnNum>value</HTxnNum>
+<LclDte>value</LclDte>
+
+<LclTme>value</LelTme>
+
+// Horizon_Txn_Num
+// Receipt_Transaction_Date
+
+// Receipt_Transaction_Time
+
+Filename: PONWB -
+
+Author: Jo Down
+
+NBE Horizon AIS - 2.0¢ - 020215.doc
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 36 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+</ld>
+
+<Txn>
+<TranType>value</TranType> /1 Txn_Type
+<PAN>value</PAN> PAN
+<RegAmt>value</ReqAmt> // Amount_Requested
+<CurrCd>value</CurrCd> // Currency
+<EtyMde>value</EtyMde> // Entry_Method
+<IssSchid>value</IssSchld> // \lssuer_Scheme_lId
+<LangCd>value</LangCd> // Language_Code
+<MaxWdrw>value</MaxWdrw> // Maximum_Withdrawal
+<Clientld>value</Clientld> // Client_Id
+<RtngGwy>value</RtngGwy> // Routing_Gateway
+
+</Txn>
+
+<Sec>
+<PIN1>value</PIN1> // PIN_Block_1 CDATA as encrypted
+<PIN2>value</PIN2> // PIN_Block_2 CDATA as encrypted
+<Encrypt>value</Encrypt> // Encrypted data (see below) CDATA as encrypted
+
+</Sec>
+
+<MAC>value</MAC> // Message_Authentication_Code
+
+</NBAMsg>
+
+<Encrypt> is a single encrypted field, the source of which is the following structure, (passed from the counter
+to Horizon):-
+<EncData>
+<T2>value</T2> // Track_2_Image
+OR
+[ <ExpDte>value</ExpDte> // Expiry_Date
+[ <IssNum>value</IssNum> // Issue_Number
+[ <EfctDte>value</EfctDte> _// Start_Date
+</EncData>
+
+Please refer to 5.6.4 for the exact structure of <Encrypt>
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 37 of 68
+
+IBM Confidential/ICL Pathway Confidential
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+FUJ00001624
+FUJ00001624
+
+4.3.2.2 [A2] - Authorisation/Financial Transaction Request Response
+
+Maximum Length of [A2] XML Structure is 602 octets. The length assumes 2 balances are passed in the
+
+message.
+
+<NBAMsg>
+<Ctri>
+</Ctrl>
+
+<id>
+
+</Id>
+
+<Txn>
+
+</Txn>
+
+<VersNum>value</VersNum>
+
+<MsgType>value</MsgType>
+
+<HTxnNum>value</HTxnNum>
+<LclDte>value</LclDte>
+<LclTme>value</LclTme>
+<STAN>value</STAN>
+
+<RespCd>value</RespCd>
+<AuthAmt>value</AuthAmt>
+<CurrCd>value</CurrCd>
+<FeeAmt>value</FeeAmt>
+<Balce>
+
+<Bal>
+
+<Type>value</Type>
+<Amt>value</Amt>
+
+</Bal>
+</Balce>
+<AuthCd>value</AuthCd>
+<ReptTxt>value</ReptTxt>
+<SettDte>value</SettDte>
+
+<MAC>value</MAC>
+
+</NBAMsg>
+
+// Version_Number
+
+/i Message_Type
+
+// Horizon_Txn_Num
+
+// Receipt_Transaction_Date
+// Receipt_Transaction_Time
+// Bank_Transaction_ld
+
+// Response_Code
+
+// Amount_Authorised
+
+// Currency
+
+// Fee
+
+/I Balance
+
+// (can repeat)
+
+// Balance_Type
+
+// Balance_Amount
+
+// Auth_Code
+// Receipt_Text
+// Settlement_Date
+
+/I Message_Authentication_Code
+
+Filename: PONWB -
+
+Author: Jo Down
+
+NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+
+IBM Confidential/ICL Pathway Confidential
+
+Page 38 of 68
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+// Version_Number
+// Message_Type
+// Group_Id
+
+1 Node_Id
+
+// Clerk_Identity
+
+// Horizon_Txn_Num
+
+// Receipt_Transaction_Date
+// Receipt_Transaction_Time
+// Bank_Transaction_ld
+
+// \ssuer_Scheme_Id
+
+// Txn_Type
+
+// Transaction_Result_Code
+// Amount_Confirmed
+
+// Currency
+
+/1 Client_ld
+
+// Primary Account Number
+// Routing_Gateway
+
+4.3.2.3 [C2] - Confirmation
+Each [C2] message will have a Maximum Length of 546 octets
+<NBAMsg>
+<Ctri>
+<VersNum>value</VersNum>
+<MsgType>value</MsgType>
+<Acptrid>value</Acptrid>
+<Termid>value</Termld>
+<User>value</User>
+</Ctri>
+<Id>
+<HTxnNum>value</HTxnNum>
+<LclDte>value</LclDte>
+<LclTme>value</LclTme>
+<STAN>value</STAN>
+</\d>
+<Txn>
+<IssSchid>value</IssSchld>
+<TranType>value</TranType>
+<TxnRsltCd>value</TxnRsltCd>
+<ConfAmt>value</ConfAmt>
+<CurrCd>value</CurrCd>
+<Clientld>value</Clientld>
+<PAN>value</PAN>
+<RtngGwy>value</RtngGwy>
+</Txn>
+
+<MAC>value</MAC>
+
+</NBAMsg>
+
+/i Message_Authentication_Code.
+
+Filename: PONWB -
+
+Author: Jo Down
+
+NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Version: 2.0¢ Status: Baseline
+
+IBM Confidential/ICL Pathway Confidential
+
+Date: February 15, 2002
+Page 39 of 68
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4.3.2.4 [C4]
+
+- Confirmation
+
+Each [C4] message will have a Maximum Length of 428 octets.
+
+<NBAMsg>
+<Ctri>
+
+</Ctrl>
+
+<id>
+
+</id>
+
+<Txn>
+
+</Txn>
+</NBAMsg>
+
+<VersNum>value</VersNum>
+<MsgType>value</MsgType>
+<Acptrid>value</Acptrid>
+
+<HTxnNum>value</HTxnNum>
+<LclDte>value</LclDte>
+<LclTme>value</LclTme>
+<STAN>value</STAN>
+
+<TranType>value</TranType>
+<ConfAmt>value</ConfAmt>
+<CurrCd>value</CurrCd>
+<Clientld>value</Clientld>
+<PAN>value</PAN>
+<RtngGwy>value</RtngGwy>
+<SettDte>value</SettDte>
+
+/i Version_Number
+// Message_Type
+// Group_Id
+
+// Horizon_Txn_Num
+// Receipt_Transaction_Date
+
+// Receipt_Transaction_Time
+
+// Bank_Transaction_Id
+
+/1 Txn_Type
+
+// Amount_Confirmed
+
+// Currency
+
+1 Client_Id
+
+// Primary Account Number
+// Routing_Gateway
+
+// Settlement_Date
+
+Filename: PONWB -
+
+Author: Jo Down
+
+NBE Horizon AIS - 2.0¢ - 020215.doc
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 40 of 68
+IBM Confidential
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+FUJ00001624
+FUJ00001624
+
+4.3.2.5 [D] - Reconciliation Exception
+
+Each [D] message will have a Maximum Length of 581 octets
+
+<NBAMsg>
+
+<Ctri>
+
+</Ctrl>
+
+<Id>
+
+</ld>
+
+<Txn>
+
+</Txn>
+</NBAMsg>
+
+<VersNum>value</VersNum>
+<MsgType>value</MsgType>
+<Acptrid>value</Acptrid>
+<Termid>value</Termld>
+<User>value</User>
+
+<HTxnNum>value</HTxnNum>
+<LclDte>value</LclDte>
+<LclTme>value</LclTme>
+<STAN>value</STAN>
+
+<TranType>value</TranType>
+<DscRsnCd>value</DscRsnCd>
+<ReqAmt>value</ReqAmt>
+<AuthAmt>value</AuthAmt>
+<ConfAmt>value</ConfAmt>
+<DiscAmt>value</DiscAmt>
+<CurrCd>value</CurrCd>
+<Clientld>value</Clientld>
+<PAN>value</PAN>
+<RtngGwy>value</RtngGwy>
+<SettDte>value</SettDte>
+
+// Version_Number
+// Message_Type
+// Group_Id
+
+1 Node_ld
+
+// Clerk_Identity
+
+// Horizon_Txn_Num
+
+// Receipt_Transaction_Date
+// Receipt_Transaction_Time
+// Bank_Transaction_ld
+
+/ Txn_Type
+
+// Discrepancy_Reason_Code
+// Amount_Requested
+
+// Amount_Authorised
+
+// Amount_Confirmed
+
+// Amount_Discrepancy
+
+// Currency
+
+ Client_Id
+
+// Primary Account Number
+// Routing_Gateway
+
+// Settlement_Date
+
+Filename: PONWB -
+
+Author: Jo Down
+
+NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+
+IBM Confidential/ICL Pathway Confidential
+
+Page 41 of 68
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+4.3.2.6 [KT] - Security Key Test
+[KT] messages have a Maximum Length of 314 octets.
+Please note that [KT] and [PS] messages will have the same format.
+<NBAMsg>
+<Ctri>
+<VersNum>value</VersNum> _ // Version_Number
+<MsgType>value</MsgType> // Message_Type
+</Ctri>
+<Id>
+<NetTxnNum>value</NetTxnNum> // Network_Management_Txn_Num
+<TmsmDteTme>value</TrnsmDteTme> // Transmission_Date_And_Time
+</\d>
+<Txn>
+<Ref>value</Ref> // Reference
+</Txn>
+<MAC>value</MAC> // Message_Authentication_Code
+</NBAMsg>
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 42 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+4.3.2.7 [KA] - Security Key Acknowledge
+[KA] messages have a Maximum Length of 366 octets.
+Please note that [KA] and [PR] messages will have the same format.
+<NBAMsg>
+<Ctri>
+<VersNum>value</VersNum>_// Version_Number
+<MsgType>value</MsgType> // Message_Type
+</Ctrl>
+<Id>
+<NetTxnNum>value</NetTxnNum> // Network_Management_Txn_Num
+<TrsmDteTme>value</TrnsmDteTme> // Transmission_Date_And_Time
+</\d>
+<Txn>
+<Ref>value</Ref> // Reference
+<NetRespCd>value</NetRespCd> _// Network_Response_Code Code
+<ZMKId>value</ZMKId> 1 ZMK Id
+</Txn>
+<MAC>value</MAC> // Message_Authentication_Code
+</NBAMsg>
+4.3.2.8 [PS] Message
+[PS] messages have a Maximum Length of 314 octets.
+Please note that [KT] and [PS] messages will have the same format.
+<NBAMsg>
+<Ctri>
+<VersNum>value</VersNum> _ // Version_Number
+<MsgType>value</MsgType> // Message_Type
+</Ctrl>
+<Id>
+<NetTxnNum>value</NetTxnNum> // Network_Management_Txn_Num
+<TrnsmDteTme>value</TrnsmDteTme> // Transmission_Date_And_Time
+</ld>
+<Txn>
+<Ref>value</Ref> / Data to be reflected back in the response
+</Txn>
+<MAC>value</MAC> // Message_Authentication_Code
+</NBAMsg>
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 43 of 68
+
+IBM Confidential/ICL Pathway Confidential
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4.3.1.9 [PR] Message
+[PS] messages have a Maximum Length of 36 octets.
+
+Please note that [KA] and [PR] messages will have the same format.
+
+<NBAMsg>
+<Ctri>
+
+<VersNum>value</VersNum> _ // Version_Number
+<MsgType>value</MsgType> // Message_Type
+
+</Ctrl>
+<Id>
+
+<NetTxnNum>value</NetTxnNum> // Network_Management_Txn_Num
+
+<TrnsmDteTme>value</TrnsmDteTme>
+
+// Transmission_Date_And_Time
+
+</ld>
+
+<Txn>
+<Ref>value</Ref> // Data sent in the echo response
+<NetRespCd>value</NetRespCd> // Network_Response_Code
+<ZMKId>value</ZMKId> it ZMK_Id
+
+</Txn>
+
+<MAC>value</MAC> // Message_Authentication_Code
+
+</NBAMsg>
+
+4.4 Sequences
+
+Figure 1 above (see Section 4.1) shows the end-to-end message sequences of all the messages supported by
+this AIS, from the PO Outlet to the issuing financial institution. This AIS addresses the interaction and related
+
+behaviour only of the Horizon Campus systems and the NBE.
+
+4.5 Data Volumes
+
+Volumes are based on information provided by Post Office Limited in NB Volumetrics, Reference [2 ].
+
+4.6 Data Authentication
+
+Data authentication is described in Section 5.3.3.
+
+4.7 Data Dictionary
+
+This section has now been merged into 3.1.2.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 44 of 68
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4.8 End of Day Batch Transfer
+
+4.8.1 Overview
+
+The NBE will send all [C4] and [D] messages at End of Day in a batch file to the Horizon FTMS Server for
+onward delivery to the DRS. This will be a single logical file to include all [C4] and [D] messages for every
+direct interface i.e. Financial Institutions and LINK. This file may be split into several smaller physical files
+(determined by the size of the file). Each segment file will have a header, body and trailer. In addition a
+control file will be sent. For those non-business days for Post Office Limited, ie where there has been no
+financial activity for the day, then the NBE will send a control file with a segment file containing no data.
+
+4.8.2 Segment File Format
+
+Each Segment file will have a header and trailer. There may be zero or more segment files. No single
+segment file will exceed 200 MB in size.
+
+4.8.2.1 Segment File Header
+
+Notes
+Refer to section 7.8.
+
+Message Element
+
+Record_Type
+
+FS
+
+Version_Number
+
+FS
+Sequence_Number_of_File
+FS
+
+Generation_Date_ and_ Time
+EOL
+
+Set to 01
+
+4.8.2.2 Segment File Body
+
+There will be zero or more segment file body records (See section 4.3.2.4 and 4.3.2.5 for XML structure) each
+of which will be terminated with a carriage return line feed. The records will be in date time order within the
+
+file(s).
+
+4.8.2.3 Segment File Trailer
+
+Message Notes
+Element
+Record_Type Refer to section 7.8.
+FS
+Total_Records Total number of XML records on the file
+EOL
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 45 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+4.8.3 Control File Format
+
+The MAC_File is calculated over the binary representation of the file, including EOL characters, together with
+elements 1 to 3 in the Message Authentication Code Transport Fields, represented in their binary form. Please
+refer to 5.3.3 for further details
+
+Both the MAC_File and MAC_Record are calculated over ASCII representations of the File and record
+respectively.
+
+The format of the data in MAC_File and MAC_Record are as defined in section 5.6.
+
+4.8.3.1 Control File Header
+This section defines the structure of the file used to carry the list of segment files and their associated MACs.
+
+Message Element Notes
+
+Record_Type Refer to section 7.8.
+
+FS
+
+Version_Number Set to 01
+
+FS
+
+CF_Serial_Number CCYYMMDDXxXx where X starts at 001 for first transfer.
+
+FS
+
+Start_Signing_Date_Time Earliest Signing_Date_Time from control file body records
+
+FS
+
+End_Signing_Date_Time Latest Signing_Date_Time from control file body records
+
+FS
+
+Number_Records Number of body records in the control file (may be zero)
+
+FS
+
+Generation_Date_ and_ Time Date and Time at which control file was generated
+
+FS
+
+MAC _Record A Base 64 encoded version of the MAC result of all the
+above fields including field separators.
+
+EOL
+
+4.8.3.2 Control File Body
+
+Message Element Notes
+Record_Type Refer to section 7.8.
+FS
+Signing_Date_Time Signing Date and time of the segment file
+FS
+File_Name File name of segment file without path
+name or suffixes
+FS
+File_Length Length of segment file in bytes
+FS
+MAC_File A Base 64 encoded version of the MAC
+result of the segment file.
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc, Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 46 of 68
+1BM Confidential/iCL Pathway Confidential
+FUJ00001624
+
+FUJ00001624
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application Interface Specification
+FS
+MAC_Record A Base 64 encoded version of the MAC
+result of all the above fields including field
+separators.
+EOL
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 47 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+5 Security of Transmitted Data
+
+5.1 Need to Know
+
+Only the issuing financial institutions can verify PIN blocks for accounts they hold. The key under which
+PIN blocks are encrypted is translated at security zone boundaries. The content of the PIN block must not
+be exposed in clear in memory during the translation process.
+
+5.2 Protected Data
+
+Data is protected by encryption and message authentication codes, MACs.
+
+PIN block data is encrypted at all times. The PIN block is never rendered in clear outside the hardware.
+Sensitive data is encrypted while in transit.
+
+The integrity of all messages will be protected by MACs.
+
+5.3 Encryption and Decryption Methods
+
+Encryption and decryption of NBE transaction data must use Triple DES with double length keys.
+
+5.3.1 PIN Block Encryption
+
+PIN Blocks are binary data and will be encoded in XML strings as base 64-encoded data
+
+e PIN Block Format: Plain text PIN blocks shall be represented using Format 0 as defined in ANSI X9.8.
+
+e Encryption Mode: The plain text shall be encrypted using a double-length DES key’ using ECB mode
+as defined in Appendix 2 of FIPS Publication 46-3.
+
+5.3.2 Sensitive Data Encryption
+The binary result of sensitive data encryption will be encoded in strings in base 64-encoded XML strings.
+
+e The plain text data shall be padded using the algorithm in ANSI X9.23 so that it is a whole multiple of
+8 octets.
+
+e Pad characters are binary zeros
+
+¢ It is then encrypted using the TCBC mode of operation as defined in ANSI X9.52? using a 64-bit
+Initialisation Vector (IV)°.
+
+5.3.3 Message Authentication
+MACs shall be computed using triple DES mode of operation specified in ANSI X9.19.
+1 According to FIPS46-3, TDEA keying option 2
+
+2 This is equivalent to the CBC mode in FIPS81 with the block cipher replaced by triple DES in ECB mode as defined in FIPS 46-3.
+FIPS81 has not been updated to cover triple DES.
+
+3 The IV is required to protect against dictionary attacks on sensitive elements that have a limited number of values e.g. manually
+
+entered expiry date.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+
+Author: Jo Down Date: February 15, 2002
+Page 48 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+The MAC shall be computed on the complete XML message as ready for transmission, but with the MAC
+data, (but not its XML tag), replaced by a zero-length string. “R” messages and any future message,
+which includes encrypted PIN(s) and / or encrypted sensitive data, shall include the data in the form in
+which it will be transmitted. In other words,. any selective field encryption and Base64 translation shall be
+performed prior to MAC generation.
+
+The security sub-system will append the attributes associated with the MAC to the application message
+prior to calculation of the MAC. The attributes are defined as elements 1 to 3 in the Message
+Authentication Code Transport Fields, represented in their binary form. Please refer to 5.6.5 for further
+details.
+
+The following figure illustrates the scope of the MAC calculation. It shows the various encrypted elements.
+The location of the elements within the message is for illustrative purposes only — the actual location is
+defined elsewhere in the AIS.
+
+Encrypted PIN Block
+Encrypted Sensitive Data
+\ Zero-length MAC field MAC Attributes
+
+a
+I I
+IN )
+Vv
+XML Message
+
+\
+Input to MAC Generation
+
+5.4 Session Establishment
+
+Not applicable to this AIS.
+
+5.5 Key Management
+5.5.1 Key Hierarchy
+
+The cryptographic interface operates at three levels identified in the following diagram:
+
+Manually Exchanged Zone
+Keys
+
+Automatically Embedded
+Working Keys
+
+Protected Data
+
+The layers have the following functionality:
+
+e The lowest layer provides cryptographic mechanisms that protect messages. There are three
+mechanisms each of which requires its own cryptographic key:
+
+* Message Authentication Codes (MACs) protects the integrity of messages in transit
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+
+Author: Jo Down Date: February 15, 2002
+Page 49 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+e Data Encryption protects the confidentiality of any other sensitive data e.g. Track 2 Discretionary
+data.
+
+e The middle layer manages the life cycle of the cryptographic keys used by the encryption and MACing
+services. Collectively these keys are known as Working Keys. An automatic Key Management
+Protocol is used to communicate the embedded working keys and their associated attributes across
+the interface.
+
+e The upper layer is responsible for managing the lifecycle of cryptographic keys used to protect
+Working Keys. A Zone Master Key (ZMK) is used to protect the confidentiality of Working Keys in
+transit across the Horizon—-NBE interface. Keys at this upper layer are established using manual
+procedures and are updated infrequently e.g. one every six months. Both the NBE and Horizon have a
+key similar to the ZMK that is used to protect keys in storage and/or transmission within their
+cryptographic sub-system. These keys are outside the scope of this document.
+
+5.6 Key Types
+
+The following keys are used across the Horizon / NBE Application Interface:
+
+Key Level Expected I Usage
+Lifetime
+ZMK Zone Master 6/12 Protects working keys during distribution
+Key months
+NBPc Working Key 1 Day Protects the confidentiality of PINs inR
+messages
+NBTDc Working Key 1 Day Protects the confidentiality of sensitive data in
+R messages
+NBMCn Working Key 1 Day Generate & verify MACs on messages from
+NBE to Horizon.
+NBMCc Working Key 1 Day Generate & verify MACs on messages from
+Horizon to NBE.
+
+All keys are double length (112-bit) DES keys. The naming convention for Working keys is an extension
+of that currently in use by Horizon. “NB” indicates a protection domain applicable to Network Banking; P,
+
+TD and MC indicates the key usage as described above; “n” and “c” indicate the key owner / generator, “n”
+= Network Banking Engine and “c” = Horizon data centre.
+
+5.6.1 Key Management Application
+
+Both Horizon and NBE will have their own Key Management Application. The Horizon Key Management
+Application will be an updated version of the existing Horizon Key Management System. The NBE Key
+Management Application will be based on the ICSF cryptographic sub-system and the IBM Distributed Key
+Management Server, DKMS.
+
+The relationship between the key management applications is shown below:
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 50 of 68
+
+1BM Confidential/iCL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+1
+Horizon Domain 1 NBE Domain
+1
+fl
+1
+Horizon Key 1 NBE Key
+Management 1 Management
+Application ! Application
+Key Management
+Messages
+Local Key T Local Key
+Distribution Distribution
+
+<> NBE
+Business
+
+Messages
+fl
+
+Horizon Agent
+
+Each Key Management Application will be responsible for:
+e Storing keys securely for its own domain.
+e Secure communication within its domain of keys to the business processes that require them.
+
+e Participating in the manual and automatic key management protocols that establishes keys across the
+interface between Horizon Agents and the NBE.
+
+It is a design objective to ensure that the local distribution of keys within a domain is transparent to the
+other domain.
+
+Messages flowing from Horizon to NBE are secured at the outbound Horizon Agent. Securing consists of
+an outbound PIN Translate (R messages only), selective encryption of sensitive data (R messages only)
+and a MAC Generate (all messages). The security processing is performed as soon as practical after the
+signature is verified on the message inbound from elsewhere in the Horizon Campus. The complimentary
+processes are performed at NBE on the received message. In the opposite direction, the NBE performs a
+MAC generate which is verified by the receiving Horizon Agent. There is no requirement for selective
+encryption or PIN processing in this direction.
+
+5.6.2 Key Management Principles
+The following principles are agreed:
+
+e¢ NBE will generate all Zone Master Keys (ZMK). Each party must generate Working Keys that it uses
+to protect its outbound messages.
+
+«The generator of a key (referred to as the “owner” of the key) is responsible for communicating it to
+those who need it. Please refer to 6.3 for procedures.
+
+« The key transport mechanism of Zone Master Keys shall include a Key Check Value (KCV) to enable
+correct reception of a key to be verified by the recipient.
+
+e The key owner will allocate each Zone Master Key a unique identity, its Key Tag. The Key Tag will be
+communicated with the key and stored with it so that both parties can use the Key Tag as a reference
+to the key during its lifetime.
+
+e The key owner initiates routine replacement of the key.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 51 of 68
+
+1BM Confidential/iCL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+The recipient of a key can request replacement of it at any time. It is then the responsibility of the key
+owner to generate and distribute a new one.
+
+ZMKs will be transported manually in key component form and be authenticated and verified using
+manual procedures.
+
+Correct installation of a new ZMK will be confirmed by the electronic exchange of key management
+messages that:
+
+* act as a service level boundary by signalling that the sender is ready to accept traffic protected by
+the new ZMK, and
+
+e — trigger the deletion of ZMKs that are no longer required. See Section 5.7.3 for fuller details of the
+ZMK life cycle.
+
+Each electronically transmitted key management message will be MACed using a key carried with the
+message and protected by the appropriate ZMK.
+
+Each business message will be MACed using a working key carried with the message and protected
+by the appropriate ZMK. Similarly, a message containing an encrypted PIN and encrypted sensitive
+data will carry the working keys required to translate the PIN and decrypt the data respectively.
+
+Any message carrying a Working Key will also contain the Key Tag of the ZMK used to protect the
+Working Key so that the recipient can identify the correct ZMK to use.
+
+The recipient of a Working Key does not store it. Working keys may be unique to a message but will,
+in any event, be changed at least daily. Where the owner stores Working Keys, the owner shall ensure
+that the key is securely deleted on replacement.
+
+NBE will generate two ZMKs for future use and transport their components to Horizon for safe storage.
+
+NOTE: It is proposed that two “spare” sets of ZMK components be held at Horizon in case of
+emergency. This allows faster response in the event that a live ZMK is suspected of compromise. It
+can be achieved by initially creating two sets and putting one of them live. The above procedure then
+creates the second spare once the first key is put live and ensures that, subsequently, as soon as any
+first spare is put live a new second spare is created. Assuming the regular replacement of ZMKs at six-
+monthly intervals, any ZMK will have a total life span of four successive six-month periods i.e. two
+years (one as second spare, one as first spare, one in use, one as reserve on the receiver's key ring).
+To assist the recognition of ZMKs, it is recommended that not more than one ZMK be generated on
+
+any particular day.
+
+NBE and Horizon will be responsible for deleting working keys after use.
+
+NBE and Horizon should ensure superseded keys are not enabled for use (set to Horizon’s “dead” key
+status) after one key replacement cycle.
+
+5.6.3 PIN Block Encryption Key Transport Fields
+
+The XML field value for each of the <PIN1> and <PIN2> fields contains the content of the PIN Block
+Encryption Key Transport Fields in the table below which are represented in Base64 encoded form in the XML
+
+structure.
+Element Size Content
+1. Type 1 Octet Value = 1 (binary)
+2. ZMK Tag 8 Octets I Key tag (identity) associated with the ZMK used to encrypt the
+PIN Encryption Key.
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+
+Page 52 of 68
+1BM Confidential/iCL Pathway Confidential
+FUJ00001624
+
+FUJ00001624
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+3. Key value I 16 Octets I The PIN encryption Triple DES double length key encrypted
+under the sender's current ZMK as identified in element 2.
+4. PIN Block I 8 Octets__I The encrypted PIN block. See Section 5.3.1
+
+5.6.4 Sensitive Data Encryption Key Transport Fields
+
+The <Encrypt> field in the <Sec> structure in 4.3.2.1 is a single encrypted field, the source of which is the
+Sensitive Data Encryption Transport Fields in the table below represented in Base64 encoded form.
+
+Element Size Content
+
+1. Type 1 Octet Value = 2 (binary)
+
+2. ZMK Tag I 8 Octets I Key tag (identity) associated with the ZMK used to encrypt the
+sensitive data Working Key.
+
+3. Key value I 16 Octets I The sensitive data Working Key encrypted under the sender's
+current ZMK as identified in element 2.
+4. IV 8 Octets I A 64-bit random or pseudo-random value.
+5. Encrypted I N+1 to The encrypted sensitive data of length N. This will be up to 8
+Data N+8Octet I octets longer than the plain text as a result of the padding. The
+s last octet contains the number of pad characters. Eight octets
+
+are added when N is an exact multiple of eight.
+
+Element 5 “Encrypted Data’ in this table of Sensitive Data Encryption Transport Fields is the cipher text, which
+results from encrypting the data present in the XML structure <EncData>. <EncData> will contain either <T2>,
+where the card Track 2 image is read, (or <ExpDte>, and optionally <IssNum> and <EfctDte>), where the data
+is entered manually. The structure is encrypted as described in 5.3.2. Please refer to 4.3.1 for the XML
+structure.
+
+5.6.5 Message Authentication Code Key Transport Fields
+
+The XML <MAC> field will contain the content of Message Authentication Code Key Transport Fields
+represented in Base64 encoded form. The MAC field within the Transport fields will be a zero length field
+before the MAC is calculated. See 5.3.3. The Base 64 representation of the MAC blob will be inserted into the
+XML structure MAC field after it has been computed across the complete <NBAMsg> Element.
+
+Element Size Content
+1. Type I 1 Value = 3 (binary)
+Octet
+5. ZMK I 8 Key tag (identity) associated with the ZMK used to encrypt the
+Tag I Octets I MAC Key.
+6. Key 16 The MAC working key encrypted under the sender's current
+value I Octets_I ZMK as identified in element 2.
+7. MAC I 4 The MAC computed over the message and the above
+Octets I “attributes” (elements 1 to 3 inclusive).
+
+5.6.6 Key Encryption
+
+All the Network Banking Working Keys are Double length DES keys. Working Keys shall be encrypted as
+specified in ANSI X9.17 / SO 8732. Each working key shall be represented as a 128-bit string with odd
+parity prior to encryption. The ZMK used to encrypt the Working Key will be modified by a variant as
+defined in Section 5.7.5 prior to use.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 53 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+5.7 Zone Key Agreement
+5.7.1 ZMK Distribution
+
+ZMks for this interface will be generated at the NBE. Each ZMK will be allocated a Tag by which it can
+subsequently be identified. See Section 5.7.5.1 for a definition of the tags.
+
+ZMKs will be distributed as two separate components:
+« Each component will be the same length as the key
+* Components will be represented in hexadecimal format.
+
+« Hexadecimal digits shall be grouped for ease of readability. Each group of 16 hex digits shall be
+further sub-divided into groups of four digits e.g.
+
+0123 4567 89AB CDEF
+0246 8ACE 1357 9BDF
+
+e Each component will be adjusted to have odd parity prior to representing it in hex form (as per ANSI
+X9.24 Appendix C)
+
+e® The ZMK will be formed by exclusive-ORing the binary representation of the components. The
+resulting key may be adjusted for odd parity as required.
+
+« AComponent Check Value (CCV) will be calculated for each component. The CCV will consist of the
+leftmost four hexadecimal digits from the ciphertext produced by encrypting a 64-bit binary zero value
+with the subject component.
+
+Components will be transported on paper using secure mailers that do not reveal the value of the
+
+component or its CCV until opened. Manual procedures will ensure that the components are kept
+
+separate at all times.
+
+Each key mailer containing a component and its CCV will also contain the following data:
+
+e the relevant key Tag that identifies the ZMK of which it is a part,
+
+e the component number (e.g. Component 1 of 2), and
+
+e the date of generation of the corresponding ZMK with the month in letters (e.g. 5 APR 2002).
+
+These elements will be visible without revealing the value of the component.
+
+A Key Check Value (KCV) will be calculated for each ZMK. The KCV will consist of the leftmost four
+
+hexadecimal digits from the ciphertext produced by encrypting a 64-bit binary zero value with the subject
+
+key.
+
+Horizon key holders will enter the key components without verifying the component check values. The Key
+Manager will combine the components to construct the key and verify the key check value.
+
+The KCV for the complete key shall be provided on a separate mailer. Each key mailer containing a KCV
+will also contain the following data:
+
+e the relevant key Tag that identifies the corresponding ZMK,
+
+* an indication that the mailer contains a KCV, and
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 54 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+e the date of generation of the corresponding ZMK with the month in letters (e.g. 5 APR 2002).
+
+These elements will be visible without revealing the value of the component.
+
+5.7.2 Key Stores
+Conceptually, each party keeps two key stores (or key rings):
+
+e The Sender's Key Ring has keys used to protect outbound messages. It will contain a single ZMK
+used to encrypt the Working Keys that protect outbound messages. It may also contain the
+corresponding Working Keys if the originator chooses to regenerate them once per day. The identity of
+a ZMK that is selected is included in the outbound message.
+
+e The Receiver’s Key Ring contains keys used to process inbound messages. It will contain up to two
+ZMKs required to decrypt Working Keys used to protect inbound messages. No Working Keys are
+stored since Working Keys are always carried with the message. The message receiver does not
+
+have the concept of a ‘Current’ key. The message that is received will contain the identity of the ZMK
+that he is required to use, and the receiver can thus pick this key off its receiver's key ring.
+
+5.7.3 Zone Master Key, ZMK, Life Cycle
+
+The ZMK Key Life Cycle and key change process is illustrated in the following figure:
+
+Horizon Domain NBE Domain
+
+@ ‘
+
+Sender's Key Ring Receiver’s Key Ring Receiver's Key Ring Sender's Key Ring
+
+Components
+Of ZMKines)
+
+ZMK ines) added to
+@® <q Saltg-savteady._NBE‘key store for
+
+inbound messages.
+
+ZMK.) deleted
+
+ZMK inst)
+
+G) distributed to Test using ZMK ines)
+Horizon Agents.§ ————"
+for inbound
+messages,
+
+ZMK 9.1) deleted.
+
+ZMK p44) distributed
+
+to Horizon Agents ZMK 1) duplicated to
+for outbound ACK using ZMKin4s) IF OK, ACK ‘outbound store,
+messages. ZMK,,) —— ZMK,,) deleted.
+deleted
+ZMK,_) continues in use. NAK using ZMK, Else, NAK
+MK using MK
+
+Messoge lost not understood
+
+The following explains the steps illustrated:
+
+1. Anew set of components are generated at NBE and communicated to Horizon using secure procedures.
+
+2. Ona date agreed between the key management officers at the two sites, the components are entered into
+the NBE.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 55 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+« The components are combined to form the “new” ZMK which is added to the NBE’s Receiving Key
+Ring.
+
+e Any existing previous ZMK‘(superseded before the current cycle) is deleted.
+
+e In the event of errors in components or key check values, the process is halted whilst the error is
+resolved.
+
+e« Oncompletion, the NBE key management officer advises the Horizon key management officer that
+the new key has been successfully installed.
+
+3. Horizon installs the new ZMK to its receiving key rings (one per Agent). When all Agents have installed
+the new ZMK, each Agent sends one or more Key Test Messages to NBE. The first test message is
+Horizon’s commitment that all its Agents are ready to receive business traffic protected under the new
+ZMK. The test message has a MAC, which is generated using a Working Key protected by the new ZMK.
+
+4. On receipt NBE will validate the MAC and retrieve the Key Tag that identifies the ZMK. If successful,
+NBE copies the ZMK to its sending key ring, replacing any other ZMK that is there®. Any subsequent
+outbound messages from NBE will contain a Working Key encrypted under this ZMK.
+
+NBE sends a Key Acknowledgement Message to Horizon advising the success (or failure) of the process®
+The message has a MAC, which is generated using a Working Key protected by the now current ZMK. It
+will contain the Tag that identifies the key. A positive acknowledgement is NBE’s commitment that it is
+ready to receive business traffic protected under the new ZMK. [KA] key acknowledgement messages
+should be returned on the same connection.
+
+4a. If the MAC fails or the NBE cannot locate the identified ZMK, no key updates are performed. A
+negative acknowledgement is sent with a MAC and a MAC key protected by the current ZMK (n).
+
+4b. If no response is received by Horizon, manual processing is required.
+
+After sending a positive acknowledgement to a [KT] message for a new Acquirer ZMK, the NBE will use
+that ZMK for all outgoing messages. Incoming messages from other queues may contain working keys,
+protected by this new ZMKin+1) or the previous key ZMK(n).
+
+5. Horizon validates the MAC on the Key Acknowledgement Message:
+
+5a. If the acknowledgement is positive, the new ZMK is securely copied to all Agents for protecting the
+Working Keys associated with all subsequent outbound messages. The previous ZMK is deleted from
+the sending key ring.
+
+5b. If the Key Acknowledgement Message is either an error indication (NAK) or it fails authentication,
+manual recovery is required.
+
+On satisfactory completion of setting the new ZMK current, a replacement set of components is generated and
+distributed as per step (1). This ensures that there is a contingency ZMK that can be set live quickly in the
+event of an emergency. If that emergency involves the suspected compromise of a ZMK, the update process
+will need to be performed twice to ensure all compromised keys are flushed out of the system and are not
+retained as previous.
+
+5.7.4 Zone Master Key Management Messages
+
+The Security Key Test (KT) and Security Key Acknowledge (KA) messages are defined in Section 3.2.
+
+‘ i.e. one which has been positively confirmed at step 4.
+
+5 No update is required if the message is a duplicate i.e. the Tag identifies that the key is already on the key ring. However a positive
+
+acknowledgement should stil be sent.
+
+8 In exceptional cases where the NBE has no current ZMK (e.g. a failure during the first-ever key exchange), no MAC can be created
+
+and thus the failure is communicated using manual procedures.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+
+Author: Jo Down Date: February 15, 2002
+Page 56 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+5.7.5 ZMK Variants
+
+Messages from the NBE to Horizon will be MACed, with a key that is transported with the message under the
+protection of the defined variant of the ZMK, as required by the Atalla card . Messages from Horizon to NBE
+will not use the variant and will thus have one or more Working Keys under the protection of the unmodified
+ZMK.
+
+The defined variant is: hex (98000000 00000000 98000000 00000000)
+
+5.7.5.1 Key Tags
+
+Each key has a unique tag or identity allocated by the party that generates it. It is a security requirement that
+the identity does not reveal anything about the value of the key. The tag:
+
+e Allows the recipient of a message that does not contain a key to work out whether or not they have the
+right key and which key should be used.
+
+e Assists in the correct identification of ZMK components prior to loading them.
+e Assists the Key Management Officers to diagnose failures.
+
+A key tag has 4 numeric fields separated by a period character: 1.2.3.4 where field is a number in the range 0
+to 65535 (i.e. 16 bits). The form is similar to that of an IP address.
+
+The following convention is used for the field contents:
+
+1. is a country code —always 44 -i.e. it is not used, but has to be there.
+
+2. is used to identify the ‘type’ of key (e.g. MAC, PIN encryption or Sensitive Data encryption) (ICLP also call
+this a protection domain). This is not the algorithm used (like DES or RSA), but the purpose to which the
+key is being put. Value 03242 identifies Zone Master Keys (ZMk).
+
+3. is used to identify the owner of a key (e.g. the Horizon KMA). Note this concept is not very useful in NWB,
+but becomes necessary where Horizon has 20,000 keys of a given type. Value 60116 has been allocated
+to keys owned by NBE.
+
+4. is split into 3 sub-fields:
+
+a) The most significant digit identifies an algorithm (e.g. MAC or DES). Value “3” - (triple) DES.
+b) The next digit identifies test keys (set to zero for production keys and 9 for test keys)
+c) The remaining 3 digits are a sequence no. (which can cycle back to 1 if 999 is reached).
+
+The Tags identified for this interface are:
+
+Key Field 1 I Field 2 I Field 3 I Field 4
+type
+ZMK 00044 I 03242 I 60116 _I 30xxx
+
+Where a key tag is represented in a human-readable form (e.g. on key mailers), it is represented as four sets
+of five decimal digits separated by a period (.). Where the Tag is represented in a blob (see Section 5.6.3
+onwards), it will be represented as four 16-bit unsigned binary integers, each of which is big-endian i.e. 8
+bytes. When transmitted in [KT] and [PR] messages it will also be represented as four 16-bit unsigned binary
+integers, each of which is big-endian i.e. 8 bytes, then padded with an additional byte ‘=’ and Base64 encoded
+to become 12 bytes.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 57 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+6 Operational Procedures
+
+6.1 Processing Cycles
+This interface relates to online message exchange to support real time financial transactions.
+
+Stale messages are discarded before transmission or on receipt, as appropriate. Please refer to section 6.4for
+details of which message types can be discarded (i.e. non “Must deliver” messages).
+
+The timeout associated with each message type is addressed in the NBE Operational Level Agreement,
+Reference [6].
+
+6.2 Transfer Initiation
+
+All transfers defined in this AIS are automatic.
+
+6.3 Security Procedures
+
+Manual Procedures are required to support the above key management protocol, as described in Section 5
+above. They will need to be agreed between the Horizon operator and the NBE operator for inclusion /
+reference in the Operational Level Agreement (OLA) between them.
+
+1. Generating and despatching a new set of ZMK components at NBE.
+
+2. Receipt and installation of a new set of ZMK components at Horizon.
+
+3. Putting a new ZMK live at NBE and Horizon.
+
+4. Requesting a new set of ZMK components from NBE.
+
+5. In addition, internal procedures will be required at NBE and Horizon to handle:
+
+6. The secure storage and retrieval of ZMK components between the time that they are received and the
+time that they are put live.
+
+7. Distribution, storage and retrieval of components to back-up / disaster recovery sites.
+8. The secure destruction of the paper mailers used to exchange and store components.
+
+9. The handling of Storage Master Keys (or their equivalent) used to protect local key stores.
+
+6.4 Fallback Procedures
+
+Fallback procedures are not addressed in this AIS.
+
+Restoration of the interface and the disposal of stale messages (other than “must deliver” messages) is
+expected to be automatic. [R], [A], [KT], [KA], [PS] and [PR] messages awaiting transmission at the time of
+failure can safely be discarded, as the integrity of the transaction is protected by timeouts.
+
+In general, if a process on either side of the interface can process the data passed to it, it will do so even if it
+does not fully conform to the rules defined in this AIS. However should a MAC be found to be invalid the
+message will not be processed. Any message that cannot be processed will be logged by the receiving
+system and manual processes will be required to resolve any consequent issues.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 58 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+1BM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+Should the systems at either end of the interface (or the infrastructure that makes up the interface) fail, then
+any outstanding Transient messages (ie [R], [A], [KT], [KA], [PS] or [PR] messages) will be discarded. The
+design of the end-end application message flow and business logic permits such discards without impact on
+the overall operational integrity of the Network Banking service. In particular failure of [R] or [A] messages
+requires the Horizon system to decline the attempted transaction and the NBE to undertake any subsequent
+required adjustment to the bank financial position as a result of such declined transactions. .
+
+Failures which impact transient messages do not require recovery actions to ensure their eventual delivery. In
+the case of non-transient data from Horizon to the NBE, Horizon will retain such messages and they will be
+resent once a connection is found to be re-established (by means of periodic echo tests). In the case of
+messages from the NBE to Horizon, the NBE will continue to retain messages and Horizon will resume the
+fetching of such messages as soon as connections are re-established.
+
+Please note that there may be manual operational re-alignment required should messages that were thought
+to have been delivered turn out to have been lost.
+
+6.5 Control
+
+The interface must be resilient to duplicate messages, which may occur after recovery of any element in the
+system, but are not otherwise expected to occur.
+
+Lost or discarded messages are handled by timeout processing at every stage of the “RA” message sequence,
+to ensure that incomplete transactions are declined if unauthorised or reversed if authorised.
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 59 of 68
+
+IBM Confidential/ICL Pathway Confidential
+FUJ00001624
+FUJ00001624
+
+IBM Confidential
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+7 Appendix A
+
+7.1 Transaction Type Enumerators
+
+The following table shows the values for Horizon message element Txn_type. For example, a value of 14
+means a Withdrawal with balance transaction with Signature Verification; a value of 22 means a Deposit with
+No Verification.
+
+Transaction Type Code for PIN Verification Code for Signature Code for No Verification
+Verification
+
+Balance enquiry 01 "1 NIA
+
+Deposit NIA NA 22
+
+Withdrawal 03 13 NIA
+
+Withdrawal with balance 04 14 NIA
+
+Withdraw Limit 05 18 NIA
+
+Change PIN 06 NA NIA
+
+7.2 Discrepancy Reason Codes
+
+The following reasons will be provided with Reconciliation Exception [D] messages sent by the NBE to Horizon
+
+Discrepancy Reason Code Discrepancy Reason Discrepancy Value
+01 Late [C2] Decline for [A1] Approve _I Approved Amount
+02 Unmatched [C2] after X days Zero
+03 Stand Alone Reversal Zero
+
+7.3 Response Codes
+
+This is the code, included in the [A2] message, indicating the Bank’s view of the transaction. The following
+meanings have been identified:
+
+01 = Authorised OK
+
+02 = Declined — Impound Card
+
+03 = Declined — Incorrect PIN
+
+04 = Declined — Insufficient Funds
+
+05 = Declined — Usage Violation (frequency)
+06 = Declined — Usage Violation (amount)
+
+07 = Declined — Transaction not supported
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doe Version: 2.0¢ Status: Baseline
+Author: Jo Down Date: February 15, 2002
+Page 60 of 68
+
+IBM Confidential/ICL Pathway Confidential
+IBM Confidential
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+FUJ00001624
+FUJ00001624
+
+08 = Declined —- Other
+2n = Failed by NBE
+3n = Failed by Agent
+
+4n = Failed by Counter
+
+Please note:
+
+Values between 20 and 29 are reserved for “Failed by NBE”
+
+Values between 30 and 39 are reserved for “Failed by Agent”
+
+Values between 40 and 49 are reserved for “Failed by Counter’.
+
+7.4 Transaction Result Code
+
+01 = Transaction Completed OK
+
+02 = Transaction Abandoned by Clerk
+
+03 = Customer Signature Fail
+04 = Fee Customer Declined
+05 = Card Check Failed
+06 = Decline Confirmed
+
+07 = Transaction Failed
+
+Balance Type
+
+00 = Unknown;
+
+01 ccount ledger balance;
+02 = Account available balance;
+03 mount owning;
+
+04 mount due;
+
+05 = Account available credit;
+
+redit line;
+
+20 = Amount remaining this cycle;
+40 mount cash;
+
+56 iold amount;
+
+57 = Pre-authorised amount;
+
+58 = Authorised amount
+
+90-99 = Reserved for future use
+
+7.6 Network Management Response Codes
+
+00 = Positive acknowledgement, Use in PR and KA from 1* Horizon Agent promoting the NBE ZMK
+n+1;
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+
+Author: Jo Down
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+
+IBM Confidential/ICL Pathway Confidential
+
+Page 61 of 68
+IBM Confidential
+
+FUJ00001624
+FUJ00001624
+
+Post Office Limited - Network Banking Engine - NBE - Horizon Application interface Specification
+
+. 01 = Positive acknowledgement, Used in KA from subsequent Horizon Agent where ZMK Tag is current
+
+NBE ZMK Tag;
+. 12 = Negative acknowledgement, ZMK Tag unrecognised;
+. 13 = Negative acknowledgement, ZMK Tag inactive (superseded).
+
+. 21 = MAC is invalid.
+
+7.7 Message Type Enumerators
+
+e R2-Authorisation/Financial Transaction Request
+
+e A2- Authorisation/Financial Transaction Request Response
+
+* C2 - Confirmation
+
+* C4 - Confirmation
+
+e D-—Reconciliation Exception
+
+e KA- Security Key Acknowledge
+e KT-Security Key Test
+
+« PS-Echo Test
+
+e PR-Echo Test Response
+
+7.8 Record Type Enumerators
+
+¢ CH =Control File Header
+¢ CF =Control File Record
+e SH = Segment File Header
+e ST = Segment File Trailer
+
+Segment File Records are in native XML.
+
+End of Document
+
+Filename: PONWB - NBE Horizon AIS - 2.0¢ - 020215.doc
+Author: Jo Down
+
+IBM Confidential/ICL Pathway Confidential
+
+Version: 2.0¢ Status: Baseline
+Date: February 15, 2002
+Page 62 of 68

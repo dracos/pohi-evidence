@@ -1,0 +1,1011 @@
+FUJ00001684
+
+FUJ00001684
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+Document Title: TMS Hardware Design Specification
+Document Type: Specification
+Release: N/A
+Abstract: This document describes the hardware infrastructure that supports
+the Transaction Management Service (TMS).
+
+Document Status: DRAFT - for review by 15 November 2002
+Originator & Dept: Patricia Morris: Application Products Delivery Unit
+Contributors: Dave Tanner, James Stinchcombe, Gareth Jenkins, Peter Wiles
+Internal Distribution:
+External Distribution:
+
+Approval Authorities:
+
+Name Position Signature Date
+
+[David Hollingsworth IDirector, Consultancy
+
+Services
+[Tony Drahota \Manager, Architecture and
+Systems Design
+[Bob Booth Post Office Ltd
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: I of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+0.0 Document Control
+0.1 Document History
+
+\Version No. Date [Reason for Issue (Associated
+(CP/PinICL
+
+0.1 18/05/01 Initial version
+
+0.2 23/08/01 Version for internal review
+
+0.3 24/09/02 Version for internal review
+
+0.4 19/10/02 IVersion for internal review
+
+0.5 23/10/02 \Version for review
+
+0.2 Review Details
+
+[Review Comments by: {15 November 2002
+
+[Review Comments to: Originator & Document Controller
+
+Mandatory Review Authority Name
+
+Fujitsu Services David Hollingsworth — Peter Wiles Glenn Stephens
+James Stinchcombe* Tony Drahota Geoffrey Vane
+Graham Hooper Gareth Jenkins* Chris Bailey
+Simon Fawkes Dave Tanner* Will Dawson
+
+Post Office Ltd Bob Booth Mike Hannon Dave Holbert
+Torstein Godeseth
+
+Optional Review / Issued for Information
+
+Fujitsu Services Martin Whitehead Allan Hodgkinson — Cliff Wakeman
+
+(* ) = Reviewers that returned comments
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 2 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+0.3. Associated Documents
+
+Reference ersion [Date Title Source
+
+(TD/ARC/029 TMS Architecture Specification [Pathway
+
+(TD/ARC/030 (OPS Architecture Specification [Pathway
+
+IBP/DES/003 (Counter Hardware Design Pathway
+
+‘Specification
+(TD/STD/004 Generalised API for OPS/TMS Pathway
+
+Unless a specific version is referred to above, reference should be made to the current
+approved versions of the documents.
+
+0.4 Abbreviations/Definitions
+(Abbreviation Definition
+IATM (Asynchronous Transfer Mode
+
+IBT British Telecom
+
+IBCV [Business Continuity Volumes
+
+(CNIM. (Counter Network Information Monitor; counter-based ISDN monitoring
+ervice
+
+IDMSU [Digital Main Switch Unit
+
+IDMZ Firewall) Demilitarised Zone
+
+IEMC [ElectroMagnetic Compatibility
+
+IEPOSS [Electronic Point Of Sale Service: counter application supported by
+Horizon.
+
+IFRIACO [Fixed Rate Internet Access Call Origination
+
+IP Internet Protocol
+
+ISDN Integrated Services Digital Network
+
+ISP Internet Service Provider
+
+IL2TP [Layer 2 Tunnelling Protocol
+
+ILAN [Local Area Network
+
+ILAR [Logical Access Router
+
+ILSE [Local Switch Exchange
+
+B etwork Banking
+INBE etwork Banking Engine
+INBS etwork Banking Service
+
+© 2002 Fujitsu Services
+
+16/05/01 16:37
+
+COMMERCIAL-IN-CONFIDENCE
+
+Page: 3 of 22
+Fujitsu Services
+
+TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+FUJ00001684
+FUJ00001684
+
+OPS Office Platform Service. The provision and support of the hardware and
+software at outlets including the Desktop environment of the Horizon
+system.
+
+IPC [Personal Computer
+
+IPSTN Public Switched Telephone Network
+
+IPVC [Permanent Virtual Circuit
+
+IRADIUS [Remote Authentication Dial-In User Service
+
+IRAID [Redundant Array of Independent Disks
+
+IRIPOSTE Retail Integrated Point Of Sale system in a Transaction Environment:
+product from Escher that provides both the infrastructure and the Desktop]
+environment of the Horizon system. Now superseded by WebRiposte.
+
+IRMS IRiposte Message Server: message storage and replication mechanism of
+IRiposte.
+
+[TCP [Transmission Control Protocol
+
+(TIP [Transaction Information Processing: Post Office Ltd application that
+
+andles transaction data returned from Horizon.
+
+(TMS Transaction Management Service. The hardware and software required
+for the replication, transmission and management of transactions
+committed to the Horizon Riposte Message Store and Pathway Data
+Centres, or vice versa.
+
+VPN irtual Private Network
+
+IWAN ide Area Network
+
+IWebRiposte (An enhanced version of Riposte providing additional services based upon
+
+eb-enabled functionality.
+0.5 Changes in this Version
+\Version (Changes
+0.5 [Review comments incorporated.
+0.6 Changes Expected
+(Changes
+As the result of comments on V0.5.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 4 of 22
+
+16/05/01 16:37
+FUJ00001684
+
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+0.7 Table of Contents
+
+1.0 INTRODUCTION
+
+1.2 READERSHIP.......
+1.3. RELATED DOCUM!
+1.4 SCOPE..........
+1.4.1 Document Set
+1.4.2 Contents...
+
+2.0 SCOPE.....
+
+2.1 COMPONENTS. cesses eevee D
+2.2 EXTERNAL CERTIFICATION...
+
+3.0 CORRESPONDENCE SERVERS.
+
+3.1 CORRESPONDENCE SERVERS: EMC-CONNECTED.
+3.1.1 Specification.
+3.1.2 Configuration
+
+3.2. CORRESPONDENCE SERVERS: COMPAQ-CONNECTED.
+
+3.2.1 Specification...
+3.2.2 Configuration.
+
+3.3 CLUSTERG........
+
+3.4 NODE IDENTIFIERS AND RELATIONSHI
+3.4.1 Node Identifier: . sees
+3.4.2. Neighbour Relationships........
+
+4.0 AGENT SERVERS...
+
+4.1 GENERIC AGENT SERVERS.
+4.1.1 Specification.
+4.2. NBS AGENT SERV!
+4.2.2. Configuration...... cesses
+
+5.0 NETWORK COMPONENTS..
+
+5.1 CONNECTIONS BETWEEN COUNTERS IN OUTLETS.
+
+5.2 CONNECTIONS BETWEEN OUTLETS AND THE DATA CENTRES.
+5.2.1 FRIACO Service.
+
+RUNDAAD
+
+R)
+
+5.2.2 ISDN dial-out..
+5.2.3 Satellite connection.
+5.2.4 PSTN dial-in....... .
+
+5.3. CONNECTIONS WITHIN THE DATA CENTRE!
+5.4 CONNECTIONS BETWEEN THE DATA CENTRE!
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 5 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+1.0 Introduction
+
+1.1 Purpose
+
+This document is an introduction to the hardware that supports the Transaction Management
+Service (TMS). It describes the platform and network components of the service and its
+relationship to other elements of the Pathway solution delivered at BI3. It is produced in
+conjunction with the documents listed in section 1.3, Related Documents.
+
+1.2. Readership
+
+This document is intended to be used in conjunction with TMS Architecture Specification.
+
+1.3 Related Documents
+
+Documents that are referred to in this document, and that should be read in conjunction with
+it, are as follows:
+
+© Counter Hardware Design Specification
+This document describes the hardware that is used by the Office Platform Service.
+
+e TMS Architecture Specification
+
+This document covers the following topics:
+
+e How WebRiposte facilities are used across the TMS domain.
+
+e¢ How counter applications interface with the TMS.
+
+© How agents interface with the TMS.
+
+e Security domains that are relevant to the TMS.
+
+© Resilience features in use in outlets and across the TMS domain.
+e OPS Architecture Specification
+
+This document covers the following topics:
+
+e = The hardware and software components and architecture of OPS.
+
+e The style and architecture of the OPS Desktop.
+
+¢ How the architecture supports changes and extensions.
+¢ Generalised API for OPS/TMS
+
+This document is designed to facilitate application development in the Pathway
+environment. It is intended to augment the documentation supplied by Escher by setting
+the Horizon implementation into context. It gives additional information for application
+developers about the architecture and facilities of OPS, TMS, and the Electronic Point Of
+Sale Service (EPOSS).
+
+For publication details refer to section 0.3.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 6 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+1.4 Scope
+
+1.4.1 Document Set
+
+This document forms part of the set that defines the environment that supports counter
+applications within the Horizon system.
+
+™S
+Architecture
+_ Specification 4
+[TMS Messaging Middleware) (Central) I
+Hardware ‘ : Ops
+
+Be ; 7 — Architecture
+
+[IMs Messaging Middlewate (PS) I Specification
+i : T
+
+Command
+
+i + Counter
+I Riposte Desktop Environment (OPS) I + Hardware
+
+I iData & Impulse : I
+EPOSS Courter Applications
+
+Figure 1-1 Document set
+
+Figure 1-1 relates the components of the system to the documents that describe them, giving
+an indication of the scope of each document.
+
+The scope of each document is described in section 1.3, Related Documents.
+
+Each of the applications that support the Post Office Ltd business requirements has
+components that operate within the Riposte Desktop architecture and interact with TMS.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 7 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+1.4.2 Contents
+
+This document is organised as follows:
+
+Section Contents
+
+Section 1 introduces the document and its position within the document set.
+Section 2 \describes the scope of the document.
+
+Section 3 \describes correspondence server hardware.
+
+Section 4 \describes agent server hardware.
+
+Section 5 \describes network components.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 8 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+2.0 Scope
+
+The architecture of TMS is described in 7MS Architecture Specification. This document
+describes the hardware components, other than counter hardware components, that support
+the Transaction Management Service (TMS).
+
+2.1 Components
+The components described are as follows:
+© Correspondence servers
+
+There are eight correspondence servers at each Data Centre, four of which are
+Compaq ProLiant DL380G2 servers with EMC disks that provide disk mirroring and
+backup facilities. The other four are Compaq ProLiant DL360G2 servers and have
+Compaq disk arrays. They run under Windows NT Server V4.0. The main software on
+these servers is the Riposte Message Service.
+
+© Generic agent servers
+
+There are four generic agent servers at each Data Centre; they are Compaq ProLiant
+DL360G2 Agent servers and run under Windows NT Server 4.0. They support Riposte
+Client software and any client software such as Oracle that is required, and form the
+interface between the host central servers and the correspondence servers. The agent
+applications act as clients to both, by ‘pulling’ information from one and ‘pushing’ it to the
+other. This occurs in both directions.
+
+«¢ NBS agent servers
+
+There are eight NBS agent servers, four at each Data Centre. Each cluster has one NBS
+agent server running the NBS Authorisation Agent. They are Compaq ML350 servers, run
+under Windows NT Server 4.0 and support Riposte Client software. They provide
+hardware support for the encryption of data to and from the NBE and form the interface
+between the NBE and the correspondence servers for real-time transactions.
+
+* Network components
+
+Network components include connections between counters in the outlets, connections
+from the outlets to the Data Centres, connections within the Data Centres that carry data
+from the correspondence servers to the agent servers, and connections between the Data
+Centres.
+
+2.2. External Certification
+
+All hardware used on the Horizon project is certified by the suppliers to be conformant to
+EN54014 as indicated by the presence of a “CE” mark. All platforms used are specified as
+validated to meet the requirement of Microsoft, and listed in Microsoft’s HCL.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 9 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+3.0 Correspondence Servers
+
+There are currently sixteen correspondence servers. They are Compaq ProLiant DL380G2
+(eight) and DL360G2 (eight) arranged in four clusters of four, each cluster having two servers
+in each of the two Data Centres, one in each location with an EMC disk array and one with a
+Compaq disk array.
+
+The servers support the Riposte Message Store (RMS) and its replication and form the main
+interface between the agent applications and the counter. Communication to the counters is
+over an ISDN or satellite proxy. For ISDN outages, ISDN sites may use PSTN via laptop and
+ISDN emulator. Communication to the agent servers is via the Data Centre Local Area
+Network (LAN).
+
+Each server has a mirrored set of hard disks configured as drive C: for the operating system,
+swap file and application software. D: Drive is used for temporary storage of audit data before
+it is transferred to the Audit Server. In addition to the system disk there is a set of ten 18GB
+drives that hold the Riposte Message volumes.
+
+3.1 Correspondence Servers: EMC-connected
+
+Four Compaq ProLiant DL380G2 servers in each Data Centre are configured as shown in the
+following sections. Their node IDs are listed in Table 3-1.
+
+3.1.1 Specification
+
+3.11 Machine
+
+Description Details
+
+Machine Name ProLiant DL380G2
+
+Manufacturer Compaq
+
+Processor/Speed Pentium III/1.4GHz Processor
+
+No. of Processors 2
+
+Memory fitted 2048Mb
+
+Hard Disk Mirrored 72Gb Internal SCSI System Disks
+
+3.1.1.2 Extra Hardware Items
+
+Description Manufacturer
+AHA-2944UW SCSI Controller Adaptec
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 10 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+3.1.2 Configuration
+The hardware is configured as follows:
+
+e — The system disk (C:) is 83GB. The remainder of the system drive (64GB) is configured as a
+single data partition (D:).
+
+© The system and data partitions are mirrored in RAID.
+
+e The Riposte Message Store disks are arranged as ten partitions (logical drives P: Q: and
+S:to Z:). The disks are presented as twenty 9GB disks by EMC and are then set up in
+Disk Administration as 18 GB Stripe Sets.
+
+In addition to the Riposte message store, the EMC array holds ten volumes Business
+Continuity Volumes (BCV) for message store backup, and two hot-swap disks. If a disk fails,
+data from its mirror is automatically copied to a warm standby disk that then becomes the
+second plex. The failed disk is then replaced, and the replacement becomes the new warm
+standby disk.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 11 of 22
+
+16/05/01 16:37
+Fujitsu Services
+
+TMS Hardware Design Specification Ref:
+Version:
+COMMERCIAL-IN-CONFIDENCE Date:
+
+FUJ00001684
+FUJ00001684
+
+TD/SPE/006
+0.5
+23-OCT-2002
+
+3.2 Correspondence Servers: Compaq-connected
+
+Four Compaq ProLiant DL360G2 servers in each Data Centre are configured as shown in the
+following sections. Their node IDs are listed in Table 3-1.
+
+3.2.1 Specification
+3.2.1.1 I Machine
+Description Details
+
+Machine Name
+
+ProLiant DL360G2
+
+Manufacturer
+
+Compaq
+
+Processor/Speed 1.4GHz Processor
+
+No. of Processors 2
+
+Memory fitted 2048Mb
+
+Hard Disk 72Gb Mirrored Internal SCSI System Disks
+3.2.1.2 Extra Hardware Items
+
+Description Manufacturer
+
+5302 RAID Controller ‘Compaq
+
+3.2.2 Configuration
+
+The hardware is configured as follows:
+
+e — The system disk (C:) is 8GB. The remainder of the system drive (64GB) is configured as a
+
+single data partition (D:).
+
+e — The system and data partitions are mirrored in RAID.
+
+e A single 172 GB device is presented to NT. NT partitioning is used to split this into 10
+17,264 MB NT partitions (P: Q: and S: to Z:).
+
+© 2002 Fujitsu Services
+
+16/05/01 16:37
+
+COMMERCIAL-IN-CONFIDENCE
+
+Page: 12 of 22
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+3.3 Clusters
+
+There are four correspondence servers per cluster, two in each Data Centre. The associated
+node ID of each server is listed in Table 3-1. All the correspondence servers are active, but if
+one fails, its load is serviced by the remaining servers.
+
+The main characteristics of this configuration are as follows
+e There are four correspondence servers in a Riposte cluster, each sharing the outlet load
+equally. They are defined as neighbours in a ‘fully meshed’ configuration.
+
+e In each cluster, one server at each Data Centre uses EMC disks, the other uses Compaq
+Disks.
+
+e The audit workload is run on the correspondence server at each Data Centre that is
+connected to the EMC disks.
+
+e There are four generic agent servers per site, with two connected to one correspondence
+server and two connected to the other correspondence server at each site.
+
+e There are four NBS agent servers per site, connected to both correspondence servers at
+each site.
+
+3.4 Node Identifiers and Relationships
+
+3.4.1 Node Identifiers
+
+Table 3-1 shows the correspondence server clusters, their Riposte node identifiers and the
+correspondence servers at each Data Centre that comprise each cluster.
+
+Cluster Node ID for EMC-I Node ID for EMC-I Node ID for CPQ-I Node ID for CPQ- I
+connected I —_ connected connected connected I
+Correspondence Correspondence Correspondence Correspondence I
+Server (Bootle) Server (Wigan) (Bootle) Server (Wigan) I
+1 32 33 52 53
+2 34 35 34 55
+3 I 386 8 SG
+4 38 39 58 59
+
+Table 3-1 Correspondence server clusters and node identifiers
+
+3.4.2 Neighbour Relationships
+
+There are three types of neighbour relationships for the correspondence servers:
+¢ To other correspondence servers
+
+© To outlets
+
+e To clients (on agent servers or the OSD Software Depot)
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 13 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+3.4.2.1 Other Correspondence Servers
+
+Each correspondence server is set up as a neighbour to each other correspondence server in
+the same cluster. Each relationship is configured with both IP addresses for the remote
+machine. The relationships are all configured as local, permanent and non-virtual.
+
+3.4.2.2 Outlets
+
+Relationships with the outlets are set up as part of the rollout process by the Tivoli system
+management software.
+
+Each correspondence server is set up as a neighbour to each gateway PC in each outlet
+assigned to that cluster. Each relationship is configured with the single IP addresses for the
+gateway. The relationships are all configured as non-local, non-permanent and non-virtual.
+
+3.4.2.3 Clients
+
+Each correspondence server in cluster I is set up as a neighbour to each client PC. Each
+relationship is configured with both IP addresses for the remote machine. The relationships are
+all configured as non-local, permanent, and non-virtual.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 14 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+4.0 Agent servers
+
+4.1 Generic agent servers
+
+Each Data Centre has four generic agent servers. They are Compaq ProLiant DL360G2 Agent
+servers and run under Windows NT Server 4.0, connected to the correspondence servers and
+the client servers through duplicated 100MBit Ethernet.
+
+4.11 Specification
+
+4.1.1.1 Machine
+
+Description Details
+Machine Name ProLiant DL360G2
+Manufacturer Compaq
+Processor/Speed Pentium III / 1.4GHz Processor
+No. of Processors 2
+Memory fitted 512Mb
+Hard Disk 36Gb Mirrored Internal SCSI Disks
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 15 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+4.2 NBS agent servers
+
+Each Data Centre has four NBS agent servers, one for each Riposte cluster. They are Compaq
+ProLiant ML350 servers and run under Windows NT Server 4.0.
+
+An NBS Agent Server runs both the NBS Authorisation Agent and the NBS Expedited
+Confirmation Agents for that cluster. The NBS Authorisation Agents run at both sites, one
+site being active and one standby. The Expedited Confirmation Agents are only run on one of
+the two servers for the cluster. Both agents connect to both correspondence servers within
+their cluster at the Data Centre where they are running.
+
+4.2.1.1 I Machine
+
+Description Details
+
+Machine Name ProLiant ML350
+
+Manufacturer Compaq
+
+Processor/Speed Pentium III / 1.4GHz Processor
+
+No. of Processors 2
+
+Memory fitted 512Mb
+
+Hard Disk 9.1Gb
+
+Additional Item 2x Internal PCI HSM - Atalla PCI Card
+
+4.2.2 Configuration
+
+The desktop architecture for this platform is the normal NT4.0 Server desktop. Disk partitions
+are as defined below:
+
+A: - Floppy diskette 1.44MB
+
+C: - Local disk holding system and application files, and temporary working storage.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 16 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.0 Network Components
+
+The network components that support the Transaction Management Service are as follows:
+* Connections between the counters in outlets
+
+* Connections from the outlets to the Data Centres
+
+© Connections within the Data Centres
+
+* Connections between the Data Centres
+
+5.1. Connections between Counters in Outlets
+
+Each gateway PC has two network cards (one for WAN use, one for LAN use). The
+AutoConfig process allocates every outlet a WAN IP address (ISDN, Frame Relay or satellite)
+and a LAN IP address. (It is necessary to allocate both for every outlet, since an outlet may
+change from being a single counter outlet to having more than one counter.)
+
+Counters in outlets are linked via a LAN using UDP over IP. System management software
+uses TCP/IP. Counters on the local LAN within an outlet employ VPN for all traffic between
+counters and the Gateway PC.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 17 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.2. Connections between Outlets and the Data Centres
+
+One counter in each outlet (the gateway PC) acts as the connection to the Data Centres and is
+responsible for the communication with the Data Centre. It supports a mechanism known as a
+Virtual Private Network (VPN) in which all communication with the Data Centre is encrypted
+with a key that is unique to that outlet. As well as protecting the data passed to and from the
+outlet, this provides authentication of the outlet to the Data Centre (and vice versa). (Other
+counter PCs within the outlet are linked to the gateway PC via LAN cards. These connections
+are also encrypted but use a key that is different from the key used between the gateway PC
+and the Data Centre.)
+
+Figure 5-1 shows the Wide Area Network (WAN) connections from the outlets to the Data
+Centres and the connections to the Network Banking Engines (NBEs) located at IBM
+premises in Warwick and Greenford.
+
+BY / Energl ISDN Network
+
+Energis ~ Watford Energis ~ Birmingham
+Switch Centre Switch Centre
+EDS BM
+Warwick (NB Engine) Eqia —IGreenford (NB Engino)I
+Prime site Standby site
+
+Fujitsu Fujitsu
+Feltham (FRIACO) I [Feltham (NBE access)
+
+Fujitsu Fujitsu
+Bracknell (PDU) Bracknell (LST)
+
+Fagitsu Fujitsu
+Wigan Data Centre Bootle Data Centre I
+
+MPLS ~ Multirotcot Label Switching
+E1-2Mips
+
+E3_34Mige
+
+SIMA 15SMbpe
+
+Figure 5-1 Connections to and within a Data Centre
+
+The FRIACO service and the various connection types are described in the following sections.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 18 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.2.1 FRIACO Service
+
+The FRIACO service enables outlets to connect via ISDN (or PSTN) to the local BT digital
+exchange (DLE); the call is then forwarded via the Internet to the Data Centre, as determined
+by the ‘destination’ number being called by the outlet’s Gateway PC.
+
+5.2.1.1 Connection types
+
+5.2.1.1.1 ‘Silver’ outlets
+
+A ‘silver’ outlet is one that requires a permanent connection to the Data Centre during the
+normal Post Office business day, and in some instances a 24-hour connection. A silver outlet
+will, in the majority of cases, be connected via the FRIACO service. If it is not possible to
+provide a FRIACO connection to an office that requires this class of service, the Energis
+RemoteConnect service is used instead. This is a metered call that uses the Energis Data
+Network with call termination on the LNS routers as with the FRIACO service.
+
+A separate range of telephone numbers is used for the FRIACO and RemoteConnect services.
+If a silver outlet is to be for business hours only, outside the defined hours of usage, the outlet
+is switched from permanent connection use a dial on-demand connection. The Counter
+Network Information Monitor (CNIM) program switches the ISDN telephone number to be
+called for the FRIACO service to that of the RemoteConnect dial on-demand service. The
+ISDN number for the Eicon card on the Gateway PC, is switched via an API call, which
+instigates an Eicon card reset in the process.
+
+5.2.1.1.2 ‘Bronze’ and ‘silver part time’ outlets
+
+A ‘bronze’ outlet is one that does not require to be permanently connected or to have a
+permanently connected RemoteConnect service, but utilises the dial on-demand
+RemoteConnect service. However, these outlets can be switched to silver connections for
+pre-defined times of the day on pre-defined days of the week. Sites that utilise this capability
+are defined as silver part time with the capability of switching to silver via the CNIM at the
+appropriate time of day.
+
+5.2.2 ISDN dial-out
+
+Three Cisco 5350 Routers per Data Centre supply the ISDN dial-out capability that is
+required for support and for System Management functions. On receipt of a call, the CNIM
+causes the outlet to drop the connection and dial the Data Centre back utilising the less
+expensive FRIACO or RemoteConnect service.
+
+5.2.3 Satellite connection
+
+Some outlets, in areas where ISDN is not available, communicate with the Data Centres via
+satellite links to a ground station that is then linked via the network to the Data Centres.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 19 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.2.4 PSTN dial-in
+
+A PSTN connection can be used for outlets whose normal connection has been disrupted. The
+PSTN connection connects the outlet, via a laptop, to the Access server. It can then use a
+FRIACO connection (see section 5.2.1).
+
+The network provider’s Remote Authentication Dial-In User Service (RADIUS) authenticates
+the call and ascertains where the target Home Gateway Router (also known as the L2TP
+Network Server Router (LNS)) resides and the route to use. The LNS Router connects to the
+target site’s LAN and presents the data IP packets in the form in which they were transmitted
+by the counter PC in the outlet.
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 20 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.3 Connections within the Data Centres
+Figure 5-2 shows the network infrastructure within each Data Centre.
+The following features have been introduced within the Data Centres to support NBS:
+
+e New routers route traffic from the Energis Data Network to the VPN layer within the
+Data Centres. This in-bound traffic to the Data Centres may be metered or unmetered
+(FRIACO).
+
+e A Firewall Demilitarised Zone (DMZ) which encompasses the Network Banking Agents.
+The firewall DMZ incorporates a firewall farm, consisting of multiple firewalls, which
+provide security and resilience of access to the NBS Agents and beyond to the Network
+Banking Engines (NBE).
+
+NBE NBE,
+Disaster Recovery Routing Layer Prime / Standby
+
+Site - Greenford Site - Warwick
+
+Firewall DMZ.
+
+Figure 5-2 Connections within the Data Centres showing dual LANs
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 21 of 22
+
+16/05/01 16:37
+FUJ00001684
+FUJ00001684
+
+Fujitsu Services TMS Hardware Design Specification Ref: TD/SPE/006
+Version: 0.5
+COMMERCIAL-IN-CONFIDENCE Date: 23-OCT-2002
+
+5.4 Connections between the Data Centres
+
+The links between the Data Centres consist of two OC-3 circuits (155Mbps) utilising
+Asynchronous Transfer Mode (ATM). Switches at each end allow for traffic separation via
+Permanent Virtual Circuits (PVCs), each with pre-defined bandwidth.
+
+Figure 5-3 shows the network infrastructure at both Data Centres and the connections
+between them.
+
+NBE
+- Prime / Standby 5
+Routing Layer Sie, Wighee Routing Layer
+NBE
+Disaster Recovery
+Site - Greenford
+Firewall DMZ.
+
+Server Layer
+
+Server Layer
+Hosts, Tivoli, C. Servers ete
+
+Figure 5-3 Connections between the Data Centres
+
+© 2002 Fujitsu Services COMMERCIAL-IN-CONFIDENCE Page: 22 of 22
+
+16/05/01 16:37

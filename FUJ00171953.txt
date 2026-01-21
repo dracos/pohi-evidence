@@ -1,0 +1,376 @@
+FUJ00171953
+FUJ00171953
+
+Peak Incident Management System
+
+Call Reference PC0070702 Call Logger POA Deleted User -- Deleted Team
+
+Release Targeted At -- Horizon Future Unspecified — Top Ref 900
+Call Type System Testing Incidents/Defects Priority D -- Non-urgent
+Contact Deleted Contact Call Status Closed -- Administrative Response
+Target Date —_—‘:10/10/2002 Effort (Man Days) 0
+Summary Time drift during Slave counter recovery
+All References Type Value
+Supplier reference 900
+Test reference TCMSG10
+Progress Narrative
+
+bate:15-Oct-2001 08:22:00 User:Madhu Karia
+ALL PC0070702 opened
+lkeferences entered ar
+jf Test reference : TCMSG10
+
+Product Infrastructure RIPOSTE messaging sw added
+
+llarget Release entered: Unknown
+
+time drift during Slave counter recovery
+
+n test rig INF2, both the Gateway and Slave at FAD 505038 were built to S10
+level with riposte ver 6.0.3.22. A large messagestore (from Trafalgar Square)
+jas replicated from the Gateway to the Slave. It was observed that during
+index inserts following message inserts (as indicated on the performance
+jonitor) the clock on the Slave started drifting behind the Gateway and
+catching up at the end of replication. Inspection of the NT Eventlog showed
+licts of time synchronisation messages.
+
+lkvidence has been forwarded to Mark Jarosz.
+
+Please route this call to Mark Jarosz.
+
+ALL PC0070702:Priority D:Calltype S - Target 29/10/01 09:22:02
+
+[the Call record has been assigned to the Team Member: Chris Rayner
+
+Defect cause updated to 42:Gen - Outside Pathway Control
+
+fiours spent since call received: 3 hours
+
+Jbate:15-Oct-2001 09:15:00 User:Chris Rayner
+
+If} Response :
+
+please route this call to Mark Jarosz (TDA) for investigation/resolution,
+Mark is already aware of the problem and evidence.
+
+[END OF REFERENCE 27867466]
+
+lkesponded to call type $ as Category 30 ~TL confirmed
+
+[the response was delivered on the system
+
+the Call record has been transferred to the Team: QFP
+
+fours spent since call received: 0 hours
+
+JDate:15-Oct-2001 10:07:00 User: Tariq Arain
+fhe Call record has been transferred to the Team: Escher-Dev
+Hours spent since call received: 0 hours
+
+[Dat ¢:26-Oct-2001 06:53:00 Uscr:Gareth Jenkins
+
+Mark has talked to Madhu about this.
+
+Basically, Mark has asked him to come up with a recipe for reproducing this
+problem based on a synthetic message store that Escher can generate
+Jchemselves. Once he has done this then we can forward direct to Escher.
+Iherefore we need to route this PinICL back to Madhu.
+
+Gareth (from MJ email)
+
+[the Call record has been transferred to the Team: IP System Test
+
+Hours spent since call received: 0 hours
+
+[Date:20-Nov-2001 12:40:00 User:Tarig Arain
+ffarget Release updated to BI_2
+
+JDatc:21-Nov-2001 14:50:00 Uscr:Madhu Karia
+the Call record has been assigned to the Team Member: Madhu Karia
+Hours spent since call received: 0.1 hours
+
+lDaté:04-Dec-2001 08:48:00 User:Madhu Karia
+
+install riposte on two systems on the same LAN giving them the same group id
+lout different node id, say 123456,1 and 123456,2.
+
+Start riposte on both systems and apply the appropriate license and build
+
+FUJ00171953
+FUJ00171953
+
+pbjects-
+Use riposteputmessage to create a large number of messages, say 200000, on
+leach system.
+
+create about 30 indexes, including Date, Time, CRC, on each system.
+
+Use ripostenode to configure the two systems to be neighbors and let the
+essagestores synchronise.
+
+configure 123456,2 to synchronise time with 123456,1 with a drift value of 5
+seconds
+stop riposte on 123456,2 and delete the messagestore.
+
+start riposte on 123456,2 and let it recover from 123456,1.
+
+Display clocks on both systems.
+
+tun perfmon on 123456,2 and display riposte counters MessageInserts/sec,
+indexInserts/sec.
+
+fter about 20 minutes, when MessageInserts have been completed and
+Iindextnserts is taking place, the clock on 123456,2 starts to lag the one on
+123456,1. The lag continues to increase until all the indexing activity is
+complete. Then the two clocks synchronise. NT event log shows a large number
+lof time synch messages (ID 198, 199)
+
+[fhe Call record has been transferred to the Team: Escher-Dev
+
+Hours spent since call received: 3 hours
+
+Dat e:04-Dec-2001 10:37:00 User:Del (04/03 Brian Orzel)
+Email to Gareth
+
+lDate:04-Dec-2001 12:11:00 User:Madhu Karia
+lapclogies for being a bit too hasty with the 'send' key.
+
+lattached herewith is a zip file containing the full event log from node 2 and
+la snapshot of the network trace while node 2 was falling behind node 1. At
+the time the cpu usage on node 2 was between 20 and 30 percent. The time
+drift observed at one stage was nearly an hour and still drifting behind.
+
+lew evidence added - Event log and network trace
+
+Dat e:04—Dec-2001 12:36:00 Uscr:Madhu Karia
+lew evidence added - Text of event log
+
+lDate:05-Dec-2001 11:36:00 User:Madhu Karia
+arian Orzell suggested we repeat the above test on riposte 6.0.3. The ‘time
+lirift' problem was first observed on riposte 6.0.3.22 using the large
+jfrafalgar Square messagestore. Then the problem was reproduced on riposte
+6.2.5 using the test messagestore created by riposteputmessage (so Escher can
+reproduce the problem). I have, today, used the test messagestore procedure
+jon riposte 6.0.3.22 using the same two counters and following the same
+rocedure as before.
+
+servations:
+
+at 22:00 started node2 in recovery.
+
+clocks displayed on both nodel and node2
+
+lPerfmon showing MessageInserts and IndexInserts going on.
+
+Approx 22:45 MessageInserts end, Indexinserts carries on and the clock on
+Inode2 starts drifting straight away.
+
+letmon trace shows node2 responding with <Offline:1>
+
+ter aboot an Nour) ver eee ee
+
+Inode1 clock= 23:43:59 - node? clock= 23:02:09
+
+jnode2: ripostenode status for nodel shows Marker Delta: 0 messages
+ipostestatus 2 shows Status: Recovering ..License Object not
+
+validated
+
+Inodel: ripostenode status for node2 shows Offline Disconnected and Marker
+jbelta: 0 messages
+
+Hope this gives some clues in locating the problem.
+
+Jbate:13-Dec-2001 11:00:00 User:Del (04/03 Brian Orzel)
+
+It am sending this to Escher.
+
+the Call record has been assigned to the Team Member: At-Escher
+ours spent since call received: 0 hours
+
+jbate:15-an-2002 0:
+Feedback from Esche.
+900 PC0070702 ~—- Reproduced scheduled for WR 2.1.2
+
+the Call record has been assigned to the Team Member: Escher recreated
+liours spent since call received: 0 hours
+
+9:00 User:Del (04/03 Brian Orzel)
+
+JDate:17-Jan-2002 08:02:00 User:Del (04/03 Brian Orzel)
+
+\The following item needs additional investigation to determine how
+destabilizing the fix might be:
+
+Pc0070702 900 D Recreated Time drift during Slave counter recovery
+
+jbate:22-Jan-2002 10:15:00 Uscr:Del (04/03 Brian Orzel)
+lPc0070702 900 D rec.Discus? Time drift during Slave counter recovery
+km = An improvement is being planned in this area. The pure fix remains
+
+FUJ00171953
+FUJ00171953
+
+jinder investigation:
+
+bate:05-Feb-2002 13:06:00 User:Del (04/03 Brian Orzel)
+
+ldispite the above, I can find no mention of this bug in the release note wor
+R211. Retest?
+
+fhe Call record has been transferred to the Team: IP System Test
+
+Hours spent since call received: 0 hours
+
+Ibate:05-Feb-2002 13:08:00 User:De1 (04/03 Brian Orzel)
+It is also still marked as open on the Escher database. I will ask them for
+lan update.
+
+Jbate:06-Feb-2002 0:
+Please return this c
+
+3:00 User:Madhu Karia
+11 for testing when a fix / improvement is confirmed by
+lescher. If an improvement is claimed, please get a definition of the
+improvement so we know what we are looking for in the absence of a fix.
+
+[the Call record has been transferred to the Team: Escher-Dev
+
+fours spent since call received: 0.5 hours
+
+jDate:07-Feb-2002 09:45:00 User:Gareth Jenkins
+du,
+
+le're getting confusing stories from Escher. Please can you repeat the test
+
+lon 6.2.10 to see if anything has changed. We are not expecting any further
+ersions of the message server for B12, so we need to know exactly what is
+
+the case on this one.
+
+hanks
+
+careth
+
+the Call record has been transferred to the Team: IP System Test
+
+fours spent since call received: 0 hours
+
+JDate:08-Feb-2002 16:42:00 Uscr:Chris Rayner
+the Call record has been assigned to the Team Member: Madhu Karia
+fours spent since call received: 0 hours
+
+Joate:14-Feb-2002 08:44:00 User:Madhu Karia
+ith the Counters upgraded to Riposte 6.2.10 used the Trafalgar Square
+nessagestore and a smaller ‘synthetic! one to test the recovery. No time
+ldxift was evident on the clocks displayed on the Counters or the event logs.
+lo, whatever it is that Escher did seems to have fixed the problem. There are
+ls lot of events, EID 201: "Connected to neighbor (nnnn,m) while in recovery
+mode. <Marker:........> "in the event log which occurred previously but were
+not mentioned as I thought they were part of the same problem. Seems to me to
+Ye a minor problem. Therefore, closing the call.
+
+cALL PC0070702 closed: Category 60, Type $
+
+fours spent since call received: 4.0 hours
+
+Jat c:19-Jun-2002 08:46:00 User:Del (04/03 Brian Orzel)
+Fix claimed in todays WR2.1.2 release
+
+lbate: 26-Sep-2002 09:07:00 User:Madhu Karia
+CALI. PC0070702 Reopened: Riposte 6.2.15 failed the test.
+CALL PC0070702:Priority D:CallType $ - Target 10/10/02 1
+
+Date: 26-Sep-2002 09:10:00 User:Madhu Karia
+IRiposte 6.2.15 was used for testing Gateway to Slave replication. Time drift
+as evident as before.
+
+fhe Call record has been transferred to the Team: Escher-Dev
+
+fours spent since call received: 2 hours
+
+lbate:30-Sep-2002 13:07:00 User:Madhu Karia
+summary of the time synch and time drift problems
+in Riposte 6.0.3 and 6.2.5, the time drift during replication problem
+described in this call was noticed.
+A fix for this problem was provided in Riposte 6.2.10. However, time synch
+between time server and client was affected (see PinICL 74043). In Riposte
+6.2.12, the time synchronisation appeared to revert to the 6.2.5 behaviour.
+but, because this version of riposte was not taken on the counters, the time
+Jarift problem was not tested.
+IRiposte 6.2.15 is due to go on all platforms and was therefore tested on
+counters and correspondence servers. The time synch problem (PinICL 74043)
+las been fixed but the time drift during replication problem has reappeared.
+
+FUJ00171953
+FUJ00171953
+
+[Date:02-Oct-2002 10:07:00 Uscr:Del (04/03 Brian Orzel)
+the Call record has been assigned to the Team Membe
+tours spent since call r
+
+At-Escher
+ived: 0 hours
+
+Dat e:02-Oct-2002 10:35:00 User:Del (04/03 Brian Orzel)
+the call references have been updated. They are now:
+fest reference : TCMSG10
+
+If Supplier reference : 900
+
+JDate:10-Oct-2002 10:41:00 User:Lionel Higman
+ffarget Release updated to BI
+
+Date:10-Dec-2002 11:10:00 User:Lionel Higman
+lretarget at request of Gareth Jenkins.
+lfarget Release updated to Future Unspecified
+
+bate:09-Jan-2004 14:11:36 User:_Customer Call_
+Please route this call to Mark Jarosz (TDA) for investigation/resolution, Mark is already aware of the problem and evidence.
+
+JDate:10-Mar-2004 08:06:32 User:Tain Janssens
+jpdated to Escher recreated after meeting with Alan Smalley 09-Mar-2004
+[the Call record has been assigned to the Team Member: Escher recreated
+
+joate:21-un-2004 11:51:21 User:Lionel Higman
+the call TargetRelease has been changed from:-
+Future Unspecified
+
+the call TargetRelease is now:-
+
+Future Unspecified
+
+bate:13-Sep-2004 14:05:29 User:Iain Janssens
+{Start of Response]
+
+[his call is being returned for closure as a result of the Escher $80 review
+(held 10-Sep-2004). This has been agreed between Development and ITU (Simon
+aughan)
+
+(END OF REFERENCE 38535697]
+
+esponse code to call type S as Category 68
+
+JDate:44-Sep-2004 07:29:08 User:Madhu Karia
+[Start of Response]
+
+closing as per instructions above - no fix to the problem.
+[END OF REFERENCE 38538960]
+
+Response code to call type S$ as Category 68
+
+outing to Call Logger following Final Progress update.
+fours spent since call received: 0 hours
+
+IDate:14-Sep-2004 07:29:19 User:Madhu Karia
+
+ALL PC0070702 closed: Category 62 Type S
+
+Root Cause Gen - Outside Program Control
+
+Logger POA Deleted User -- Deleted Team
+
+Subject Product Infrastructure -- RIPOSTE messaging sw (version unspecified)
+Assignee Deleted User -- Deleted Team
+
+Last Progress 14-Sep-2004 07:29 -- Madhu Karia
