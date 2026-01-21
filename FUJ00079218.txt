@@ -1,0 +1,548 @@
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: 2.0
+Date: 12/12/97
+Document Title: EPOSS Component Catalogue
+Document Type: Technical Design
+Abstract: Describes at a high level the components of the Pathway
+
+EPOSS Solution
+
+Distribution:
+
+Document Status: Approved
+
+Document Predecessor:
+
+Associated Documents:
+
+Author: Richard Sloggett
+Approval Authority: Jan Morrison
+Signature/Date:
+
+Comments To:
+
+Comments By:
+
+0.
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page I of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+CONTENT
+0.1 DOCUMENT HISTORY
+Version I Date Reason
+A 13/08/96 _I First Draft
+1.0 02/09/96 _I First Issue
+2.0 12/12/97 I This document has been administratively baselined in
+order to bring the document under formal change
+control
+0.2 ASSOCIATED DOCUMENTS
+Version I Date Title Source
+0.3 ABBREVIATIONS
+0.4
+
+COMMERCIAL IN-CONFIDENCE
+
+CAWINDOWS\TEMP\itm2.DOC
+
+Page 2 of 14
+FUJ00079218
+FUJ00079218
+
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+CONTENTS
+0. CONTENT
+
+0.1 DOCUMENT HISTORY
+0.2 ASSOCIATED DOCUMENTS
+0.3 ABBREVIATIONS
+0.4 CONTENTS.......
+
+. INTRODUCTION
+
+- COMPONENT GROUPS. .........ccccceesseesseneessenseeeneseseeanease 5
+
+- RUN-TIME OBJECTS ........cccceceseseesestnseseneesnseesesensesenenees
+
+4.1 EPOSS CORE......
+4.2 EPOSS IMPULSE
+4.3 EPOSS SETTLEMENT
+4.4 EPOSS LOOKUP.
+4.5 EPOSS STOCK UNIT.
+4.6 EPOSS BALANCE...
+
+4.7 EPOSS DATA SERVE!
+4.8 EPOSS REPORT SERVER
+
+5. DEVELOPMENT TOOLS
+
+5.1 PERSISTENT OBJECT GENERATOR
+5.2 REPORT DESIGNER.........c:scssssseseseeee
+5.3 REFERENCE DATA MANAGEMENT DATABASE .
+
+Pon =
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 3 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+1. INTRODUCTION
+
+This document provides a technical overview of the Pathway EPOSS
+components. A short description of functionality and a diagram illustrating
+relationships with other EPOSS and Riposte components is included for each
+component.
+
+The EPOSS Accounting and Reporting components are the subject of a
+separate technical design document.
+
+2. SCOPE
+
+This document does not document the methods and properties exposed by
+EPOSS components.
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 4 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: 2.0
+Date: 12/12/97
+The following diagram illustrates the EPOSS component groups.
+EPOSS Impulse EPOSS Lookup
+Presentation Reference Data
+EPOSS Core EPOSS Report Server
+EPOSS Settlement EPOSS Data Server
+Business Objects Reporting and Accounting
+EPOSS Stock Unit EPOSS Balance
+Drawer Management
+
+Figure 1 - Component Overview
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 5 of 14
+Pathway
+
+FUJ00079218
+FUJ00079218
+
+Ref: EP/DES/007
+
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+
+41
+
+4.2
+
+RUN-TIME OBJECTS
+
+The run time objects are the EPOSS components that will be resident on each
+Pathway terminal to drive the EPOSS functionality.
+
+EPOSS CORE
+
+The EPOSS Core Object implements the business rules surrounding Point of
+Sale activities.
+
+Driven by reference data, this component provides the functionality for
+transacting Products. This functionality includes defining the Desktop User
+Interface for data entry, committing transactions to the Desktop Stack and
+managing integration with other applications.
+
+All impulses (Token, Button and PLU) result in a call to the CallInterface of
+EPOSS Core.
+
+The Interaction between EPOSS Core and other Riposte and EPOSS
+components is illustrated below :
+
+EPOSS Impulse I invokes Callinterface Desktop
+of —F
+
+invokes Callinterface
+of
+
+Commits transactions
+
+r through
+EPOSS Lookup EPOSS Core Retail Broker
+I Retrieves Reference
+
+Data through
+
+Invokes Callinterface
+of
+
+Integrated Application
+
+Figure 2 - EPOSS Core Relationships
+
+COMMERCIAL IN-CONFIDENCE
+
+CAWINDOWS\TEMP\itm2.DOC Page 6 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: 2.0
+Date: 12/12/97
+
+EPOSS IMPULSE
+The EPOSS Impulse Object handles the definition, management and routing of
+all Impulses. Impulses fall into 3 categories :
+
+1. Menu Hierarchy / Buttons
+
+2. PLU Impulses
+
+3. Token Impulses
+Once defined, the Riposte Desktop and Validation Objects manage the
+invocation of the required application whenever an Impulse fires. The EPOSS
+Impulse definitions are defined by reference data. All Impulse reference data
+is stored as persistent objects.
+The diagram below illustrates the relationships between the EPOSS Impulse
+Object and other EPOSS and Riposte components.
+
+Validation
+Registers Token
+Definitions with Registers for
+—— Events with —
+EPOSS Lookup EPOSS Impulse Peripheral Server
+UO Reads Referer Token Evenis
+Data through ropogates commands Sw Galintertace of
+through
+Desktop I
+Figure 3 - EPOSS Impulse Relationships
+4.3
+
+CAWINDOWS\TEMP\itm2.DOC
+
+COMMERCIAL IN-CONFIDENCE
+
+Page 7 of 14
+Pathway
+
+EPOSS Component Catalogue
+
+FUJ00079218
+FUJ00079218
+
+Ref: EP/DES/007
+
+Version: 2.0
+
+Date: 12/12/97
+
+EPOSS SETTLEMENT
+
+The Settlement Object has several responsibilities :
+
+1. Ensuring that a session is not ended until the session balance is
+
+zero;
+
+2. Providing quick access to designated EPOSS Products (Settlement
+Products);
+3. Providing fast settlement (automatic generation of a balancing
+transaction) using designated EPOSS Products (Settlement
+Products);
+4. Generation of a Session record;
+5. Consolidation of Session information for subsequent receipt
+production.
+
+The EPOSS Settlement Object integrates with the Riposte Retail Broker using
+existing hooks. All committal of transaction and session information to the
+Journal is handled by the Retail Broker.
+
+Relationships between the EPOSS Settlement Object and other EPOSS and
+Riposte components is illustrated below :
+
+EPOSS Lookup -
+
+Commits Transactions
+
+Determines Settlement
+Products using
+
+Retail Broker
+
+through
+
+EPOSS Core
+
+Retreives SU/BP/CA
+
+Info from
+> EPOSS Settlement <
+
+desi Settlement Trans-
+ction Records through
+
+EPOSS Stock Unit
+
+Figure 4 - EPOSS Settlement Object Relationships
+
+4.4
+
+CAWINDOWS\TEMP\itm2.DOC
+
+COMMERCIAL IN-CONFIDENCE
+
+Page 8 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+EPOSS LOOKUP
+
+The EPOSS Lookup Object allows EPOSS components to retrieve reference
+data items from the Journal. This extra layer of abstraction from standard
+Riposte facilities is provided for a number of reasons.
+
+1. To simplify the complex problems of EPOSS reference data management
+by providing hidden mechanisms controlling the availability of persistent
+objects in the office;
+
+2. To provide a caching mechanism for commonly accessed persistent objects
+if necessary;
+
+3. To provide commonly required functions for accessing collections of
+persistent objects.
+
+The lookup server is used by all EPOSS components making use of reference
+data (persistent objects).
+
+4.5
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 9 of 14
+Pathway
+
+FUJ00079218
+
+FUJ00079218
+
+Ref: EP/DES/007
+Version: 2.0
+Date: 12/12/97
+
+EPOSS Component Catalogue
+
+4.6
+
+EPOSS STOCK UNIT
+
+The EPOSS Stock Unit Object provides functionality surrounding the area of
+Stock Unit management and information about the currently logged on User /
+Stock Unit. Functions include :
+
+1. Provision of Stock Unit Attachment information;
+
+2. Provision of current Accounting Period information (Cash Account
+Week and Balance Period);
+
+Validation of Stock Unit logon;
+
+Creation / Deletion of Attachments;
+
+Creation / Deletion of Stock Units;
+
+Management of Stock Unit Smart Cards
+
+yy
+
+a
+
+The various Stock Unit Management functions will result in the creation,
+deletion or amendment of Persistent Objects and Stock Unit Smart Card
+contents.
+
+The information provided by the EPOSS Stock Unit Object regarding the
+currently logged on Stock Unit session is used by the EPOSS Settlement
+Object and EPOSS Core Object when writing Session and Transaction through
+the retail broker.
+
+The following diagram illustrates the Relationships between EPOSS Stock
+Unit and other EPOSS and Riposte components.
+
+Retreives SU/BP/CA Writes Transactions
+
+Info from through
+EPOSS Settlement < EPOSS Stock Unit Retail Broker
+
+leads / Updates status
+info from / to
+
+Retreives SU/BP/CA
+info from
+
+EPOSS Core
+
+Figure 5 - EPOSS Stock Unit Object Relationships
+
+EPOSS Smart Card
+
+CAWINDOWS\TEMP\itm2.DOC
+
+COMMERCIAL IN-CONFIDENCE
+Page 10 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+EPOSS BALANCE
+
+The EPOSS Balance Object provides the EPOSS balancing functionality.
+Responsibilities include :
+
+1. Validation of a balance request (ensuring all required pre-balancing
+activities such as Cash Declaration are complete);
+
+2. Production of the Balance Report using the Report Server;
+
+3. Control of rollover into the next balancing period and production of
+required opening stock figures persistent objects;
+
+The diagram below illustrates the relationships between the EPOSS Balance
+Object and other EPOSS and Riposte components :
+
+Desktop
+
+Interacts with
+User through Checks validity of
+balance request using
+
+EPOSS Report Server I____________ EPOSS Balance —_____________ EPOSS Lookup
+Produces Balance ___—~
+
+report using erives new opening
+stock figures from
+
+EPOSS Data Server
+
+Figure 6 - EPOSS Balance Object Relationships
+
+4.7
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 11 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+EPOSS DATA SERVER
+
+The EPOSS Data Server provides a generic summarisation mechanism
+whereby Journal messages can be grouped and totalled using a reference data
+driven Accounting and Reporting hierarchy.
+
+The Data Server is used primarily by the EPOSS Report Server to group and
+summarise for individual reports. It is also used by the EPOSS Balance Object
+to transparently derive product totals for the production of opening figures as
+part of the rollover process.
+
+The Data Server is driven by a hierarchy of Nodes and Accumulates. The
+design of the Reporting and Accounting Hierarchy is the subject of a separate
+Technical design document and is not described fully here.
+
+The relationship between the EPOSS Data Server and other EPOSS and
+Riposte components is illustrated below :
+
+EPOSS Report Server
+
+Derives summa
+figures from
+
+EPOSS Lookup EPOSS Data Server
+Derives Hierarchy
+Reference Data from
+
+Derives new opening
+stock figures from
+
+EPOSS Balance
+
+Figure 7 - EPOSS Data Server Relationships
+
+4.8
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 12 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+EPOSS REPORT SERVER
+
+The EPOSS Report Server provides all of the EPOSS Reports and Receipts.
+The Report layouts are defined by reference data and stored as Riposte
+persistent objects.
+
+The EPOSS Report Server is only concerned with the presentation aspects of
+reporting, making use of the EPOSS Data Server to derive grouping and
+summarisation values.
+
+The Report Server provides the ability to output to either Counter Printer,
+Back Office Printer or Print Preview window. For printing, standard Windows
+
+printer drivers are used.
+
+The reference data that defines report layouts is the subject of a separate
+technical design document and is not described in full here.
+
+The diagram below illustrates the relationship between the EPOSS Report
+Server and other EPOSS and Riposte components.
+
+EPOSS Data Server
+
+Derives summary
+figures from
+
+EPOSS Lookup D R =" EPOSS Report Server
+erives Repo!
+
+Definitions from Derives some Repo!
+Items from
+
+Figure 7 - EPOSS Report Server Relationships
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC Page 13 of 14
+FUJ00079218
+
+FUJ00079218
+Pathway Ref: EP/DES/007
+EPOSS Component Catalogue Version: — 2.0
+Date: 12/12/97
+DEVELOPMENT TOOLS
+5.1 PERSISTENT OBJECT GENERATOR
+5.2 REPORT DESIGNER
+5.3 REFERENCE DATA MANAGEMENT DATABASE
+
+COMMERCIAL IN-CONFIDENCE
+CAWINDOWS\TEMP\itm2.DOC
+
+Page 14 of 14

@@ -1,0 +1,113 @@
+FUJ00098222
+FUJ00098222
+
+RiposteDefineNode
+The RiposteDefineNode function is used to define the neighboring message server.
+
+unsigned long RiposteDefineNode (
+unsigned long dwGroupld,
+unsigned long dwNodeld,
+unsigned char *szAddress,
+unsigned long dwProtocol,
+unsigned long fPermanent,
+unsigned long fLocal
+
+)
+Parameters
+
+dwGroupld
+
+The group identifier of the neighbor being defined. If the neighbor being defined is a correspondence server
+and the host message server is also a correspondence server then dwGrouplid should be set to zero. If the
+neighbor being defined is a correspondence server and the host message server is not a correspondence
+server, dwGroupld should be set to the group identifier of the host message server. Note that in the latter case,
+the correspondence server appears to the host message server as if it were just another member of the local
+
+group.
+
+dwNodeld
+The node identifier of the neighbor being defined.
+
+szAddress
+
+A null-terminated string containing the network address of the neighbor. For the UDP/IP protocol this should be
+an internet address, e.g. "205.161.44.1". This string must not be longer than RIPOSTE_NET_ADDRESS_LEN-
+1.
+
+dwProtocol
+The network protocol used to communicate with the neighbor. Currently the only supported protocol is
+RIPOSTE_UDP_PROTOCOL.
+
+fPermanent
+A boolean flag indicating whether the connection to the neighbor is permanent or not. See the remarks below
+for more details.
+
+flocal
+
+A boolean flag indicating whether the neighbor is considered local or remote. If fLoca/ is set to TRUE than the
+neighbor is assumed to be on the same LAN as the host message server, implying that (1) high bandwidth (10
+Mbs or greater) is available to the neighbor and that (2) IP Multicasting is efficiently supported. If fLocal is set
+
+to FALSE then the neighbor is assumed to not be on the same LAN as the host message server implying that
+
+the bandwidth available to the neighbor may be limited (typically 9600 bps to 128Kbs).
+
+Return Values
+
+The function returns 0 if successful, otherwise it returns an error code which may be a Riposte error code, an
+RPC error code, or a Windows NT error code. Use RiposteErrorString to get a text description of the error.
+
+Remarks
+
+RiposteDefineNode is used to define the neighbors of the host message server. The set of neighbors of the host message
+server defines the local topology of the network. A message server must have at least one neighbor in order for it to be able
+to replicate messages and recover from the loss of the host message store. For a correspondence server, at least one of its
+neighbors must be another correspondence server in order for it to be able to recover from the loss of the host message
+FUJ00098222
+FUJ00098222
+
+store.
+
+Neighbor definitions are stored in the registry, but the registry entries should never be modified directly. Use only
+RiposteDefineNode and RiposteUndefineNode to modify neighbor definitions. Note that once a neighbor has been
+defined, the only way to change the neighbor definition is to first remove it using RiposteUndefineNode and then
+redefine it.
+
+Riposte message replication is accomplished in two ways, (1) via the broadcasting of messages as they are
+created, and (2) via the exchange of marker messages, which may trigger synchronization between two
+message servers. The way in which a neighbor is defined affects how and when these two types of messages
+are sent to neighbors.
+
+For a neighbor which is permanent, any messages which are created or broadcast messages which are
+received by the host message server will be forwarded to this neighbor immediately. In addition, the host
+message server will exchange marker messages with the neighbor at regular intervals. The length of this
+interval depends on whether the neighbor is local or remote, and on the configuration items
+LocalBroadcastInterval and RemoteBroadcastInterval.
+
+For a neighbor which is not permanent, the connection with the neighbor is in one of two states, connected or
+disconnected. Note that all Riposte messaging is based on a connectionless protocol (UDP/IP), so this state is
+simply an internal variable that controls how and when messages are sent, it does not have a direct
+correspondence with the network. When the neighbor is connected, it is effectively treated like a permanent
+neighbor, where the marker exchange interval is determined by the configuration item
+ConnectedBroadcastInterval. When the neighbor is not connected, normal broadcast messages are not forwarded
+to the neighbor unless they are priority broadcasts, in which case the neighbor is put into a connected state
+and the priority broadcast message is forwarded (see RiposteCreatePriorityMessage for more details). In addition,
+when the neighbor is not connected, markers are exchanged at an interval determined by the configuration
+item DisconnectedBroadcastInterval, and only when the state of the host message store has changed since the
+last time a marker was sent to the neighbor. Thus if no new messages are created on either the host message
+server or the non-permanent neighbor, then there will be no communication between them.
+
+Neighbor definitions must be symmetric, i.e. if node A is defined as a neighbor of node B, then node B must be
+defined as a neighbor of node A. No messages will be successfully exchanged between nodes A and B unless
+both definitions exist. Furthermore, dwProtocol, fPermanent, and fLoca/ must be set in the same way in both
+definitions. If this is not the case the results are undefined.
+
+Note that the caller of this function must have permission to modify the neighbor definition keys in the registry
+on the host machine. By default permission is granted only to NT Administrators and the NT System account.
+
+See Also
+RiposteGetNodeInfo, RiposteUndefineNode
+
+Riposte32 Constants, Riposte32 Functions, Riposte32 Configuration And Administration Functions
+
+Copyright © 1997, Escher Group Ltd., Cambridge, Massachusetts

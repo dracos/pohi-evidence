@@ -1,0 +1,365 @@
+WITN05970139
+WITN05970139
+
+RESTRICTED - COMMERCIAL
+
+PWY/JFO/007
+POCL Infrastructure Demo - Meeting Report
+Supplier: Pathway Date: 11 January 1996
+Attendees:
+BA/POCL Supplier
+Jeremy Folkes Martyn Bennett (Risks - part)
+Bob Booth Dave Cooke
+Steve Grayston Tony Hayward
+Martin Johnston (morning and close)
+Mark Jarosz (until 15:55)
+Dave Hollingsworth
+Purpose:
+
+Seventh “POCL Infrastructure” demonstrator meeting - concentrating on closing down
+the demonstration strand, ensuring that both the Programme and Service Provider
+have a clear understanding of the state of topics, with agreed with delivery dates for
+outstanding actions.
+
+Items of Note:
+
+1. Communications
+
+« Correspondence server, System Management Server or CMS/PMS machine(s)
+physically connected to the Campus LAN. TIP/MIS on one campus, CMS/PMS on
+the other using fast ethernet (FDDI option). Skewed loading will therefore be seen.
+Will load share normally but each campus can sustain full load.
+
+e 2 types of gateway
+
+¢ IP to ISDN - number is determined by the number of ISDN channels, and
+gateways will be accessed by one phone number on a hunt group. Predicted
+load can be serviced by 540 B channels, and as may loose 1 campus gives 6
+gateways on each campus (based on 3 PRIs in a hunt group - talking to 3-
+COM and Cisco - bespoke RISC and integrated circuits with high speed
+backbone ...). (At least one gateway per site). So if 6 gateways per campus,
+then will have 12 phone numbers. (Hunt group can only exist within a single
+exchange group).
+
+These gateways can connect in high speed serial lines, and these would then
+rive a rack of modems (sufficient for call concurrence), and multiplex -
+somehow - into the gateway.
+¢ Over ISDN use CLI and then PPP to use CHAP for password verification.
+e Over PSTN/GSM use RAS with call back and CHAP - would see the line
+being up all the time.
+
+¢ So order is ISDN then PSTN then GSM.
+
+e Inter campus gateway, one on each site. In fall back CAPS line may be used
+for TMS. Gateways will talk to each other to determine best cost routing, and
+fault detection / recovery.
+
+e Most Post Offices have a single ISDN B. Very large offices may have 2 diversely
+routed (design does not preclude and as far as paper service levels that are given
+and their understanding of availability do not feel it is required, but “just in case”, as
+the design allows serving to continue without communications, however re-
+engineering may put a higher communication availability and thus the option is
+
+Page 1 of 6
+WITN05970139
+WITN05970139
+
+RESTRICTED - COMMERCIAL
+PWY/JFO/007
+
+there), remote and mobile may not have ISDN. Mobile will use GSM, and if neither
+ISDN or GSM then PSTN.
+
+e IP addressing
+
+The host on the site decides the routing by using the class A to select the
+relevant gateway. This helps point to a gateway at the same campus.
+
+Servers in the office have an address within the office, and one for each of the
+correspondence servers; others within the office have one address only.
+
+A given IP/ISDN gateway is a primary gateway for a given class A.
+
+If an office calls the TMS and is engaged, it will use the secondary or down the
+
+list until gets to the TMS. TMS will respond back through its favourite gateway
+and establish a call through the other ISDN channel.
+
+NT will get RIP in next release - where they are informed of what gateway is
+dealing with what to track
+
+Gateways are programmed with masks. The gateways memory is used for
+both look ups and datagram buffering.
+
+Class group LA B [e} D E EF
+Primary Router / Gateway RA1 RA2 RA3 RB1 RB2 RB3
+Secondary (at same site) RA4 RAS RAG
+
+Tertiary at other site RB4 RBS RB6
+
+May have more than just the 6 class A segments, with the secondary and
+tertiary gateways also primary and secondary etc.
+
+So changing a gateway that the post office calls is quite complex.
+GSM not considered in detail.
+
+Looking at ISDN Riposte only
+
+Office initiates:
+
+e When an office send a correspondence server datagram, the choosing of
+which to use is not yet decided, (one address on LAN A at TMS and other
+on LAN B for the other CS at TMS).
+
+e Winsock -> UDP -> IP as IP is not local talks to NDIS driver, the NDIS
+driver establishes if a call is up or not. If no call then establishes call, and
+once enabled at PPP level, flags to IP level that it is available and
+Winsock is then unblocked. The Diva adapter (Eicon) establishes the
+call, and the TMS gateway routes the IP packet containing the datagram
+to the CS. If it has not sent a marker within the marker exchange period
+one is sent, and replication may then occur.
+
+¢ As there is a high priority message, then if start sending and get no
+errors, assumes the link is up and does the marker exchange. Flow
+control is by the UDP packet being blocked at IP/NDIS level.
+
+¢ Link is then closed:
+
+¢ when line goes idle both ends have an idle detection and can close
+the line down (not the normal manner).
+
+« Riposte will bring the call down itself, talking to the NDIS driver,
+Riposte is aware if machines are expecting a response, and will be
+augmented by how long the call has been up. This processing only
+occurs within the Post Office Riposte.
+
+e Riposte has a set off rules on replication, and depends on whether node
+
+it is replicating to is connected or high priority. Independent there is a
+
+Page 2 of 6
+RESTRICTED - COMMERCIAL
+PWY/JEO/007
+
+marker exchange time period and/or volume to replicate. Include in tidy
+up paper.
+e TMS initiation:
+© packet arrives at gateway at TMS, if no call is in progress from the
+primary gateway at which the packet arrives, a call is established and
+then sent to the workstation.
+e Same rules for TMS triggering calls as for the office, but only idle time at
+TMS end to bring line down, idle time at office and no message waiting
+in the office.
+High priority messages usually require a reply and this is atomic, so if this fails - e.g.
+discard at CS - will be resent.
+
+. Reviewed Risk Register:
+Risk 11 - Impact of keyboard/touch-screen on transaction times. Selection of
+products not clear and is main issue as can not fit as many products on a screen as
+a keyboard, as select, read screen, select etc., need confidence that this does not
+draw out transaction times. Fallback is keyboard, most used will be top level, next
+screen, others can be via PLU. Risk will be reviewed in light of paper received. Risk
+since closed - to be handled though over HCI work.
+
+Risk 9 - Scalability and manageability. Recommend to reduce to B1, discuss later.
+Risk 48 - Distribution of software. Will be cleared.
+
+Risk 19 - Low volume equipment. Risk remains, though SP now has a better
+understanding of the background to the question.
+
+Risk 64 - will have a removable disk in single position offices, in a 5.25 bay and will
+be a standard item. Expect to clear.
+
+Risk 65 - Security of data between OP and TMS. Will be covered by CHAP etc.
+Paper. Stressed our need was for authentication, we do not seen any widespread
+need for encryption.
+
+Risk 66 - Strong sequence numbering within Riposte. Pathway approach is that the
+failure scenarios where these problems may occur are insignificant and do not
+warrant cost given correct operational procedures. Background to this is that Escher
+still do not seem to accept this and views this as necessary, especially as Escher are the
+Riposte experts, and prime contractors may be seen to be gating it from an accountants
+viewpoint. Stressed we need confidence that Escher accept dongles are not
+required.
+
+Risk 67 - Effect of PMS/CMS traffic on existing TMS modelling. Paper to be
+supplied.
+
+Risk 68 - Computer sites within 15 miles of each other. Trade off of costs as
+Girobank / Alliance and Leicester believe they can get staffing reductions and fits
+within the Bank Of England requirements. Paper to document the workings behind
+these statements.
+
+Risk 70 - Use of RPC between UNIX and NT. Pathway attempting to verify at the
+moment.
+
+Martyn seemed very keen to kill the risk register and stop the Demonstrator - or anyone
+else - adding to it!!
+
+. Failure within the office
+
+Page 3 of 6
+
+WITN05970139
+WITN05970139
+RESTRICTED - COMMERCIAL
+PWY/JEO/007
+
+e lf peripherals fail, simple replacement. General principle is whole unit replacement,
+and is true of all processor elements. Minimum engineering and user time, and will
+use ICL Sorbus engineers.
+
+« Single position office - intend to have a hard disk exchange facility. PCMCIA is too
+expensive, and looking at a 5.25 bay disk which can be easily removed and
+replaced to protect against non-replicated data.
+
+e Whilst system is down, revert to manual, BES, APS, EPOS, zip-zap and turn
+down smart.
+
+e Ona dead hard disk replicates from the CS. Unclear if the session is bound or
+transaction by transaction and impact of discards, can detect incomplete
+sessions ... with John Meagher.
+
+e Ona dead PSU the hard disk is swapped.
+
+e In addition a RAM drive holding data that has not been flushed will flush this to
+the TMS on failure of the hard disk. Not thought through ? Sounded like a clever
+idea which would be fragile and difficult to manage.
+
+« Multi-position - as single but with surety given by Riposte that data is quite up to
+date.
+
+4. Miscellaneous:
+
+« SP noted the 10,500 Schlumberger requirement and queried this. Steer that
+currently zero live Schlumberger, but business will not move from the 10,500 target
+and business would not want to be constrained from reaching that penetration. The
+APPU technical specification is not yet available due to the technology partner
+issues.
+
+« Routers have own management software but as a flat network may not be needed.
+
+e Getting Microsoft to feed in how their SMS is best configured for usage and security.
+
+e Formal response that ISO 7816-3 with full programming voltage range is required.
+
+e Steer that non-standard memory cards are not currently explicit in the requiements
+but would be good to be implicit and that the bar code standards will be re-issued to
+cover the other standard bar codes.
+
+« Power / telecommunication failure. The formal position is that the office will not be
+forced to close as long as it is safe and practical to continue serving.
+
+e EPOS and OSS Functional Specification version 2 - see John Meagher.
+
+Papers Received:
+
+e Pathway Desktop Menu Structure Version 1.0 Dated 11/01/96
+e Pathway risk response 9a. version 1 dated 05/01/96
+
+Page 4 of 6
+
+WITN05970139
+WITN05970139
+WITN05970139
+WITN05970139
+
+RESTRICTED - COMMERCIAL
+PWY/JFO/007
+
+Papers Due from Pathway:
+
+¢ Information on 3-COM and Cisco IP / ISDN routers and summary of the SP
+requirements. Due 17-Jan-96. Cisco information received.
+
+« 466 response has a query on impact printer, this will be re-issued.
+
+e Paper “Call management and Network Design” how IP on ISDN and IP on
+GSM/PSTN works based on this meetings discussion - including addressing
+schema, and fallback / failure. How is marker exchange initiated once a high priority
+message has been sent. The issue of passing user identities and passwords and
+CHAP (Challenge Handshake Authentication Protocol). To include whole the system
+management facilities ties together. Advise of date by 16-Jan-96 10-15 pages,
+provisionally for w/c 22-Jan-96. This will be raised as a Q risk to track it. JF. At time of
+write up, paper received, but very drafty will be re-submitted.
+
+« Need to confirm whether Riposte discards as well as IP discarding. Further
+information on “new” Riposte file store, partitioning by nodes for large population
+and the current flat file structure was not deemed suitable. Pathway are awaiting
+details from Escher. Topology supervisor - concept and visibility need expansion.
+Due 22-Jan-96.
+
+« What is the physical kit within the office and how much is it utilised, memory / disk
+etc.. Due 18-Jan-96.
+
+« How does the system recognise incomplete sessions on restore. How does the clerk
+determine what requires to be re-keyed ? Are there particular events that can force
+marker exchange - logoff / cut-offs may be significant. - with John Meagher.
+
+« Security document states “A// terminals will be monitored and an unauthorised
+disconnect will be recorded at CS level’. How is this done ?. Due 22-Jan-96
+
+¢ Response to requirement 467 to be confirmed. Due 22-Jan-96.
+
+« Risk response 64. Due 16-Jan-96. At time of write up paper received.
+e Risk response 65. Due 22-Jan-96. At time of write up paper received.
+e Risk response 66. Due 22-Jan-96. At time of write up paper received.
+e Risk response 67. Due 22-Jan-96. At time of write up paper received.
+
+e Risk response 68. Due 22-Jan-96. At time of write up paper received on dual sites but
+still requires more work.
+
+e Risk response 70. Due 16-Jan-96. At time of write up paper received.
+e Papers for Steve Grayston due 19-Jan-96: At time of write up papers received.
+
+Amplify on suitably qualified personnel for fixing things within the office;
+
+on response times, call duration - procedural vs. faults;
+
+call volumes - thinking behind the figures;
+
+staffing, and move from trial to steady state - thinking behind the figures.
+
+engineer/parts banks - geographic location;
+
+customer satisfaction - understanding of ICL reply cards;
+
+* preventative maintenance, why is PUMA no longer part of the solution, and
+maintenance activities expected of the users;
+
+e new business introduction - regards to the SIS help desk, for significant new
+products, and implication for change in call volume pattern;
+
+e structure of the SIS Helpdesk;
+
+« Automatic Call Distribution set up that will be used;
+
+© Confirm position of call response within 10 second 98% and 100% in 20 seconds.
+
+eoecee
+
+Page 5 of 6
+WITN05970139
+WITN05970139
+
+RESTRICTED - COMMERCIAL
+PWY/JFO/007
+
+Actions Due from Programme:
+
+Respond on suitability of risk 11 by 16-Jan-96 to Dave Cooke - Bob.
+
+Wc 16-Jan-96, sanitised APPU specification - Bob to chase.
+
+Comments on response to risk 9a.
+
+Raise risk 72 to hang the “Call management and network design”. At time of write up
+paper received.
+
+Next meeting:
+
+e None. This was the last strand meeting.
+
+Jeremy Folkes & Bob Booth 311/96
+
+Page 6 of 6

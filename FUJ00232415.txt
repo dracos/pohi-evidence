@@ -1,0 +1,1770 @@
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+Document Title: INTEGRATION TESTING BUSINESS THREAD BIT02
+FOR RELEASE 1c
+
+Document Type: Test Scripts
+
+Abstract: This document details the sole Integration Business
+Thread which is required for Pathway Release 1c. The
+major business components of this script are Migration IGL
+to 1c and 1b to 1c, the Order Book Control Service and the
+Benefit Payments Service with limited EPOSS shell
+functionality, and Corporate Systems.
+
+Status: First approved issue
+
+Distribution for Review: PDA
+Pathway Product Development Managers
+Pathway Test & Integration
+Pathway Library
+
+Author: Nigel Smith-Rudge
+Approval Authority: P Lindsey
+
+S Palladino
+
+C Young
+
+B Vaughan
+Comments to: Nigel Smith-Rudge
+Comments by: N/A
+
+© 1997 ICL Pathway Ltd
+
+COMMERCIAL IN CONFIDENCE Page 1 of 23
+FUJ00232415
+
+FUJ00232415
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+0 Document control
+0.1 Document history
+Version Date Reason
+0.1 28.03.97 First draft issue for review
+0.2 12.05.97 Second draft issue for review
+1.0 01.07.97 First approved issue
+0.2 Approval authorities
+Name Position Signature Date
+P Lindsey Pathway Test Analysis Manager
+S Palladino Pathway Release 1c Test
+Manager
+C Young PDA Business Test Manager
+B Vaughan Pathway T&l Manager
+0.3 Associated documents
+Reference Vers Date Title Source
+[1] CR/FSP/0004 2.0 27.09.96 Service Architecture Design Document
+[2] ESNSINT.01G 25.07.96 ESNS/Pathway Technical Data Interface
+Definitions
+[3] OB/DES/0099 0.1 21.11.96 OBCS Contingency Processing
+0
+[4] BPR/OBCS 2.0 01.08.96 Business Process Rules
+[5] OB/DES/0002 0.7 27.11.96 OBCS Access Service
+[6] BP/DES/0008 0.2 30.09.96 OBCS Design Specification Pathway
+[7] PA/STR/O00? 0.1 11.02.97 Release 1c Contents Description Pathway
+[8] CAS.101 0.4 22/11/96 CAPS Access Service Release 0200 CAP
+System Design Specification
+[9] SU/DES/001 4.0 24/11/96 CAPS Access Service High Level Pathway
+Design
+[10] BP/RES/O01 1.0 12/07/96 BA/POCL Reports and Receipts Pathway
+
+(11] BP/FSP/001 2.0 25/04/96 Pathway Functional Requirements for Pathway
+Reconciliation Services
+[12] TD/DES/019 0.3 04/02/97 Auto-configuration for Release 1 Pathway
+
+[13] SU/DES/006 2.0 18/03/97 DeLa Rue Card Technology Interface Pathway
+
+COMMERCIAL IN CONFIDENCE Page 2 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+High Level Design
+
+[14] DW/IFS/0005 1.4.1 8/4/97 Data Warehouse to reference Data Pathway
+System Interface Specification
+
+[15] DW/IFS/002 1.2 11/4/97 Data Warehouse: CMS/PAS System CFM
+Interface High Level Design
+
+[16] DW/DES/001 0.1 8/5/97 Data Warehouse: CMS/PAS System Pathway
+Interface Functional Design Overview
+
+[17] DW/IFS/003 1.4.1 8/4/97 Sorbus Help Desk to Data Warehouse CFM
+Interface Specification
+
+[18] DW/IFS/001 1.7 15/04/97 Data Warehouse to TPS Interface Pathway
+Specification
+
+[19] CS/FSP/003 1.0 1/2/97 PAS/CMS Help Desk Call Enquiry Pathway
+Matrix
+
+[20] PTA/PR/0049 01 23/09/97 CAPS to PAS/CMS Codes Files CAPS
+Definitions
+
+([21] 27/1/97 I CAPS to PAS/CMS Data Interface CAPS
+
+Definitions and Validation Rules
+
+0.4 Abbreviations
+
+BA Benefits Agency
+BES Benefit Encashment Service
+BPS Benefit Payment Service
+
+CAPS Customer Accounting And Payments Strategy
+CMS Card Management Service
+
+CRN Customer Reference Number
+
+DSS Department of Social Security
+
+EPOSS _ Electronic Point of Sale Service
+
+HLTP High Level Test Plan
+
+ICL Inward Control Log
+
+ICMF Inward Control Monitor File
+
+IGL Initial Go Live
+
+LLTS Low Level Test Script
+
+MIS Management Information System - a.k.a. Corporate Systems
+
+OAS Order Book Access Service
+OBCS Order Book Control Service
+OCL Outward Control Log
+
+PAS Payment Authorisation Service
+PO Post Office
+
+POCL Post Office Counters Limited
+PUN Pick Up Notice
+
+COMMERCIAL IN CONFIDENCE Page 3 of 23
+FUJ00232415
+
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+RDMC _ Reference Data Management Centre
+SLA Service Level Agreement
+WAN Wide Area Network
+
+0.5 Changes in this version
+
+Changes resulting from more detailed analysis of the live implementation
+required for Release 1c.
+
+Deletion of ‘To be added’ section - additions now in place.
+
+Changes resulting from review comments on version 0.2 of this document.
+
+0.6 Table of content
+
+1. INTRODUCTION.
+
+2. SCOPE...
+
+2.1 BUSINESS THREAD.
+2.2 HIGH LEVEL TEST PLANS
+2.3 EXCLUSIONS.
+
+3. BUSINESS THREAD ID : BIT02.....
+
+position. sescnseseeene 10
+Fig 2. Synopsis of activities to achieve ‘Steady Si
+Fig 3 Upload transactions to Data Warehouse...
+
+4, RELEASE FUNCTIONALITY...
+
+4. Introduction
+
+The following Business Thread represents business scenarios which exercise the
+integration of Pathway Releases IGL and 1b into 1c, plus the integration of BPS and
+MIS.
+
+2. Scope
+
+2.1. Business Thread
+
+This document explains the regression testing necessary to check the migration of
+IGL and Release 1b POs to Release 1c plus new testing to check the roll-out of new
+Release 1c POs. This checks the integration of OBCS and BPS within the DSS and
+POCL Service Architectures, Interfaces to De La Rue, for actual Card and PUN
+production, and Interfaces to Data Warehouse for the Corporate System’s production
+
+COMMERCIAL IN CONFIDENCE Page 4 of 23
+FUJ00232415
+
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+of (MIS) reports. Reference Data from POCL will be loaded and checked, and
+integrated with the POs counters, Autoconfiguration and Systems Management Roll-
+out databases, and with MIS Data Warehouse.
+
+The test rig will include an IGL PO and a Release 1b PO (to check each type of
+migration and Systems Management for software delivery) and a new PO at Release
+1c, to check Autoconfiguration.
+
+Enough business type processing will be done to ensure that the system will run from
+end to end; periodic week/month/quarter/year reports will require large amounts of
+data matured over a number of months.
+
+Whenever practicable, the system will be as live-like as possible. However, some
+links will be found to be impractical - e.g. Sorbus Help Desk calls monitoring cannot
+be done without recourse to a help desk actually being set up and used - instead, the
+interface containing calls’ data will be composed manually. There may be other
+examples of this which will be explained in the LLTSs after production of HLTPs.
+
+This Thread will be the basis for development of HLTPs for Integration Testing.
+
+2.2 High Level Test Plans
+
+The testing of Release 1c for the Business Integration Testing activity will encompass
+all of :-
+
+POCL Reference Data initial drop,
+Corporate Systems standing data initial load,
+Initial take on of Post Office addresses and other BA reference Data,
+
+‘Vanilla Build’ of Counters and their Autoconfiguration ready for use by POCL
+Staff,
+
+The maturing of customers card and payment data at IGL and the migration of
+that data to Release 1c, the stopping of IGL cards and order of Release 1c
+cards with a special migration PUN,
+
+Maturing of customers’ Order Book encashment and stop data at Release 1b,
+
+Migration of Release 1b to Release 1c,
+
+Concurrent processing of Release 1b and Release 1c with the ‘hot list’ copy
+and transactions merge over the two systems,
+
+Ordering of new cards, payment authorisation and payment verification for
+encashment,
+
+CMS/PAS Help Desk processing for enquiries, and card and payment updates
+on both IGL and ‘1c cards.
+COMMERCIAL IN CONFIDENCE Page 5 of 23
+
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+Corporate Systems reporting functionality at daily, weekly, monthly, quarterly
+and yearly intervals,
+
+When Release 1c goes live, all of the above happens over a short timescale of
+about two weeks. On any one processing day there will be encashment of
+Benefits using IGL cards, new 1c cards, Order Books at 1b Post Offices and
+Order Books at 1c Post Offices. Once all IGL cards have been replaced and
+all Release 1b Post Offices migrated, the Release 1c system will have
+achieved a ‘steady state’ and BES regression tests and OBCS regression tests
+will be run.
+
+‘Steady State’ for the regression testing of BES and OBCS within the limited
+EPOS shell.
+
+POCL Reference Data maintenance,
+BA Reference Data maintenance via CMS/PAS Help Desk,
+Corporate Systems maintenance functionality,
+
+Rather than producing one HLTP to encompass all of the above, four HLTPs have
+been produced, simply to aid in the review process :
+
+BIT0201- _IGL to Release 1c migration (Ex-IGL Post Offices)
+
+Maturing cases at IGL,
+
+Migration of IGL Post Offices to Release 1c,
+
+POCL Reference Data initial drop,
+
+Take on of Benefit Agency Reference Data
+
+Corporate Systems standing data initial load
+
+Take on of Calendar information from RDMC.
+
+‘Vanilla Build’ of Counters and their Autoconfiguration, ready for use by
+POCL Staff
+
+Encashment at Release 1c using IGL card, then card replacement
+followed by encashment at Release 1c using new card, processing of
+payment authorisations, card stops and payments stops.
+
+OBCS functionality for encashments, stops, recalls, purges, book
+receives, book issues and book redirects.
+
+CMS/PAS Help Desk processing for enquiries, and card and payment
+
+updates on both IGL and migrated cards
+
+BIT0202- Release 1b to Release 1c migration (Ex Release 1b Post
+Offices)
+
+Maturing cases at Release 1b for encashments, stops, recalls, purges,
+book receives, book issues and book redirects.
+
+Migration of Release 1b Post Offices to Release 1c.
+
+POCL Reference Data initial drop,
+
+Take on of Benefit Agency Reference Data
+
+COMMERCIAL IN CONFIDENCE Page 6 of 23
+ICL Pathway
+
+FUJ00232415
+
+FUJ00232415
+
+INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+BIT0203 -
+1c)
+
+BIT0204 -
+
+Corporate Systems standing data initial load
+
+‘Vanilla Build’ of Counters and their Autoconfiguration, ready for use by
+POCL Staff
+
+Use of OBCS for encashments, stops, recalls, purges, book receives,
+book issues and book redirects at Releases 1b and 1c concurrently
+Encashment using IGL card (foreign), and encashment at Release 1c
+using new card, processing of payment authorisations, card stops and
+payments stops.
+
+CMS/PAS Help Desk processing for enquiries, and card and payment
+updates on 1c cards
+
+Roll out of Release 1c (New Post Offices at Release
+
+POCL Reference Data initial drop,
+
+Take on of Benefit Agency Reference Data
+
+Corporate Systems standing data initial load
+
+‘Vanilla Build’ of Counters and their Autoconfiguration, ready for use by
+POCL Staff
+
+Introduction of the Post Office via POCL Reference Data.
+
+Use of OBCS for encashments, stops, recalls, purges, book receives,
+book issues and book redirects.
+
+Encashment using IGL card (foreign), and encashment at Release 1c
+using new card, processing of payment authorisations, card stops and
+payments stops.
+
+CMS/PAS Help Desk processing for enquiries, and card and payment
+updates on 1c cards
+
+Steady State for regression testing of BES and OBCS
+
+Use of OBCS for encashments, stops, recalls, purges, book receives,
+book issues and book redirects. Plus Purge of Stops and Recalls
+Impoundment of IGL cards (all having been stopped for replacement),
+Encashment at Release 1c using new card, processing of payment
+authorisations, card stops and payments stops.
+
+CMS/PAS Help Desk processing for enquiries, and card and payment
+updates on 1c cards
+
+Maintenance of Post Offices, Opening Hours and Regions via POCL
+Reference Data.
+
+BA Reference Data maintenance via CMS/PAS Help Desk
+
+Corporate Systems maintenance
+
+Only two Low Level Test Scripts are envisaged :-
+
+The first encompasses all of the activities required to achieve a ‘steady state’,
+
+to the
+
+point where all Release 1c take on and migration activities have
+
+occurred.
+
+The second LLTS encompasses regression testing of OBCS and BES at the
+Release 1c ‘steady state’ position, where more functionality is explored.
+
+COMMERCIAL IN CONFIDENCE Page 7 of 23
+FU.
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+The philosophy underlying this decision is the control of test running. As identified
+above, a lot of activities take place at the same time on IGL and Release 1b, then at
+Release 1b and Release 1c. To fully test the integration of the system, activities must
+take place simultaneously, sometimes across all Post offices counters present on the
+Business Integration Test rig. Control of test runs will take place using time
+(year/week/month/day/time) within Post Office, the Post Office being either migrated
+or introduced for the first time at a specific time on a specific. day. The HLTPs reflect
+the specific test conditions executed, but do not attempt to detail the exact time that
+the test will be accomplished. For example, the file from CAPS is transferred every
+day, and transactions etc. are reported back to CAPS every day. However, there will
+be only one instance of each test condition within the HLTP, even though the HLTP
+continues over many days (i.e. daily processing will be taken for granted).
+
+2.3. Exclusions
+
+See Ref. [7].
+
+On-line Help.
+
+This thread is limited to the infrastructure covered within Release 1c of Pathway and
+
+is to be run within the processing outlined by the Business Integration Test team’s low-
+
+level documentation.
+3. Business Thread Id : BITO2Case Background
+
+Business Thread BITO2 covers the Integration testing of Pathway Release 1c
+using the OBCS/BES Riposte shell. It covers the acceptance of ‘Hot Lists’
+containing the Order Book controls from the Benefits Agency (BA) via the
+OBCS Access Service (OAS), distributing these controls to the appropriate
+outlets, Back office and Counter Order Book processing , then sending the
+subsequent transaction files back to the BA. In a similar way, it also includes
+the loading of customer detail and payment authorisation files from BA/CAPS
+and their distribution to the appropriate outlets, requests to De La Rue for card
+production, the receipt, reconciliation and issuing of cards to customers within
+Back office and/or Counter processing as well as encashment/impoundment of
+cards at the Counter.
+
+Many of the above transactions are reported via Corporate Systems at regular
+periodic intervals.
+
+The migration of customers’ details from IGL to Release 1c and any
+subsequent re-issue of cards to those customers will also be tested. A similar
+testing exercise is required for Release 1b cases to ensure correct migration.
+
+Case Access Summary
+
+Pathway will have an integration test rig consisting of a Sequent Server (the
+Host System) supporting 6 outlets, with 4 outlets having one counter position
+
+COMMERCIAL IN CONFIDENCE Page 8 of 23
+
+FUJ00232415
+}J00232415
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+and 2 outlets being multi counter. The Data Warehouse will be contained in a
+further Sequent Server, and Corporate Systems processing will be actioned on
+its own Sequent host. All testing will be carried out under the control of the
+Pathway Business Integration Test Manager. It will encompass operation at a
+variety of outlets & counter positions, Agent processing and HOST system
+processing. The outlet breakdown is to be as follows :-
+
+Post Office FAD code Counter Original Release
+1 951672 COUNTER1 IGL
+2 951646 COUNTER2 IGL
+3 223456 COUNTER3 1b
+4 223457 COUNTER4 1b
+
+COUNTERS
+5 323456 COUNTERS te
+6 323457 COUNTER7 te
+COUNTER8
+COUNTER9
+COUNTER10
+
+See Fig. 1, below.
+
+COMMERCIAL IN CONFIDENCE Page 9 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+Fig 1. Release 1c ‘steady state’ position
+
+COMMERCIAL IN CONFIDENCE Page 10 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+Synopsis of Events
+Migration - IGL to Release 1c.
+
+Data matured at IGL must be checked to ensure it was migrated correctly. For
+a time, both IGL and Release 1c cards will be valid, so encashments will be
+done on migrated customers. The GiroBank Help Desk (a.k.a. CMS/PAS Help
+Desk) will be utilised to check on card and payment status of both IGL and
+newly issued cards.
+
+Migration - Card Migration
+
+IGL cards will all be migrated to the new Release 1c specification. A one-off
+batch process will be run to stop all IGL cards and request a new card from De
+La Rue. The new cards will be sent to the nominated Post Offices, and a
+special migration PUN sent to customers. The GiroBank Help Desk (a.k.a.
+CMS/PAS Help Desk) will be utilised to check on PUN status of newly issued
+cards.
+
+Migration - Release 1b to Release 1c
+
+At Release 1c go live, the Release 1b Central Control file will be copied into
+Release 1c Central Control, i.e. as a pre-cursor to any OBCS processing in
+Release 1c. All controls relating to customers , both locally and centrally held,
+will be deleted from Release 1b at Release 1c go live; thus both Release 1b
+and Release 1c controls relating to customers will be re-learnt, as and when
+Customers encash Order Books.
+
+The link to CAPS will remain with the Release 1b Sequents until all Release
+1b Post Offices have been migrated to Release 1c. At that point, the CAPS link
+will be switched to the Release 1c Sequents.
+
+OBCS
+
+At the start of each logical day a BA-produced ‘Hot List’ will be loaded into the
+Host System’s Central control file by an Oracle process. Until all Release 1b
+Post Offices have been migrated to Release 1c, the ‘hot list’ will be copied
+from where it is received on the Release 1b Sequents to the Release 1c
+Sequents. The ‘hot list’ will be loaded into both the Release 1b and Release 1c
+Host Systems.
+
+The Distribution Agent will run to distribute all controls relating to any ‘local’
+customers to the appropriate outlets. Until all Release 1b Post Offices have
+been migrated to Release 1c, Distribution Agents will be run on both Release
+1b and Release 1c.
+
+At the end of each logical day the Harvester Agents will run to produce the
+daily transaction file required by the BA. This will be sent back to the BA
+through the OBCS Host. Until all Release 1b Post Offices have been migrated
+to Release 1c, Harvester Agents will be run on both Release 1b and Release
+
+COMMERCIAL IN CONFIDENCE Page 11 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+1c. The transaction file from Release 1c will be copied to Release 1b and
+merged with the Release 1b transaction file. A composite transaction file will
+then be sent back to BA.
+
+The above events will be repeated for each day of the test. The scheduling of
+tasks will be governed by use of the Maestro scheduling server. Online
+archiving also takes place.
+
+BPS
+
+Card and customers’ personal information is transferred from CAPS to
+CMSI/PAS Host for use in card production and issue, for payment enrichment
+and for notification of stops/end of customer interest, etc.
+
+Distribution Agents will run to distribute all controls relating to any ‘local’
+customers to the appropriate outlets.
+
+Transactions will be done during the day of many types - card receipt and card
+batch reconciliation, new cards collected by customers on card expiry and
+against a PUN, change of nominated PO by customer, payment encashment
+by customers and the impoundment of cards and/or PUNs.
+
+During each day, Harvester Agents will run to produce the transaction files
+required by the BA for notification of card receipt and reconciliation, card issue
+and activation, encashments plus , at end of day, totals and reconciliations.
+This will be sent back to the BA through the PAS/CMS Host..
+
+The above events will be repeated for each day of the test. The scheduling of
+tasks will be governed by use of the Maestro scheduling server. Online
+archiving also takes place.
+
+POCL Reference Data
+
+Reference Data from POCL is required to enable Business Integration Testing.
+At Release 1c, the only link to RDMC is for Corporate Systems’ use. There will
+be an initial drop of data at Release 1c go-live followed by a trickle feed of
+data, as and when Post Offices are closed or new Post Offices opened. No
+product information is required in Corporate Systems from POCL at Release
+1c.
+
+BA Reference Data
+
+Reference Data from BA is required to enable Business Integration Testing.
+There will be an initial influx of data at Release 1c go-live. Maintenance
+facilities available to an Administration User at the CMS/PAS Help Desk will be
+utilised to input the data at ‘go-live’, and later to amend the data.
+
+Corporate Systems
+
+Transactions at the counters and various aggregated totals are harvested and
+
+COMMERCIAL IN CONFIDENCE Page 12 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.: VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+uploaded onto the Data Warehouse. Sorbus Help Desk send statistical data of
+call times, and also data about kit and line failures at Post Offices. From there,
+Corporate Systems access the data and manipulate it to produce various
+reports. All calculations and related data required by Corporate Systems can
+be input via screen interfaces. However, rather than input all of the details in
+that way, a standing data file will be loaded at Release 1c go live.
+
+Transactions at the counters will be harvested and uploaded to the Data
+Warehouse. From there, various calculations are done for the production of
+Corporate System’s reports. Reports will be produced over daily, weekly and
+monthly cycles, and one year end will be simulated.
+
+Autoconfiguration
+
+All counters will be built to the so-called ‘Vanilla build’. Autoconfiguration will
+be used to bring the existing IGL and Release 1b outlets into the Release 1c
+system.
+
+An additional Post Office will become known to the system so that the
+Autoconfiguration of the Gateway and Counter PCs during roll-out can be
+checked.
+
+Software Distribution
+
+TIVOLI will govern configuration of software. Update can be done in 4 ways :-
+1. to all POs known to the Autoconfiguration database
+1. to all PCs within a set of given POs
+1. to all PCs within a single PO
+1. toasingle PC
+
+Software distribution via Tivoli occurs during roll-out - i.e. it is used during the
+Autoconfiguration of the Counters. It is intended that new software deliveries
+(e.g. bug fixes) will be delivered via Tivoli.
+
+On-Line Help facilities
+
+The entry to and exit from Bubble Help will be checked in this Thread.
+
+On-line Help and Procedures manual and broadcast of Systems messages will
+NOT be checked in this Thread.
+
+On-Line archiving.
+
+This will be checked in this thread.
+
+System Administration
+
+As part of the System Management non-functional requirement, alerts might be
+raised via a Patrol Knowledge module in Sequents. - it may not be possible to
+test these specifically There will be remote operations capability for recording
+
+of events at Counters and their possible fixing by distributing software (via
+TIVOLI). If practicable, elements of Network Management and Resource
+
+COMMERCIAL IN CONFIDENCE Page 13 of 23
+FUJ00232415
+FUJ00232415
+
+ICL Pathway INTEGRATION BUSINESS THREAD BIT02 Ref.:  VI/TSC/0009
+
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+Management will also be explored.
+
+CMS/PAS Help Desk
+
+Requests from POCL staff for encashment and change of nominated PO when
+communications links are down will be checked. Card and PUN status will be
+updated for combinations of damaged, lost and found. Maintenance of BA
+Reference Data, which is passed on to Data Warehouse, will also be checked.
+Sorbus Help Desk
+
+There will be no direct link to the Sorbus Help Desk. Instead, interface files to
+the Data Warehouse will be created to simulate problems with kit and lines at
+Post Offices.
+
+De La Rue
+
+Card production requests and the actual production of cards and PUNS will be
+checked.
+
+De La Rue must also be informed of all Post Office addresses. There will be a
+take on exercise of all Post Office addresses at the CMS/PAS Help Desk.
+
+Backup and Archive
+
+The backup and archiving of databases are scheduled through Maestro, so
+will occur throughout the testing cycle.
+
+Restore
+
+A database restore and application of re-do logs will be checked.
+
+Fig 2. Synopsis of activities to achieve ‘Steady State’
+
+RDMC Ref MIS. BA Ref Tbiic Tbiic
+DataTake Standing Data Take I spiitimerge splitimerge
+on data take- on STARTS ENDS
+on IGL & tb
+data 1b
+Migration switched
+off
+CAPS - CAPS -
+Links to 4b Links to 1¢
+Run Gl Install 1¢ at Run TOL BESTOBC TEL Card
+IGLPO cards at Po cards atic S migration
+IGL + Books
+regression
+IGL rig
+Run lGl Install 1¢ at Run TCL BESTOBC TEL Card
+IGLPO cards at Po cards atic IS migration
+IGL + Books
+regression
+TPO OBC! install 1c —Run Books, Run cards Run Books,
+Single Run Books at PO Stop Books, Stop Books,
+counter, Order cards Order cards
+tb rig
+I ES) install 1¢ at" Run Books,
+
+COMMERCIAL IN CONFIDENCE Page 14 of 23
+ICL Pathway
+
+INTEGRATION BUSINESS THREAD BIT02
+FOR RELEASE ic
+
+Ref.: VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+te rig
+
+Vanilla
+Build
+
+Dual Run Books PO Stop Books, ‘Stop Books,
+counters Order cards
+New Te PO install 1¢ at Run Books, Run cards Run Books,
+Single Stop Books, Stop Books,
+counter Order cards
+New To PO Install 1¢ atRun Books, Run cards Run Books,
+Four Stop Books, Stop Books,
+counters Order cards
+Autoconfig x x x
+RDMC
+Maintain
+BA Ret
+Data
+Maintain
+Maintain
+Help Desk
+Maintain
+
+FUJ00232415
+FUJ00232415
+
+COMMERCIAL IN CONFIDENCE
+
+Page 2 of 23
+FUJ00232415
+
+FUJ00232415
+ICL Pathway INTEGRATION BUSINESS THREAD BITO2 Ref... VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+Fig 3 Upload transactions to Data Warehouse
+Pathway Host System Data Warehouse MIS Host
+(= I
+Business Development — I
+TIP/TPS BES
+from Release te TMS Benefit Payment System
+f .
+(APS and EPOS)
+Common Charging System
+(Invoicing)
+SIS HelpDesk a { = jj
+(via Gateway PCs) 4 Fraud Risk Management ‘ , I
+=
+i} I
+CMS/PAS Harvest ‘views’ Service Level Agreement —) I
+Monitor Ga) Review Book
+
+COMMERCIAL IN CONFIDENCE Page 3 of 23
+FUJ00232415
+
+FUJ00232415
+ICL Pathway INTEGRATION BUSINESS THREAD BITO2 Ref... VI/TSC/0009
+FOR RELEASE 1c Version: 1.0
+Date: 01/07/97
+
+RDMC Harvest ‘views’ Contract Administration
+(Rewrite tables to new view)
+4. Release Functionality
+Non-functional requirements :-
+
+Autoconfiguration
+
+Software Distribution
+
+System Management
+
+Archive
+
+Back up
+
+Restore
+[Fune ] SADD I Description I Product I
+admf 4.1.3.3.1.1 Administration functions EPOS
+AECA 3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 + Audit Enquiry for CCS and Contract Administration. ccs
+
+895/1
+
+audp 4.1.4.2 Control/audit processing OAS
+bbaa 4.1.1.8.1 Benefit Encashment - Permanent Agent/Alternative Payee - Transaction selection BES
+bbco =4.1.6.3 Bar Code/OCR Reader - Contingency arrangements - PUN details BES
+bbec — 4.1.1.10 Benefit Encashment - Casual Agent BES
+bbep  4.1.1.11 Benefit encashment - Permanent agent/Alternative payee BES
+beba4.1.1.4.4 Collection of new card by agent BES
+bene 4.1.1.4.1.1 Collection Of New Card By Customer - with PUN BES
+bepo 4.1.1.14 Change Of Nominated Post Office BES
+beps — 4.1.1.14.2 Change of nominated PO - Steady State BES
+bevp 4.1.1.5 Extended Verification Procedure BES
+
+COMMERCIAL IN CONFIDENCE Page 4 of 23
+ICL Pathway
+
+INTEGRATION BUSINESS THREAD BIT02
+FOR RELEASE ic
+
+Ref.: VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+bfen
+bfer
+bict
+brbr
+brsp
+brtf
+brtm
+bses
+bsss
+bsts
+caar
+cacv
+cafp
+cair
+caiv
+cakr
+cana
+cani
+cank
+ccap
+CCEB
+
+cenl
+ccod
+CCRB
+
+cepr
+cfil
+cfpr
+cfva
+CGAM
+
+chos
+cich
+cinf
+
+3.1.3.9 & 3.3.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.2.3.3
+
+3.1.1.4.1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.2.6.2
+
+3.1.3.9 & 3.3.2
+
+3.1.3.9 & 3.3.2
+
+3.1.3.9 & 3.3.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.9.2.2
+
+3.1.1.3.1
+
+3.1.3.9 & 3.3.2
+
+Foreign Encashment
+
+Forwarding Of Benefit Encashment Receipts
+
+Impoundment Of Card/Token/PUN
+
+Card batch reconciliation immediately on receipt.
+Reconciliation of cards against batch - Steady state provision
+Reconciliation:- Too few cards in Batch
+
+Reconciliation:- Too many cards in Batch
+Forwarding/Disposal Of Impounded PUNS, Cards And Tokens
+Standard encashment - Steady State
+
+Standard Encashment - Transaction selection
+
+CAS notified of acknowledgement receipt
+
+CAS acceptance receipt validation
+
+CAS outbound file processing
+
+CAS notified of initial receipt
+
+CAPS initial receipt validation
+
+CAS notified of acceptance receipt
+
+CAPS notified of acceptance receipt
+
+CAPS notified of initial receipt
+
+CAPS notified of acknowledgement receipt
+
+PAS/CMS to CAPS - In/out tray operation - notification to CAPS
+Calculate Variables by executing Batch run (CON200).
+
+Customer status change to ‘No longer of interest to PAS”
+Card Order generation
+
+Calculate Conformance & Remedies (Batch run) by frequency (CON201).
+
+Encashment payment reporting
+
+PAS/CMS to CAPS - In/out tray operation - file location
+CAPS to PAS/CMS - Empty file processing
+
+CAPS to PAS/CMS - File level validation
+
+Maintain Guarantee Amounts.
+
+CAS housekeeping
+Introduce Cardholder
+CAPS to PAS/CMS - Inbound duplicate file validation
+
+FUJ00232415
+FUJ00232415
+
+BES
+BES
+BES
+BES
+BES
+BES
+BES
+BES
+BES
+BES
+CAS
+CAS
+CAS
+CAS
+CAPS
+CAS
+CAPS
+CAPS
+CAPS
+CAPS
+slam
+
+cmspas
+cmspas
+slam
+
+cmspas
+CAS
+CAPS
+CAPS
+ccs
+
+CAS
+cmspas
+CAPS
+
+COMMERCIAL IN CONFIDENCE
+
+Page 5 of 23
+ICL Pathway
+
+FOR RELEASE ic
+
+INTEGRATION BUSINESS THREAD BIT02
+
+Ref.:  VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+cins
+cirv
+CIVF
+
+ckrv
+cloc
+cemed
+cmes
+cncp
+cnot
+cnpe
+corp
+cout
+cpad
+cpar
+cpfe
+cpil
+cpir
+cpis
+cpmf
+CPMV
+
+cpol
+cpre
+cprp
+
+CRAD
+
+crde
+CRDD
+
+cerdr
+crep
+crle
+criv
+CRPM
+
+3.1.3.9 & 3.3.2
+3.1.3.9.2.1
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+3.1.3.9.2.1
+3.1.3.9 & 3.3.2
+3.1.1.3.2
+3.1.1.3.3
+3.1.2.10.1
+3.1.3.9 & 3.3.2
+3.1.2.3.1
+3.1.3.9.2.1
+3.1.3.9.2.1
+3.1.1.5
+
+3.1.3.9 & 3.3.2
+3.1.3.9 & 3.3.2
+3.1.3.9.3
+3.1.3.9 & 3.3.2
+3.1.3.9 & 3.3.2
+3.1.3.9 & 3.3.2
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.9 & 3.3.2
+3.1.3.10
+3.1.3.9 & 3.3.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.6.3
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.6.4
+
+3.1.3.9.2.1
+
+3.1.3.9 & 3.3.2
+
+3.1.3.9 & 3.3.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+
+CAPS to PAS/CMS - Inbound SLA processing
+CAS initial receipt validation
+Produce ‘Confirmed’ Authority Invoice. Final.
+
+CAS acknowledgement receipt validation
+
+CAPS to PAS/CMS in/out tray operation - file location
+
+Maintain Cardholder Details
+
+Maintain Card Status
+
+Notify change of nominated PO
+
+CAPS to PAS/CMS in/out tray operation - Notification issue to cas(vme)
+New PAS Customer
+
+CAS outbound receipt processing
+
+Outbound file SLA processing
+
+The PUN & delivery
+
+Processes within CAPS computer - Acknowledgement receipt production
+Processes within CAPS computer - File level error report production
+CAPS ICL update
+
+Processes within CAPS computer - Initial receipt production
+
+Processes within CAPS computer - Inbound SLA monitoring
+
+Processes within CAPS Computer - Missing file processing
+
+Maintain Performance Measure Version (CON105). (Includes Requirements, Liquidated
+Damages, Fallback Transaction Timing).
+
+Processes within CAPS computer -OCL processing
+
+PAS reconciliation (CBOS)
+
+Processes within CAPS computer - Record level validation error report processing (from
+PAS/CMS)
+
+Maintain Adjustment.
+
+Replacement of damaged card (automatic)
+MaintainDiscount Details.
+
+Replacement of damaged card by customer report
+
+CAS record level validation error report processing
+
+CAPS to PAS/CMS - Record level validation failure error report production
+CAPS to PAS/CMS - Record level validation
+
+Maintain Performance Measure (CON104).
+
+FUJ00232415
+FUJ00232415
+
+CAPS
+CAS
+ccs
+
+CAS
+CAS
+cmspas
+cmspas
+cmspas
+CAPS
+cmspas
+CAS
+CAPS
+cmspas
+CAPS
+CAPS
+CAPS
+CAPS
+CAPS
+CAPS
+slam
+
+CAPS
+cmspas
+CAPS
+
+ccs
+
+cmspas
+ccs
+
+cmspas
+CAS
+CAPS
+CAPS
+slam
+
+COMMERCIAL IN CONFIDENCE Page 6 of 23
+ICL Pathway
+
+FOR RELEASE ic
+
+INTEGRATION BUSINESS THREAD BIT02
+
+Ref.: VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+CSLA
+
+cspl
+ctrm
+DARE
+
+ddam
+denq
+dfou
+DIVY
+
+dlos
+DMAP
+
+dnre
+DOTA
+dstr
+dsvc
+dver
+epos
+esfl
+fire
+fwan
+help
+IMMO
+
+IVPE
+
+NEWO
+NEWR
+oahk
+obce
+ocip
+oefp
+oeno
+
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.9 & 3.3.2
+
+3.1.3.9.2.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.8.3.3
+
+3.1.1.8.3.7
+
+3.1.1.8.3.6
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.8.3.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.8.3.4
+
+4.1.5.3.2.1.6
+
+3.1.1.8.4.4
+
+3.1.1.8.4.1
+
+3.1.1.8.3.1
+
+4.1.3
+
+4.1.4.2
+
+4.1.4.2
+
+3.1.3.9.6
+
+4.1.3
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+4.1.5.3.2.1.6
+
+4.1.5.3.2.1.6
+
+4.1.4.1
+
+4.1.4.2
+
+3.1.3.9 & 3.3.2
+
+4.1.4.2
+
+4.1.4.2
+
+Maintain Contract SLA (CON103).
+
+CAPS to PAS/CMS - File manager split of data into customer and non customer detail files
+Contol Match Processing
+SLAM - Detailed Analysis Report (On-Line).
+
+DSS Customer - Report Damaged (and unusable) card.
+DSS Customer - Enquire upon Card / PUN status.
+
+DSS Customer - Report Card / PUN found.
+
+Produce ‘draft’ Yearend Authority Invoice. Batch
+
+DSS Customer - Report lost or stolen card.
+Display Mappings.
+
+DSS Customer - Report non receipt of PUN at Customer's residence.
+Create default opening times for all Outlets.
+
+DSS Staff - Terminate a Card.
+
+DSS Staff - Verification of DSS Staff caller.
+
+DSS Customer - Verification of DSS Customer caller.
+EPOSS shell
+
+ESNS to OAS in/out tray operation - file location
+Files received from CAPS - CAPS outbound process
+File transfer over WAN
+
+Help functions
+
+Input Manual Measures On-Line (CON107).
+
+Invoice Period Enquiry.
+
+Maintain PO Outlets within Region.
+
+Maintain Regions within POCL.
+
+OAS Housekeeping (weekly)
+
+OBCS Control file processing
+
+CAS OCL processing
+
+OBCS to ESNS - IOP Transaction Control File production
+OAS to ESNS - In/out tray operation - notification to ESNS
+
+FUJ00232415
+FUJ00232415
+
+slam
+
+CAPS
+CAS
+slam
+
+cmspashd
+cmspashd
+cmspashd
+ccs
+
+cmspashd
+ccs
+
+cmspashd
+ref
+cmspashd
+cmspashd
+cmspashd
+EPOS
+OAS
+
+OAS
+CAPS
+EPOS
+slam
+
+ccs
+
+ref
+
+ref
+
+OAS
+obcs
+CAS
+OAS
+OAS
+
+COMMERCIAL IN CONFIDENCE
+
+Page 7 of 23
+ICL Pathway
+
+FOR RELEASE ic
+
+INTEGRATION BUSINESS THREAD BIT02
+
+Ref.:  VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+oeob
+oiob
+
+onbe
+oodb
+orob
+
+owan
+PAIR
+
+PARE
+
+pays
+PISR
+
+PMER
+
+pocl
+pocn
+poef
+poen
+PPIA
+
+PSCX
+
+psec
+psme
+psna
+psus
+psve
+RDOL
+reab
+RPIV
+
+RURS
+
+suab
+mbcc
+
+4.1.4.2.3.3 4.1.4.2.2, 900/3 900/4 900/8 956/8.
+4.1.4.2.2 4.1.4.2.3.2, 900/3 900/6 956/7.
+
+4.1.4.2.3.3.1
+
+4.1.4.2.2 4.1.4.2.3.1, 900/3 900/5 956/5.
+4.1.4.2.3.1.1, 4.1.4.2.3.2.1, 900/5 956/6.
+
+4.1.4.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.2.11.3.3
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.2.11.4.4
+
+3.1.2.11.4.4
+
+3.1.2.11.4.3
+
+3.1.2.11.4.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+4.1.1.3.2
+
+4.1.1.3.2
+
+3.1.1.8.5.2
+
+4.1.1.3.2
+
+3.1.1.8.5.1
+
+4.1.5.3.2.1.6
+
+3.1.1.8.5.2
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.3.8 + 4.1.5.3.3.2 , 894/1 + 894/4 + 894/5 + 894/6 +
+895/1
+
+3.1.1.8.5.2
+
+migration
+
+Encashment of order book
+
+Issue order book
+
+Non-barcoded encashment
+
+Receive order book
+
+Redirect order book
+
+File transfer over WAN
+
+Print Advice Invoice Report (DSS Agencies).
+
+SLAM - Performance Analysis Report (On-Line).
+
+Payment Stop.
+Print Invoice Summary Report.
+
+SLAM - Performance Measure Exception Report (On-Line).
+
+POCL Staff - Customer Change nominated PO (crossing language boundary).
+
+POCL Staff - Customer Change nominated PO (within same language boundary).
+
+POCL Staff - Customer Encash foreign payment.
+POCL Staff - Customer Encash payment.
+Print POCL Invoice Advice Report.
+
+Print Scorecard Matrix Report.
+
+POCL Staff - Excess card(s) in batch delivered to Nominated Post Office
+POCL Staff - Missing card(s) from delivered batch at Nominated Post Office.
+POCL Staff - POCL reports Non Arrival of batch of Cards.
+
+POCL Staff - Arrival of unexpected 'stray' batch of cards at a Post Office.
+POCL Staff - Verification of POCL Counter Clerk caller.
+
+Maintain POCL Organisational Unit Levels.
+
+Reactivate A Batch.
+
+Reprint Invoice
+
+SLAM - Run Review Session (On-Line).
+
+Suspend A Batch.
+OBCS Control file processing - Release 1b
+
+FUJ00232415
+FUJ00232415
+
+obcs
+obcs
+obcs
+obcs
+obcs
+OAS
+ces
+
+slam
+
+cmspashd
+ccs
+
+slam
+
+cmspashd
+cmspashd
+cmspashd
+cmspashd
+ccs
+
+ccs
+
+cmspashd
+cmspashd
+cmspashd
+cmspashd
+cmspashd
+ref
+cmspashd
+ccs
+
+slam
+
+cmspashd
+bit
+
+COMMERCIAL IN CONFIDENCE Page 8 of 23
+ICL Pathway
+
+INTEGRATION BUSINESS THREAD BIT02
+FOR RELEASE ic
+
+Ref.:  VI/TSC/0009
+Version: 1.0
+Date: 01/07/97
+
+mefp
+meno
+meob
+migb
+migc
+migd
+migi
+mign
+migo
+migp
+migt
+miob
+mirc
+modb
+moti
+mpos
+msfl
+mudp
+mwan
+prpt
+tepo
+mhdr
+misr
+bpsx
+
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+migration
+
+OBCS to ESNS - IOP Transaction Control File production - Release 1b
+OAS to ESNS - In/out tray operation - notification to ESNS - Release 1b
+Encashment of Order Book - Release 1b
+
+Concurrent Release 1b and Release 1c processing
+
+IGL to 1c migration - card migration
+
+IGL to 1¢ migration - data migration
+
+IGL to 1c migration - Integration Testing
+
+1b to 1c Hot List migration
+
+Release 1b and 1c concurrent processing
+
+IGL - prethread activities
+
+IGL to 1c migration tools
+
+Issue Order Book - Release 1b
+
+Files received from CAPS - CAPS outbound process - Release 1b
+Receive Order Book - Release 1b
+
+In/out-tray operation - Notification issued to OAS(VME) - Release 1b
+EPOSS shell - Release 1b
+
+ESNS to OAS in/out tray operation - file location - Release 1b
+Control/audit processing - Release 1b
+
+File transfer over WAN - Release 1b
+
+Peripheral testing by engineer
+
+BES Reports at Post Office
+
+Maintain Help Desk Reference Data
+
+Corporate Systems Reports
+
+BPS - Download of data
+
+FUJ00232415
+FUJ00232415
+
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+bit
+MIS
+BES
+
+COMMERCIAL IN CONFIDENCE Page 9 of 23

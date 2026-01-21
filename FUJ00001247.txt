@@ -1,0 +1,969 @@
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3 EPOSS ADMINISTRATION
+[R481, R696, R697, R816, R832, R835, R891]
+
+This section describes the range of EPOSS Administration functions:
+¢ Access Control
+
+¢ Counter Administration
+
+© Office Administration
+
+¢ The Cash Account
+
+« Reference Data Maintenance
+
+e Training
+
+e Broadcasts and Documents
+
+4.1.3.3.1 Access Control
+
+[R473, R816, R921]
+
+All users are given a level of access to the system, or role, as
+determined by their responsibilities within the office. For example,
+counter clerks are limited to serve customer, balance and
+reconciliation applications, whilst managers are given access to the full
+range of counter and office administration functions. The structuring of
+roles is determined by POCL and is documented in the Access Control
+Policy.
+
+Only those (exercising the roles) of the Post Office Manager or deputy
+can start up the counters from cold. This is accomplished by inserting
+a read-write Memory Card which holds a post office key value into the
+smart card reader on the counter whose system unit provides the WAN
+gateway function. The Post Office Manager authenticates himself to
+by means of a PIN. The Pathway Key Management System downloads
+a post office key which is stored (encrypted) in the Memory Card and
+workstation. Only this action can unlock a workstation’s encrypted
+filestore. The Post Office Manager then introduces the Memory Card
+to each counter in turn
+
+To refresh the key on expiry or at another time the Post Office
+Manager can obtain a new key by signing on at the gateway machine.
+
+To recover from a forgotten PIN or lost or damaged card the Post
+Office Manager will verbally authenticate himself to the HS Help Desk
+who will notify him verbally of a (one-shot) key. When entered at the
+post office this key will trigger the KMS to refresh the post office key.
+
+A similar technique is used for the POCL Emergency Manager/auditor
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 159
+ICL Pathway
+
+FUJ00001247
+FUJ00001247
+
+Service Architecture Design Document Ref: PRIFSP/000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.1.1
+
+4.1.3.3.1.2
+
+to assume Post Office Manager duties.
+
+PASSWORD USAGE
+
+Each user is allocated a password which is required to be changed at
+pre-determined intervals (currently one month). The system prompts
+
+for a change of password. Users additionally are able to change their
+own passwords whenever they wish.
+
+A lower-level password may be changed by the office manager if
+necessary, for example, if a user has forgotten his password.
+
+A similar mechanism to the above is used for POCL auditors, with the
+result giving access to the Audit screen.
+
+Successful and unsuccessful attempts to log on are recorded by the
+system. This information is recorded along side the FAD code, counter
+position and the date and time.
+
+An external visitor, such as the Retail Network Manager can be given
+access to the system by the office manager.
+
+The possible migration to other methods of user sign-on is the subject
+of Change Control
+
+FUNCTION SELECTION
+The log on screen is displayed following switch on of the terminal.
+
+The clerk is required to:
+e Key unique ID
+e Key Password
+
+The system :
+e Identifies the current stock unit, if any, that is attached to the user
+
+e Cleans up or recover any information processed prior to any
+abnormal termination of the user’s previous session possibly due to
+failure and advises the clerk of current status and any actions
+required to complete the interrupted session in order to obviate one-
+sided transactions
+
+The user is presented with the main desktop showing:
+e Help and Messages - first level functions provided by Riposte
+
+e Serve Customer Functions - allowing all transactions to be
+completed at the counter
+
+e Counter Administration - allowing stock unit attachment, balancing,
+transfers and remittances in and out
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 160
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+e Office Administration - allowing stock unit and user administration,
+and cash account production and report generation
+
+e Log Out - ending the user’s session at the counter
+
+e Temporary Lock - allowing the user to secure and leave the counter
+position temporarily. The lock prevents unauthorised use of the
+absent user’s terminal. The lock is removed by the user entering his
+password
+
+4.1.3.3.2 Counter Administration
+
+[R695]
+This section describes the counter administration facilities.
+
+4.1.3.3.2.1. © THREE METHODS OF WORKING
+The system allows the following post office working methods:
+
+e Individual clerk accountability
+
+e Team working
+
+e ‘Sub post office accounting’
+
+These working methods are supported by the following mechanisms:
+
+e Each stock unit can be optionally marked as sharable (i.e. attached
+to more than one user at a time)
+
+e Each user is restricted to using only one stock unit at a time
+selected from a defined set
+
+‘Sub post office accounting’ is the flexible use of combinations of
+features of the first two methods.
+
+4.1.3.3.2.1.1 Support for Individual Clerk Accountability
+
+This method of working can be achieved by ensuring that any single
+stock unit is attached to only one clerk at a time. In this environment,
+stock units would not be marked as sharable.
+
+4.1.3.3.2.1.2 Support for Team Working
+
+The system supports “team working” allowing a stock unit to be
+attached to more than one user at the same time. The system does
+not allow stock unit balancing while the stock unit is being shared.
+
+4.1.3.3.2.1.3 Support for Sub Post Office Accounting
+
+The system allow sub postmasters to adopt a combination of individual
+accountability and stock unit sharing to suit their personal
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 161
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+requirements.
+
+4.1.3.3.2.2 I SHARING A STOCK UNIT
+
+Sharing a stock unit results when a stock unit is attached to more than
+one user at one time. When sharing a stock unit a number of users
+divide the administrative functions between them, e.g., the declaration
+of cash and stock on hand may be carried out by each user and each
+declaration represent that user’s proportion of the total for the stock
+unit which is used for balancing purposes. The process for balancing
+a shared stock unit is discussed in Section 4.1.3.3.2.8, Stock Unit
+Balancing, below.
+
+4.1.3.3.2.3. ATTACH A STOCK UNIT
+
+This allows the user to select a stock unit for his use with the following
+constraints:
+
+¢ The stock unit must exist
+e The user must not have a stock unit already assigned
+
+Ifthe stock unit is not sharable it must not be attached to another
+user
+
+If the stock unit is not sharable it must be in a balanced state
+
+4.1.3.3.2.4 START ANEW STOCK UNIT BALANCE PERIOD
+
+After attaching a stock unit to a user a new balance period is opened
+and started. All operations involving the stock unit are included within
+this balance period until the stock unit is balanced again.
+
+4.1.3.3.2.5 I DETACH A STOCK UNIT
+
+This allows the user to relinquish responsibility for the stock unit. The
+stock unit need not be in a balanced state.
+
+4.1.3.3.2.6 STOCK TRANSFERS
+[R807]
+
+Stock can be transferred between stock units in the following way:
+
+e The requesting user, the user receiving the stock, verbally agrees
+with a sending user on the quantity and value of the stock required
+
+e The sender responds with a ‘Transfer Out’ confirmation
+e The sender gives the requester the agreed items
+
+e The requester responds with a ‘Transfer In’ confirmation
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 162
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.2.6.1 Transfer Request
+The transfer request is made verbally.
+
+4.1.3.3.2.6.2 Transfer Out
+The sender uses the ‘TRANSFER OUT’ function to input and record
+the quantity and value for each stock item. When completed a
+‘Transfer Out’ slip is printed by the sender using the counter printer.
+This process generates transfer out transactions and decreases the
+stock unit's levels.
+
+4.1.3.3.2.6.3 Transfer In
+The requester uses the ‘TRANSFER IN’ function to input and record
+the quantity and value for each stock item to be taken in. When this is
+completed a ‘Transfer In’ information slip is printed by the requester
+using the counter printer. This process generates transfer in
+transactions and increases the stock unit's levels.
+
+4.1.3.3.2.6.4 Transfer Completion
+The physical exchange of stock is accompanied by the signing of the
+‘Transfer Out’ receipt by the requester. The sender keeps the signed
+receipt as proof of the transaction.
+
+4.1.3.3.2.7 REMITTANCES
+Stock, including cash, remittances occur:
+
+e Between two outlets, when one outlet requests a replenishment of
+stock from another nearby
+
+e When an outlet orders stock or receives stock routinely
+« When an outlet returns stock
+
+[DN: The procedures by which remittances to or from non-automated
+locations are handled is to be confirmed.]
+
+4.1.3.3.2.7.1 Remittances In
+
+An automated receiving outlet confirms the receipt of items using the
+‘Remittance In’ function. It uses the ‘REMITTANCE IN’ function to enter
+the quantity and value for each stock item that has been received.
+When this is completed a ‘Remittance In’ slip is printed. This process
+generates Remittance In transactions and increases the stock levels.
+In a non-automated office this process and the production of the
+‘REMITTANCE IN’ slip is handled manually.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 163
+FUJ00001247
+
+FUJ00001247
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+4.1.3.3.2.7.2 Remittances Out
+
+4.1.3.3.2.7.3
+
+4.1.3.3.2.8
+
+An automated outlet or CRU uses the ‘REMITTANCE OUT’ function to
+enter the quantity and value for each stock item. When completed a
+‘Remittance Out’ slip (i.e. consignment note) is printed. This process
+generates remittance out transactions and decreases the sender’s
+stock levels. In a non-automated office this process and the production
+of the ‘REMITTANCE OUT’ slip is handled manually.
+
+Remittance Completion
+
+The physical receipt of stock is completed by the signing of the
+‘Remittance Out’ slip by the receiving outlet. This may be sent to the
+sending outlet or CRU as proof of the transaction according to POCL
+practice.
+
+STOCK UNIT BALANCING
+[R695, R837]
+
+Stock unit balancing is the process of reconciling the user’s current
+stock unit contents against the transactions completed and the
+
+opening stock unit contents. Each stock unit must be balanced at the
+end of the Cash Account period, traditionally a week. The system
+imposes controls such that mandatory reports are produced before ‘roll-
+over’. At this point the stock unit is rolled-over to the next Cash
+Account.
+
+In addition to this compulsory balancing, a stock unit may be balanced
+at any time during the Cash Account. Specifically the user balances
+an unshared stock unit at the end of the duty period. A shared stock
+unit cannot be balanced whilst it is still being used for sharing. The
+stock unit is balanced by the last user to be attached to the stock unit.
+
+The system produces a ‘Stock Unit Balance’ report providing a
+summary of the clerk’s activity during the balance period. A copy of
+this form is also used as the office balance form and this is the
+amalgamation of all counter balance forms in a Cash Account.
+
+Individual till balance reports are produced for shares of shared stock
+units. These reports are printed on the counter printer.
+
+Formats for these reports are provided in the Horizon OPS Reports &
+Receipts specification.
+
+Although balancing is a largely automatic process, the counter clerk
+must have performed the following activities:
+
+¢ Confirm all the stock and cash movements (transfers and
+remittances)
+
+¢ Declare actual cash in hand
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+
+C:\_SADD\Sadd.
+
+I4\SADD44D.DOC Page 164
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+e Declare actual stock in hand
+
+4.1.3.3.2.8.1 Declare Stock in Hand
+The clerk declares the actual physical stock unit contents for particular
+(composite) stock items by either declaring or adjusting the amount of
+stock on hand. For shared stock units, adjustments may only be made
+when the clerk has unshared access to the stock unit. The system
+maintains a record of all stock items. If there is any difference
+between the actual stock declared and the stock as maintained by the
+system, this is an indication that one or more errors have occurred and
+an adjustment may be necessary.
+
+4.1.3.3.2.8.2 Print Stock in Hand Report
+
+This facility produces a printed report of all stock items within the stock
+unit.
+
+4.1.3.3.2.8.3 Declare Cash in Hand
+[R814]
+
+The clerk verifies the actual physical cash in hand in the stock unit by
+denomination, (including coins). If there is a difference between the
+total maintained by the system, this is an indication that one or more
+errors have occurred and an adjustment may be necessary.
+
+4.1.3.3.2.8.4 Daily Cash Locked Up
+The system provides an optional function ‘Declare Cash in Hand’ for
+use at the end day for all stock units. This information is used
+subsequently, possibly retrospectively, by POCL to manage the
+overnight cash holding for the outlet. Such declarations do not update
+any stock unit cash balance.
+
+4.1.3.3.2.8.5 Produce Balances
+The clerk completes one or more trial balances before accepting a
+balance as final, enabling him to rectify errors prior to the stock unit
+balance period being closed. The final balance closes the stock unit
+balance period and allows the detachment of the stock unit.
+
+Discrepancies (losses and gains) identified at the point of balancing
+are retained within the stock unit. A balance may be accepted as final
+provided that there are no negative stock holdings.
+
+4.1.3.3.2.8.6 Declare Losses and Gains
+
+The system identifies losses and gains as part of the balancing
+process.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 165
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.2.8.7 Clear Losses and Gains
+
+The clerk may clear losses and gains to remove them from the office
+balance upon resolution of any queries.
+
+4.1.3.3.2.8.8 Dormant and Resting Stock Units
+[R814, R815]
+
+Stock units which have had no traffic during the balancing period and
+stock units which are not attached to a user at the time the office is
+balanced are consolidated on the basis of their last-balanced position.
+
+[DN: Whether a dormant stock unit for which a revaluation is required
+is prevented from being rolled over without opening is to be defined.]
+
+4.1.3.3.2.8.9 Adjustments
+[R695, R549]
+
+Adjustments may be made to rectify individual transactions or can be
+non-transaction specific in their nature.
+
+This process of reversing transactions is also described in Section
+4.1.3.1.12, Reverse a Transaction. The clerk may reverse transactions
+that are reversible. Any reversal does not result in transaction
+information in the journal being amended but causes the insertion of
+additional compensating and correcting transactions. All reversible
+transactions may be reversed at any time during the Cash Account
+period unless specifically prohibited, for example, APS transactions
+already notified to the Client.
+
+4.1.3.3.2.9 I DISPLAY AND PRINT REPORTS AND CLIENT SUMMARIES
+[R696]
+
+The office print-previews and prints reports and Client summaries
+required using data extracted from the stock unit and user as well as
+by day, time and date. The formats of reports are specified in the
+Horizon OPS Reports & Receipts specification.
+
+4.1.3.3.2.10 AP CLIENT TRANSACTION CUT-OFFS
+[R890]
+
+This facility declares a cut-off time by transaction type and client. This
+effectively sets a watershed marker indicating the production of the
+transaction summary reports and the physical despatch of paperwork
+to the AP Client. EPOSS restricts, or strictly controls, the opportunity
+to rectify errors which have already been included in the information
+despatched.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 166
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.2.11 END OF DAY
+The effect of the End of Day process is to allow a set of activities that
+must occur on a daily basis. This function allows activities such as
+Daily Cash Locked Up and Client Transaction Cut-Offs, which are
+prerequisites to End of Day, to occur.
+
+The aggregate of Daily Cash Locked Up for the office as a whole is
+available for postmaster information.
+
+ROLL-OVER[R814, R815]
+
+The final balance period for the stock unit in the Cash Account period
+is identified through the Roll-over function. The next balance period
+for this stock unit is 1 (one) in the subsequent Cash Account. The last
+set of balance information for each stock unit at roll-over, plus a subset
+of data from previous balance periods since the last roll-over, is used
+to produce the office balance and the Cash Account report.
+
+Roll-over can only be applied to a stock unit which is in a balanced
+state and for which mandatory reports have been produced. This
+means that it has been balanced and that no subsequent operations
+involving customer serving, stock transfers, reversals or other activities
+which would imbalance the stock unit have occurred.
+
+A stock unit cannot be rolled-over while it is being shared. All but the
+last sharer of a shared stock unit must detach from it in order that it
+can be balanced and rolled-over.
+
+Dormant and resting stock units are by definition in a balanced state
+and must be rolled over.
+
+The generic rules for ordinary operation and detailed exceptions
+conditions is defined in Day-in-the-Life-of Analysis of Clerk Cycles.
+
+4.1.3.3.3 Office Administration
+
+This section describes the office administration functions generally
+completed by the office manager or deputy including those functions
+used when setting up the office.
+
+4.1.3.3.3.1_ USER MAINTENANCE
+
+4.1.3.3.3.1.1 Add User
+
+This allows new users to be included within the system. The
+information about each user includes the Name, ID and privilege level.
+
+4.1.3.3.3.1.2 Remove User
+This allows the user to be removed from the system.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 167
+FUJ00001247
+
+FUJ00001247
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.3.1.3 Modify User Details
+
+This allows existing user's details to be changed. The user’s use of
+the system is disabled whilst details are being modified.
+
+4.1.3.3.3.2 I STOCK UNIT MAINTENANCE
+
+4.1.3.3.3.2.1 Add Stock Unit
+
+This allows new stock units to be introduced into the system. Each
+stock unit has a unique ID, and / or name and an access level.
+
+4.1.3.3.3.2.2 Remove Stock Unit
+
+This allows stock units to be removed or deleted from the system. A
+stock unit can only be removed if it is not in use and is empty.
+
+4.1.3.3.3.2.3 Modify Stock Unit
+
+This allows a stock unit’s details, such as access levels, to be
+changed. Such changes may be applied only if the stock unit is in an
+appropriate state. It can be suspended without deleting it from the
+system.
+
+4.1.3.3.3.3. ATTACH/DETACH A STOCK UNIT
+
+This allows a selected stock unit to be attached to a selected user at
+the counter. This is similar to the counter administration function and
+is provided here for convenience.
+
+In the event of the unavailability of the counter clerk, for example due
+to sudden illness, the facility is available to allow an authorised user to
+detach the stock unit and reattach it to another user.
+
+4.1.3.3.4 The Cash Account
+
+[R819, R834]
+
+The Cash Account is a definitive summary of all of the business
+transacted at the Post Office during the Cash Account period,
+traditionally a week. The production of the Cash Account can only
+occur after all activities in that Cash Account have been completed.
+
+The Cash Account production process can be carried out on the data
+collected for one Cash Account following balancing of the stock units,
+whilst these are being used to serve customers in the next Cash
+Account.
+
+The pre-Pathway systems utilise three styles of Cash Account:
+London, Provincial and CRU. The Pathway solution provides for the
+merging of the London and Provincial styles.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 168
+ICL Pathway
+
+FUJ00001247
+FUJ00001247
+
+Service Architecture Design Document Ref: PRIFSP/000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.4.1
+
+4.1.3.3.4.2
+
+The requirement is for the Cash Account to be produced in both
+printed and electronic forms. The latter is also transmitted from the
+Office to TIP.
+
+The production of the Cash Account follows the successful completion
+of the office balance. Unclaimed Payments and Uncharged Receipts
+and Error Notices are derived and added.
+
+Error Notices are treated as a class of tradeable products and enter
+the Cash Account as a result of a buy or sell transaction.
+
+OFFICE BALANCE (WEEKLY CASH BOOK)
+[R808]
+
+The office balance is analogous to the weekly cash book used in sub-
+post offices. For the purposes of this document the weekly cash book
+is considered to be equivalent of the office balance.
+
+The production of the office balance is a precursor to the production of
+the Cash Account. Essentially the office balance is an amalgamation
+of all the individual stock unit balances within the cash account. In
+order to produce the office balance all stock units must have been
+balanced and “rolled-over” to the next cash account week.
+
+A facility to reconcile non-value items with unique serial numbers by
+volume and within stock unit is provided.
+
+A suspense account allows entries that cannot be resolved until after
+the Cash Account to be carried forward
+
+The system provides an office level snapshot, at any time, of
+transactions, cash and stock levels across all stock units. The same
+facility is available to provide an instant snapshot of the transactions
+and contents of any single stock unit. These snapshots relate to an
+instant in real time. They neither place any constraint on operations
+nor take into account work in progress .
+
+NON-ACCOUNTING DATA
+[R838]
+
+EPOSS allows a class of transactions to be processed which may, or
+may not, affect the office balance, but the data for which is required for
+management information. Examples are zero value transactions for
+Clients, or local schemes where only volumes and not value are
+collected. The associated journal entries are disregarded when
+accounting for the office but are destined to be used in management
+information at the centre, particularly in Remuneration calculations.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 169
+FUJ00001247
+
+FUJ00001247
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+4.1.3.3.4.3 END OF ACCOUNT
+
+4.1.3.3.4.4
+
+4.1.3.3.4.5
+
+4.1.3.3.4.6
+
+4.1.3.3.4.7
+
+The Cash Account report may be reviewed for completeness and
+accuracy prior to its acceptance. The acceptance of the Cash Account
+report allows the selection of an “end of account” function. This “rolls-
+over” the office to next Cash Account and makes figures available to
+subsequent processes such as Remuneration.
+
+ACCOUNTING ADJUSTMENTS
+
+This function allows an authorised user to apply adjustment
+transactions as required for the office balance process
+
+TRANSACTION REVERSALS
+[R804, R805, R812]
+
+A facility is provided to allow the reversal of transactions.
+
+The user, clerk or office manager, selects the stock unit balance period
+and browses the transaction journal in order to find and select the
+transaction for reversal. The scope of the browsing may be
+parameterised to locate entries more easily. Additionally the reversal
+may relate to no specific transaction. A loss or gain transaction may
+need to be generated to account for any cash (or other MoP) involved
+in the transaction. The stock unit balance report and any client
+summary needs to be re-printed to reflect the reversal.
+
+If the AP transaction has already been despatched from the office then
+it is not reversible. The error will probably result in the receipt of an
+error notice from the Client.
+
+Note
+There is a distinction between a reversal for accounting corrections,
+
+such as the loss of a foil or stub, and a reversal due to a transaction
+refund (for example, when a customer changes his mind).
+
+[DN: Whether a reversal for a transaction from a previous balance
+period should be prevented is to be determined.]
+
+STOCK RECORD ADJUSTMENTS
+[R802, R813]
+Stock level modifications for value stock and MoPs do not require
+
+transactions to be reversed or created, but are effected through the
+stock and cash declaration functions, see above.
+
+OFFICE REPORTS
+[R696, R837]
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 170
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+This allows the print-preview and printing of office daily and weekly
+reports.
+
+4.1.3.3.4.8 I REVALUATIONS
+
+Revaluation of value stock, and varieties of cash which can assume
+different values, occurs automatically as a result of the next stock or
+cash declaration after associated Reference Data becomes applicable.
+At the time that a clerk attaches to a stock unit, the clerk is prompted to
+accept or adjust the stock item or items that are subject to revaluation.
+Transactions which occur before such new Reference Data becomes
+applicable are accounted for at the prior value.
+
+The balancing implications of these operations is defined in the
+EPOSS Functional Specification.
+
+4.1.3.3.5 Reference Data Local Maintenance
+
+[R818, R838]
+
+Reference Data to steer processing for local scheme products is
+maintained from the centre as described in Section 4.1.5.3.2.1.5
+Configuration Management for Outlets.
+
+[DN: A change to R818 is required.]
+
+4.1.3.3.5.1 MAINTAIN OFFICE DATA
+[R538, R806]
+
+This facility is to allow controlled modifications to be made to the office
+data for administrative purposes, although POCL do not utilise these
+facilities. Note that office date and time is maintained centrally.
+
+4.1.3.3.5.1.1 Office Details
+These details may not be modified locally.
+
+4.1.3.3.5.1.2 Cash Totals
+
+This function allows for the recording of the Daily Cash Locked Up by
+denomination.
+
+4.1.3.3.5.1.3 Balance / Daily Cash Book Printing Options
+These options may not be modified locally.
+
+4.1.3.3.5.1.4 Cash Account Dates
+
+The cash account calendar, including the cash account week numbers,
+is published by The Post Office. However, it is necessary to allow
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 171
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+some local flexibility such as a multi-week cash account for when the
+sub postmaster goes on holiday and cannot balance his office until he
+returns.
+
+4.1.3.3.5.1.5 Preferences
+Preferences may not be modified locally.
+
+4.1.3.3.6 Training Mode
+
+[R531, R532, R533, R534, R833, R949]
+For training purposes, EPOSS provides a built-in training mode which:
+
+e Allows the serving of (imaginary) customers for all customer
+transactions
+
+e Allows all operations used in accounting and balancing of a stock
+unit
+
+e Is generally functionally indistinguishable from normal operation,
+except that a clear indication is permanently provided that training
+mode is in use
+
+e Records all counter operations and transactions
+
+e Can be used at any time by any user (including a live post office
+environment)
+
+e Allows the production of receipts and reports
+
+The EPOSS application provides an effective training mode through
+the implementation of “training” stock units and segregates these from
+operational stock units and the normal office accounting processes.
+
+Some limitations to training mode may be necessary in relation to APS
+where there would otherwise be an update of a portable token.
+
+Training transactions and any subsequent analysis are not accounted
+within the scorecard.
+
+4.1.3.3.6.1 TRAINING STOCK UNIT
+
+All stock units have a Type attribute. A normal stock unit has its Type
+set to “Normal”, but a training stock unit is set to “Training”.
+
+4.1.3.3.6.2 I WORKING IN TRAINING MODE
+
+To activate training mode, the user simply has to attach to a training
+stock unit instead of a normal one. When this is done the system is
+automatically set into training mode.
+
+Pathway specifies a training “role” which allows attachment only to
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 172
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+training stock units.
+
+4.1.3.3.6.3 EXITING TRAINING MODE
+
+To exit training mode, the user just detaches from the training stock
+unit.
+
+4.1.3.3.6.4 CREATING TRAINING STOCK UNITS
+
+The system has a default set of training stock units on installation.
+The number and contents of each training stock can be tailored to suit
+the individual office environment using the office administration
+functions.
+
+4.1.3.3.6.5 INDICATING TRAINING MODE IS ACTIVE
+Since the training mode operation is intended to be functionally
+identical to normal operation a clear and permanent indication is given
+to ensure that the user is aware that training mode is active.
+
+In training mode the screen background is a different colour from
+normal operation. and the word “TRAINING” is permanently displayed
+in large type inset in to the background. Any stock unit level reports
+are marked “TRAINING”.
+
+4.1.3.3.6.6 I TRAINING MODE COUNTER OPERATION
+Counter functionality which involves the use of a stock unit continues
+to operate in the same way for a training stock. Exceptions to this are
+those operations which involve other stock units, such as stock
+transfers. Such functions only operate between training stock units.
+
+4.1.3.3.6.7 I EXCLUDING TRAINING FROM ACCOUNTING
+
+The office accounting, balancing and reporting process automatically
+detects and excludes training mode transactions.
+
+Training data can be analysed to provide information about the use of
+training mode within a post office.
+
+4.1.3.3.6.8 I USING TRAINING DATA
+
+Some transactions involve the use of centrally distributed data. For
+example, BES uses payment authorisation data distributed by PAS via
+TMS.
+
+The use of centrally distributed test data for these transactions is
+useful for testing and training. This data can be used in combination
+with a training stock unit to provide a very effective training
+environment.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 173
+FUJ00001247
+FUJ00001247
+
+ICL Pathway Service Architecture Design Document Ref: PRIFSPI000
+
+POCL Service Architecture Version: 4.0
+EPOSS Service - EPOSS Administration Date: 30/9/97
+
+4.1.3.3.6.9 I HOW TMS HANDLES TRAINING TRANSACTION DATA
+Transaction data recorded during training mode is marked as such so
+that TMS can isolate it and handle it effectively. This data can be
+analysed at TMS level to provide information about the use of training
+mode within the post offices.
+
+4.1.3.3.7 Broadcasts & Documents
+[R471, R481, R482, R483, R484, R485, R486, R896, R913]
+
+4.1.3.3.7.1_ BROADCASTS
+
+Using TMS and OPS it is possible to broadcast short messages, up to
+2Kb, to all or a subset of outlets.
+
+The user is prompted that messages are outstanding by an indicator
+on the top of his screen. On selecting the appropriate icon the user is
+presented with a list of messages with an indicator showing whether
+they have been read.
+
+Each counter position accesses these messages and selectively opens
+and views messages. Reading a message is recorded in the journal.
+The message is capable of being printed on the back office printer.
+
+The means by which such broadcast messages are to be prepared,
+authorised and admitted to the system is defined in the Pathway to TIP
+Application Interface Specification.
+
+4.1.3.3.7.2_ DOCUMENTS
+
+Users are able to access electronically held information such as is
+currently published in ‘Counter News’ and in the operations manuals.
+
+A general facility which enables these and other documents to be
+viewed locally is provided. Documents are supplied in a suitable
+format (e.g. HTML, RTF/Microsoft Word). Access to these documents
+is via an application from the user's desktop.
+
+This facility may be used to access Process & Procedures Document.
+This covers all aspects of EPOSS counter transactions and
+administration and is a maintained document approved by POCL.
+
+© 1997 ICL Pathway Ltd COMMERCIAL-IN-CONFIDENCE Printed: 01/10/97
+C:\_SADD\Sadd4\SADD44D.DOC Page 174

@@ -1,0 +1,1140 @@
+FUJ00003487
+FUJ00003487
+
+Oy te wet
+
+Roy Smathurit (OU cust I Anne Cooper! Dawe Cooke
+g
+
+Su) P6/oc
+- 7
+
+benefits
+
+Vfl
+To: Roy Smethurst ICL Pathway - agency
+Ray Jackson POCL
+Mike Trotter PDA Library
+
+Date: 16-December-1997
+From: Bob Booth
+
+Subject: Landis & Gyr Document
+
+Attached the last part of Landis & Gyr's promised Quantum documentation.
+
+Please remember that this is commercially sensitive and in line with other documents
+should not be left out unattended etc.
+
+Regards
+
+(Attached 22 pages)
+
+-
+ow,
+
+vy
+
+Nothing contained herein shali be deemed or construed as affecting existing contractual obligations or
+creating new contractual obligations between ICL Pathway, the DSS and / or POCL.
+RS1216DC.DOC 1 of
+
+Landis & Gyr Utilities (UK) Ltd, Shropshire TF1 4ET
+
+Bob Booth
+
+POCL PDA - Block B1
+ICL Pathway
+
+Forest Road
+
+Feltham
+
+Middlesex
+
+TW13 7EJ
+
+Date December 9, 1997
+Your contact Raj Rao
+
+Quantum Specification - H1 1290 6974 Pages 1 to 21
+
+Dear Bob
+
+FUJ00003487
+FUJ00003487
+
+av
+LANDIS&GYR
+
+Landis & Gyr Utilities
+(UK) Ltd
+
+Registered Office : -
+Hortonwood 30
+Telford
+
+Shropshire TF 1 4ET
+
+GRO
+
+a
+
+Agent for LG (UK) Ltd
+
+Company Registered in England
+No. 2369777
+
+Our reference
+Direct tel.
+Direct fax
+
+only .
+
+Please find attached the relevant sections of the above document, for use in the Horizon
+
+development.
+
+Yours sincerely
+
+Landis & Gyr Utilities (UK) Ltd
+Project Management Team
+
+Raj Rao
+Project Manager
+
+Enc.
+
++Q@L
+
+C thy Dacumentis\Wore POCL letter doc
+
+A member of the Electrowatt Group
+
+FUJ00003487
+FUJ00003487
+
+Landis & Gyr Utilities (UK) Ltd
+AGENCY UTP PROJECT
+FILE INTERFACE SPECIFICATIONS
+
+Drawn by: _S. Larkin Agency UTP Project
+
+Checked by: M. Smith File Interface Specifications
+Issued on: 13/2/97 _ I RD11363
+
+EW H 11290 6974 a Sh1 of 34
+LANDIS &GYR
+
+Copyright Landis & Gyr Utilities (UK) LTD
+
+FUJ00003487
+
+FUJ00003487
+CONTENTS
+Fo HFOGUCHION ooo. cecccceccecenseeresesescsteeecevesessertaneeessetessessessentesbseneneneusaereageeeesstsssssesccasssasieneaseees 3
+1.1 Abbreviations ks
+1.2 Definitions 38
+2. File Definition Overview . 7
+2.1 Standard Header and Trailer... wee \
+3. The Command File (.CMD) 9
+4 The Upload file (DUP). 12
+5. The Download files 17
+5.1 DATAGYR Regional Data (.DRD)... coe 17
+5.2 DATAGYR Customer Specific Message (.DCM).. 19
+
+6. UTP2RMC files es eessenseeaesepeensities coset ssteseeeeseeees 22
+
+6.1 CS ACK (.CSM)... : - 23
+6.2 METER DUMPS (.MTR) ......cceeceee ceeteeeee 27
+6.3 FAULTS (FLT)... cece cee cece 32
+
+_S. Larkin Agency UTP Project
+ed by M. Smith 7 File Interface Specifications
+ued on 13/2/97 I RD11363
+av H112906974a — Sh2 of 34
+LAN DIS&GYR
+
+pyran’ Lande Sarai
+
+FUJ00003487
+FUJ00003487
+
+1. Introduction ;
+This document defines the format of the files that will be used as interfaces between the BGT
+Quantum System and Third party polling agencies.
+
+1.1 Abbreviations
+
+TPPA - Third party polling agencies
+cs - Customer Specific
+acc - Quantum Customer card
+
+1.2 Definitions
+Message Type : A 2 byte array of characters used to store a marker to show if the record is a header
+or a trailer. It can only have two values
+00" - Standard Header
+‘99" — - Standard Trailer
+Message Type is NOT a string, as it is not terminated with a NULL
+
+File_Date : A 10 byte array of characters used to store a date in the format
+YYYY/MM/OD
+
+Note - Slashes are included.
+
+Date is NOT a string, as it is not terminated with a NULL
+
+File_Time : An 8 byte array of characters used to store a time in the format
+HH:MM:SS
+
+Note - Colons are included
+
+Date is NOT a string, as it is not terminated with a NULL
+
+Sequence Number : A 6 byte array of characters used to represent the sequence number of the file
+For compatibility with the existing Quantum Sequence file layout, the first three digit will always be
+padded with spaces
+
+eg 576" represents the number 576.
+
+Sequence number is NOT a string, as it is not terminated with a NULL..
+
+Originator : A 12 byte array of characters used to mark the origin of the file . It can contain one of
+four values(where s indicates an ASCII SPACE character)
+
+BGTsssssssss" - British Gas Trading
+PAYPOINTssss” - PayPoint
+POCLssssssss” - Post Office Counters
+LANDGsssssss” - Landis & Gyr
+
+Onginator is NOT a string, as it is not terminated with a NULL
+
+Destination : A 12 byte array of characters used to mark the origin of the file It can contain one of
+four values(where s indicates an ASCII SPACE character)
+
+BGTsssssssss - British Gas Trading a
+PAYPOINTssss” - PayPoint
+POCLssssssss" - Post Office Counters
+LANDGsssssss" - Landis & Gyr
+
+Drawn b S. Larkin Agency UTP Project
+
+I Checked by: M. Smith File Interface Specifications
+
+Issued on: 13/2/97 __[ RD11363
+
+av H 1 1290 6974 a Sh3 of 34
+LANDIS & GYR
+
+nahi Lands & Gyr Utilities «UF 1 LTD
+
+FUJ00003487
+
+FUJ00003487
+
+Destination is NOT a string, as it is not terminated with a NULL
+Message Count: An 8 byte array of characters used to represent the number of records in the file -
+e.g. "00003001" represents the number 3001
+Some files contain different types of record (e.g. see definition of .DUP file definitions). in these
+cases, extra information will be added after the Standard header.
+Filler: A 42 byte array of characters used to mark the end of a file. ‘
+Filler is not a string, as it is not terminated by a NULL
+Auto/ Manual (applies to .DCM file only):
+A two byte variable (integer) that is used to flag the event that caused the .DCM file to be created
+from a .CMD
+
+0 - .CMD file processed as timed event (automatic)
+
+1 - .CMD file processed in response to user input
+Time (Note - This is different from File_Time)
+This is the time stored in DATAGYR format, and is used internally in some files.
+It is defined as follows:
+A 6 byte structure used to store a date and time
+
+Byte year - Least significant byte
+
+Byte month
+
+Byte date
+
+Byte hours
+
+Byte minutes
+
+Byte seconds - Most significant byte
+An example will be given for clarity
+The time - 15"" day 1" month 1997 year 14 hours 16 minutes 23 seconds
+Viewed in HEX
+
+Byte year - 97
+
+Byte month - 01
+
+Byte date - 15
+
+Byte hours - 14
+
+Byte minutes - 16
+
+Byte seconds - 23
+
+Viewed in DECIMAL
+
+Byte year - 151
+
+Byte month - 01
+
+Byte date - 21
+
+Byte hours - 20
+
+Byte minutes - 22
+
+Byte seconds - 35
+@wn by S_Larkin Agency UTP Project
+necked by M. Smith File Interface Specifications
+
+ssued on_ 13/2/97 _ [RD11363
+
+av H 11290 6974a Sh4 of 34
+‘LANDIS & GYR
+
+hho
+
+Date (Note - This is different from File_Date)
+This is the date stored in DATAGYR format, and is used internally in some files
+itis defined as follows:
+Byte year - Least significant byte
+Byte month
+Byte date
+Byte padding - Most significant byte
+An example will be given for clarity
+The date - 15" Day 1" month 1997
+
+Viewed in HEX
+Byte year - 97
+Byte month = - 01
+Byte date - 15
+Viewed in DECIMAL
+Byte year - 151
+Byte month - 01
+Byte date - 21
+General
+
+All offsets and sizes in this document are given in decimal. not hexadecimal
+
+Byte Ordering
+
+FUJ00003487
+FUJ00003487
+
+In some files. certain bytes will be reversed. This will only effect integers( 2 bytes) and long integers
+(4 bytes). This will lead to the definition of two new types. Mot integer and Mot long integer
+
+Integers
+
+Example representation of 2.012 decimal in binary. In 16 bits (2 bytes) this number is represented as
+
+folicws
+0000011111011100
+
+The table below will show the difference between the normal representation of this number. and it's
+
+Mot integer representation
+
+Type of integer Lowest Address Highest Address
+Mot integer (Motorola format) 00000111 (Most significant 11011100 (Least significant
+_ byte) byte)
+*“ Regular integer (Intel format) 11011100 (Least significant 0000011 1(Most significant byte)
+byte)
+
++ cai be seen from the above table. Mot integers are stored with the byte order reversed
+
+by S. Larkin Agency UTP Project
+cked by M. Smith File Interface Specifications
+Issued on. 13/2/97 I RD11363
+
+EV H 1 1290 6974 a Sh5 of 34
+
+LANDIS&GYR_
+
+Longs
+
+FUJ00003487
+FUJ00003487
+
+Example representation of 70,000 decimal in binary. In 32 bits (4 bytes) this number is represented
+
+as follows:
+
+00000000000000010001000101110000
+The table below will show the difference between the normal representation of this number. and it's
+Mot long integer representation
+
+Type of long Lowest Address Highest Address
+integer
+
+Mot long 00000000( Most 00000001 00010001 01110000( Least
+integer (Motorola I significant byte) significant byte)
+format)
+
+Regular long 01110000(Least 00010001 00000001 00000000(Most
+
+integer (Intel
+format)
+
+Significant byte)
+
+significant byte)
+
+As can be seen from the above table. the order of the 4 bytes is totally reversed
+
+Note
+
+Unless specified as otherwise. all integers and long integers will be in Intel (not Motorola) format
+
+Drawn by: S. Larkin
+
+Checked by M. Smith
+
+Issued on. 13/2/97 RD11363
+
+Agency UTP Project
+File Interface Specifications
+
+=AV
+
+H 11290 6974 a
+
+Sh6 of 34
+
+LANDIS & GYR
+
+dais EP
+
+wt
+
+FUJ00003487
+FUJ00003487
+
+2. File Definition Overview ;
+The following files will be defined : -
+
+The Command File (.CMD)
+
+The Upload File (.DUP)
+
+DATAGYR Regional Data (.DRD)
+
+DATAGYR Customer Specific Message (.DCM)
+
+CS Messages Ack (.CSM)
+
+2.1 Standard Header and Trailer
+The . DUP, .DRD and .DCM file will each start with a Standard Header and End with a Standard
+Trailer. These are defined below:
+
+Standard Header
+
+; Offset into I Length Variable Description and I
+I Header (Bytes) Type Comments i
+(Bytes) I !
+10 [2 Message Type Marker for Standard {
+{ Header i
+t I (always 00) {
+i2 I 10 File_Date( see YYYY/MM/DD !
+‘ _ i definitions) Date file generated _i
+412 18 File_Time(see HH:MM:SS. I
+_. i definitions) Time file generated _!
+29 [6 Sequence Number I Sequence number I
++ of file :
+
+cs 12 Originator . Location where file
+
+originated
+12 Destination Location where file
+_ is to be delivered to
+50. 4 Long int “Checksum
+
+Total size of Header - 54 bytes
+
+“Checksum will be calculated by adding every byte in the file with the exception of the Standara
+Header and Standard Trailer. 1.e. the total sum of the binary values stored in each byte. with this total
+result stored as a 4 byte binary number.
+
+Drawn by S. Larkin Agency UTP Project
+Checked by. M. Smith File Interface Specifications
+Issued on. 13/2/ RD11363
+av H112906974a — Sh7 of 34
+LANDIS &GYR_
+
+FUJ00003487
+FUJ00003487
+
+Standard Trailer
+
+Offset into Length Variable - I Description and
+Trailer (Bytes) Type Comments -
+(Bytes)
+ie} 2 Message Type Marker for Standard
+I Trailer
+! (always 99)
+I 2 8 Message Count Number of records,
+{ including Standard
+i header and Trailer. 1
+110 42 filler Marks end of file
+
+Total size of Header - 52 bytes
+
+The .CMD file does not have a Standard Header and Trailer
+
+-CMD - record count will consist of the number of Commands in the file (number of binds + number of
+CS Message adds + single eof command)
+
+The following files will each have a standard Header and Trailer:
+DUP - record count will consist of number of transactions + 1 Standard Header + 1 Standard Trailer
+
+ORD - record count will consist of number of sets of regional data + 1 Standard Header + 1
+Standard Trailer
+
+DCM - record count will consist of CS Messages + 1 Standard Header + 1 Standard Trailer
+
+The UTP2RMC files and the .LOG file will not start with the Standard Header and will not end with
+the Standard Trailer.
+
+Drawn by S. Larkin Agency UTP Project
+Checked by. M_ Smith File Interface Specifications
+
+issued on. 13/2/97 [RD11363
+
+I
+
+av H 11290 6974 a Sh8 of 34
+LANDIS & GYR
+
+FUJ00003487
+
+FUJ00003487
+3. The Command File (.CMD)
+CMD INFO
+CMOSTART
+DETAILS
+CMDEND
+CMDSTART
+DETAILS
+CMDEND
+CMDSTART
+DETAILS
+CMDEND
+CMDSTART EOF
+Orawn by. _S. Larkin Agency UTP Project
+> ed by M. Smith ___I File Interface Specifications
+Issued on 13/2/97 RD11363
+av
+= H 112906974 a Sh3 of 34
+LANDIS &GYR
+
+re Paras $ Ga Us TC
+
+-CMD File - General
+
+The prefix of the .CMD file will be as follows
+
+“PAYPXXX” or
+“POCLXXX" or
+“BGTXXX"™
+
+Where XXX is the last three digits of the sequence number (the first three are padding
+
+spaces)
+
+FUJ00003487
+FUJ00003487
+
+The CMD File consists of CMD INFO, a series of text Command Messages. and a Standard Trailer
+
+The start of the first message Is marked by the text string CMDSTART
+
+The end of the series of Command Messages is defined by the text string CMDSTART EOF
+
+Breakdown of CMD INFO
+
+Offset into Length Variable Description and
+[ CMD INFO (Bytes) Type Comments
+rf (Bytes)
+4 Long int Number of CS
+i Messages
+I 4 . 4 Long int Number of
+I outlet/meter binds
+
+Total size of CMD INFO - 8 bytes
+
+Command Message
+These are delimited between the text
+CMDSTART
+
+details of command message
+
+CMDEND
+
+All text not contained within these two delimiters is ignored
+
+The end of the Command File is flagged to the parser by the text string
+
+CMDSTART EOF
+Three commands are supported
+
+1) Meter Outiet bind
+
+Forms a relationship between a meter and an outlet. The METER will be created in the
+
+database if it is not already there.
+
+2) CS Message Add
+
+Add a CS Message to a meter
+
+3) End of File Informs the parser that the CMD file has finished
+
+Grawn by S Larkin
+
+Checked by M. Smith
+Issued on_ 13/2/97 RD11363
+
+Agency UTP Project
+
+File Interface Specifications
+
+"IV
+
+LANDIS &GYR
+
+H 1 1290 6974 a
+
+Sh10 of 34
+
+se yeah foe eSeities Oe TE
+
+FUJ00003487
+FUJ00003487
+
+The Command File will be sorted by Outlet order. Each CS Message add will be preceded by a Meter
+Outlet bind command. This means the commands will occur in the following order .
+(obviously. the outlet and meter numbers shown here are abbreviated representations) -
+
+Meter outlet bind for meter 1 to outlet 1
+Add CS message to meter 1
+Meter outlet bind for meter 1 to outlet 1
+Add CS message to meter 1
+Meter outlet bind for meter 2 to outlet 2
+Add CS message to meter 2
+Meter outlet bind for meter 2 to outlet 2
+Add CS message to meter 2
+
+Log file (LOG)
+4 log text file will be produced when the .CMD file is processed by the Agency/District PC
+The prefix of the log file will be as follows
+PAYPXXX" or
+POCLXXX"
+BGTXXX"
+Where XXx is the last three digits of the sequence number (the first three are padding
+spaces)
+
+The prefix of the LOG file will correspond to the name of the .CMD File from which it was produced
+It's format will be defined in the Agency PC Requirements Specification by Landis & Gyr. It will not
+have a Standard Header and Trailer.
+
+Drawn by _S. Larkin Agency UTP Project
+Checked by M_ Smith File Interface Specifications
+
+Issued on. 13/2/97 RD11363
+
+Ev H 1412906974 a Sh11 of 34
+LANDIS &GYR
+
+2 Gut
+
+FUJ00003487
+
+FUJ00003487
+4. The Upload file (DUP)
+-
+STANDARD
+HEADER
+UP INFO
+OUTLET HEADER
+ATA BI KID
+OUTLE > Loc
+BLOCK TRANSACTION
+OUTLET HEADER
+DATA BLOCK ID.
+TRANSACTION
+TRANSACTION
+STANDARD
+TRAILER
+NOTE
+Size of Outlet Block is
+Size of Data Block ID +
+total size of transactions
+for
+Drawn by: S. Larkin Agency UTP Project
+Checked by: M. Smith File Interface Specifications
+Issued on: 13/2/97 I RD11363
+aa’
+av H 11290 6974 a Sh12 of 34
+
+LANDIS & GYR
+
+mL ands
+
+DUP file - General
+
+The prefix of the .DUP file will be as follows
+
+“PAYPXXX" or
+"POCLXXX”
+
+FUJ00003487
+FUJ00003487
+
+Where XXX is the last three digits of the sequence number (the first three are padding
+
+spaces).
+
+The DUP File consists of a Standard Header, followed by UP INFO, a series of Outlet Headers. \
+Data Blocks, Cash transactions and a Standard Trailer.
+Each Outlet Header usually contains a single data block (it may contain more in certain conditions)
+and each Data Block will be followed by one or more Transactions (there are three types. defined
+
+below)
+
+Breakdown of UP INFO
+
+I Offset into UP INFO I Length Variable Description and
+I (Bytes) (Bytes) Type Comments
+lo 4 Long Int Size of File
+14 4 Long Int Total Number of
+Outlets
+4 4 Long Int Total Number of
+. Transactions
+Total size of UP INFO - 12 bytes
+Breakdown of Outlet Header
+Offset into Outlet Length Variable Description and
+Header (Bytes) Type Comments
+(Bytes)
+0 143 String Outlet ID I
+13 1 Byte Padding Byte I
+14 14 Long int Size of Outlet Block I
+
+Total size of Outlet Header - 18 bytes
+
+I Drawn by _S. Larkin
+Cc d by M Smith
+I
+
+=d on_ 13/2/97 RD11363
+
+Agency UTP Project
+File Interface Specifications
+
+I av
+
+H 11290 6974 a
+
+Sh13 of 34
+
+I LANDIS &GYR
+
+indie 2 Garter Ue
+
+TT
+
+Breakdown of Data Block iD
+
+FUJ00003487
+FUJ00003487
+
+Offset into Data Length Variable Description and °.
+Block ID (Bytes) Type Comments
+(Bytes)
+0 2 Mot integer Length of Block !D
+record. Always 6 I
+2 2 Reserved Reserved (0)
+4 2 Mot integer Block iD number _I
+Total size of - 6 bytes
+There are three types of Cash Transaction
+Breakdown of Basic Cash Transaction
+! Offset into Length Variable Description and
+Transaction (Bytes) Type Comments
+(Bytes)
+ie) 2 Mot integer Length. Always 80
+2 1 Byte Transaction type
+(always 1)
+i3 4 Reserved Reserved (0)
+[4 2 Mot integer Cash Value of
+Transaction (Whole
+! pounds)
+i 6 1 Byte PoS Employee
+‘ Number (0 if not
+' used)
+7 4 Reserved Reserved (0)
+8 6 Time( see Transaction time
+. . definitions) ‘I stamp 1
+ta 66 Byte Meter Data copied
+from QCC Dump
+File
+Total size of Basic Cash Transaction - 80 bytes
+
+Crawn by  S Larkin
+
+cked by: M_ Smith
+
+Issued on: 13/2/97 _ [RD11363
+
+Agency UTP Project
+
+File Interface Specifications
+
+av
+
+H 11290 6974 a Sh14 of 34
+
+LANDIS & GYR
+
+ecuibt Landis & Gar nines, +
+
+FUJ00003487
+
+FUJ00003487
+Breakdown of Extended Cash Transaction
+Offset into Length Variable Description and -
+Transaction (Bytes) Type Comments
+(Bytes)
+0 2 Mot integer Length. Always 790
+2 1 Byte Transaction Type
+(Always 2)
+3 1 Reserved Reserved (0)
+4 2 Mot integer Cash Value of
+Transaction
+6 1 Byte PoS Employee
+Number
+17 1 Reserved Reserved (0)
+8 6 Time Transaction Time
+stamp
+14 66 Byte Meter Data copied
+from QCC Dump
+File
+80 196 Byte Customer Specific
+data from QCC.
+Dump File
+276 4 Byte Number of
+Customer Message
+acknowledgement
+slots used (1 to 8)
+277 1 Byte Padding Byte
+278 64 Byte 4" slot
+342 64 Byte 2" slot
+I 406 64 Byte 3% slot
+[470 64 Byte 4" slot _I
+1 534 64 Byte 5" slot
+1 598 I 64 Byte 6" slot
+I 662 [64 Byte 7™ slot
+[725 64 Byte 8" slot
+
+Total size of Extended Cash Transaction - 790 bytes
+
+Drawn by:
+Checked by
+
+issued on_ 13/2/97 _ [ RD11363
+
+S. Larkin
+M. Smith
+
+Agency UTP Project
+File Interface Specifications
+
+av
+LANDIS & GYR
+
+H 11290 6974 a
+
+Sh15 of 34
+
+vent Lande
+
+3 Gee lyntities 8 7
+
+FUJ00003487
+
+FUJ00003487
+Breakdown of Dummy Cash Transaction
+Offset into Length Variable . I Description and
+Transaction (Bytes) Type Comments -
+(Bytes)
+0 2 Mot integer Length. Always 594
+2 4 Byte Transaction Type
+(Always 3)
+3 1 DATAGYR DATAGYR data (0)
+4 2 Mot integer Cash Value of
+Transaction
+6 1 Byte PoS Employee
+Number
+7 1 DATAGYR DATAGYR data (0)
+8 6 Time Transaction time
+stamp
+14 66 Byte Meter data copied
+from QCC Dump
+File
+80 4 Byte Number of
+Customer Message
+acknowledgement
+slots used (1 to 8)
+81 1 Byte Padding Byte
+82 64 Byte 1* slot
+146 64 Byte 2" slot
+210 64 Byte 3% slot
+274 64 Byte 4” slot
+338 64 Byte 5" slot
+402 64 Byte 6" siot
+466 64 Byte 7™ slot
+530 64 Byte 8" slot i
+Total size of Dummy Cash Transaction - 594 bytes
+{
+j
+- t
+Grawn by _S. Larkin Agency UTP Project
+Checked by: M. Smith File Interface Specifications
+Issued on. 13/2/97 [RD11363
+=V
+= H 11290 6974 a Sh16 of 34
+LANDIS &GYR
+rari ands 8G. sulties (Uk LT
+
+FUJ00003487
+
+FUJ00003487
+5. The Download files :
+5.1 DATAGYR Regional Data (.DRD) -
+STANDARD
+HEADER
+REG INFO
+t
+REGIONAL DATA
+SET 1
+I REGIONAL DATA
+SET 2
+. REGIONAL DATA
+I SET 3
+REGIONAL DATA
+I SETN
+(UP TO 20 SETS)
+' STANDARD
+TRAILER
+Drawn by S Larkin Agency UTP Project
+ked by M_Smith __I File Interface Specifications
+red on’ 13/2/97 RD11363
+=
+av H 11290 6974 a Sh17 of 34
+LANDIS&GYR
+
+isnt Lands & Gyr Uiities 40
+
+-DRD File - General
+
+FUJ00003487
+
+FUJ00003487
+
+The file consists of a Standard Header, followed by a REG INFO record, and then a series of up to
+
+20 sets of Regional Data. The file will end with a Standard Trailer.
+
+The prefix of the .DRD file will be as follows
+
+“PAYPXXX" or
+“POCLXXX"
+
+Where XXX is the last three digits of the sequence number (the first three are padding
+
+spaces)
+
+Breakdown of REG INFO
+
+Offset into REG Length Variable Description and
+INFO (Bytes) Type Comments
+(Bytes)
+G 2 Mot integer Number of sets of
+Regional Data
+Total size of REG INFO - 2 bytes
+Regional Data
+Offset from start of I Length Variable Description and
+Regional Data set (Bytes) Type Comments
+(Bytes)
+10 1 DATAGYR DATAGYR data
+La 1 Byte Region Code
+2 6 Time(see Regional Data issue
+definitions) time
+8 [750 DATAGYR DATAGYR data
+
+“Total size of each Regional Data set - 758 bytes
+
+Regional data repeats as above for up to 20 sets
+
+Drawn b S_ Larkin
+
+ked by: M. Smith
+Issued on: 13/2/97
+
+RD11363
+
+Agency UTP Project
+
+File Interface Specifications
+
+IW
+
+H 11290 6974 a
+
+Sh18 of 34
+
+LANDIS &GYR
+
+andis & ©
+
+5.2 DATAGYR Customer Specific Message (.DCM)
+
+STANDARD
+HEADER
+
+CS INFO
+
+OUTLET
+DETAILS
+
+CS MESSAGE
+
+CS MESSAGE
+
+CS MESSAGE
+
+OUTLET
+DETAILS
+
+CS MESSAGE
+
+CS MESSAGE
+
+STANDARD
+TRAILER
+
+FUJ00003487
+FUJ00003487
+
+[ Drawn by: _S. Larkin
+
+Agency UTP Project
+
+Checked by. M_ Smith
+
+File Interface Specifications
+
+Issued on: 13/2/97 I RD11363
+
+av
+
+LANDIS &GYR
+
+H 11290 6974 a
+
+Sh19 of 34
+
+sobtbandis & Gyr Uiittes uh TE
+
+FUJ00003487
+FUJ00003487
+
+.DCM File - General
+
+The prefix of the .OCM file will be as follows
+“PAYPXXX” or .
+"POCLXXX" -
+Where XXX is the last three digits of the sequence number (the first three are padding
+spaces)
+
+The file consists of a Standard Header. followed by a CS INFO record, and then a series of Outlet
+Details and CS Messages. The file will end with a Standard Trailer.
+
+Breakdown of CS INFO
+
+Offset into .OCM Length Variable Description and
+; File (Bytes) Type Comments
+: (Bytes)
+c 4 Long int Total number of CS
+Messages in File
+4 4 Long int Total number of
+Outlets in File
+S 2 Auto/Manual Auto or Manual
+Event
+
+Total size of CS INFO - 10 bytes
+
+or __S Larkin Agency UTP Project
+
+c d by M. Smith File Interface Specifications
+
+Issued on 13/2/97 RD11353
+a=W
+i = H 112906974 a Sh20 of 34
+(LANDIS &GYR
+
+Outlet Details
+
+FUJ00003487
+FUJ00003487
+
+Offset from start of I Length Variable Description and
+Outlet Details (Bytes) Type Comments
+(Bytes)
+ie} 13 String Outlet ID
+13 1 Byte Padding Byte
+14 2 Int Number of CS
+messages for this
+outlet
+Total size of Outlet Details - 16 bytes
+CS Message Details
+Offset from start of I Length Variable Description and
+I CS Message (Bytes) Type Comments
+(Bytes)
+ie} 4 Byte Message
+Acknowledgement
+status(see note 1
+L © on page 24)
+14 7 Byte DATAGYR data
+18 1 Byte Customer Region
+I Code
+I 9 21 String Customer ID
+1.30 34 Byte DATAGYR data
+
+Total size of CS Message details - 64 bytes
+
+Drawn b S. Larkin
+
+Checked by: M. Smith
+
+Issued on: 13/2/97 RD11363
+
+Agency UTP Project
+
+File Interface Specifications
+
+aV
+
+LANDIS &GYR
+
+H 11290 6974 a Sh21 of 34
+
+TIT Lae se
+
+2 Gyr Utilities UV LTD
+
